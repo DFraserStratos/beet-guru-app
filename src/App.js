@@ -11,31 +11,19 @@ import MoreScreen from './components/screens/MoreScreen';
 function App() {
   const [activeScreen, setActiveScreen] = useState('dashboard');
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(!isMobile);
   
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
-      if (mobile && isSidebarOpen) {
-        setIsSidebarOpen(false);
-      }
     };
     
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [isSidebarOpen]);
+  }, []);
   
   const handleNavigate = (screen) => {
     setActiveScreen(screen);
-    // On mobile, auto-close sidebar when navigating
-    if (isMobile && isSidebarOpen) {
-      setIsSidebarOpen(false);
-    }
-  };
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
   };
 
   return (
@@ -45,31 +33,13 @@ function App() {
         <Sidebar 
           activeScreen={activeScreen} 
           handleNavigate={handleNavigate} 
-          isSidebarOpen={true} 
         />
       </div>
-      
-      {/* Mobile Sidebar - only visible when opened */}
-      {isMobile && isSidebarOpen && (
-        <>
-          <div className="fixed inset-0 z-30">
-            <div className="absolute inset-0 bg-black bg-opacity-50" onClick={toggleSidebar}></div>
-            <div className="absolute left-0 top-0 bottom-0 w-64 z-40">
-              <Sidebar 
-                activeScreen={activeScreen} 
-                handleNavigate={handleNavigate} 
-                isSidebarOpen={true} 
-              />
-            </div>
-          </div>
-        </>
-      )}
       
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header 
           activeScreen={activeScreen} 
-          toggleSidebar={toggleSidebar}
           isMobile={isMobile}
         />
         
