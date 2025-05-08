@@ -1,7 +1,7 @@
 import { Menu, Search, User, X } from 'lucide-react';
 import { useState } from 'react';
 
-const Header = ({ activeScreen, toggleSidebar }) => {
+const Header = ({ activeScreen, toggleSidebar, isMobile }) => {
   const [showSearch, setShowSearch] = useState(false);
   
   const toggleSearch = () => {
@@ -9,7 +9,7 @@ const Header = ({ activeScreen, toggleSidebar }) => {
   };
   
   return (
-    <div className="bg-white border-b">
+    <div className={`${isMobile ? 'bg-green-800 text-white' : 'bg-white text-gray-800'} border-b ${isMobile ? 'border-green-700' : 'border-gray-200'}`}>
       {/* Mobile Search Expanded */}
       {showSearch ? (
         <div className="p-2 flex items-center">
@@ -17,7 +17,7 @@ const Header = ({ activeScreen, toggleSidebar }) => {
             className="p-2"
             onClick={toggleSearch}
           >
-            <X size={20} className="text-gray-500" />
+            <X size={20} className={isMobile ? 'text-white' : 'text-gray-500'} />
           </button>
           <div className="flex-1 mx-2">
             <input
@@ -32,30 +32,32 @@ const Header = ({ activeScreen, toggleSidebar }) => {
         // Regular Header
         <div className="p-4 flex justify-between items-center">
           <div className="flex items-center">
-            <button
-              className="p-1 rounded-md hover:bg-gray-100 mr-3 md:flex hidden"
-              onClick={toggleSidebar}
-            >
-              <Menu size={20} className="text-gray-600" />
-            </button>
-            <h1 className="text-lg font-semibold text-gray-800 truncate">
-              {activeScreen === 'dashboard' && 'Dashboard'}
-              {activeScreen === 'assessments' && 'Assessments'}
-              {activeScreen === 'reports' && 'Reports'}
-              {activeScreen === 'locations' && 'Locations'}
-              {activeScreen === 'settings' && 'Settings'}
-              {activeScreen === 'new-assessment' && 'New Assessment'}
-              {activeScreen === 'more' && 'More'}
-            </h1>
+            {/* Show menu button only on mobile */}
+            {isMobile && (
+              <button
+                className="p-1 rounded-md hover:bg-green-700 mr-3"
+                onClick={toggleSidebar}
+              >
+                <Menu size={20} className="text-white" />
+              </button>
+            )}
+            
+            {/* Logo - Always visible */}
+            <div className="flex items-center">
+              <div className="bg-white rounded-full h-10 w-10 flex items-center justify-center mr-3">
+                <div className="text-green-800 font-bold text-xl">B</div>
+              </div>
+              <span className="font-bold text-lg">Beet Guru</span>
+            </div>
           </div>
           
           <div className="flex items-center gap-2">
             {/* Search icon for mobile */}
             <button
-              className="md:hidden p-2 rounded-full hover:bg-gray-100"
+              className="md:hidden p-2 rounded-full hover:bg-green-700"
               onClick={toggleSearch}
             >
-              <Search size={20} className="text-gray-500" />
+              <Search size={20} className="text-white" />
             </button>
             
             {/* Desktop search bar - hidden on mobile */}
@@ -68,8 +70,8 @@ const Header = ({ activeScreen, toggleSidebar }) => {
               <Search size={18} className="absolute left-3 top-2.5 text-gray-400" />
             </div>
             
-            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center cursor-pointer">
-              <User size={20} className="text-green-800" />
+            <div className={`w-10 h-10 ${isMobile ? 'bg-green-700' : 'bg-green-100'} rounded-full flex items-center justify-center cursor-pointer`}>
+              <User size={20} className={isMobile ? 'text-white' : 'text-green-800'} />
             </div>
           </div>
         </div>
