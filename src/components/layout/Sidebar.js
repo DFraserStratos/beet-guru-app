@@ -9,7 +9,7 @@ import {
 
 const Sidebar = ({ activeScreen, handleNavigate, isSidebarOpen }) => {
   return (
-    <div className={`${isSidebarOpen ? 'w-64' : 'w-20'} bg-green-800 text-white transition-all duration-300 flex flex-col h-full`}>
+    <div className={`${isSidebarOpen ? 'w-64' : 'w-20'} bg-green-800 text-white h-full flex flex-col transition-all duration-300`}>
       <div className="p-4 flex items-center justify-between border-b border-green-700">
         <div className="flex items-center">
           {/* App Logo */}
