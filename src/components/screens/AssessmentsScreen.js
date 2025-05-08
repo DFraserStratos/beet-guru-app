@@ -20,11 +20,8 @@ const AssessmentsScreen = ({ onNavigate, isMobile }) => {
   
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-xl font-semibold">Assessments</h2>
-          <p className="text-gray-500 text-sm">Manage your crop assessments</p>
-        </div>
+      {/* Action Button */}
+      <div className="flex justify-end">
         <button 
           className="bg-green-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-green-700 transition-colors text-sm"
           onClick={() => onNavigate('new-assessment')}
