@@ -1,7 +1,7 @@
 import { Search, User, X } from 'lucide-react';
 import { useState } from 'react';
 
-const Header = ({ activeScreen, isMobile }) => {
+const Header = ({ activeScreen }) => {
   const [showSearch, setShowSearch] = useState(false);
   
   const toggleSearch = () => {
@@ -9,7 +9,7 @@ const Header = ({ activeScreen, isMobile }) => {
   };
   
   return (
-    <div className={`${isMobile ? 'bg-green-800 text-white' : 'bg-white text-gray-800'} border-b ${isMobile ? 'border-green-700' : 'border-gray-200'}`}>
+    <div className="bg-green-800 text-white border-b border-green-700">
       {/* Mobile Search Expanded */}
       {showSearch ? (
         <div className="p-2 flex items-center">
@@ -17,7 +17,7 @@ const Header = ({ activeScreen, isMobile }) => {
             className="p-2"
             onClick={toggleSearch}
           >
-            <X size={20} className={isMobile ? 'text-white' : 'text-gray-500'} />
+            <X size={20} className="text-white" />
           </button>
           <div className="flex-1 mx-2">
             <input
@@ -31,40 +31,25 @@ const Header = ({ activeScreen, isMobile }) => {
       ) : (
         // Regular Header
         <div className="p-4 flex justify-between items-center">
-          {/* Show logo and text only on mobile */}
-          {isMobile && (
-            <div className="flex items-center">
-              <div className="bg-white rounded-full h-10 w-10 flex items-center justify-center mr-3">
-                <div className="text-green-800 font-bold text-xl">B</div>
-              </div>
-              <span className="font-bold text-lg">Beet Guru</span>
+          {/* Logo and app name */}
+          <div className="flex items-center">
+            <div className="bg-white rounded-full h-10 w-10 flex items-center justify-center mr-3">
+              <div className="text-green-800 font-bold text-xl">B</div>
             </div>
-          )}
-          
-          {/* Desktop: Just a spacer to maintain layout */}
-          {!isMobile && <div className="w-10"></div>}
+            <span className="font-bold text-lg">Beet Guru</span>
+          </div>
           
           <div className="flex items-center gap-2">
-            {/* Search icon for mobile */}
+            {/* Search icon */}
             <button
-              className="md:hidden p-2 rounded-full hover:bg-green-700"
+              className="p-2 rounded-full hover:bg-green-700"
               onClick={toggleSearch}
             >
               <Search size={20} className="text-white" />
             </button>
             
-            {/* Desktop search bar - hidden on mobile */}
-            <div className="hidden md:block relative">
-              <input
-                type="text"
-                placeholder="Search..."
-                className="pl-10 pr-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-600"
-              />
-              <Search size={18} className="absolute left-3 top-2.5 text-gray-400" />
-            </div>
-            
-            <div className={`w-10 h-10 ${isMobile ? 'bg-green-700' : 'bg-green-100'} rounded-full flex items-center justify-center cursor-pointer`}>
-              <User size={20} className={isMobile ? 'text-white' : 'text-green-800'} />
+            <div className="w-10 h-10 bg-green-700 rounded-full flex items-center justify-center cursor-pointer">
+              <User size={20} className="text-white" />
             </div>
           </div>
         </div>
