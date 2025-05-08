@@ -39,50 +39,58 @@ function App() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
-      <Header 
-        activeScreen={activeScreen} 
-        toggleSidebar={toggleSidebar} 
-      />
-      
-      <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar - hidden by default on mobile unless opened */}
-        <div className={`${isSidebarOpen ? 'block' : 'hidden'} md:block h-full absolute md:relative z-20 ${isMobile ? 'w-64' : ''}`}>
-          <Sidebar 
-            activeScreen={activeScreen} 
-            handleNavigate={handleNavigate} 
-            isSidebarOpen={true} 
-          />
-        </div>
-        
-        {/* Backdrop for mobile sidebar */}
-        {isMobile && isSidebarOpen && (
-          <div 
-            className="fixed inset-0 bg-black bg-opacity-50 z-10"
-            onClick={toggleSidebar}
-          ></div>
-        )}
-        
-        <div className="flex-1 overflow-hidden flex flex-col pb-16 md:pb-0">
-          <div className="flex-1 overflow-auto p-4">
-            {activeScreen === 'dashboard' && <DashboardScreen onNavigate={handleNavigate} isMobile={isMobile} />}
-            {activeScreen === 'assessments' && <AssessmentsScreen onNavigate={handleNavigate} isMobile={isMobile} />}
-            {activeScreen === 'reports' && <ReportsScreen isMobile={isMobile} />}
-            {activeScreen === 'new-assessment' && <NewAssessmentScreen isMobile={isMobile} />}
-            {activeScreen === 'more' && <MoreScreen onNavigate={handleNavigate} isMobile={isMobile} />}
-            {activeScreen === 'locations' && <div className="p-4">Locations Screen (Coming Soon)</div>}
-            {activeScreen === 'settings' && <div className="p-4">Settings Screen (Coming Soon)</div>}
-          </div>
-        </div>
-      </div>
-      
-      {/* Mobile Bottom Navigation */}
-      {isMobile && (
-        <BottomNav 
+    <div className="flex h-screen bg-gray-50">
+      {/* Desktop Sidebar - always visible on desktop */}
+      <div className={`${isMobile ? 'hidden' : 'block'} h-screen`}>
+        <Sidebar 
           activeScreen={activeScreen} 
           handleNavigate={handleNavigate} 
+          isSidebarOpen={true} 
         />
+      </div>
+      
+      {/* Mobile Sidebar - only visible when opened */}
+      {isMobile && isSidebarOpen && (
+        <>
+          <div className="fixed inset-0 z-30">
+            <div className="absolute inset-0 bg-black bg-opacity-50" onClick={toggleSidebar}></div>
+            <div className="absolute left-0 top-0 bottom-0 w-64 z-40">
+              <Sidebar 
+                activeScreen={activeScreen} 
+                handleNavigate={handleNavigate} 
+                isSidebarOpen={true} 
+              />
+            </div>
+          </div>
+        </>
       )}
+      
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <Header 
+          activeScreen={activeScreen} 
+          toggleSidebar={toggleSidebar}
+          isMobile={isMobile}
+        />
+        
+        <div className="flex-1 overflow-y-auto p-4 pb-16 md:pb-4">
+          {activeScreen === 'dashboard' && <DashboardScreen onNavigate={handleNavigate} isMobile={isMobile} />}
+          {activeScreen === 'assessments' && <AssessmentsScreen onNavigate={handleNavigate} isMobile={isMobile} />}
+          {activeScreen === 'reports' && <ReportsScreen isMobile={isMobile} />}
+          {activeScreen === 'new-assessment' && <NewAssessmentScreen isMobile={isMobile} />}
+          {activeScreen === 'more' && <MoreScreen onNavigate={handleNavigate} isMobile={isMobile} />}
+          {activeScreen === 'locations' && <div className="p-4">Locations Screen (Coming Soon)</div>}
+          {activeScreen === 'settings' && <div className="p-4">Settings Screen (Coming Soon)</div>}
+        </div>
+        
+        {/* Mobile Bottom Navigation */}
+        {isMobile && (
+          <BottomNav 
+            activeScreen={activeScreen} 
+            handleNavigate={handleNavigate} 
+          />
+        )}
+      </div>
     </div>
   );
 }
