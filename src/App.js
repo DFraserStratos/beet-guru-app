@@ -38,10 +38,13 @@ function App() {
       
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header 
-          activeScreen={activeScreen} 
-          isMobile={isMobile}
-        />
+        {/* Only show header on mobile */}
+        {isMobile && (
+          <Header 
+            activeScreen={activeScreen} 
+            isMobile={true}
+          />
+        )}
         
         <div className="flex-1 overflow-y-auto p-4 pb-16 md:pb-4">
           {activeScreen === 'dashboard' && <DashboardScreen onNavigate={handleNavigate} isMobile={isMobile} />}
