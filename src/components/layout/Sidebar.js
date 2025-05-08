@@ -7,16 +7,16 @@ import {
   LogOut
 } from 'lucide-react';
 
-const Sidebar = ({ activeScreen, handleNavigate, isSidebarOpen }) => {
+const Sidebar = ({ activeScreen, handleNavigate }) => {
   return (
-    <div className={`${isSidebarOpen ? 'w-64' : 'w-20'} bg-green-800 text-white h-full flex flex-col transition-all duration-300`}>
+    <div className="w-64 bg-green-800 text-white h-full flex flex-col">
       <div className="p-4 flex items-center justify-between border-b border-green-700">
         <div className="flex items-center">
           {/* App Logo */}
           <div className="bg-white rounded-full h-10 w-10 flex items-center justify-center mr-3">
             <div className="text-green-800 font-bold text-xl">B</div>
           </div>
-          {isSidebarOpen && <span className="font-bold text-lg">Beet Guru</span>}
+          <span className="font-bold text-lg">Beet Guru</span>
         </div>
       </div>
       
@@ -27,28 +27,24 @@ const Sidebar = ({ activeScreen, handleNavigate, isSidebarOpen }) => {
             label="Dashboard" 
             isActive={activeScreen === 'dashboard'} 
             onClick={() => handleNavigate('dashboard')}
-            isSidebarOpen={isSidebarOpen}
           />
           <SidebarItem 
             icon={<BarChart3 size={20} />} 
             label="Assessments" 
             isActive={activeScreen === 'assessments'} 
             onClick={() => handleNavigate('assessments')}
-            isSidebarOpen={isSidebarOpen}
           />
           <SidebarItem 
             icon={<FileText size={20} />} 
             label="Reports" 
             isActive={activeScreen === 'reports'} 
             onClick={() => handleNavigate('reports')}
-            isSidebarOpen={isSidebarOpen}
           />
           <SidebarItem 
             icon={<MapPin size={20} />} 
             label="Locations" 
             isActive={activeScreen === 'locations'} 
             onClick={() => handleNavigate('locations')}
-            isSidebarOpen={isSidebarOpen}
           />
         </ul>
       </div>
@@ -60,14 +56,12 @@ const Sidebar = ({ activeScreen, handleNavigate, isSidebarOpen }) => {
             label="Settings" 
             isActive={activeScreen === 'settings'} 
             onClick={() => handleNavigate('settings')}
-            isSidebarOpen={isSidebarOpen}
           />
           <SidebarItem 
             icon={<LogOut size={20} />} 
             label="Log Out" 
             isActive={false} 
             onClick={() => console.log('Log out')}
-            isSidebarOpen={isSidebarOpen}
           />
         </ul>
       </div>
@@ -76,7 +70,7 @@ const Sidebar = ({ activeScreen, handleNavigate, isSidebarOpen }) => {
 };
 
 // Sidebar Item Component
-const SidebarItem = ({ icon, label, isActive, onClick, isSidebarOpen }) => {
+const SidebarItem = ({ icon, label, isActive, onClick }) => {
   return (
     <li 
       className={`
@@ -87,7 +81,7 @@ const SidebarItem = ({ icon, label, isActive, onClick, isSidebarOpen }) => {
       onClick={onClick}
     >
       <div className="text-white">{icon}</div>
-      {isSidebarOpen && <span className="ml-3">{label}</span>}
+      <span className="ml-3">{label}</span>
     </li>
   );
 };
