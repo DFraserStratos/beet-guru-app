@@ -49,6 +49,22 @@ const Sidebar = ({ activeScreen, handleNavigate }) => {
         </ul>
       </div>
       
+      {/* User Profile Card */}
+      <div className="px-3 pb-4">
+        <div className="bg-green-700 rounded-xl p-3">
+          <div className="flex items-center">
+            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center mr-3">
+              <span className="text-green-800 font-bold text-sm">JD</span>
+            </div>
+            <div>
+              <h3 className="font-semibold text-sm text-white">John Doe</h3>
+              <p className="text-green-100 text-xs">john.doe@example.com</p>
+              <p className="text-green-200 text-xs mt-0.5">Farm Manager</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       <div className="p-4 border-t border-green-700">
         <ul className="space-y-2">
           <SidebarItem 
