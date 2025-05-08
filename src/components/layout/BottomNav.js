@@ -2,7 +2,7 @@ import {
   Home,
   BarChart3,
   FileText,
-  PlusCircle
+  MoreHorizontal
 } from 'lucide-react';
 
 const BottomNav = ({ activeScreen, handleNavigate }) => {
@@ -28,11 +28,10 @@ const BottomNav = ({ activeScreen, handleNavigate }) => {
           onClick={() => handleNavigate('reports')}
         />
         <NavItem
-          icon={<PlusCircle size={20} />}
-          label="New"
-          isActive={activeScreen === 'new-assessment'}
-          onClick={() => handleNavigate('new-assessment')}
-          highlight
+          icon={<MoreHorizontal size={20} />}
+          label="More"
+          isActive={['more', 'locations', 'settings'].includes(activeScreen)}
+          onClick={() => handleNavigate('more')}
         />
       </div>
     </div>
@@ -40,17 +39,16 @@ const BottomNav = ({ activeScreen, handleNavigate }) => {
 };
 
 // Bottom Nav Item Component
-const NavItem = ({ icon, label, isActive, onClick, highlight = false }) => {
+const NavItem = ({ icon, label, isActive, onClick }) => {
   return (
     <button
       className={`
         flex flex-col items-center justify-center
         ${isActive ? 'text-green-600' : 'text-gray-500'}
-        ${highlight ? 'bg-green-50' : ''}
       `}
       onClick={onClick}
     >
-      <div className={highlight && isActive ? 'text-white bg-green-600 p-1.5 rounded-full' : ''}>
+      <div className={isActive ? 'text-green-600' : ''}>
         {icon}
       </div>
       <span className="text-xs mt-1">{label}</span>

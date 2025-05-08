@@ -33,7 +33,7 @@ const Header = ({ activeScreen, toggleSidebar }) => {
         <div className="p-4 flex justify-between items-center">
           <div className="flex items-center">
             <button
-              className="p-1 rounded-md hover:bg-gray-100 mr-3"
+              className="p-1 rounded-md hover:bg-gray-100 mr-3 md:flex hidden"
               onClick={toggleSidebar}
             >
               <Menu size={20} className="text-gray-600" />
@@ -43,9 +43,9 @@ const Header = ({ activeScreen, toggleSidebar }) => {
               {activeScreen === 'assessments' && 'Assessments'}
               {activeScreen === 'reports' && 'Reports'}
               {activeScreen === 'locations' && 'Locations'}
-              {activeScreen === 'planning' && 'Planning'}
               {activeScreen === 'settings' && 'Settings'}
               {activeScreen === 'new-assessment' && 'New Assessment'}
+              {activeScreen === 'more' && 'More'}
             </h1>
           </div>
           

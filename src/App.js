@@ -6,6 +6,7 @@ import DashboardScreen from './components/screens/DashboardScreen';
 import AssessmentsScreen from './components/screens/AssessmentsScreen';
 import ReportsScreen from './components/screens/ReportsScreen';
 import NewAssessmentScreen from './components/screens/NewAssessmentScreen';
+import MoreScreen from './components/screens/MoreScreen';
 
 function App() {
   const [activeScreen, setActiveScreen] = useState('dashboard');
@@ -68,6 +69,9 @@ function App() {
             {activeScreen === 'assessments' && <AssessmentsScreen onNavigate={handleNavigate} isMobile={isMobile} />}
             {activeScreen === 'reports' && <ReportsScreen isMobile={isMobile} />}
             {activeScreen === 'new-assessment' && <NewAssessmentScreen isMobile={isMobile} />}
+            {activeScreen === 'more' && <MoreScreen onNavigate={handleNavigate} isMobile={isMobile} />}
+            {activeScreen === 'locations' && <div className="p-4">Locations Screen (Coming Soon)</div>}
+            {activeScreen === 'settings' && <div className="p-4">Settings Screen (Coming Soon)</div>}
           </div>
         </div>
       </div>

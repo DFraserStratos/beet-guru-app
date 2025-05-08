@@ -3,14 +3,13 @@ import {
   BarChart3,
   FileText,
   MapPin,
-  Calendar,
   Settings,
   LogOut
 } from 'lucide-react';
 
 const Sidebar = ({ activeScreen, handleNavigate, isSidebarOpen }) => {
   return (
-    <div className={`${isSidebarOpen ? 'w-64' : 'w-20'} bg-green-800 text-white transition-all duration-300 flex flex-col`}>
+    <div className={`${isSidebarOpen ? 'w-64' : 'w-20'} bg-green-800 text-white transition-all duration-300 flex flex-col h-full`}>
       <div className="p-4 flex items-center justify-between border-b border-green-700">
         <div className="flex items-center">
           {/* App Logo */}
@@ -49,13 +48,6 @@ const Sidebar = ({ activeScreen, handleNavigate, isSidebarOpen }) => {
             label="Locations" 
             isActive={activeScreen === 'locations'} 
             onClick={() => handleNavigate('locations')}
-            isSidebarOpen={isSidebarOpen}
-          />
-          <SidebarItem 
-            icon={<Calendar size={20} />} 
-            label="Planning" 
-            isActive={activeScreen === 'planning'} 
-            onClick={() => handleNavigate('planning')}
             isSidebarOpen={isSidebarOpen}
           />
         </ul>

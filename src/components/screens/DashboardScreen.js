@@ -1,4 +1,4 @@
-import { ChevronRight, BarChart3, FileText, SendHorizontal, Calendar, AlertCircle } from 'lucide-react';
+import { ChevronRight, BarChart3, FileText, SendHorizontal, Calendar, AlertCircle, PlusCircle } from 'lucide-react';
 import StatCard from '../ui/StatCard';
 import ActionCard from '../ui/ActionCard';
 
@@ -82,40 +82,53 @@ const DashboardScreen = ({ onNavigate, isMobile }) => {
             <AlertCircle size={20} className="text-yellow-400 flex-shrink-0" />
             <div className="ml-3">
               <p className="text-sm text-yellow-700">
-                Your North Field assessment is due. <a href="#" className="font-medium underline">Complete now</a>
+                Your North Field assessment is due. <button onClick={() => onNavigate('new-assessment')} className="font-medium underline">Complete now</button>
               </p>
             </div>
           </div>
         </div>
       )}
       
-      {/* Quick Actions - Stack vertically on mobile */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <ActionCard 
-          title="New Assessment" 
-          description="Create a new crop assessment"
-          icon={<BarChart3 size={24} className="text-white" />}
+      {/* New Assessment Button (shows only if not in mobile) */}
+      {!isMobile && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <ActionCard 
+            title="New Assessment" 
+            description="Create a new crop assessment"
+            icon={<BarChart3 size={24} className="text-white" />}
+            onClick={() => onNavigate('new-assessment')}
+            bgColor="bg-green-600"
+            isMobile={isMobile}
+          />
+          <ActionCard 
+            title="Generate Report" 
+            description="Create a new detailed report"
+            icon={<FileText size={24} className="text-white" />}
+            onClick={() => console.log('Generate report')}
+            bgColor="bg-blue-600"
+            isMobile={isMobile}
+          />
+          <ActionCard 
+            title="Send Report" 
+            description="Share reports with team members"
+            icon={<SendHorizontal size={24} className="text-white" />}
+            onClick={() => console.log('Send report')}
+            bgColor="bg-purple-600"
+            isMobile={isMobile}
+          />
+        </div>
+      )}
+      
+      {/* Add New Assessment Button (Mobile Only) */}
+      {isMobile && (
+        <button 
+          className="w-full bg-green-600 text-white p-3 rounded-lg flex justify-center items-center shadow-md"
           onClick={() => onNavigate('new-assessment')}
-          bgColor="bg-green-600"
-          isMobile={isMobile}
-        />
-        <ActionCard 
-          title="Generate Report" 
-          description="Create a new detailed report"
-          icon={<FileText size={24} className="text-white" />}
-          onClick={() => console.log('Generate report')}
-          bgColor="bg-blue-600"
-          isMobile={isMobile}
-        />
-        <ActionCard 
-          title="Send Report" 
-          description="Share reports with team members"
-          icon={<SendHorizontal size={24} className="text-white" />}
-          onClick={() => console.log('Send report')}
-          bgColor="bg-purple-600"
-          isMobile={isMobile}
-        />
-      </div>
+        >
+          <PlusCircle size={20} className="mr-2" />
+          <span className="font-medium">New Assessment</span>
+        </button>
+      )}
       
       {/* Recent Assessments - Card-based for mobile */}
       <div className="bg-white rounded-xl shadow">
