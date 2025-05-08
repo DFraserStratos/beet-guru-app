@@ -41,8 +41,7 @@ function App() {
         {/* Only show header on mobile */}
         {isMobile && (
           <Header 
-            activeScreen={activeScreen} 
-            isMobile={true}
+            activeScreen={activeScreen}
           />
         )}
         
