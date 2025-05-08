@@ -1,7 +1,7 @@
 import { Search, User, X } from 'lucide-react';
 import { useState } from 'react';
 
-const Header = ({ activeScreen, toggleSidebar, isMobile }) => {
+const Header = ({ activeScreen, isMobile }) => {
   const [showSearch, setShowSearch] = useState(false);
   
   const toggleSearch = () => {
@@ -42,7 +42,7 @@ const Header = ({ activeScreen, toggleSidebar, isMobile }) => {
           )}
           
           {/* Desktop: Just a spacer to maintain layout */}
-          {!isMobile && <div></div>}
+          {!isMobile && <div className="w-10"></div>}
           
           <div className="flex items-center gap-2">
             {/* Search icon for mobile */}
