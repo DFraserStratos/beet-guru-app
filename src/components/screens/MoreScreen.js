@@ -3,11 +3,6 @@ import { MapPin, Settings, LogOut, ChevronRight } from 'lucide-react';
 const MoreScreen = ({ onNavigate }) => {
   return (
     <div className="space-y-4">
-      <div>
-        <h2 className="text-xl font-semibold">More</h2>
-        <p className="text-gray-500 text-sm">View additional options</p>
-      </div>
-      
       {/* User Profile Section */}
       <div className="bg-white rounded-xl shadow p-4">
         <div className="flex items-center mb-4">
