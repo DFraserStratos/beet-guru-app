@@ -8,25 +8,10 @@ const ReportsScreen = ({ isMobile }) => {
     setShowFilters(!showFilters);
   };
   
-  // Sample reports data
-  const reports = [...Array(6)].map((_, index) => ({
-    id: index + 1,
-    title: ['North Field Assessment', 'West Paddock Overview', 'East Field Analysis', 'South Block Report', 'Central Area Stats', 'Full Farm Summary'][index % 6],
-    type: index % 2 === 0 ? 'Basic Report' : 'Advanced Report',
-    date: new Date(2025, 4, 8 - index),
-    cropType: ['Fodder Beet', 'Sugar Beet', 'Mangels'][index % 3],
-    pages: 4,
-    status: index < 3 ? 'Sent' : 'Draft',
-    recipients: index < 3 ? 3 : 0
-  }));
-  
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-xl font-semibold">Reports</h2>
-          <p className="text-gray-500 text-sm">Manage your assessment reports</p>
-        </div>
+      {/* Action Button */}
+      <div className="flex justify-end">
         <button className="bg-green-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-green-700 transition-colors text-sm">
           <PlusCircle size={16} className="mr-2" />
           {isMobile ? 'New' : 'New Report'}
@@ -111,32 +96,32 @@ const ReportsScreen = ({ isMobile }) => {
         </div>
       )}
       
-      {/* Reports List */}
+      {/* Reports Grid */}
       <div className={`grid grid-cols-1 ${isMobile ? '' : 'md:grid-cols-2 lg:grid-cols-3'} gap-4`}>
-        {reports.map((report) => (
-          <div key={report.id} className="bg-white rounded-xl shadow overflow-hidden">
+        {[...Array(6)].map((_, index) => (
+          <div key={index} className="bg-white rounded-xl shadow overflow-hidden">
             <div className="p-4">
               <div className="flex justify-between items-start mb-3">
                 <div>
                   <span className={`px-2 py-1 inline-flex text-xs leading-4 font-semibold rounded-full ${ 
-                    report.type === 'Basic Report' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'
+                    index % 2 === 0 ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'
                   }`}>
-                    {report.type}
+                    {index % 2 === 0 ? 'Basic Report' : 'Advanced Report'}
                   </span>
                   <h3 className="mt-2 text-base font-medium text-gray-900 line-clamp-1">
-                    {report.title}
+                    {['North Field Assessment', 'West Paddock Overview', 'East Field Analysis', 'South Block Report', 'Central Area Stats', 'Full Farm Summary'][index % 6]}
                   </h3>
                 </div>
                 <span className={`px-2 py-1 inline-flex text-xs leading-4 font-semibold rounded-full ${
-                  report.status === 'Sent' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                  index < 3 ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
                 }`}>
-                  {report.status}
+                  {index < 3 ? 'Sent' : 'Draft'}
                 </span>
               </div>
               
               <div className="text-sm text-gray-500 space-y-1">
-                <p>Created: {report.date.toLocaleDateString('en-NZ', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
-                <p>Crop Type: {report.cropType}</p>
+                <p>Created: {new Date(2025, 4, 8 - index).toLocaleDateString('en-NZ', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
+                <p>Crop Type: {['Fodder Beet', 'Sugar Beet', 'Mangels'][index % 3]}</p>
               </div>
               
               <div className="mt-3 flex justify-between items-center text-sm">
@@ -145,16 +130,16 @@ const ReportsScreen = ({ isMobile }) => {
                     <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
                     <path fillRule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clipRule="evenodd" />
                   </svg>
-                  <span className="ml-1 text-gray-500">{report.pages} pages</span>
+                  <span className="ml-1 text-gray-500">{index + 3} pages</span>
                 </div>
                 
-                {report.status === 'Sent' && (
+                {index < 3 && (
                   <div className="flex items-center">
                     <svg className="h-4 w-4 text-green-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                       <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                       <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                     </svg>
-                    <span className="ml-1 text-gray-500">{report.recipients} recipients</span>
+                    <span className="ml-1 text-gray-500">{index + 1} recipients</span>
                   </div>
                 )}
               </div>
@@ -170,7 +155,7 @@ const ReportsScreen = ({ isMobile }) => {
               </button>
               <div className="border-l border-gray-200"></div>
               <button className="text-sm text-green-600 hover:text-green-800 font-medium flex-1 text-center">
-                {report.status === 'Sent' ? 'Resend' : 'Send'}
+                {index < 3 ? 'Resend' : 'Send'}
               </button>
             </div>
           </div>
