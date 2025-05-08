@@ -1,0 +1,73 @@
+import { MapPin, Settings, LogOut, ChevronRight } from 'lucide-react';
+
+const MoreScreen = ({ onNavigate }) => {
+  return (
+    <div className="space-y-4">
+      <div>
+        <h2 className="text-xl font-semibold">More</h2>
+        <p className="text-gray-500 text-sm">View additional options</p>
+      </div>
+      
+      {/* User Profile Section */}
+      <div className="bg-white rounded-xl shadow p-4">
+        <div className="flex items-center mb-4">
+          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mr-4">
+            <span className="text-green-800 font-bold text-xl">JD</span>
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg">John Doe</h3>
+            <p className="text-gray-600">john.doe@example.com</p>
+            <p className="text-sm text-green-600 mt-1">Farm Manager</p>
+          </div>
+        </div>
+      </div>
+      
+      {/* More Menu Options */}
+      <div className="bg-white rounded-xl shadow overflow-hidden">
+        <ul className="divide-y divide-gray-100">
+          <MenuItem 
+            icon={<MapPin size={20} className="text-green-600" />}
+            label="Locations"
+            onClick={() => onNavigate('locations')}
+          />
+          <MenuItem 
+            icon={<Settings size={20} className="text-gray-600" />}
+            label="Settings"
+            onClick={() => onNavigate('settings')}
+          />
+          <MenuItem 
+            icon={<LogOut size={20} className="text-red-500" />}
+            label="Log Out"
+            onClick={() => console.log('Log out clicked')}
+            textColor="text-red-500"
+          />
+        </ul>
+      </div>
+      
+      {/* App Info */}
+      <div className="bg-white rounded-xl shadow p-4 text-center">
+        <p className="text-gray-500 text-sm">Beet Guru v1.0.0</p>
+        <p className="text-xs text-gray-400 mt-1">© 2025 Beet Guru Ltd.</p>
+      </div>
+    </div>
+  );
+};
+
+const MenuItem = ({ icon, label, onClick, textColor = "text-gray-800" }) => {
+  return (
+    <li>
+      <button 
+        className="w-full p-4 flex items-center justify-between hover:bg-gray-50"
+        onClick={onClick}
+      >
+        <div className="flex items-center">
+          <div className="mr-3">{icon}</div>
+          <span className={`font-medium ${textColor}`}>{label}</span>
+        </div>
+        <ChevronRight size={18} className="text-gray-400" />
+      </button>
+    </li>
+  );
+};
+
+export default MoreScreen;
