@@ -66,7 +66,7 @@ const Sidebar = ({ activeScreen, handleNavigate }) => {
           </div>
         </div>
         
-        <div className="px-4 pt-2 pb-4">
+        <div className="px-4 pt-2 pb-2">
           <ul className="space-y-2">
             <SidebarItem 
               icon={<Settings size={20} />} 
@@ -83,8 +83,8 @@ const Sidebar = ({ activeScreen, handleNavigate }) => {
           </ul>
         </div>
         
-        {/* App Version and Copyright on single line */}
-        <div className="text-center py-3">
+        {/* App Version and Copyright on single line - tightened spacing */}
+        <div className="text-center py-2">
           <p className="text-green-600 text-xs opacity-75">
             Beet Guru v1.0.0 • © 2025 Beet Guru Ltd.
           </p>
