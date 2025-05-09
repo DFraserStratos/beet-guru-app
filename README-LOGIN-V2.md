@@ -28,7 +28,7 @@ This branch adds a fake login and registration flow to the Beet Guru app. The im
   - Second click on "Complete Registration" completes registration and logs in
 - Visual feedback during the process
 - Option to go back to login screen
-- Form validation (visual only)
+- Validation bypassed for demo purposes
 
 ### 3. Authentication State Management
 - Simple state management in App.js
@@ -66,6 +66,20 @@ This implementation uses a simple component-based approach with the following co
 4. **Sidebar.js & MoreScreen.js**: Updated to handle logout and display user information
 
 The authentication flow is purely client-side with no actual backend integration. User data is stored in React state and is lost on page refresh.
+
+### Technical Notes
+- Form validation is intentionally bypassed to ensure smooth demo experience
+- Button type is changed from "submit" to "button" to prevent HTML5 validation
+- noValidate attribute is added to forms
+- Separate handler functions are implemented for form filling and submission
+
+## Recent Improvements
+
+- Fixed issue with form validation interrupting the demo flow
+- Added state reset when navigating between screens
+- Implemented consistent behavior between login and registration forms
+- Added safety checks for data handling
+- Created modular functions for better code maintainability
 
 ## Future Improvements
 
