@@ -1,18 +1,18 @@
 import { MapPin, Settings, LogOut, ChevronRight } from 'lucide-react';
 
-const MoreScreen = ({ onNavigate }) => {
+const MoreScreen = ({ onNavigate, onLogout, user }) => {
   return (
     <div className="space-y-4">
       {/* User Profile Section */}
       <div className="bg-white rounded-xl shadow p-4">
         <div className="flex items-center mb-4">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mr-4">
-            <span className="text-green-800 font-bold text-xl">JD</span>
+            <span className="text-green-800 font-bold text-xl">{user?.initials || 'JD'}</span>
           </div>
           <div>
-            <h3 className="font-semibold text-lg">John Doe</h3>
-            <p className="text-gray-600">john.doe@example.com</p>
-            <p className="text-sm text-green-600 mt-1">Farm Manager</p>
+            <h3 className="font-semibold text-lg">{user?.name || 'John Doe'}</h3>
+            <p className="text-gray-600">{user?.email || 'john.doe@example.com'}</p>
+            <p className="text-sm text-green-600 mt-1">{user?.role || 'Farm Manager'}</p>
           </div>
         </div>
       </div>
@@ -33,7 +33,7 @@ const MoreScreen = ({ onNavigate }) => {
           <MenuItem 
             icon={<LogOut size={20} className="text-red-500" />}
             label="Log Out"
-            onClick={() => console.log('Log out clicked')}
+            onClick={onLogout}
             textColor="text-red-500"
           />
         </ul>
