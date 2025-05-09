@@ -4,14 +4,16 @@ import { User, Lock, ArrowRight } from 'lucide-react';
 const LoginScreen = ({ onLogin, onRegister }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [formFilled, setFormFilled] = useState(false);
   
   const handleLogin = (e) => {
     e.preventDefault();
     
     // First click: Fill in fake credentials
-    if (!email || !password) {
+    if (!formFilled) {
       setEmail('john.doe@example.com');
       setPassword('password');
+      setFormFilled(true);
       return;
     }
     
@@ -107,7 +109,7 @@ const LoginScreen = ({ onLogin, onRegister }) => {
                 type="submit"
                 className="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
               >
-                {email && password ? (
+                {formFilled ? (
                   <>
                     Sign in <ArrowRight size={16} className="ml-2" />
                   </>
