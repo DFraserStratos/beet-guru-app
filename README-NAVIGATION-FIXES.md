@@ -1,5 +1,7 @@
 # Navigation Fixes for Beet Guru App
 
+> **Note**: This document is now considered redundant. All information has been merged into the main README.md file. This file is kept for historical reference only.
+
 This branch includes improvements to the navigation structure of the Beet Guru app to better support both mobile and desktop users.
 
 ## Changes Made
