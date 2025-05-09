@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { User, Mail, Lock, ArrowLeft, Check } from 'lucide-react';
 
 const RegisterScreen = ({ onBack, onComplete }) => {
@@ -13,6 +13,20 @@ const RegisterScreen = ({ onBack, onComplete }) => {
   });
   
   const [formFilled, setFormFilled] = useState(false);
+  
+  // Reset form state when component mounts (in case user returns from login)
+  useEffect(() => {
+    setFormData({
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      userType: '',
+      subscribeToNews: false,
+      agreeToTerms: false
+    });
+    setFormFilled(false);
+  }, []);
   
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -49,8 +63,23 @@ const RegisterScreen = ({ onBack, onComplete }) => {
       email: formData.email,
       name: formData.name,
       role: formData.userType === 'farmer' ? 'Farm Manager' : 'Retail Consultant',
-      initials: formData.name.split(' ').map(n => n[0]).join('')
+      initials: formData.name ? formData.name.split(' ').map(n => n && n[0]).join('') : 'D'
     });
+  };
+  
+  const handleBackClick = () => {
+    // Reset form state when going back to login
+    setFormData({
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      userType: '',
+      subscribeToNews: false,
+      agreeToTerms: false
+    });
+    setFormFilled(false);
+    onBack();
   };
   
   return (
@@ -68,7 +97,7 @@ const RegisterScreen = ({ onBack, onComplete }) => {
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <div className="flex items-center mb-6">
             <button
-              onClick={onBack}
+              onClick={handleBackClick}
               className="flex items-center text-green-600 hover:text-green-500"
             >
               <ArrowLeft size={16} className="mr-1" />
