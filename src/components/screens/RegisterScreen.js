@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { User, Mail, Lock, ArrowLeft, Check } from 'lucide-react';
 
 const RegisterScreen = ({ onBack, onComplete }) => {
@@ -13,6 +13,7 @@ const RegisterScreen = ({ onBack, onComplete }) => {
   });
   
   const [formFilled, setFormFilled] = useState(false);
+  const formRef = useRef(null);
   
   // Reset form state when component mounts (in case user returns from login)
   useEffect(() => {
@@ -40,21 +41,25 @@ const RegisterScreen = ({ onBack, onComplete }) => {
     setFormData(prev => ({ ...prev, userType: type }));
   };
   
+  const fillFormWithSampleData = () => {
+    setFormData({
+      name: 'Donald',
+      email: 'donald@stp.co.nz',
+      password: 'password',
+      confirmPassword: 'password',
+      userType: 'farmer',
+      subscribeToNews: true,
+      agreeToTerms: true
+    });
+    setFormFilled(true);
+  };
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     
     // First click: Fill in the form with sample data
     if (!formFilled) {
-      setFormData({
-        name: 'Donald',
-        email: 'donald@stp.co.nz',
-        password: 'password',
-        confirmPassword: 'password',
-        userType: 'farmer',
-        subscribeToNews: true,
-        agreeToTerms: true
-      });
-      setFormFilled(true);
+      fillFormWithSampleData();
       return;
     }
     
@@ -65,6 +70,22 @@ const RegisterScreen = ({ onBack, onComplete }) => {
       role: formData.userType === 'farmer' ? 'Farm Manager' : 'Retail Consultant',
       initials: formData.name ? formData.name.split(' ').map(n => n && n[0]).join('') : 'D'
     });
+  };
+  
+  const handleContinueClick = (e) => {
+    e.preventDefault();
+    
+    if (!formFilled) {
+      fillFormWithSampleData();
+    } else {
+      // Handle the second click (complete registration)
+      onComplete({ 
+        email: formData.email,
+        name: formData.name,
+        role: formData.userType === 'farmer' ? 'Farm Manager' : 'Retail Consultant',
+        initials: formData.name ? formData.name.split(' ').map(n => n && n[0]).join('') : 'D'
+      });
+    }
   };
   
   const handleBackClick = () => {
@@ -109,7 +130,7 @@ const RegisterScreen = ({ onBack, onComplete }) => {
             <div className="w-16"></div> {/* Spacer for alignment */}
           </div>
           
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          <form ref={formRef} className="space-y-6" onSubmit={handleSubmit} noValidate>
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                 Name
@@ -119,7 +140,6 @@ const RegisterScreen = ({ onBack, onComplete }) => {
                   id="name"
                   name="name"
                   type="text"
-                  required
                   value={formData.name}
                   onChange={handleChange}
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
@@ -141,7 +161,6 @@ const RegisterScreen = ({ onBack, onComplete }) => {
                   name="email"
                   type="email"
                   autoComplete="email"
-                  required
                   value={formData.email}
                   onChange={handleChange}
                   className="block w-full pl-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm"
@@ -162,7 +181,6 @@ const RegisterScreen = ({ onBack, onComplete }) => {
                   id="password"
                   name="password"
                   type="password"
-                  required
                   value={formData.password}
                   onChange={handleChange}
                   className="block w-full pl-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500 text-sm"
@@ -179,7 +197,6 @@ const RegisterScreen = ({ onBack, onComplete }) => {
                   id="confirmPassword"
                   name="confirmPassword"
                   type="password"
-                  required
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
@@ -253,7 +270,8 @@ const RegisterScreen = ({ onBack, onComplete }) => {
             
             <div>
               <button
-                type="submit"
+                type="button" // Changed from submit to button to prevent form validation
+                onClick={handleContinueClick}
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
               >
                 {formFilled ? 'Complete Registration' : 'Continue'}
