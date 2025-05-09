@@ -24,9 +24,9 @@ const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
         <ul className="space-y-2 px-3">
           <SidebarItem 
             icon={<Home size={20} />} 
-            label="Dashboard" 
-            isActive={activeScreen === 'dashboard'} 
-            onClick={() => handleNavigate('dashboard')}
+            label="Home" 
+            isActive={activeScreen === 'home'} 
+            onClick={() => handleNavigate('home')}
           />
           <SidebarItem 
             icon={<BarChart3 size={20} />} 
