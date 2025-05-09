@@ -12,8 +12,8 @@ const BottomNav = ({ activeScreen, handleNavigate }) => {
         <NavItem
           icon={<Home size={20} />}
           label="Home"
-          isActive={activeScreen === 'dashboard'}
-          onClick={() => handleNavigate('dashboard')}
+          isActive={activeScreen === 'home'}
+          onClick={() => handleNavigate('home')}
         />
         <NavItem
           icon={<BarChart3 size={20} />}
