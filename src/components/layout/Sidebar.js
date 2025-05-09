@@ -85,7 +85,7 @@ const Sidebar = ({ activeScreen, handleNavigate }) => {
         
         {/* App Version and Copyright */}
         <div className="text-center pt-2 pb-6">
-          <p className="text-green-500 text-xs">Beet Guru v1.0.0</p>
+          <p className="text-green-600 text-xs opacity-75">Beet Guru v1.0.0</p>
           <p className="text-green-600 text-xs opacity-75 mt-1">© 2025 Beet Guru Ltd.</p>
         </div>
       </div>
