@@ -15,16 +15,17 @@ This branch adds a fake login and registration flow to the Beet Guru app. The im
 - Option to navigate to registration
 
 ### 2. Registration Flow
-- Settings-style form with user profile fields
+- Clean registration form with consistent styling
 - User details:
   - Name
   - Email
-  - User Type (Farmer/Retailer) with visual toggle
+  - Password and confirmation
+  - User Type (Farmer/Retailer) selection
   - Subscribe to News & Updates option
-  - Terms agreement toggle
+  - Terms agreement checkbox
 - Two-step submission process:
-  - First click on "CONTINUE" fills the form with sample data
-  - Second click on "CONFIRM" completes registration and logs in
+  - First click on "Continue" fills the form with sample data (Donald, donald@stp.co.nz)
+  - Second click on "Complete Registration" completes registration and logs in
 - Visual feedback during the process
 - Option to go back to login screen
 - Form validation (visual only)
@@ -45,9 +46,9 @@ This branch adds a fake login and registration flow to the Beet Guru app. The im
 
 ### Registration Demo
 1. From the login screen, click "Create new account"
-2. You'll see a settings-style registration form
-3. Click "CONTINUE" to automatically fill in sample data
-4. Click "CONFIRM" (which replaces "CONTINUE") to complete registration
+2. You'll see the registration form
+3. Click "Continue" to automatically fill in sample data
+4. Click "Complete Registration" (which replaces "Continue") to complete registration
 5. You'll be logged in with the details you provided (Donald as Farmer)
 
 ### Logout
@@ -57,10 +58,10 @@ This branch adds a fake login and registration flow to the Beet Guru app. The im
 
 ## Implementation Details
 
-This implementation uses a simple state-based approach with the following components:
+This implementation uses a simple component-based approach with the following components:
 
 1. **LoginScreen.js**: Displays the login form and handles two-step login logic
-2. **RegisterScreen.js**: Handles the settings-style registration with Farmer/Retailer selection
+2. **RegisterScreen.js**: Handles the registration process with Farmer/Retailer selection
 3. **App.js**: Updated to manage authentication state and conditional rendering
 4. **Sidebar.js & MoreScreen.js**: Updated to handle logout and display user information
 
