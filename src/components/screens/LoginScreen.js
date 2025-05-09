@@ -1,19 +1,24 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { User, Lock, ArrowRight } from 'lucide-react';
 
 const LoginScreen = ({ onLogin, onRegister }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [formFilled, setFormFilled] = useState(false);
+  const formRef = useRef(null);
+  
+  const fillFormWithSampleData = () => {
+    setEmail('john.doe@example.com');
+    setPassword('password');
+    setFormFilled(true);
+  };
   
   const handleLogin = (e) => {
     e.preventDefault();
     
     // First click: Fill in fake credentials
     if (!formFilled) {
-      setEmail('john.doe@example.com');
-      setPassword('password');
-      setFormFilled(true);
+      fillFormWithSampleData();
       return;
     }
     
@@ -24,6 +29,22 @@ const LoginScreen = ({ onLogin, onRegister }) => {
       role: 'Farm Manager',
       initials: 'JD'
     });
+  };
+  
+  const handleContinueClick = (e) => {
+    e.preventDefault();
+    
+    if (!formFilled) {
+      fillFormWithSampleData();
+    } else {
+      // Second click: Actually log in
+      onLogin({ 
+        email, 
+        name: 'John Doe', 
+        role: 'Farm Manager',
+        initials: 'JD'
+      });
+    }
   };
   
   return (
@@ -41,7 +62,7 @@ const LoginScreen = ({ onLogin, onRegister }) => {
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <h2 className="text-center text-2xl font-semibold text-gray-800 mb-6">Log in to your account</h2>
           
-          <form className="space-y-6" onSubmit={handleLogin}>
+          <form ref={formRef} className="space-y-6" onSubmit={handleLogin} noValidate>
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email address
@@ -106,7 +127,8 @@ const LoginScreen = ({ onLogin, onRegister }) => {
             
             <div>
               <button
-                type="submit"
+                type="button" // Changed from submit to button to bypass form validation
+                onClick={handleContinueClick}
                 className="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
               >
                 {formFilled ? (
