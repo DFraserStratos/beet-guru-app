@@ -1,103 +1,28 @@
 # Beet Guru App
 
-A modern, mobile-first React application for farmers to manage beet crop assessments, measure dry matter, and plan feeding schedules.
+Beet Guru is a modern React application for farmers to manage beet crop assessments, measure dry matter content, and plan feeding schedules. The app allows farmers to conduct assessments by harvesting small samples from their fields, record measurements, and generate reports on feed quantities and duration.
 
-## Overview
+## Project Overview
 
-Beet Guru allows farmers to:
+The application follows a mobile-first approach since farmers primarily use it directly in the field on their mobile devices. However, it also has a fully functional desktop interface for office use. The project is currently a front-end mockup with no backend integration.
+
+## Key Features
+
+- User authentication (login/registration)
 - Create and manage crop assessments
-- Record field measurements and dry matter percentages
+- Record field measurements and dry matter percentages 
 - Calculate feed quantities and feeding duration
 - Generate reports for better crop management
+- User profile management
+- Location management
 
-## Mobile-First Approach
+## Technical Implementation
 
-This application has been designed with a mobile-first approach, making it ideal for farmers to use directly in the field:
-
-- **Responsive Layout**: Adapts seamlessly between mobile devices and desktop screens
-- **Touch-Optimized**: Larger touch targets and simplified navigation on mobile
-- **Bottom Navigation**: Tab-based navigation on mobile for easy one-handed operation
-- **Card-Based UI**: Content presented in easy-to-read cards on mobile instead of tables
-- **Collapsible Filters**: Filters are hidden by default on mobile to maximize content space
-- **Optimized Forms**: Form inputs and controls sized appropriately for touch interaction
-- **Contextual UI**: Different UI components shown based on screen size for optimal experience
-- **Performance Focused**: Minimized layout shifts and optimized rendering for mobile devices
-
-## Navigation Design Rules
-
-The application uses distinct navigation patterns for mobile and desktop views:
-
-### Desktop Navigation Rules
-
-1. **Sidebar Navigation**:
-   - Always visible on the left side of the screen
-   - Fixed width of 64px (w-64 class)
-   - Deep green background (bg-green-800) with white text
-   - Contains app logo and name at the top
-   - Main navigation links in the middle section
-   - User profile card, settings, and logout at the bottom
-
-2. **No Top Header**:
-   - Desktop view intentionally does not use a top header bar
-   - Maximizes vertical space for content
-   - All navigation is handled through the sidebar
-
-3. **User Profile Display**:
-   - User profile card appears in the sidebar below the main navigation
-   - Positioned below the divider line but above settings/logout options
-   - Shows user initials, name, email, and role
-   - Uses a slightly darker green background (bg-green-700) to stand out
-
-4. **App Information**:
-   - Version number and copyright appear at the bottom of the sidebar
-   - Single line with bullet point separator
-   - Subtle styling with reduced opacity
-
-### Mobile Navigation Rules
-
-1. **Bottom Tab Navigation**:
-   - Primary navigation through bottom tabs
-   - Fixed to the bottom of the screen
-   - Four key sections: Home, Assessments, Reports, More
-   - Active tab highlighted in green
-   - Icons positioned above labels for clarity
-
-2. **Top Header**:
-   - Simple header with app logo and name
-   - Left-aligned to match desktop sidebar header
-   - No search or user icons in the header
-   - Green background consistent with the app's color scheme
-
-3. **User Profile Access**:
-   - User profile information accessed through the "More" tab
-   - Displayed as a card at the top of the More screen
-   - Shows larger user initials, name, email, and role
-   - White background with green accents
-
-4. **App Information**:
-   - Version and copyright appear at the bottom of the More screen
-   - Displayed in a card with subtle styling
-
-### Cross-Device Consistency Rules
-
-1. **Color Scheme**:
-   - Green is the primary color (various shades)
-   - White text on dark green backgrounds
-   - Consistent application of colors across device sizes
-
-2. **Information Architecture**:
-   - Same core navigation options on both mobile and desktop
-   - Consistent naming and iconography
-   - Same data displayed, just adapted to different layouts
-
-3. **User Profile**:
-   - Consistent information shown (initials, name, email, role)
-   - Adapted to different layouts but maintaining visual connection
-
-4. **Responsive Breakpoints**:
-   - Mobile view: < 768px width
-   - Desktop view: ≥ 768px width
-   - No tablet-specific view (uses either mobile or desktop based on width)
+- Built with React
+- Styled with Tailwind CSS
+- Icons from Lucide React
+- Responsive design with mobile and desktop views
+- State management through React hooks (no Redux)
 
 ## Project Structure
 
@@ -111,94 +36,96 @@ src/
 └── utils/             # Helper functions
 ```
 
-## Key Components
+## Navigation System
 
-- **App.js**: Main application component with responsive layout logic
-  - Manages activeScreen state and isMobile detection
-  - Conditionally renders Header and BottomNav based on screen size
-  - Handles navigation through handleNavigate function
+The app uses different navigation patterns for desktop and mobile:
 
-- **BottomNav.js**: Mobile-specific bottom tab navigation
-  - Fixed to bottom of screen on mobile only
-  - Contains four main navigation tabs
-  - Highlights active section
+### Desktop Navigation
+- Left sidebar (64px width, dark green background)
+- No top header
+- Main navigation links in the sidebar
+- User profile card below the divider line
+- Settings and logout options below the user card
+- App version and copyright displayed at the bottom of the sidebar
 
-- **Sidebar.js**: Desktop navigation sidebar
-  - Shows on desktop, hidden on mobile
-  - Contains app branding, main navigation, user info, and settings
-  - Includes app version and copyright at bottom
+### Mobile Navigation
+- Bottom tab navigation with four main sections (Home, Assessments, Reports, More)
+- Simple header with left-aligned logo and app name
+- User profile accessed through the "More" tab
+- Settings and app info in the "More" tab
 
-- **Header.js**: Mobile-specific header
-  - Only shows on mobile devices
-  - Simple design with app logo and name
-  - Left-aligned to match desktop sidebar
+## Authentication
 
-- **Screen Components**: 
-  - Content components that adapt to both mobile and desktop views
-  - Use responsive designs based on isMobile prop
-  - Often display as cards on mobile and tables on desktop
+The app includes a fake login and registration flow that allows for demonstration without actual backend integration.
 
-## Component State Management
+### Login Features
+- Two-step login process:
+  - First click on "Continue" fills in sample credentials
+  - Second click on "Sign in" completes login
+- Remember me option and forgot password link (visual only)
 
-- **activeScreen**: Tracks the currently active section/screen
-- **isMobile**: Boolean state determined by window width (< 768px)
-- **handleNavigate**: Function to change the active screen
+### Registration Features
+- Clean registration form with all necessary fields
+- User type selection (Farmer/Retailer)
+- Subscription and terms agreement options
+- Two-step process similar to login
 
-## Mobile-Desktop Differences
+### Authentication State Management
+- Simple state management in App.js
+- User information persisted during the session
+- Profile details displayed in sidebar and mobile "More" screen
+- Functional logout that returns to login screen
 
-| Feature | Mobile | Desktop |
-|---------|--------|---------|
-| **Primary Navigation** | Bottom tabs | Left sidebar |
-| **Header** | Simple app logo and name | None |
-| **Content Layout** | Card-based, stacked | Table-based, spread |
-| **User Profile** | In More tab | In sidebar |
-| **Filters** | Collapsible | Always visible |
-| **Actions** | Simplified, prioritized | Complete set |
-| **Data Display** | Limited columns, focused | Full data tables |
-| **App Info** | In More tab | At sidebar bottom |
+## Demo Guide
 
-## Setup Instructions
+### Using Login Demo
+1. When the app loads, you'll see the login screen
+2. Click the "Continue" button to fill in fake credentials
+3. Click the "Sign in" button to enter the app
+4. You'll be logged in as "John Doe"
 
-1. Clone the repository:
-```bash
-git clone https://github.com/DFraserStratos/beet-guru-app.git
-cd beet-guru-app
-```
+### Using Registration Demo
+1. From the login screen, click "Create new account"
+2. Click "Continue" to fill in sample data (Donald)
+3. Click "Complete Registration" to finish and log in
+4. You'll be logged in with the registered user details
 
-2. Install dependencies:
-```bash
-npm install
-```
+### Using the App
+- Navigate between sections using the sidebar (desktop) or bottom tabs (mobile)
+- View and create assessments
+- View reports
+- Log out via the sidebar or "More" tab
 
-3. Start the development server:
-```bash
-npm start
-```
+## Implementation Details
 
-4. The application will be available at http://localhost:3000
+### Navigation Improvements
+- Better separation between mobile and desktop layouts
+- Proper z-index management for sidebar and overlays
+- Improved responsive behavior with cleaner breakpoints
+- Conditional rendering based on device type
+- Visual consistency across all screens
 
-## Dependencies
+### Authentication Implementation
+- Form validation is intentionally bypassed for smooth demo experience
+- Separate handler functions for form filling and submission
+- State reset when navigating between screens
+- Consistent behavior between forms
 
-- React
-- Lucide React (for icons)
-- Tailwind CSS (for styling)
+## Development Notes
 
-## Mobile-First Best Practices Implemented
+- The current implementation is a front-end mockup only
+- No actual authentication or data persistence
+- Focus on user experience and interface design
+- Responsive design that works well on both mobile and desktop
 
-- **Content Prioritization**: Essential content first, secondary content accessible but not immediate
-- **Touch-First Design**: UI elements sized and spaced appropriately for touch interaction
-- **Progressive Enhancement**: Basic functionality works on all devices, enhanced on larger screens
-- **Responsive Images**: Image sizes optimized for mobile screens
-- **Minimal Text Entry**: Forms designed to minimize keyboard use where possible
-- **Offline Capability**: Designed to work in areas with limited connectivity (to be implemented)
+## Future Improvements
 
-## Implementation Notes
+1. Backend integration for real authentication and data persistence
+2. Proper form validation
+3. Error handling for edge cases
+4. Enhanced reporting features
+5. Offline mode for field use
+6. Data synchronization
+7. Advanced analytics for crop planning
 
-- This is currently a front-end mockup with no backend logic
-- All data is simulated with static arrays or mock objects
-- Future implementation will include API integration with a proper backend
-- The app is designed to handle offline functionality for field use
-
-## License
-
-[MIT](LICENSE)
+This project is designed as a starting point for a fully-featured crop management application, with a focus on usability for farmers in the field.
