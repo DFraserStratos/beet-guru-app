@@ -4,7 +4,8 @@ import {
   FileText,
   MapPin,
   Settings,
-  LogOut
+  LogOut,
+  Calculator
 } from 'lucide-react';
 
 const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
@@ -39,6 +40,12 @@ const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
             label="Reports" 
             isActive={activeScreen === 'reports'} 
             onClick={() => handleNavigate('reports')}
+          />
+          <SidebarItem 
+            icon={<Calculator size={20} />} 
+            label="Stock Feed" 
+            isActive={activeScreen === 'stockfeed'} 
+            onClick={() => handleNavigate('stockfeed')}
           />
           <SidebarItem 
             icon={<MapPin size={20} />} 
