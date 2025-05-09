@@ -7,17 +7,24 @@ This branch adds a fake login and registration flow to the Beet Guru app. The im
 ### 1. Login Screen
 - Fake login form with email and password fields
 - Two-step login process:
-  - First click on the login button fills in fake credentials
-  - Second click completes the login and enters the app
+  - First click on the login button fills in fake credentials (button shows "Continue")
+  - Second click completes the login and enters the app (button changes to "Sign in")
 - Visual design consistent with the overall app theme
 - "Remember me" option (visual only)
 - "Forgot password" link (visual only)
 - Option to navigate to registration
 
 ### 2. Registration Flow
-- Two-step registration process:
-  - Step 1: Basic user information (name, email, password)
-  - Step 2: User type selection (Farmer or Retailer)
+- Settings-style form with user profile fields
+- User details:
+  - Name
+  - Email
+  - User Type (Farmer/Retailer) with visual toggle
+  - Subscribe to News & Updates option
+  - Terms agreement toggle
+- Two-step submission process:
+  - First click on "CONTINUE" fills the form with sample data
+  - Second click on "CONFIRM" completes registration and logs in
 - Visual feedback during the process
 - Option to go back to login screen
 - Form validation (visual only)
@@ -38,11 +45,10 @@ This branch adds a fake login and registration flow to the Beet Guru app. The im
 
 ### Registration Demo
 1. From the login screen, click "Create new account"
-2. Fill in the registration form (or leave it blank for demo purposes)
-3. Click "Continue" to proceed to step 2
-4. Select either "Farmer / Grower" or "Retailer / Consultant"
-5. Click "Complete Registration"
-6. You'll be logged in with the details you provided
+2. You'll see a settings-style registration form
+3. Click "CONTINUE" to automatically fill in sample data
+4. Click "CONFIRM" (which replaces "CONTINUE") to complete registration
+5. You'll be logged in with the details you provided (Donald as Farmer)
 
 ### Logout
 - On desktop: Click "Log Out" in the sidebar
@@ -53,8 +59,8 @@ This branch adds a fake login and registration flow to the Beet Guru app. The im
 
 This implementation uses a simple state-based approach with the following components:
 
-1. **LoginScreen.js**: Displays the login form and handles login logic
-2. **RegisterScreen.js**: Handles the two-step registration process
+1. **LoginScreen.js**: Displays the login form and handles two-step login logic
+2. **RegisterScreen.js**: Handles the settings-style registration with Farmer/Retailer selection
 3. **App.js**: Updated to manage authentication state and conditional rendering
 4. **Sidebar.js & MoreScreen.js**: Updated to handle logout and display user information
 
