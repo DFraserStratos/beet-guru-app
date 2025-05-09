@@ -1,4 +1,4 @@
-import { Cow, Calendar } from 'lucide-react';
+import { Calendar, Beef } from 'lucide-react';
 
 const FeedForecastWidget = () => {
   // Mock data for the feed forecast
@@ -18,7 +18,7 @@ const FeedForecastWidget = () => {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center">
             <div className="bg-green-100 rounded-full p-2 mr-3">
-              <Cow size={24} className="text-green-600" />
+              <Beef size={24} className="text-green-600" />
             </div>
             <div>
               <span className="block text-xs text-gray-500">Herd Size</span>
