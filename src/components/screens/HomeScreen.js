@@ -43,19 +43,10 @@ const HomeScreen = ({ onNavigate, isMobile, user = { name: 'John' } }) => {
       
       {/* Main Content Area - Different layout for mobile vs desktop */}
       {isMobile ? (
-        // Mobile Layout - Single column stack
+        // Mobile Layout - Single column stack with updated order
         <div className="space-y-6">
           {/* Reminders */}
           <ReminderWidget onNavigate={onNavigate} />
-          
-          {/* Recent Assessment Card */}
-          <RecentAssessmentCard 
-            assessment={recentAssessment} 
-            onClick={() => console.log('View assessment details')} 
-          />
-          
-          {/* Feed Forecast Widget */}
-          <FeedForecastWidget />
           
           {/* Oxford Weather Widget */}
           <WeatherWidget isMobile={true} />
@@ -77,7 +68,7 @@ const HomeScreen = ({ onNavigate, isMobile, user = { name: 'John' } }) => {
             {/* Reminders */}
             <ReminderWidget onNavigate={onNavigate} />
             
-            {/* Recent Assessment Card */}
+            {/* Recent Assessment Card - Only on Desktop */}
             <RecentAssessmentCard 
               assessment={recentAssessment} 
               onClick={() => console.log('View assessment details')} 
@@ -94,9 +85,6 @@ const HomeScreen = ({ onNavigate, isMobile, user = { name: 'John' } }) => {
           <div className="space-y-6">
             {/* Weather Widget */}
             <WeatherWidget isMobile={false} />
-            
-            {/* Feed Forecast Widget */}
-            <FeedForecastWidget />
             
             {/* Cultivar Info Widget */}
             <CultivarInfoWidget />
