@@ -9,6 +9,7 @@ import NewAssessmentScreen from './components/screens/NewAssessmentScreen';
 import MoreScreen from './components/screens/MoreScreen';
 import LoginScreen from './components/screens/LoginScreen';
 import RegisterScreen from './components/screens/RegisterScreen';
+import StockFeedScreen from './components/screens/StockFeedScreen';
 
 function App() {
   const [activeScreen, setActiveScreen] = useState('home');
@@ -87,6 +88,7 @@ function App() {
           {activeScreen === 'assessments' && <AssessmentsScreen onNavigate={handleNavigate} isMobile={isMobile} />}
           {activeScreen === 'reports' && <ReportsScreen isMobile={isMobile} />}
           {activeScreen === 'new-assessment' && <NewAssessmentScreen isMobile={isMobile} />}
+          {activeScreen === 'stockfeed' && <StockFeedScreen isMobile={isMobile} />}
           {activeScreen === 'more' && <MoreScreen onNavigate={handleNavigate} isMobile={isMobile} onLogout={handleLogout} user={user} />}
           {activeScreen === 'locations' && <div className="p-4">Locations Screen (Coming Soon)</div>}
           {activeScreen === 'settings' && <div className="p-4">Settings Screen (Coming Soon)</div>}
