@@ -1,4 +1,4 @@
-import { MapPin, Settings, LogOut, ChevronRight } from 'lucide-react';
+import { MapPin, Settings, LogOut, ChevronRight, Calculator } from 'lucide-react';
 
 const MoreScreen = ({ onNavigate, onLogout, user }) => {
   return (
@@ -20,6 +20,11 @@ const MoreScreen = ({ onNavigate, onLogout, user }) => {
       {/* More Menu Options */}
       <div className="bg-white rounded-xl shadow overflow-hidden">
         <ul className="divide-y divide-gray-100">
+          <MenuItem 
+            icon={<Calculator size={20} className="text-green-600" />}
+            label="Stock Feed Calculator"
+            onClick={() => onNavigate('stockfeed')}
+          />
           <MenuItem 
             icon={<MapPin size={20} className="text-green-600" />}
             label="Locations"
