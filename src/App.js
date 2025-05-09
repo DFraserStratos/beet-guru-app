@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Sidebar from './components/layout/Sidebar';
 import Header from './components/layout/Header';
 import BottomNav from './components/layout/BottomNav';
-import DashboardScreen from './components/screens/DashboardScreen';
+import HomeScreen from './components/screens/HomeScreen';
 import AssessmentsScreen from './components/screens/AssessmentsScreen';
 import ReportsScreen from './components/screens/ReportsScreen';
 import NewAssessmentScreen from './components/screens/NewAssessmentScreen';
@@ -11,7 +11,7 @@ import LoginScreen from './components/screens/LoginScreen';
 import RegisterScreen from './components/screens/RegisterScreen';
 
 function App() {
-  const [activeScreen, setActiveScreen] = useState('dashboard');
+  const [activeScreen, setActiveScreen] = useState('home');
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authScreen, setAuthScreen] = useState('login'); // 'login' or 'register'
@@ -34,7 +34,7 @@ function App() {
   const handleLogin = (userData) => {
     setUser(userData);
     setIsAuthenticated(true);
-    setActiveScreen('dashboard');
+    setActiveScreen('home');
   };
   
   const handleLogout = () => {
@@ -83,7 +83,7 @@ function App() {
         )}
         
         <div className="flex-1 overflow-y-auto p-4 pb-16 md:pb-4">
-          {activeScreen === 'dashboard' && <DashboardScreen onNavigate={handleNavigate} isMobile={isMobile} />}
+          {activeScreen === 'home' && <HomeScreen onNavigate={handleNavigate} isMobile={isMobile} user={user} />}
           {activeScreen === 'assessments' && <AssessmentsScreen onNavigate={handleNavigate} isMobile={isMobile} />}
           {activeScreen === 'reports' && <ReportsScreen isMobile={isMobile} />}
           {activeScreen === 'new-assessment' && <NewAssessmentScreen isMobile={isMobile} />}
