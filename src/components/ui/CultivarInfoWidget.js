@@ -12,28 +12,28 @@ const CultivarInfoWidget = () => {
       dryMatter: '12-15%',
       yield: '20-30 t/acre',
       growingTime: '24-28 weeks',
-      description: 'Low dry matter content, high sugar content. Suitable for all stock types. World's number one for strip grazing.',
+      description: "Low dry matter content, high sugar content. Suitable for all stock types. World's number one for strip grazing.",
     },
     'Feldherr': {
       type: 'Fodder Beet',
       dryMatter: '12-15%',
       yield: '20-30 t/acre',
       growingTime: '24-28 weeks',
-      description: 'Monogerm hybrid with light orange bulb color. Low bulb dry matter percentage, preferred by some farmers for grazing.',
+      description: "Monogerm hybrid with light orange bulb color. Low bulb dry matter percentage, preferred by some farmers for grazing.",
     },
     'Robbos': {
       type: 'Fodder Beet',
       dryMatter: '16-18%',
       yield: '18-25 t/acre',
       growingTime: '24-28 weeks',
-      description: 'Medium dry matter content, can be grazed or lifted. Versatile and reliable cultivar.',
+      description: "Medium dry matter content, can be grazed or lifted. Versatile and reliable cultivar.",
     },
     'Bangor': {
       type: 'Fodder Beet',
       dryMatter: '16-18%',
       yield: '18-25 t/acre',
       growingTime: '24-28 weeks',
-      description: 'Uniform fodder beet with a medium-bulb dry matter percentage. High yield potential.',
+      description: "Uniform fodder beet with a medium-bulb dry matter percentage. High yield potential.",
     },
   };
   
