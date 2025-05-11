@@ -27,6 +27,12 @@ const NewAssessmentScreen = ({ isMobile = false }) => {
     setCultivarExpanded(!cultivarExpanded);
   };
   
+  // Log for debugging
+  useEffect(() => {
+    console.log('isMobile:', isMobile);
+    console.log('cultivarExpanded:', cultivarExpanded);
+  }, [isMobile, cultivarExpanded]);
+  
   return (
     <div className="max-w-4xl mx-auto">
       {/* Progress Steps */}
