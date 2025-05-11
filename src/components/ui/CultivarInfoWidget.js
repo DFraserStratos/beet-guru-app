@@ -1,8 +1,6 @@
-import { useState } from 'react';
-import { ChevronDown, Info } from 'lucide-react';
+import { Info } from 'lucide-react';
 
 const CultivarInfoWidget = () => {
-  const [isExpanded, setIsExpanded] = useState(false);
   const [selectedCultivar, setSelectedCultivar] = useState('Brigadier');
   
   // Common beet cultivar information for Canterbury, NZ
@@ -37,10 +35,6 @@ const CultivarInfoWidget = () => {
     },
   };
   
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
-  };
-  
   const handleCultivarChange = (e) => {
     setSelectedCultivar(e.target.value);
   };
@@ -49,65 +43,54 @@ const CultivarInfoWidget = () => {
   
   return (
     <div className="bg-white rounded-xl shadow overflow-hidden">
-      <div 
-        className="flex items-center justify-between p-4 cursor-pointer"
-        onClick={toggleExpand}
-      >
-        <div className="flex items-center">
-          <Info size={18} className="text-green-600 mr-2" />
-          <h3 className="font-medium">Cultivar Information</h3>
-        </div>
-        <ChevronDown 
-          size={18} 
-          className={`text-gray-500 transition-transform ${isExpanded ? 'transform rotate-180' : ''}`} 
-        />
+      <div className="flex items-center p-4">
+        <Info size={18} className="text-green-600 mr-2" />
+        <h3 className="font-medium">Cultivar Information</h3>
       </div>
       
-      {isExpanded && (
-        <div className="px-4 pb-4">
-          <div className="mb-3">
-            <label htmlFor="cultivar-select" className="block text-sm text-gray-500 mb-1">
-              Select Cultivar
-            </label>
-            <select
-              id="cultivar-select"
-              className="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm py-2 pl-3 pr-10 appearance-none border"
-              value={selectedCultivar}
-              onChange={handleCultivarChange}
-            >
-              {Object.keys(cultivars).map(name => (
-                <option key={name} value={name}>{name}</option>
-              ))}
-            </select>
+      <div className="px-4 pb-4">
+        <div className="mb-3">
+          <label htmlFor="cultivar-select" className="block text-sm text-gray-500 mb-1">
+            Select Cultivar
+          </label>
+          <select
+            id="cultivar-select"
+            className="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm py-2 pl-3 pr-10 appearance-none border"
+            value={selectedCultivar}
+            onChange={handleCultivarChange}
+          >
+            {Object.keys(cultivars).map(name => (
+              <option key={name} value={name}>{name}</option>
+            ))}
+          </select>
+        </div>
+        
+        <div className="grid grid-cols-2 gap-2 mb-3">
+          <div className="bg-gray-50 rounded-lg p-2">
+            <span className="block text-xs text-gray-500">Type</span>
+            <span className="font-medium text-sm">{selectedInfo.type}</span>
           </div>
           
-          <div className="grid grid-cols-2 gap-2 mb-3">
-            <div className="bg-gray-50 rounded-lg p-2">
-              <span className="block text-xs text-gray-500">Type</span>
-              <span className="font-medium text-sm">{selectedInfo.type}</span>
-            </div>
-            
-            <div className="bg-gray-50 rounded-lg p-2">
-              <span className="block text-xs text-gray-500">Dry Matter</span>
-              <span className="font-medium text-sm">{selectedInfo.dryMatter}</span>
-            </div>
-            
-            <div className="bg-gray-50 rounded-lg p-2">
-              <span className="block text-xs text-gray-500">Avg. Yield</span>
-              <span className="font-medium text-sm">{selectedInfo.yield}</span>
-            </div>
-            
-            <div className="bg-gray-50 rounded-lg p-2">
-              <span className="block text-xs text-gray-500">Growing Time</span>
-              <span className="font-medium text-sm">{selectedInfo.growingTime}</span>
-            </div>
+          <div className="bg-gray-50 rounded-lg p-2">
+            <span className="block text-xs text-gray-500">Dry Matter</span>
+            <span className="font-medium text-sm">{selectedInfo.dryMatter}</span>
           </div>
           
-          <div className="text-sm text-gray-600">
-            {selectedInfo.description}
+          <div className="bg-gray-50 rounded-lg p-2">
+            <span className="block text-xs text-gray-500">Avg. Yield</span>
+            <span className="font-medium text-sm">{selectedInfo.yield}</span>
+          </div>
+          
+          <div className="bg-gray-50 rounded-lg p-2">
+            <span className="block text-xs text-gray-500">Growing Time</span>
+            <span className="font-medium text-sm">{selectedInfo.growingTime}</span>
           </div>
         </div>
-      )}
+        
+        <div className="text-sm text-gray-600">
+          {selectedInfo.description}
+        </div>
+      </div>
     </div>
   );
 };
