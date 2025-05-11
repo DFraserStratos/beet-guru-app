@@ -1,15 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ChevronDown, PlusCircle, BarChart3 } from 'lucide-react';
 
 const NewAssessmentScreen = ({ isMobile = false }) => {
   const [currentStep, setCurrentStep] = useState(1);
-  const [cultivarExpanded, setCultivarExpanded] = useState(!isMobile); // Default to expanded on desktop
   const [selectedCultivar, setSelectedCultivar] = useState('');
-  
-  // Update expansion state when device type changes
-  useEffect(() => {
-    setCultivarExpanded(!isMobile);
-  }, [isMobile]);
   
   const nextStep = () => {
     if (currentStep < 4) {
@@ -22,16 +16,6 @@ const NewAssessmentScreen = ({ isMobile = false }) => {
       setCurrentStep(currentStep - 1);
     }
   };
-  
-  const toggleCultivarInfo = () => {
-    setCultivarExpanded(!cultivarExpanded);
-  };
-  
-  // Log for debugging
-  useEffect(() => {
-    console.log('isMobile:', isMobile);
-    console.log('cultivarExpanded:', cultivarExpanded);
-  }, [isMobile, cultivarExpanded]);
   
   return (
     <div className="max-w-4xl mx-auto">
@@ -133,17 +117,7 @@ const NewAssessmentScreen = ({ isMobile = false }) => {
                 </div>
                 
                 <div>
-                  <div className="flex justify-between items-center">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Cultivar</label>
-                    {isMobile && (
-                      <button 
-                        onClick={toggleCultivarInfo} 
-                        className="text-xs text-green-600 hover:text-green-800 mb-1"
-                      >
-                        {cultivarExpanded ? 'Hide Details' : 'Show Details'}
-                      </button>
-                    )}
-                  </div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Cultivar</label>
                   <div className="relative">
                     <select 
                       className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm py-2 pl-3 pr-10 appearance-none border"
@@ -162,114 +136,112 @@ const NewAssessmentScreen = ({ isMobile = false }) => {
                 </div>
               </div>
               
-              {/* Cultivar Information Section - Expanded by default on desktop */}
-              {cultivarExpanded && (
-                <div className="bg-green-50 rounded-lg p-4 border border-green-100 mt-2">
-                  <h3 className="text-sm font-medium text-green-800 mb-2">Cultivar Information</h3>
-                  
-                  {selectedCultivar ? (
-                    <div className="space-y-3">
-                      {selectedCultivar === 'brigadier' && (
-                        <>
-                          <p className="text-sm text-green-700">
-                            <strong>Brigadier</strong> - A high-yielding yellow-fleshed fodder beet variety with medium dry matter content (15-17%).
-                          </p>
-                          <div className="grid grid-cols-2 gap-2 text-xs text-green-700">
-                            <div>
-                              <span className="font-medium">Yield Potential:</span> 18-24 t DM/ha
-                            </div>
-                            <div>
-                              <span className="font-medium">Growth Habit:</span> 35% bulb above ground
-                            </div>
-                            <div>
-                              <span className="font-medium">Best For:</span> Grazing in situ
-                            </div>
-                            <div>
-                              <span className="font-medium">Days to Maturity:</span> 180-200 days
-                            </div>
-                          </div>
-                        </>
-                      )}
-                      
-                      {selectedCultivar === 'feldherr' && (
-                        <>
-                          <p className="text-sm text-green-700">
-                            <strong>Feldherr</strong> - A high dry matter content variety (19-21%) with exceptional storage properties.
-                          </p>
-                          <div className="grid grid-cols-2 gap-2 text-xs text-green-700">
-                            <div>
-                              <span className="font-medium">Yield Potential:</span> 16-20 t DM/ha
-                            </div>
-                            <div>
-                              <span className="font-medium">Growth Habit:</span> 15% bulb above ground
-                            </div>
-                            <div>
-                              <span className="font-medium">Best For:</span> Lifting and storage
-                            </div>
-                            <div>
-                              <span className="font-medium">Days to Maturity:</span> 190-210 days
-                            </div>
-                          </div>
-                        </>
-                      )}
-                      
-                      {selectedCultivar === 'kyros' && (
-                        <>
-                          <p className="text-sm text-green-700">
-                            <strong>Kyros</strong> - A versatile medium dry matter cultivar (17-19%) suitable for both grazing and lifting.
-                          </p>
-                          <div className="grid grid-cols-2 gap-2 text-xs text-green-700">
-                            <div>
-                              <span className="font-medium">Yield Potential:</span> 17-22 t DM/ha
-                            </div>
-                            <div>
-                              <span className="font-medium">Growth Habit:</span> 25% bulb above ground
-                            </div>
-                            <div>
-                              <span className="font-medium">Best For:</span> Versatile use
-                            </div>
-                            <div>
-                              <span className="font-medium">Days to Maturity:</span> 185-205 days
-                            </div>
-                          </div>
-                        </>
-                      )}
-                      
-                      {selectedCultivar === 'blizzard' && (
-                        <>
-                          <p className="text-sm text-green-700">
-                            <strong>Blizzard</strong> - A white-fleshed variety with low dry matter content (13-15%) ideal for transitioning stock.
-                          </p>
-                          <div className="grid grid-cols-2 gap-2 text-xs text-green-700">
-                            <div>
-                              <span className="font-medium">Yield Potential:</span> 15-19 t DM/ha
-                            </div>
-                            <div>
-                              <span className="font-medium">Growth Habit:</span> 45% bulb above ground
-                            </div>
-                            <div>
-                              <span className="font-medium">Best For:</span> Transitioning stock
-                            </div>
-                            <div>
-                              <span className="font-medium">Days to Maturity:</span> 170-190 days
-                            </div>
-                          </div>
-                        </>
-                      )}
-                      
-                      {!['brigadier', 'feldherr', 'kyros', 'blizzard'].includes(selectedCultivar) && (
+              {/* Cultivar Information Section - Always Visible */}
+              <div className="bg-green-50 rounded-lg p-4 border border-green-100 mt-2">
+                <h3 className="text-sm font-medium text-green-800 mb-2">Cultivar Information</h3>
+                
+                {selectedCultivar ? (
+                  <div className="space-y-3">
+                    {selectedCultivar === 'brigadier' && (
+                      <>
                         <p className="text-sm text-green-700">
-                          Select a cultivar to view detailed information.
+                          <strong>Brigadier</strong> - A high-yielding yellow-fleshed fodder beet variety with medium dry matter content (15-17%).
                         </p>
-                      )}
-                    </div>
-                  ) : (
-                    <p className="text-sm text-green-700">
-                      Select a cultivar to view detailed information about its characteristics, yield potential, and best uses.
-                    </p>
-                  )}
-                </div>
-              )}
+                        <div className="grid grid-cols-2 gap-2 text-xs text-green-700">
+                          <div>
+                            <span className="font-medium">Yield Potential:</span> 18-24 t DM/ha
+                          </div>
+                          <div>
+                            <span className="font-medium">Growth Habit:</span> 35% bulb above ground
+                          </div>
+                          <div>
+                            <span className="font-medium">Best For:</span> Grazing in situ
+                          </div>
+                          <div>
+                            <span className="font-medium">Days to Maturity:</span> 180-200 days
+                          </div>
+                        </div>
+                      </>
+                    )}
+                    
+                    {selectedCultivar === 'feldherr' && (
+                      <>
+                        <p className="text-sm text-green-700">
+                          <strong>Feldherr</strong> - A high dry matter content variety (19-21%) with exceptional storage properties.
+                        </p>
+                        <div className="grid grid-cols-2 gap-2 text-xs text-green-700">
+                          <div>
+                            <span className="font-medium">Yield Potential:</span> 16-20 t DM/ha
+                          </div>
+                          <div>
+                            <span className="font-medium">Growth Habit:</span> 15% bulb above ground
+                          </div>
+                          <div>
+                            <span className="font-medium">Best For:</span> Lifting and storage
+                          </div>
+                          <div>
+                            <span className="font-medium">Days to Maturity:</span> 190-210 days
+                          </div>
+                        </div>
+                      </>
+                    )}
+                    
+                    {selectedCultivar === 'kyros' && (
+                      <>
+                        <p className="text-sm text-green-700">
+                          <strong>Kyros</strong> - A versatile medium dry matter cultivar (17-19%) suitable for both grazing and lifting.
+                        </p>
+                        <div className="grid grid-cols-2 gap-2 text-xs text-green-700">
+                          <div>
+                            <span className="font-medium">Yield Potential:</span> 17-22 t DM/ha
+                          </div>
+                          <div>
+                            <span className="font-medium">Growth Habit:</span> 25% bulb above ground
+                          </div>
+                          <div>
+                            <span className="font-medium">Best For:</span> Versatile use
+                          </div>
+                          <div>
+                            <span className="font-medium">Days to Maturity:</span> 185-205 days
+                          </div>
+                        </div>
+                      </>
+                    )}
+                    
+                    {selectedCultivar === 'blizzard' && (
+                      <>
+                        <p className="text-sm text-green-700">
+                          <strong>Blizzard</strong> - A white-fleshed variety with low dry matter content (13-15%) ideal for transitioning stock.
+                        </p>
+                        <div className="grid grid-cols-2 gap-2 text-xs text-green-700">
+                          <div>
+                            <span className="font-medium">Yield Potential:</span> 15-19 t DM/ha
+                          </div>
+                          <div>
+                            <span className="font-medium">Growth Habit:</span> 45% bulb above ground
+                          </div>
+                          <div>
+                            <span className="font-medium">Best For:</span> Transitioning stock
+                          </div>
+                          <div>
+                            <span className="font-medium">Days to Maturity:</span> 170-190 days
+                          </div>
+                        </div>
+                      </>
+                    )}
+                    
+                    {!['brigadier', 'feldherr', 'kyros', 'blizzard'].includes(selectedCultivar) && (
+                      <p className="text-sm text-green-700">
+                        Select a cultivar to view detailed information.
+                      </p>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-sm text-green-700">
+                    Select a cultivar to view detailed information about its characteristics, yield potential, and best uses.
+                  </p>
+                )}
+              </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
