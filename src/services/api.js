@@ -1,0 +1,379 @@
+/**
+ * API service for handling data fetching and backend communication
+ * This is a placeholder that will be replaced with actual API calls
+ * when backend integration is implemented
+ */
+
+// Base API configuration
+const API_BASE_URL = process.env.REACT_APP_API_URL || '';
+const API_TIMEOUT = 8000; // 8 seconds timeout
+
+/**
+ * Generic API request handler with timeout
+ * @param {string} endpoint - The API endpoint to call
+ * @param {Object} options - Fetch options
+ * @returns {Promise} Response data or error
+ */
+const apiRequest = async (endpoint, options = {}) => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT);
+  
+  try {
+    const url = `${API_BASE_URL}${endpoint}`;
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(options.headers || {})
+      },
+      signal: controller.signal
+    });
+    
+    clearTimeout(timeoutId);
+    
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status} ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    
+    if (error.name === 'AbortError') {
+      throw new Error('Request timeout');
+    }
+    
+    throw error;
+  }
+};
+
+// Mock data store (will be replaced by actual API calls)
+const mockData = {
+  users: [
+    { id: '1', name: 'John Doe', email: 'john.doe@example.com', role: 'Farm Manager' },
+    { id: '2', name: 'Donald', email: 'donald@example.co.nz', role: 'Farm Manager' }
+  ],
+  locations: [
+    { id: '1', name: 'North Field', userId: '1' },
+    { id: '2', name: 'West Paddock', userId: '1' },
+    { id: '3', name: 'East Field', userId: '1' },
+    { id: '4', name: 'South Block', userId: '1' }
+  ],
+  cropTypes: [
+    { id: '1', name: 'Fodder Beet' },
+    { id: '2', name: 'Sugar Beet' },
+    { id: '3', name: 'Mangels' }
+  ],
+  cultivars: [
+    { id: '1', name: 'Brigadier', cropTypeId: '1', dryMatter: '12-15%', yield: '20-30 t/acre', growingTime: '24-28 weeks', description: 'Low dry matter content, high sugar content. Suitable for all stock types. World\'s number one for strip grazing.' },
+    { id: '2', name: 'Feldherr', cropTypeId: '1', dryMatter: '19-21%', yield: '16-20 t/ha', growingTime: '190-210 days' },
+    { id: '3', name: 'Kyros', cropTypeId: '1', dryMatter: '17-19%', yield: '17-22 t/ha', growingTime: '185-205 days' },
+    { id: '4', name: 'Blizzard', cropTypeId: '1', dryMatter: '13-15%', yield: '15-19 t/ha', growingTime: '170-190 days' }
+  ],
+  assessments: [
+    { 
+      id: '1', 
+      locationId: '1', 
+      cropTypeId: '1', 
+      cultivarId: '1', 
+      dryMatter: '21.8%', 
+      date: '2025-05-08', 
+      status: 'completed',
+      waterType: 'irrigated',
+      rowSpacing: 0.5,
+      estimatedYield: '22.4 t/ha',
+      totalYield: '78.4 tonnes',
+      feedingCapacity: '186 days',
+      stockCount: 50
+    },
+    { 
+      id: '2', 
+      locationId: '2', 
+      cropTypeId: '2', 
+      cultivarId: '3', 
+      dryMatter: '19.0%', 
+      date: '2025-05-07', 
+      status: 'completed',
+      waterType: 'dryland',
+      rowSpacing: 0.5,
+      estimatedYield: '17.2 t/ha',
+      totalYield: '60.2 tonnes',
+      feedingCapacity: '142 days',
+      stockCount: 50
+    },
+    { 
+      id: '3', 
+      locationId: '3', 
+      cropTypeId: '3', 
+      cultivarId: '4', 
+      dryMatter: '20.4%', 
+      date: '2025-05-06', 
+      status: 'completed',
+      waterType: 'irrigated',
+      rowSpacing: 0.45,
+      estimatedYield: '18.6 t/ha',
+      totalYield: '55.8 tonnes',
+      feedingCapacity: '115 days',
+      stockCount: 60
+    }
+  ],
+  reports: [
+    {
+      id: '1',
+      assessmentId: '1',
+      title: 'North Field Assessment',
+      type: 'basic',
+      created: '2025-05-08',
+      status: 'sent',
+      pages: 3,
+      recipients: 1
+    },
+    {
+      id: '2',
+      assessmentId: '2',
+      title: 'West Paddock Overview',
+      type: 'advanced',
+      created: '2025-05-07',
+      status: 'sent',
+      pages: 4,
+      recipients: 2
+    },
+    {
+      id: '3',
+      assessmentId: '3',
+      title: 'East Field Analysis',
+      type: 'basic',
+      created: '2025-05-06',
+      status: 'sent',
+      pages: 5,
+      recipients: 3
+    }
+  ]
+};
+
+/**
+ * Simulate API delay
+ * @param {number} ms - Milliseconds to delay
+ * @returns {Promise}
+ */
+const delay = (ms = 300) => new Promise(resolve => setTimeout(resolve, ms));
+
+/**
+ * Auth API
+ */
+export const authAPI = {
+  login: async (email, password) => {
+    await delay();
+    const user = mockData.users.find(u => u.email === email);
+    if (!user || password !== 'password') {
+      throw new Error('Invalid credentials');
+    }
+    return user;
+  },
+  
+  register: async (userData) => {
+    await delay();
+    const newUser = {
+      id: String(mockData.users.length + 1),
+      ...userData
+    };
+    mockData.users.push(newUser);
+    return newUser;
+  },
+  
+  resetPassword: async (email) => {
+    await delay();
+    const user = mockData.users.find(u => u.email === email);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return { success: true };
+  }
+};
+
+/**
+ * Assessments API
+ */
+export const assessmentsAPI = {
+  getAll: async () => {
+    await delay();
+    return mockData.assessments.map(assessment => {
+      const location = mockData.locations.find(l => l.id === assessment.locationId);
+      const cropType = mockData.cropTypes.find(c => c.id === assessment.cropTypeId);
+      return {
+        ...assessment,
+        location: location?.name,
+        cropType: cropType?.name
+      };
+    });
+  },
+  
+  getById: async (id) => {
+    await delay();
+    const assessment = mockData.assessments.find(a => a.id === id);
+    if (!assessment) {
+      throw new Error('Assessment not found');
+    }
+    
+    const location = mockData.locations.find(l => l.id === assessment.locationId);
+    const cropType = mockData.cropTypes.find(c => c.id === assessment.cropTypeId);
+    const cultivar = mockData.cultivars.find(c => c.id === assessment.cultivarId);
+    
+    return {
+      ...assessment,
+      location: location?.name,
+      cropType: cropType?.name,
+      cultivar: cultivar?.name
+    };
+  },
+  
+  create: async (assessmentData) => {
+    await delay();
+    const newAssessment = {
+      id: String(mockData.assessments.length + 1),
+      date: new Date().toISOString().split('T')[0],
+      status: 'completed',
+      ...assessmentData
+    };
+    mockData.assessments.push(newAssessment);
+    return newAssessment;
+  },
+  
+  update: async (id, assessmentData) => {
+    await delay();
+    const index = mockData.assessments.findIndex(a => a.id === id);
+    if (index === -1) {
+      throw new Error('Assessment not found');
+    }
+    
+    const updatedAssessment = {
+      ...mockData.assessments[index],
+      ...assessmentData
+    };
+    
+    mockData.assessments[index] = updatedAssessment;
+    return updatedAssessment;
+  },
+  
+  delete: async (id) => {
+    await delay();
+    const index = mockData.assessments.findIndex(a => a.id === id);
+    if (index === -1) {
+      throw new Error('Assessment not found');
+    }
+    
+    mockData.assessments.splice(index, 1);
+    return { success: true };
+  }
+};
+
+/**
+ * Reports API
+ */
+export const reportsAPI = {
+  getAll: async () => {
+    await delay();
+    return mockData.reports;
+  },
+  
+  getById: async (id) => {
+    await delay();
+    const report = mockData.reports.find(r => r.id === id);
+    if (!report) {
+      throw new Error('Report not found');
+    }
+    return report;
+  },
+  
+  generate: async (assessmentId, type = 'basic') => {
+    await delay();
+    const assessment = mockData.assessments.find(a => a.id === assessmentId);
+    if (!assessment) {
+      throw new Error('Assessment not found');
+    }
+    
+    const location = mockData.locations.find(l => l.id === assessment.locationId);
+    
+    const newReport = {
+      id: String(mockData.reports.length + 1),
+      assessmentId,
+      title: `${location.name} ${type === 'basic' ? 'Assessment' : 'Overview'}`,
+      type,
+      created: new Date().toISOString().split('T')[0],
+      status: 'draft',
+      pages: type === 'basic' ? 3 : 5,
+      recipients: 0
+    };
+    
+    mockData.reports.push(newReport);
+    return newReport;
+  },
+  
+  send: async (id, recipients) => {
+    await delay();
+    const index = mockData.reports.findIndex(r => r.id === id);
+    if (index === -1) {
+      throw new Error('Report not found');
+    }
+    
+    mockData.reports[index] = {
+      ...mockData.reports[index],
+      status: 'sent',
+      recipients: recipients.length
+    };
+    
+    return mockData.reports[index];
+  }
+};
+
+/**
+ * References API (locations, crop types, cultivars, etc.)
+ */
+export const referencesAPI = {
+  getLocations: async () => {
+    await delay();
+    return mockData.locations;
+  },
+  
+  getCropTypes: async () => {
+    await delay();
+    return mockData.cropTypes;
+  },
+  
+  getCultivars: async (cropTypeId = null) => {
+    await delay();
+    if (cropTypeId) {
+      return mockData.cultivars.filter(c => c.cropTypeId === cropTypeId);
+    }
+    return mockData.cultivars;
+  },
+  
+  createLocation: async (locationData) => {
+    await delay();
+    const newLocation = {
+      id: String(mockData.locations.length + 1),
+      ...locationData
+    };
+    mockData.locations.push(newLocation);
+    return newLocation;
+  },
+  
+  createCultivar: async (cultivarData) => {
+    await delay();
+    const newCultivar = {
+      id: String(mockData.cultivars.length + 1),
+      ...cultivarData
+    };
+    mockData.cultivars.push(newCultivar);
+    return newCultivar;
+  }
+};
+
+// Export all APIs together
+export default {
+  auth: authAPI,
+  assessments: assessmentsAPI,
+  reports: reportsAPI,
+  references: referencesAPI
+};
