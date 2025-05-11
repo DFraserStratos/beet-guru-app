@@ -15,6 +15,7 @@ The application follows a mobile-first approach since farmers primarily use it d
 - Generate reports for better crop management
 - User profile management
 - Location management
+- Stock Feed Calculator
 
 ## Technical Implementation
 
@@ -53,6 +54,40 @@ The app uses different navigation patterns for desktop and mobile:
 - Simple header with left-aligned logo and app name
 - User profile accessed through the "More" tab
 - Settings and app info in the "More" tab
+
+## Home Screen Updates (May 2025)
+
+The home screen has been completely redesigned to improve user experience and make important information more accessible:
+
+### Key Changes
+- Renamed "Dashboard" to "Home" throughout the application for more intuitive navigation
+- Added a prominent "New Assessment" button at the top of the screen for quick access
+- Redesigned layout with different arrangements for mobile and desktop views
+- Mobile view now uses a stacked single-column layout
+- Desktop view uses a grid layout with 2/3 and 1/3 width columns
+- Removed Recent Assessments widget to simplify the interface
+- Relocated Feed Forecast widget to the dedicated Stock Feed screen
+- Added a non-expandable Cultivar Information widget with fixed display
+- Added a Seasonal Timeline widget showing growing seasons
+- Added a Weather Widget specifically for Oxford, Canterbury
+- Added a Reminder Widget to show notifications and actionable items
+
+### New Features
+- **Stock Feed Calculator**: Added a dedicated screen for calculating feed duration based on stock count, feed amount, and dry matter percentage
+- **Cultivar Information**: Fixed-height widget showing details about beet cultivars (no longer expandable/collapsible)
+- **Seasonal Timeline**: Visual representation of planting, growing, and harvesting seasons for fodder beet in Canterbury, NZ
+- **Reminders**: Actionable notifications for assessments and other farm tasks
+
+### Home Screen Component Hierarchy
+```
+HomeScreen
+├── Welcome Section
+├── New Assessment Button
+├── ReminderWidget
+├── WeatherWidget
+├── SeasonalTimeline
+└── CultivarInfoWidget
+```
 
 ## Authentication
 
@@ -94,6 +129,7 @@ The app includes a fake login and registration flow that allows for demonstratio
 - Navigate between sections using the sidebar (desktop) or bottom tabs (mobile)
 - View and create assessments
 - View reports
+- Use the Stock Feed Calculator
 - Log out via the sidebar or "More" tab
 
 ## Implementation Details
@@ -104,6 +140,13 @@ The app includes a fake login and registration flow that allows for demonstratio
 - Improved responsive behavior with cleaner breakpoints
 - Conditional rendering based on device type
 - Visual consistency across all screens
+
+### Home Screen Implementation
+- Uses conditional rendering based on the isMobile flag for responsive layouts
+- Implements modern Tailwind CSS styling for clean user interface
+- Widget components are reusable and self-contained
+- Fixed-height Cultivar Information widget for better user experience
+- Responsive design adapts to different screen sizes
 
 ### Authentication Implementation
 - Form validation is intentionally bypassed for smooth demo experience
@@ -127,5 +170,6 @@ The app includes a fake login and registration flow that allows for demonstratio
 5. Offline mode for field use
 6. Data synchronization
 7. Advanced analytics for crop planning
+8. Location-based weather data
 
 This project is designed as a starting point for a fully-featured crop management application, with a focus on usability for farmers in the field.
