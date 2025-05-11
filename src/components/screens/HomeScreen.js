@@ -1,7 +1,6 @@
 import { PlusCircle } from 'lucide-react';
 import WeatherWidget from '../ui/WeatherWidget';
 import SeasonalTimeline from '../ui/SeasonalTimeline';
-import FeedForecastWidget from '../ui/FeedForecastWidget';
 import CultivarInfoWidget from '../ui/CultivarInfoWidget';
 import ReminderWidget from '../ui/ReminderWidget';
 
@@ -62,9 +61,6 @@ const HomeScreen = ({ onNavigate, isMobile, user = { name: 'John' } }) => {
               <h2 className="text-lg font-semibold mb-3">Growing Season</h2>
               <SeasonalTimeline />
             </div>
-            
-            {/* Feed Forecast Widget - Added to fill space */}
-            <FeedForecastWidget />
           </div>
           
           {/* Right Column - 1/3 width */}
