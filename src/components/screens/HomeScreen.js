@@ -1,22 +1,11 @@
 import { PlusCircle } from 'lucide-react';
 import WeatherWidget from '../ui/WeatherWidget';
 import SeasonalTimeline from '../ui/SeasonalTimeline';
-import RecentAssessmentCard from '../ui/RecentAssessmentCard';
 import FeedForecastWidget from '../ui/FeedForecastWidget';
 import CultivarInfoWidget from '../ui/CultivarInfoWidget';
 import ReminderWidget from '../ui/ReminderWidget';
 
 const HomeScreen = ({ onNavigate, isMobile, user = { name: 'John' } }) => {
-  // Most recent assessment data
-  const recentAssessment = {
-    date: 'May 05, 2025',
-    location: 'North Field',
-    type: 'Fodder Beet',
-    dm: '22.4%',
-    yield: '24.8 t/ha',
-    status: 'Completed'
-  };
-  
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
@@ -68,17 +57,14 @@ const HomeScreen = ({ onNavigate, isMobile, user = { name: 'John' } }) => {
             {/* Reminders */}
             <ReminderWidget onNavigate={onNavigate} />
             
-            {/* Recent Assessment Card - Only on Desktop */}
-            <RecentAssessmentCard 
-              assessment={recentAssessment} 
-              onClick={() => console.log('View assessment details')} 
-            />
-            
             {/* Growing Season Timeline */}
             <div className="bg-white rounded-xl shadow p-4">
               <h2 className="text-lg font-semibold mb-3">Growing Season</h2>
               <SeasonalTimeline />
             </div>
+            
+            {/* Feed Forecast Widget - Added to fill space */}
+            <FeedForecastWidget />
           </div>
           
           {/* Right Column - 1/3 width */}
