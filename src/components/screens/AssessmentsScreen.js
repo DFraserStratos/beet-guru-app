@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { PlusCircle } from 'lucide-react';
+import { PlusCircle, Calendar } from 'lucide-react';
 import LocationCard from '../ui/LocationCard';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
+import { FormButton } from '../ui/form';
 
 /**
  * Screen for displaying and managing assessments
@@ -47,49 +48,74 @@ const AssessmentsScreen = ({
   };
 
   return (
-    <div className="space-y-4">
-      {/* Action Button */}
-      <div className="flex justify-end">
-        <button 
-          className="bg-green-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-green-700 transition-colors text-sm"
-          onClick={handleNewAssessment}
-        >
-          <PlusCircle size={16} className="mr-2" />
-          {isMobile ? 'New' : 'New Assessment'}
-        </button>
+    <div className="space-y-6">
+      {/* Header Section */}
+      <div className="bg-white rounded-xl shadow p-6">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800 mb-1">
+              Assessments
+            </h1>
+            <p className="text-gray-600">
+              Manage crop assessments for your locations
+            </p>
+          </div>
+          <FormButton 
+            variant="primary" 
+            icon={<PlusCircle size={16} />}
+            onClick={handleNewAssessment}
+          >
+            {isMobile ? 'New' : 'New Assessment'}
+          </FormButton>
+        </div>
       </div>
       
       {/* Loading State */}
       {loading && (
-        <div className="bg-white rounded-xl shadow p-4 text-center text-gray-500">
-          Loading locations...
+        <div className="bg-white rounded-xl shadow p-6 text-center">
+          <p className="text-gray-500">Loading locations...</p>
         </div>
       )}
       
       {/* Error State */}
       {error && (
-        <div className="bg-white rounded-xl shadow p-4 text-center text-red-500">
-          Error loading locations: {error.message}
+        <div className="bg-white rounded-xl shadow p-6 text-center">
+          <p className="text-red-500">Error loading locations: {error.message}</p>
         </div>
       )}
       
-      {/* Locations Grid */}
+      {/* Locations List */}
       {!loading && !error && locations && (
-        <div className={`grid grid-cols-1 ${isMobile ? '' : 'md:grid-cols-2 lg:grid-cols-3'} gap-4`}>
-          {locations.map((location) => (
-            <LocationCard 
-              key={location.id}
-              location={location}
-              status={location.status}
-              onStart={handleStartAssessment}
-              onContinue={handleContinueDraft}
-            />
-          ))}
-          
-          {locations.length === 0 && (
-            <div className="col-span-full bg-white rounded-xl shadow p-4 text-center text-gray-500">
-              No locations found. Create a location to get started.
+        <div className="bg-white rounded-xl shadow overflow-hidden">
+          {locations.length === 0 ? (
+            <div className="p-8 text-center">
+              <Calendar size={48} className="text-gray-300 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-600 mb-2">No assessments found</h3>
+              <p className="text-gray-500 mb-6">
+                Start a new assessment to begin tracking your crop performance
+              </p>
+              <FormButton 
+                variant="primary" 
+                icon={<PlusCircle size={16} />}
+                onClick={handleNewAssessment}
+              >
+                New Assessment
+              </FormButton>
             </div>
+          ) : (
+            <ul className="divide-y divide-gray-200">
+              {locations.map((location) => (
+                <li key={location.id} className="hover:bg-gray-50">
+                  <LocationCard 
+                    location={location}
+                    status={location.status}
+                    onStart={handleStartAssessment}
+                    onContinue={handleContinueDraft}
+                    className="border-none shadow-none"
+                  />
+                </li>
+              ))}
+            </ul>
           )}
         </div>
       )}
