@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ErrorBoundary from '../utility/ErrorBoundary';
 import { 
   StepProgress, 
@@ -13,7 +13,12 @@ import {
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const NewAssessmentScreen = ({ isMobile = false, onNavigate = () => {} }) => {
+const NewAssessmentScreen = ({ 
+  isMobile = false, 
+  onNavigate = () => {},
+  prefillLocation = null,
+  draftAssessment = null 
+}) => {
   // State for current step in the wizard
   const [currentStep, setCurrentStep] = useState(1);
   
@@ -37,6 +42,25 @@ const NewAssessmentScreen = ({ isMobile = false, onNavigate = () => {} }) => {
       { id: 3, sampleLength: '', weight: '', dryMatter: '', notes: '' }
     ]
   });
+  
+  // Handle prefilled location and draft assessment
+  useEffect(() => {
+    if (draftAssessment) {
+      // Load draft assessment data
+      setFormData({
+        ...draftAssessment,
+        locationId: draftAssessment.locationId || (prefillLocation ? prefillLocation.id : ''),
+        fieldArea: draftAssessment.fieldArea || (prefillLocation ? prefillLocation.area.toString() : '')
+      });
+    } else if (prefillLocation) {
+      // Just prefill location
+      setFormData(prevData => ({
+        ...prevData,
+        locationId: prefillLocation.id,
+        fieldArea: prefillLocation.area.toString()
+      }));
+    }
+  }, [prefillLocation, draftAssessment]);
   
   // Navigation between steps
   const nextStep = () => {
@@ -79,6 +103,7 @@ const NewAssessmentScreen = ({ isMobile = false, onNavigate = () => {} }) => {
                 formData={formData}
                 onChange={handleFieldChange}
                 onNext={nextStep}
+                prefillLocation={prefillLocation}
               />
             )}
             
