@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, Plus, Edit, Trash, Search, CornerLeftDown } from 'lucide-react';
+import { MapPin, Plus, Edit, Trash } from 'lucide-react';
 import { useApi } from '../../hooks';
 import { referencesAPI } from '../../services/api';
-import { FormButton, FormField } from '../ui/form';
+import { FormButton } from '../ui/form';
 import LocationForm from './LocationForm';
 import ErrorBoundary from '../utility/ErrorBoundary';
 
@@ -20,7 +20,6 @@ import ErrorBoundary from '../utility/ErrorBoundary';
 const LocationsScreen = ({ isMobile, user }) => {
   // State for location data
   const [locations, setLocations] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
@@ -108,13 +107,6 @@ const LocationsScreen = ({ isMobile, user }) => {
     }
   };
   
-  // Filter locations by search query
-  const filteredLocations = searchQuery
-    ? locations.filter(location => 
-        location.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : locations;
-  
   return (
     <div className="space-y-6">
       {/* Header Section */}
@@ -141,52 +133,33 @@ const LocationsScreen = ({ isMobile, user }) => {
         </div>
       </div>
       
-      {/* Search and Filter */}
-      <div className="bg-white rounded-xl shadow p-4">
-        <div className="relative">
-          <Search size={18} className="absolute left-3 top-2.5 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search locations..."
-            className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-300 focus:border-green-500 focus:ring-green-500"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-      </div>
-      
       {/* Locations List */}
       <div className="bg-white rounded-xl shadow overflow-hidden">
         {getLocationsApi.loading ? (
           <div className="p-8 text-center">
             <p className="text-gray-500">Loading locations...</p>
           </div>
-        ) : filteredLocations.length === 0 ? (
+        ) : locations.length === 0 ? (
           <div className="p-8 text-center">
             <MapPin size={48} className="text-gray-300 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-600 mb-2">No locations found</h3>
             <p className="text-gray-500 mb-6">
-              {searchQuery 
-                ? 'Try a different search term'
-                : 'Add your first location to get started'
-              }
+              Add your first location to get started
             </p>
-            {!searchQuery && (
-              <FormButton 
-                variant="primary" 
-                icon={<Plus size={16} />}
-                onClick={() => {
-                  setSelectedLocation(null);
-                  setIsFormOpen(true);
-                }}
-              >
-                Add Location
-              </FormButton>
-            )}
+            <FormButton 
+              variant="primary" 
+              icon={<Plus size={16} />}
+              onClick={() => {
+                setSelectedLocation(null);
+                setIsFormOpen(true);
+              }}
+            >
+              Add Location
+            </FormButton>
           </div>
         ) : (
           <ul className="divide-y divide-gray-200">
-            {filteredLocations.map((location) => (
+            {locations.map((location) => (
               <li key={location.id} className="p-4 hover:bg-gray-50">
                 <div className="flex items-center justify-between">
                   <div className="flex items-start">
