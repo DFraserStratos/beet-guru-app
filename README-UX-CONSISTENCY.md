@@ -14,10 +14,16 @@ This branch focuses on improving the visual consistency between different screen
 ### ReportsScreen.js
 - Added a proper header section with title, description
 - Removed "New Report" button as requested
-- Used FormButton component throughout for consistency with other screens
-- Improved the empty state visualization with centered content and icon
+- Added Cultivar/Crop Type and Season columns to the reports table
+- Enhanced the filtering system with new options:
+  - Date Range filter
+  - Cultivar filter
+  - Season filter
+  - Sort By filter with multiple options
+- Added Reset and Apply Filters buttons
+- Used FormButton component throughout for consistency
+- Improved the empty state visualization
 - Enhanced the visual layout of cards in mobile view
-- Maintained filter functionality while improving the UI
 
 ### LocationCard Component
 - Redesigned to match the list item style in the Locations screen
@@ -66,6 +72,13 @@ This branch focuses on improving the visual consistency between different screen
    - Same hierarchical organization
    - Visually aligned presentation
 
+6. **Enhanced Filtering System**: The Reports screen now has an improved filtering system:
+   - Consistent styling for filter inputs
+   - Clear visual hierarchy with icons
+   - Multiple filtering options
+   - Filter reset and apply actions
+   - Responsive design for both mobile and desktop views
+
 ## Benefits
 
 - **Improved User Experience**: Users will have a more consistent experience when navigating between screens
@@ -74,3 +87,4 @@ This branch focuses on improving the visual consistency between different screen
 - **Better Maintainability**: Using standard components and patterns makes future updates more straightforward
 - **Simplified User Journey**: A consistent interface makes it easier for users to navigate between different sections
 - **Improved Discoverability**: Consistent patterns for actions and notifications improve feature discovery
+- **Enhanced Data Exploration**: The improved filtering system makes it easier to find specific reports
