@@ -42,7 +42,22 @@ For demonstration purposes, the app comes pre-populated with three locations:
 - Mid Paddock (2.2 hectares)
 - South Paddock (4.1 hectares)
 
-Each has corresponding coordinates and is associated with the current user.
+Each has corresponding coordinates and is associated with the logged-in user. The login process has been modified to ensure the user ID matches the demo locations.
+
+## Demo Implementation Notes
+
+### Data Display
+
+For the purposes of this demo:
+
+1. The user ID filtering has been temporarily disabled in the `LocationsScreen` component to ensure all demo locations are visible.
+2. The `LoginScreen` component explicitly sets a user ID that matches the mock location data.
+3. In a production implementation, proper user-based filtering would be handled server-side.
+
+### UI Simplifications
+
+1. Search functionality has been removed since farmers typically won't have many locations to manage.
+2. The interface is focused on the core functionality of managing locations rather than advanced filtering.
 
 ## UX/UI Patterns
 
@@ -75,6 +90,7 @@ In a future implementation for retailers, the hierarchy would change:
 ## Testing Notes
 
 - To test the feature, login as a farmer user and navigate to the Locations screen
+- You should immediately see the three demo locations: North Paddock, Mid Paddock, and South Paddock
 - Try adding a new location, editing an existing one, and deleting a location
 - Verify that all modals can be opened and closed correctly
 
@@ -82,4 +98,5 @@ In a future implementation for retailers, the hierarchy would change:
 
 - The map functionality is currently simulated and does not use actual geolocation
 - In a production environment, proper geolocation APIs would be integrated
-- For demonstration purposes, the locations are filtered by user ID in the front end, but in a real application, this would be handled by the backend API
+- For demonstration purposes, user authentication has been simplified with pre-defined user IDs
+- Error handling for API failures has been implemented with user-friendly messages
