@@ -12,7 +12,8 @@ This branch focuses on improving the visual consistency between different screen
 - Enhanced overall visual hierarchy and spacing
 
 ### ReportsScreen.js
-- Added a proper header section with title, description, and action button
+- Added a proper header section with title, description
+- Removed "New Report" button as requested
 - Used FormButton component throughout for consistency with other screens
 - Improved the empty state visualization with centered content and icon
 - Enhanced the visual layout of cards in mobile view
@@ -30,12 +31,17 @@ This branch focuses on improving the visual consistency between different screen
 - This allows for rich empty state messages with icons and buttons
 - Maintained table functionality while improving the UI
 
+### Navigation Components
+- Swapped the order of Locations and Stock Feed in the Sidebar component
+- Swapped the order of Locations and Stock Feed in the MoreScreen component (mobile menu)
+- Ensured consistency between desktop and mobile navigation
+
 ## Design Principles Applied
 
 1. **Consistent Header Pattern**: All main screens now follow the same header pattern with:
    - Title in bold text
    - Descriptive subtitle in lighter color
-   - Primary action button aligned to the right
+   - Primary action button aligned to the right (when applicable)
 
 2. **Unified List Presentation**: List items across the application now share:
    - Consistent spacing and padding
@@ -47,13 +53,18 @@ This branch focuses on improving the visual consistency between different screen
    - Centered layout with proper spacing
    - Iconic representation of the empty state
    - Clear messaging with action guidance
-   - Direct action button to resolve the empty state
+   - Direct action button to resolve the empty state (when applicable)
 
 4. **Consistent Card Patterns**: Mobile card views now follow consistent patterns:
    - Standard padding and spacing
    - Similar information hierarchy
    - Consistent action button placement
    - Unified hover effects and interactions
+
+5. **Navigation Consistency**: Desktop and mobile navigation now have:
+   - Consistent menu item ordering
+   - Same hierarchical organization
+   - Visually aligned presentation
 
 ## Benefits
 
