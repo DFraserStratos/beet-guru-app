@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { PlusCircle, ChevronDown, Filter, X } from 'lucide-react';
+import { PlusCircle, ChevronDown, Filter, X, FileText } from 'lucide-react';
 import AssessmentTable from '../ui/AssessmentTable';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
+import { FormButton } from '../ui/form';
 
 /**
  * Screen for displaying and managing reports
@@ -85,13 +86,25 @@ const ReportsScreen = ({ isMobile }) => {
   };
 
   return (
-    <div className="space-y-4">
-      {/* Action Button */}
-      <div className="flex justify-end">
-        <button className="bg-green-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-green-700 transition-colors text-sm">
-          <PlusCircle size={16} className="mr-2" />
-          {isMobile ? 'New' : 'New Report'}
-        </button>
+    <div className="space-y-6">
+      {/* Header Section */}
+      <div className="bg-white rounded-xl shadow p-6">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800 mb-1">
+              Reports
+            </h1>
+            <p className="text-gray-600">
+              View and share your assessment reports
+            </p>
+          </div>
+          <FormButton 
+            variant="primary" 
+            icon={<PlusCircle size={16} />}
+          >
+            {isMobile ? 'New' : 'New Report'}
+          </FormButton>
+        </div>
       </div>
       
       {/* Mobile Filter Toggle */}
@@ -139,9 +152,9 @@ const ReportsScreen = ({ isMobile }) => {
             
             {isMobile && (
               <div className="w-full mt-2 flex justify-end">
-                <button className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm">
+                <FormButton variant="primary" size="sm">
                   Apply Filters
-                </button>
+                </FormButton>
               </div>
             )}
           </div>
@@ -150,15 +163,15 @@ const ReportsScreen = ({ isMobile }) => {
       
       {/* Loading State */}
       {(loading || loadingAssessments) && (
-        <div className="bg-white rounded-xl shadow p-4 text-center text-gray-500">
-          Loading reports...
+        <div className="bg-white rounded-xl shadow p-6 text-center">
+          <p className="text-gray-500">Loading reports...</p>
         </div>
       )}
       
       {/* Error State */}
       {(error || assessmentsError) && (
-        <div className="bg-white rounded-xl shadow p-4 text-center text-red-500">
-          Error loading reports: {error?.message || assessmentsError?.message}
+        <div className="bg-white rounded-xl shadow p-6 text-center">
+          <p className="text-red-500">Error loading reports: {error?.message || assessmentsError?.message}</p>
         </div>
       )}
       
@@ -167,38 +180,50 @@ const ReportsScreen = ({ isMobile }) => {
         <>
           {isMobile ? (
             // Mobile Card View
-            <div className="space-y-3">
-              {reportsWithActions.map((report) => (
-                <div key={report.id} className="bg-white rounded-xl shadow overflow-hidden">
-                  <div className="p-4">
-                    <h3 className="font-medium text-base text-gray-900 line-clamp-1 mb-1">
-                      {report.title}
-                    </h3>
-                    
-                    <div className="text-sm text-gray-600 space-y-1 mb-3">
-                      <p>Date: {formatDate(report.created)}</p>
-                      <p>Location: {report.location}</p>
-                    </div>
-                    
-                    <div className="border-t pt-3 flex justify-between">
-                      {report.actions.map((action, index) => (
-                        <button 
-                          key={index}
-                          className={`text-sm font-medium ${action.className}`}
-                          onClick={action.onClick}
-                        >
-                          {action.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+            <div className="bg-white rounded-xl shadow overflow-hidden">
+              {reportsWithActions.length === 0 ? (
+                <div className="p-8 text-center">
+                  <FileText size={48} className="text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-600 mb-2">No reports found</h3>
+                  <p className="text-gray-500 mb-6">
+                    Complete an assessment to generate a report
+                  </p>
+                  <FormButton 
+                    variant="primary" 
+                    icon={<PlusCircle size={16} />}
+                  >
+                    New Report
+                  </FormButton>
                 </div>
-              ))}
-
-              {reportsWithActions.length === 0 && (
-                <div className="bg-white rounded-xl shadow p-4 text-center text-gray-500">
-                  No reports found. Complete an assessment to generate a report.
-                </div>
+              ) : (
+                <ul className="divide-y divide-gray-200">
+                  {reportsWithActions.map((report) => (
+                    <li key={report.id} className="hover:bg-gray-50">
+                      <div className="p-4">
+                        <h3 className="font-medium text-base text-gray-900 line-clamp-1 mb-1">
+                          {report.title}
+                        </h3>
+                        
+                        <div className="text-sm text-gray-600 space-y-1 mb-3">
+                          <p>Date: {formatDate(report.created)}</p>
+                          <p>Location: {report.location}</p>
+                        </div>
+                        
+                        <div className="flex justify-between mt-2">
+                          {report.actions.map((action, index) => (
+                            <button 
+                              key={index}
+                              className={`text-sm font-medium ${action.className}`}
+                              onClick={action.onClick}
+                            >
+                              {action.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
               )}
             </div>
           ) : (
@@ -207,7 +232,21 @@ const ReportsScreen = ({ isMobile }) => {
               data={reportsWithActions}
               columns={columns}
               onRowClick={(report) => console.log('Row clicked', report.id)}
-              emptyMessage="No reports found. Complete an assessment to generate a report."
+              emptyMessage={
+                <div className="p-8 text-center">
+                  <FileText size={48} className="text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-600 mb-2">No reports found</h3>
+                  <p className="text-gray-500 mb-6">
+                    Complete an assessment to generate a report
+                  </p>
+                  <FormButton 
+                    variant="primary" 
+                    icon={<PlusCircle size={16} />}
+                  >
+                    New Report
+                  </FormButton>
+                </div>
+              }
             />
           )}
         </>
