@@ -4,7 +4,7 @@ import { FormField, FormButton } from '../ui/form';
 import { useForm } from '../../hooks';
 import api from '../../services/api';
 import ErrorBoundary from '../utility/ErrorBoundary';
-import beetGuruWideLogo from '../../assets/BeetGuruWide.png';
+import beetGuruWideLogo from '../../BeetGuruWide.png';
 
 /**
  * Login screen component
