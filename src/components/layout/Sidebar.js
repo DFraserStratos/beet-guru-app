@@ -7,7 +7,7 @@ import {
   LogOut,
   Calculator
 } from 'lucide-react';
-import beetGuruSquareLogo from '../../assets/BeetGuruSq.png';
+import beetGuruSquareLogo from '../../BeetGuruSq.png';
 
 const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
   return (
