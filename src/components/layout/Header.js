@@ -1,6 +1,6 @@
 import { X } from 'lucide-react';
 import { useState } from 'react';
-import beetGuruSquareLogo from '../../assets/BeetGuruSq.png';
+import beetGuruSquareLogo from '../../BeetGuruSq.png';
 
 const Header = ({ activeScreen }) => {
   return (
