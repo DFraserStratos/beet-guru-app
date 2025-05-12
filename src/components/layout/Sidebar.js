@@ -7,6 +7,7 @@ import {
   LogOut,
   Calculator
 } from 'lucide-react';
+import beetGuruSquareLogo from '../../assets/BeetGuruSq.png';
 
 const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
   return (
@@ -14,9 +15,11 @@ const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
       <div className="p-4 flex items-center justify-between border-b border-green-700">
         <div className="flex items-center">
           {/* App Logo */}
-          <div className="bg-white rounded-full h-10 w-10 flex items-center justify-center mr-3">
-            <div className="text-green-800 font-bold text-xl">B</div>
-          </div>
+          <img 
+            src={beetGuruSquareLogo} 
+            alt="Beet Guru Logo" 
+            className="h-10 w-10 mr-3 rounded-full" 
+          />
           <span className="font-bold text-lg">Beet Guru</span>
         </div>
       </div>
