@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronDown, Filter, X, FileText } from 'lucide-react';
+import { ChevronDown, Filter, X, FileText, Calendar, Leaf, ArrowDownUp } from 'lucide-react';
 import AssessmentTable from '../ui/AssessmentTable';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
@@ -12,6 +12,12 @@ import { FormButton } from '../ui/form';
  */
 const ReportsScreen = ({ isMobile }) => {
   const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState({
+    dateRange: 'all',
+    cultivar: 'all',
+    season: 'all',
+    sortBy: 'date'
+  });
   
   // Use the API hook to fetch reports
   const { 
@@ -38,7 +44,33 @@ const ReportsScreen = ({ isMobile }) => {
     setShowFilters(!showFilters);
   };
 
-  // Define table columns for the reports - simplified to remove status and type
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters({
+      ...filters,
+      [name]: value
+    });
+  };
+
+  const applyFilters = () => {
+    // In a real app, this would filter the data
+    console.log('Applying filters:', filters);
+    // Close the filters panel on mobile
+    if (isMobile) {
+      setShowFilters(false);
+    }
+  };
+
+  const resetFilters = () => {
+    setFilters({
+      dateRange: 'all',
+      cultivar: 'all',
+      season: 'all',
+      sortBy: 'date'
+    });
+  };
+
+  // Define table columns for the reports - with new cultivar and season columns
   const columns = [
     { 
       key: 'created', 
@@ -56,6 +88,14 @@ const ReportsScreen = ({ isMobile }) => {
     { 
       key: 'location', 
       label: 'Location' 
+    },
+    { 
+      key: 'cultivar', 
+      label: 'Cultivar/Crop Type' 
+    },
+    { 
+      key: 'season', 
+      label: 'Season' 
     }
   ];
 
@@ -95,6 +135,10 @@ const ReportsScreen = ({ isMobile }) => {
       </p>
     </div>
   );
+
+  // Get unique cultivars and seasons for filter options
+  const cultivars = ['All Cultivars', 'Brigadier', 'Kyros', 'Feldherr', 'Blizzard', 'Blaze'];
+  const seasons = ['All Seasons', '2024/2025', '2023/2024', '2022/2023'];
 
   return (
     <div className="space-y-6">
@@ -140,26 +184,111 @@ const ReportsScreen = ({ isMobile }) => {
           )}
           
           <div className="flex flex-wrap gap-4">
-            <div className={`${isMobile ? 'w-full' : 'flex-1 min-w-[200px]'}`}>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
+            {/* Date Range Filter */}
+            <div className={`${isMobile ? 'w-full' : 'flex-1 min-w-[160px]'}`}>
+              <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                <Calendar size={14} className="mr-1" /> Date Range
+              </label>
               <div className="relative">
-                <select className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm py-2 pl-3 pr-10 appearance-none border">
+                <select
+                  name="dateRange"
+                  value={filters.dateRange}
+                  onChange={handleFilterChange}
+                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm py-2 pl-3 pr-10 appearance-none border"
+                >
                   <option value="all">All Time</option>
                   <option value="week">Last 7 Days</option>
                   <option value="month">Last 30 Days</option>
                   <option value="year">This Year</option>
                 </select>
-                <ChevronDown size={16} className="absolute right-3 top-2.5 text-gray-400" />
+                <ChevronDown size={16} className="absolute right-3 top-2.5 text-gray-400 pointer-events-none" />
               </div>
             </div>
             
-            {isMobile && (
-              <div className="w-full mt-2 flex justify-end">
-                <FormButton variant="primary" size="sm">
-                  Apply Filters
-                </FormButton>
+            {/* Cultivar Filter */}
+            <div className={`${isMobile ? 'w-full' : 'flex-1 min-w-[160px]'}`}>
+              <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                <Leaf size={14} className="mr-1" /> Cultivar
+              </label>
+              <div className="relative">
+                <select
+                  name="cultivar"
+                  value={filters.cultivar}
+                  onChange={handleFilterChange}
+                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm py-2 pl-3 pr-10 appearance-none border"
+                >
+                  <option value="all">All Cultivars</option>
+                  {cultivars.slice(1).map((cultivar) => (
+                    <option key={cultivar} value={cultivar.toLowerCase()}>
+                      {cultivar}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown size={16} className="absolute right-3 top-2.5 text-gray-400 pointer-events-none" />
               </div>
-            )}
+            </div>
+            
+            {/* Season Filter */}
+            <div className={`${isMobile ? 'w-full' : 'flex-1 min-w-[160px]'}`}>
+              <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                <Calendar size={14} className="mr-1" /> Season
+              </label>
+              <div className="relative">
+                <select
+                  name="season"
+                  value={filters.season}
+                  onChange={handleFilterChange}
+                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm py-2 pl-3 pr-10 appearance-none border"
+                >
+                  <option value="all">All Seasons</option>
+                  {seasons.slice(1).map((season) => (
+                    <option key={season} value={season.toLowerCase()}>
+                      {season}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown size={16} className="absolute right-3 top-2.5 text-gray-400 pointer-events-none" />
+              </div>
+            </div>
+
+            {/* Sort By Filter */}
+            <div className={`${isMobile ? 'w-full' : 'flex-1 min-w-[160px]'}`}>
+              <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                <ArrowDownUp size={14} className="mr-1" /> Sort By
+              </label>
+              <div className="relative">
+                <select
+                  name="sortBy"
+                  value={filters.sortBy}
+                  onChange={handleFilterChange}
+                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm py-2 pl-3 pr-10 appearance-none border"
+                >
+                  <option value="date">Date (Newest First)</option>
+                  <option value="dateAsc">Date (Oldest First)</option>
+                  <option value="location">Location (A-Z)</option>
+                  <option value="cultivar">Cultivar (A-Z)</option>
+                </select>
+                <ChevronDown size={16} className="absolute right-3 top-2.5 text-gray-400 pointer-events-none" />
+              </div>
+            </div>
+            
+            {/* Filter Action Buttons */}
+            <div className={`${isMobile ? 'w-full' : 'flex-initial'} flex ${isMobile ? 'justify-between' : 'justify-end'} items-end space-x-2 mt-${isMobile ? '4' : '0'}`}>
+              <FormButton 
+                variant="outline" 
+                size="sm"
+                onClick={resetFilters}
+              >
+                Reset
+              </FormButton>
+              <FormButton 
+                variant="primary" 
+                size="sm"
+                onClick={applyFilters}
+              >
+                Apply Filters
+              </FormButton>
+            </div>
           </div>
         </div>
       )}
@@ -198,6 +327,8 @@ const ReportsScreen = ({ isMobile }) => {
                         <div className="text-sm text-gray-600 space-y-1 mb-3">
                           <p>Date: {formatDate(report.created)}</p>
                           <p>Location: {report.location}</p>
+                          <p>Cultivar: {report.cultivar || 'Not specified'}</p>
+                          <p>Season: {report.season || 'Not specified'}</p>
                         </div>
                         
                         <div className="flex justify-between mt-2">
