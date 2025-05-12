@@ -82,6 +82,24 @@ const mockData = {
       latitude: -43.5270,
       longitude: 172.6400,
       status: 'not-started'
+    },
+    { 
+      id: '4', 
+      name: 'East Block', 
+      userId: '1',
+      area: 3.8,
+      latitude: -43.5260,
+      longitude: 172.6380,
+      status: 'not-started'
+    },
+    { 
+      id: '5', 
+      name: 'West Block', 
+      userId: '1',
+      area: 2.7,
+      latitude: -43.5300,
+      longitude: 172.6250,
+      status: 'not-started'
     }
   ],
   cropTypes: [
@@ -160,6 +178,81 @@ const mockData = {
         { id: 1, sampleLength: '2', weight: '26.1', dryMatter: '18.2', notes: 'Edge of field' },
         { id: 2, sampleLength: '', weight: '', dryMatter: '', notes: '' }
       ]
+    },
+    { 
+      id: '5', 
+      locationId: '4', 
+      cropTypeId: '1', 
+      cultivarId: '2', 
+      dryMatter: '19.5%', 
+      date: '2024-11-12', 
+      status: 'completed',
+      waterType: 'irrigated',
+      rowSpacing: 0.55,
+      estimatedYield: '20.1 t/ha',
+      totalYield: '76.4 tonnes',
+      feedingCapacity: '155 days',
+      stockCount: 55
+    },
+    { 
+      id: '6', 
+      locationId: '5', 
+      cropTypeId: '2', 
+      cultivarId: '3', 
+      dryMatter: '17.8%', 
+      date: '2024-09-22', 
+      status: 'completed',
+      waterType: 'dryland',
+      rowSpacing: 0.5,
+      estimatedYield: '16.8 t/ha',
+      totalYield: '45.4 tonnes',
+      feedingCapacity: '98 days',
+      stockCount: 50
+    },
+    { 
+      id: '7', 
+      locationId: '3', 
+      cropTypeId: '1', 
+      cultivarId: '1', 
+      dryMatter: '22.3%', 
+      date: '2023-11-15', 
+      status: 'completed',
+      waterType: 'irrigated',
+      rowSpacing: 0.5,
+      estimatedYield: '23.1 t/ha',
+      totalYield: '94.7 tonnes',
+      feedingCapacity: '196 days',
+      stockCount: 58
+    },
+    { 
+      id: '8', 
+      locationId: '2', 
+      cropTypeId: '3', 
+      cultivarId: '4', 
+      dryMatter: '18.5%', 
+      date: '2023-10-08', 
+      status: 'completed',
+      waterType: 'irrigated',
+      rowSpacing: 0.45,
+      estimatedYield: '19.2 t/ha',
+      totalYield: '42.2 tonnes',
+      feedingCapacity: '84 days',
+      stockCount: 60
+    },
+    { 
+      id: '9', 
+      locationId: '1', 
+      cropTypeId: '2', 
+      cultivarId: '3', 
+      dryMatter: '20.1%', 
+      date: '2022-10-25', 
+      status: 'completed',
+      waterType: 'dryland',
+      rowSpacing: 0.5,
+      estimatedYield: '18.7 t/ha',
+      totalYield: '65.5 tonnes',
+      feedingCapacity: '145 days',
+      stockCount: 52
     }
   ],
   reports: [
@@ -192,6 +285,66 @@ const mockData = {
       status: 'sent',
       pages: 5,
       recipients: 3
+    },
+    {
+      id: '4',
+      assessmentId: '5',
+      title: 'East Block November Report',
+      type: 'basic',
+      created: '2024-11-12',
+      status: 'sent',
+      pages: 3,
+      recipients: 2
+    },
+    {
+      id: '5',
+      assessmentId: '6',
+      title: 'West Block Harvest Summary',
+      type: 'advanced',
+      created: '2024-09-22',
+      status: 'sent',
+      pages: 5,
+      recipients: 4
+    },
+    {
+      id: '6',
+      assessmentId: '7',
+      title: 'South Paddock 2023 Analysis',
+      type: 'basic',
+      created: '2023-11-15',
+      status: 'sent',
+      pages: 4,
+      recipients: 2
+    },
+    {
+      id: '7',
+      assessmentId: '8',
+      title: 'Mid Paddock October Evaluation',
+      type: 'advanced',
+      created: '2023-10-08',
+      status: 'sent',
+      pages: 4,
+      recipients: 3
+    },
+    {
+      id: '8',
+      assessmentId: '9',
+      title: 'North Paddock 2022 Assessment',
+      type: 'basic',
+      created: '2022-10-25',
+      status: 'sent',
+      pages: 3,
+      recipients: 2
+    },
+    {
+      id: '9',
+      assessmentId: '5',
+      title: 'East Block Supplementary Report',
+      type: 'advanced',
+      created: '2024-11-14',
+      status: 'draft',
+      pages: 6,
+      recipients: 0
     }
   ]
 };
