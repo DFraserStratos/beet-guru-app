@@ -61,7 +61,9 @@ const mockData = {
       userId: '1',
       area: 3.5,
       latitude: -43.5280,
-      longitude: 172.6316
+      longitude: 172.6316,
+      status: 'draft', // New status field: 'draft' or 'not-started'
+      assessmentId: '4' // Reference to draft assessment
     },
     { 
       id: '2', 
@@ -69,7 +71,8 @@ const mockData = {
       userId: '1',
       area: 2.2,
       latitude: -43.5310,
-      longitude: 172.6290
+      longitude: 172.6290,
+      status: 'not-started'
     },
     { 
       id: '3', 
@@ -77,7 +80,8 @@ const mockData = {
       userId: '1',
       area: 4.1,
       latitude: -43.5270,
-      longitude: 172.6400
+      longitude: 172.6400,
+      status: 'not-started'
     }
   ],
   cropTypes: [
@@ -136,6 +140,26 @@ const mockData = {
       totalYield: '55.8 tonnes',
       feedingCapacity: '115 days',
       stockCount: 60
+    },
+    { 
+      // Draft assessment
+      id: '4', 
+      locationId: '1', 
+      cropTypeId: '1', 
+      cultivarId: '1', 
+      dryMatter: '18.2%', 
+      date: '2025-05-12', 
+      status: 'draft',
+      waterType: 'irrigated',
+      rowSpacing: 0.5,
+      estimatedYield: '',
+      totalYield: '',
+      feedingCapacity: '',
+      stockCount: 45,
+      sampleAreas: [
+        { id: 1, sampleLength: '2', weight: '26.1', dryMatter: '18.2', notes: 'Edge of field' },
+        { id: 2, sampleLength: '', weight: '', dryMatter: '', notes: '' }
+      ]
     }
   ],
   reports: [
@@ -229,6 +253,36 @@ export const assessmentsAPI = {
     });
   },
   
+  getCompletedAssessments: async () => {
+    await delay();
+    return mockData.assessments
+      .filter(a => a.status === 'completed')
+      .map(assessment => {
+        const location = mockData.locations.find(l => l.id === assessment.locationId);
+        const cropType = mockData.cropTypes.find(c => c.id === assessment.cropTypeId);
+        return {
+          ...assessment,
+          location: location?.name,
+          cropType: cropType?.name
+        };
+      });
+  },
+  
+  getDraftAssessments: async () => {
+    await delay();
+    return mockData.assessments
+      .filter(a => a.status === 'draft')
+      .map(assessment => {
+        const location = mockData.locations.find(l => l.id === assessment.locationId);
+        const cropType = mockData.cropTypes.find(c => c.id === assessment.cropTypeId);
+        return {
+          ...assessment,
+          location: location?.name,
+          cropType: cropType?.name
+        };
+      });
+  },
+  
   getById: async (id) => {
     await delay();
     const assessment = mockData.assessments.find(a => a.id === id);
@@ -294,7 +348,21 @@ export const assessmentsAPI = {
 export const reportsAPI = {
   getAll: async () => {
     await delay();
-    return mockData.reports;
+    return mockData.reports.map(report => {
+      const assessment = mockData.assessments.find(a => a.id === report.assessmentId);
+      const location = assessment 
+        ? mockData.locations.find(l => l.id === assessment.locationId)
+        : null;
+      const cropType = assessment
+        ? mockData.cropTypes.find(c => c.id === assessment.cropTypeId)
+        : null;
+      
+      return {
+        ...report,
+        location: location?.name || '',
+        cropType: cropType?.name || ''
+      };
+    });
   },
   
   getById: async (id) => {
@@ -351,8 +419,28 @@ export const reportsAPI = {
  * References API (locations, crop types, cultivars, etc.)
  */
 export const referencesAPI = {
-  getLocations: async () => {
+  getLocations: async (withStatus = false) => {
     await delay();
+    
+    if (withStatus) {
+      // Return locations with their status and draft assessment if exists
+      return Promise.all(mockData.locations.map(async location => {
+        // If the location has a draft assessment, include it
+        if (location.status === 'draft' && location.assessmentId) {
+          try {
+            const assessment = await assessmentsAPI.getById(location.assessmentId);
+            return {
+              ...location,
+              draftAssessment: assessment
+            };
+          } catch (error) {
+            return location;
+          }
+        }
+        return location;
+      }));
+    }
+    
     return mockData.locations;
   },
   
@@ -369,6 +457,7 @@ export const referencesAPI = {
     await delay(800); // Slightly longer delay to simulate server processing
     const newLocation = {
       id: String(mockData.locations.length + 1),
+      status: 'not-started',
       ...locationData
     };
     mockData.locations.push(newLocation);
