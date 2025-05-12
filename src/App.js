@@ -24,8 +24,29 @@ function App() {
   const [authScreen, setAuthScreen] = useState('login'); // 'login' or 'register'
   const isAuthenticated = Boolean(user);
   
+  // Add state for selected location or draft assessment
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [draftAssessment, setDraftAssessment] = useState(null);
+  
   const handleNavigate = (screen) => {
+    // Reset selected data when navigating away from assessment screens
+    if (screen !== 'new-assessment' && screen !== 'draft-assessment') {
+      setSelectedLocation(null);
+      setDraftAssessment(null);
+    }
+    
     setActiveScreen(screen);
+  };
+  
+  const handleStartAssessment = (location) => {
+    setSelectedLocation(location);
+    setActiveScreen('new-assessment');
+  };
+  
+  const handleContinueDraft = (location, assessment) => {
+    setSelectedLocation(location);
+    setDraftAssessment(assessment);
+    setActiveScreen('new-assessment');
   };
   
   const handleLogin = (userData) => {
@@ -92,9 +113,23 @@ function App() {
         <div className="flex-1 overflow-y-auto p-4 pb-16 md:pb-4">
           <ErrorBoundary>
             {activeScreen === 'home' && <HomeScreen onNavigate={handleNavigate} isMobile={isMobile} user={user} />}
-            {activeScreen === 'assessments' && <AssessmentsScreen onNavigate={handleNavigate} isMobile={isMobile} />}
+            {activeScreen === 'assessments' && (
+              <AssessmentsScreen 
+                onNavigate={handleNavigate} 
+                isMobile={isMobile}
+                onStartAssessment={handleStartAssessment}
+                onContinueDraft={handleContinueDraft}
+              />
+            )}
             {activeScreen === 'reports' && <ReportsScreen isMobile={isMobile} />}
-            {activeScreen === 'new-assessment' && <NewAssessmentScreen isMobile={isMobile} />}
+            {activeScreen === 'new-assessment' && (
+              <NewAssessmentScreen 
+                isMobile={isMobile} 
+                onNavigate={handleNavigate}
+                prefillLocation={selectedLocation}
+                draftAssessment={draftAssessment}
+              />
+            )}
             {activeScreen === 'stockfeed' && <StockFeedScreen isMobile={isMobile} />}
             {activeScreen === 'more' && <MoreScreen onNavigate={handleNavigate} isMobile={isMobile} onLogout={handleLogout} user={user} />}
             {activeScreen === 'locations' && <LocationsScreen isMobile={isMobile} user={user} />}
