@@ -42,6 +42,16 @@ This branch focuses on improving the visual consistency between different screen
 - Swapped the order of Locations and Stock Feed in the MoreScreen component (mobile menu)
 - Ensured consistency between desktop and mobile navigation
 
+### Mock Data
+- Updated all mock reports with cultivar and season information
+- Added a new cultivar "Blaze" to the options
+- Added season data based on report dates:
+  - 2024/2025 for current season
+  - 2023/2024 for previous season
+  - 2022/2023 for older reports
+- Enhanced the report generation logic to automatically set season based on date
+- Aligned all mock data to properly reflect the relationships between reports, assessments, and cultivars
+
 ## Design Principles Applied
 
 1. **Consistent Header Pattern**: All main screens now follow the same header pattern with:
@@ -79,6 +89,12 @@ This branch focuses on improving the visual consistency between different screen
    - Filter reset and apply actions
    - Responsive design for both mobile and desktop views
 
+7. **Improved Data Representation**: The Reports screen now shows:
+   - More comprehensive information with the new columns
+   - Consistent data presentation between table and card views
+   - Better sorting and filtering options based on real data
+   - Realistic seasonal data that aligns with agricultural cycles
+
 ## Benefits
 
 - **Improved User Experience**: Users will have a more consistent experience when navigating between screens
@@ -88,3 +104,4 @@ This branch focuses on improving the visual consistency between different screen
 - **Simplified User Journey**: A consistent interface makes it easier for users to navigate between different sections
 - **Improved Discoverability**: Consistent patterns for actions and notifications improve feature discovery
 - **Enhanced Data Exploration**: The improved filtering system makes it easier to find specific reports
+- **More Realistic Demo**: The enhanced mock data provides a more authentic representation of the application's capabilities
