@@ -6,7 +6,6 @@ This feature adds location management functionality to the Beet Guru app, allowi
 
 1. **LocationsScreen**: The main screen for viewing and managing locations.
    - Lists all locations for the current farmer
-   - Includes search functionality for filtering locations
    - Provides options to add, edit, and delete locations
 
 2. **LocationForm**: A modal form component for creating and editing locations.
@@ -35,6 +34,15 @@ Each location includes:
 - `area`: Size in hectares
 - `latitude`: Geographic coordinate
 - `longitude`: Geographic coordinate
+
+## Demo Data
+
+For demonstration purposes, the app comes pre-populated with three locations:
+- North Paddock (3.5 hectares)
+- Mid Paddock (2.2 hectares)
+- South Paddock (4.1 hectares)
+
+Each has corresponding coordinates and is associated with the current user.
 
 ## UX/UI Patterns
 
@@ -68,7 +76,6 @@ In a future implementation for retailers, the hierarchy would change:
 
 - To test the feature, login as a farmer user and navigate to the Locations screen
 - Try adding a new location, editing an existing one, and deleting a location
-- Test the search functionality with existing location names
 - Verify that all modals can be opened and closed correctly
 
 ## Implementation Notes
