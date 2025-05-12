@@ -90,7 +90,7 @@ const LoginScreen = ({ onLogin, onRegister }) => {
           <img 
             src={beetGuruWideLogo} 
             alt="Beet Guru Logo" 
-            className="h-16 w-auto" 
+            className="h-28 w-auto" 
           />
         </div>
         
