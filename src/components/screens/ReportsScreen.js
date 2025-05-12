@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { PlusCircle, ChevronDown, Filter, X, FileText } from 'lucide-react';
+import { ChevronDown, Filter, X, FileText } from 'lucide-react';
 import AssessmentTable from '../ui/AssessmentTable';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
@@ -89,21 +89,13 @@ const ReportsScreen = ({ isMobile }) => {
     <div className="space-y-6">
       {/* Header Section */}
       <div className="bg-white rounded-xl shadow p-6">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800 mb-1">
-              Reports
-            </h1>
-            <p className="text-gray-600">
-              View and share your assessment reports
-            </p>
-          </div>
-          <FormButton 
-            variant="primary" 
-            icon={<PlusCircle size={16} />}
-          >
-            {isMobile ? 'New' : 'New Report'}
-          </FormButton>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800 mb-1">
+            Reports
+          </h1>
+          <p className="text-gray-600">
+            View and share your assessment reports
+          </p>
         </div>
       </div>
       
@@ -185,15 +177,9 @@ const ReportsScreen = ({ isMobile }) => {
                 <div className="p-8 text-center">
                   <FileText size={48} className="text-gray-300 mx-auto mb-4" />
                   <h3 className="text-lg font-medium text-gray-600 mb-2">No reports found</h3>
-                  <p className="text-gray-500 mb-6">
+                  <p className="text-gray-500">
                     Complete an assessment to generate a report
                   </p>
-                  <FormButton 
-                    variant="primary" 
-                    icon={<PlusCircle size={16} />}
-                  >
-                    New Report
-                  </FormButton>
                 </div>
               ) : (
                 <ul className="divide-y divide-gray-200">
@@ -236,15 +222,9 @@ const ReportsScreen = ({ isMobile }) => {
                 <div className="p-8 text-center">
                   <FileText size={48} className="text-gray-300 mx-auto mb-4" />
                   <h3 className="text-lg font-medium text-gray-600 mb-2">No reports found</h3>
-                  <p className="text-gray-500 mb-6">
+                  <p className="text-gray-500">
                     Complete an assessment to generate a report
                   </p>
-                  <FormButton 
-                    variant="primary" 
-                    icon={<PlusCircle size={16} />}
-                  >
-                    New Report
-                  </FormButton>
                 </div>
               }
             />
