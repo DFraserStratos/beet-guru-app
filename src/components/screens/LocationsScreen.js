@@ -29,6 +29,8 @@ const LocationsScreen = ({ isMobile, user }) => {
   // Setup API hooks
   const getLocationsApi = useApi(referencesAPI.getLocations);
   const createLocationApi = useApi(referencesAPI.createLocation);
+  const updateLocationApi = useApi(referencesAPI.updateLocation);
+  const deleteLocationApi = useApi(referencesAPI.deleteLocation);
   
   // Fetch locations on component mount
   useEffect(() => {
@@ -63,14 +65,16 @@ const LocationsScreen = ({ isMobile, user }) => {
   
   // Handle editing an existing location
   const handleEditLocation = async (locationData) => {
-    // Mock API update since we don't have an update endpoint yet
-    const updatedLocations = locations.map(location => 
-      location.id === locationData.id ? { ...location, ...locationData } : location
-    );
-    
-    setLocations(updatedLocations);
-    setIsFormOpen(false);
-    setSelectedLocation(null);
+    const result = await updateLocationApi.execute(locationData.id, locationData);
+    if (result) {
+      // Update locations list
+      const updatedLocations = locations.map(location => 
+        location.id === result.id ? result : location
+      );
+      setLocations(updatedLocations);
+      setIsFormOpen(false);
+      setSelectedLocation(null);
+    }
   };
   
   // Open edit form for a location
@@ -86,15 +90,22 @@ const LocationsScreen = ({ isMobile, user }) => {
   };
   
   // Confirm location deletion
-  const confirmDelete = () => {
-    // Mock deletion since we don't have a delete endpoint yet
-    const updatedLocations = locations.filter(
-      location => location.id !== locationToDelete?.id
-    );
-    
-    setLocations(updatedLocations);
-    setIsConfirmDeleteOpen(false);
-    setLocationToDelete(null);
+  const confirmDelete = async () => {
+    try {
+      const result = await deleteLocationApi.execute(locationToDelete?.id);
+      if (result && result.success) {
+        // Update locations list
+        const updatedLocations = locations.filter(
+          location => location.id !== locationToDelete?.id
+        );
+        setLocations(updatedLocations);
+      }
+    } catch (error) {
+      alert('Could not delete location: ' + error.message);
+    } finally {
+      setIsConfirmDeleteOpen(false);
+      setLocationToDelete(null);
+    }
   };
   
   // Filter locations by search query
@@ -187,18 +198,25 @@ const LocationsScreen = ({ isMobile, user }) => {
                       <p className="text-sm text-gray-500">
                         {location.area ? `${location.area} hectares` : 'Area not specified'}
                       </p>
+                      {location.latitude && location.longitude && (
+                        <p className="text-xs text-gray-400 mt-1">
+                          Lat: {location.latitude.toFixed(4)}, Lng: {location.longitude.toFixed(4)}
+                        </p>
+                      )}
                     </div>
                   </div>
                   <div className="flex space-x-2">
                     <button 
                       className="p-2 text-gray-500 hover:text-green-600 rounded-full hover:bg-gray-100"
                       onClick={() => handleEditClick(location)}
+                      aria-label="Edit location"
                     >
                       <Edit size={16} />
                     </button>
                     <button 
                       className="p-2 text-gray-500 hover:text-red-600 rounded-full hover:bg-gray-100"
                       onClick={() => handleDeleteClick(location)}
+                      aria-label="Delete location"
                     >
                       <Trash size={16} />
                     </button>
@@ -210,7 +228,7 @@ const LocationsScreen = ({ isMobile, user }) => {
         )}
       </div>
       
-      {/* Location Form Modal */}
+      {/* Create/Edit Location Form Modal */}
       {isFormOpen && (
         <ErrorBoundary>
           <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -246,6 +264,7 @@ const LocationsScreen = ({ isMobile, user }) => {
               <FormButton 
                 variant="danger" 
                 onClick={confirmDelete}
+                isLoading={deleteLocationApi.loading}
               >
                 Delete
               </FormButton>
