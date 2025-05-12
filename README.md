@@ -38,18 +38,23 @@ To understand the application fully, it's important to know these key concepts:
 - Icons from Lucide React 0.294.0
 - Responsive design with mobile and desktop views
 - State management through React hooks (no Redux)
-- No routing library - uses component-based navigation
-- Mock data for demonstration purposes
+- Custom hooks for common functionality
+- API service layer with mock data
+- Error boundaries for improved error handling
+- Reusable form components
 
 ## Project Structure
 
 ```
 src/
 ├── components/        # Reusable UI components
+│   ├── assessment/    # Assessment wizard components
 │   ├── layout/        # Layout components (Sidebar, Header, BottomNav)
-│   ├── ui/            # UI elements (cards, buttons, widgets)
-│   └── screens/       # Main screen components 
-├── assets/            # Images, icons, etc.
+│   ├── screens/       # Main screen components 
+│   ├── ui/            # UI elements (cards, buttons, widgets, forms)
+│   └── utility/       # Utility components (ErrorBoundary, etc.)
+├── hooks/             # Custom React hooks
+├── services/          # API services
 └── utils/             # Helper functions
 ```
 
@@ -75,7 +80,21 @@ src/
 - **CultivarInfoWidget.js**: Information about beet varieties
 - **SeasonalTimeline.js**: Visual calendar of growing seasons
 - **ReminderWidget.js**: Action items and notifications for users
-- Various cards, buttons, and form elements
+- Form components (FormField, FormButton) for consistent styling
+- Various cards and UI elements
+
+#### Assessment Components
+- **StepProgress.js**: Wizard progress indicator
+- **CropDetailsStep.js**: Step 1 of assessment creation
+- **FieldSetupStep.js**: Step 2 of assessment creation
+- **MeasurementsStep.js**: Step 3 of assessment creation
+- **ReviewStep.js**: Step 4 of assessment creation
+
+#### Custom Hooks
+- **useDeviceDetection**: Detects device type based on screen width
+- **useForm**: Handles form state, validation, and submission
+- **useLocalStorage**: Persists state in localStorage
+- **useApi**: Handles API calls with loading and error states
 
 ## State Management
 
@@ -89,6 +108,7 @@ The application uses React's built-in hooks for state management:
   - Authentication screen type (`authScreen`)
 
 - Component-level state is managed within individual components
+- Custom hooks provide reusable state logic
 - Props are passed down to child components as needed
 - No global state management library is currently used
 
@@ -235,34 +255,21 @@ The application is designed to work well on both mobile and desktop:
 - Larger graphs and visualizations
 - Keyboard shortcuts (planned for future)
 
-## Implementation Details
+## API Service Layer
 
-### Navigation Improvements
-- Better separation between mobile and desktop layouts
-- Proper z-index management for sidebar and overlays
-- Improved responsive behavior with cleaner breakpoints
-- Conditional rendering based on device type
-- Visual consistency across all screens
+The app includes a service layer for API calls:
 
-### Home Screen Implementation
-- Uses conditional rendering based on the isMobile flag for responsive layouts
-- Implements modern Tailwind CSS styling for clean user interface
-- Widget components are reusable and self-contained
-- Fixed-height Cultivar Information widget for better user experience
-- Responsive design adapts to different screen sizes
+### API Structure
+- `authAPI`: Authentication methods (login, register)
+- `assessmentsAPI`: Assessment CRUD operations
+- `reportsAPI`: Report generation and management
+- `referencesAPI`: Reference data (locations, cultivars, etc.)
 
-### Authentication Implementation
-- Form validation is intentionally bypassed for smooth demo experience
-- Separate handler functions for form filling and submission
-- State reset when navigating between screens
-- Consistent behavior between forms
-
-### Styling Approach
-- Tailwind utility classes for consistent styling
-- Custom color palette based on green theme
-- Responsive design system with mobile-first approach
-- Consistent spacing and typography
-- Reusable UI components for buttons, cards, etc.
+### Features
+- Structured mock data for demonstration
+- Consistent error handling
+- Simulated API delays for realistic behavior
+- Ready for integration with real backend
 
 ## Development Environment
 
@@ -314,6 +321,15 @@ The application is designed to work well on both mobile and desktop:
 
 ## Recent Updates History
 
+### Code Refactoring (May 2025)
+- Implemented custom hooks for reusable functionality
+- Added error boundaries for improved error handling
+- Created a service layer for API calls
+- Developed reusable form components
+- Split large components into smaller, focused ones
+- Added comprehensive documentation
+- See [README-REFACTORING.md](./README-REFACTORING.md) for details
+
 ### Home Screen Update (May 2025)
 - Renamed "Dashboard" to "Home" for more intuitive navigation
 - Added prominent "New Assessment" button
@@ -323,6 +339,7 @@ The application is designed to work well on both mobile and desktop:
 - Added non-expandable Cultivar Information widget
 - Added Seasonal Timeline and Weather Widgets
 - Added Reminder Widget for notifications
+- See [README-HOME-SCREEN-UPDATE.md](./README-HOME-SCREEN-UPDATE.md) for details
 
 ### Navigation Fixes (April 2025)
 - Removed header on desktop view
@@ -331,6 +348,7 @@ The application is designed to work well on both mobile and desktop:
 - Placed app version and copyright on a single line
 - Fixed z-index issues with overlapping elements
 - Improved responsive breakpoints behavior
+- See [README-NAVIGATION-FIXES.md](./README-NAVIGATION-FIXES.md) for details
 
 ## Future Improvements Roadmap
 
