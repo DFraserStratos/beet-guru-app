@@ -45,16 +45,16 @@ const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
             onClick={() => handleNavigate('reports')}
           />
           <SidebarItem 
-            icon={<Calculator size={20} />} 
-            label="Stock Feed" 
-            isActive={activeScreen === 'stockfeed'} 
-            onClick={() => handleNavigate('stockfeed')}
-          />
-          <SidebarItem 
             icon={<MapPin size={20} />} 
             label="Locations" 
             isActive={activeScreen === 'locations'} 
             onClick={() => handleNavigate('locations')}
+          />
+          <SidebarItem 
+            icon={<Calculator size={20} />} 
+            label="Stock Feed" 
+            isActive={activeScreen === 'stockfeed'} 
+            onClick={() => handleNavigate('stockfeed')}
           />
         </ul>
       </div>
