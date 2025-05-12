@@ -69,8 +69,8 @@ src/
 - **LoginScreen.js**: User authentication screen
 - **RegisterScreen.js**: New user registration screen
 - **HomeScreen.js**: Main dashboard with key information widgets
-- **AssessmentsScreen.js**: List of assessments with filtering options
-- **NewAssessmentScreen.js**: Form for creating new crop assessments
+- **AssessmentsScreen.js**: List of locations with status indicators
+- **NewAssessmentScreen.js**: Multi-step form for creating new crop assessments
 - **ReportsScreen.js**: View and management of generated reports
 - **StockFeedScreen.js**: Feed calculator and forecasting tools
 - **MoreScreen.js**: Additional options, user profile, settings, etc.
@@ -80,8 +80,9 @@ src/
 - **CultivarInfoWidget.js**: Information about beet varieties
 - **SeasonalTimeline.js**: Visual calendar of growing seasons
 - **ReminderWidget.js**: Action items and notifications for users
+- **LocationCard.js**: Displays location with status (Draft/Not Started)
+- **AssessmentTable.js**: Reusable table component for displaying data
 - Form components (FormField, FormButton) for consistent styling
-- Various cards and UI elements
 
 #### Assessment Components
 - **StepProgress.js**: Wizard progress indicator
@@ -106,6 +107,8 @@ The application uses React's built-in hooks for state management:
   - Active screen (`activeScreen`)
   - Device type detection (`isMobile`)
   - Authentication screen type (`authScreen`)
+  - Selected location (`selectedLocation`)
+  - Draft assessment (`draftAssessment`)
 
 - Component-level state is managed within individual components
 - Custom hooks provide reusable state logic
@@ -169,16 +172,16 @@ HomeScreen
 The assessment system allows farmers to record and track beet crop measurements:
 
 ### Assessment Workflow
-1. Create a new assessment via the "New Assessment" button
-2. Select or create a grower
-3. Select or create a location
-4. Record field measurements (samples from different areas)
-5. Enter dry matter percentages and row specifications
-6. Generate a report with yield estimates and feeding projections
+1. Navigate to Assessments screen to see available locations
+2. For a "Draft" location, continue the in-progress assessment
+3. For a "Not Started" location, start a new assessment with that location pre-filled
+4. Fill in crop details, field setup, and measurements
+5. Review and generate a report with yield estimates
 
 ### Assessment Components
-- **AssessmentsScreen.js**: Lists all assessments with filtering options
+- **AssessmentsScreen.js**: Shows locations with their assessment status
 - **NewAssessmentScreen.js**: Multi-step form for creating assessments
+- **LocationCard.js**: Card component for displaying location with status
 - Field measurement input forms with validation
 - Dry matter and row spacing calculators
 - Preview graphs for visualization
@@ -234,10 +237,10 @@ The reporting system provides farmers with actionable data:
 - Visual graphs and charts
 - Exportable to email
 
-### Report Types
-- Basic reports with essential information
-- Advanced reports with detailed analysis
-- Customizable reports with selected metrics
+### Report Display
+- Desktop: Table view with columns for Date, Report Title, Location, and Actions
+- Mobile: Card view with vertically stacked information for better readability
+- Historical reports included for better data analysis over time
 
 ## Responsive Design
 
@@ -247,13 +250,14 @@ The application is designed to work well on both mobile and desktop:
 - Touch-friendly UI elements with adequate spacing
 - Bottom navigation for easy thumb access
 - Simplified layouts for smaller screens
-- Stacked content for better readability
+- Card-based displays for better readability and touch interaction
+- Vertical scrolling optimized for mobile
 
 ### Desktop Enhancements
 - Sidebar navigation for efficient screen utilization
 - Multi-column layouts for better information density
+- Tabular data displays for efficient scanning
 - Larger graphs and visualizations
-- Keyboard shortcuts (planned for future)
 
 ## API Service Layer
 
@@ -261,7 +265,7 @@ The app includes a service layer for API calls:
 
 ### API Structure
 - `authAPI`: Authentication methods (login, register)
-- `assessmentsAPI`: Assessment CRUD operations
+- `assessmentsAPI`: Assessment CRUD operations, including draft management
 - `reportsAPI`: Report generation and management
 - `referencesAPI`: Reference data (locations, cultivars, etc.)
 
@@ -306,8 +310,9 @@ The app includes a service layer for API calls:
 
 ### Using the App
 - Navigate between sections using the sidebar (desktop) or bottom tabs (mobile)
-- View and create assessments
-- View reports
+- In Assessments, view locations and their status (Draft/Not Started)
+- Continue draft assessments or start new ones for specific locations
+- View historical reports in the Reports section
 - Use the Stock Feed Calculator
 - Log out via the sidebar or "More" tab
 
@@ -320,6 +325,16 @@ The app includes a service layer for API calls:
 - Responsive design that works well on both mobile and desktop
 
 ## Recent Updates History
+
+### Assessments and Reports Update (May 2025)
+- Split functionality between Assessments (in-progress) and Reports (completed)
+- Redesigned Assessments screen to display locations with status indicators
+- Added support for starting assessments for specific locations
+- Added draft assessment continuation functionality
+- Optimized Reports screen for mobile with card-based layout
+- Added historical reports spanning multiple years
+- Created reusable UI components (LocationCard, AssessmentTable)
+- See [README-ASSESSMENTS-UPDATE.md](./README-ASSESSMENTS-UPDATE.md) for details
 
 ### Logo Implementation (May 2025)
 - Added official Beet Guru logo in two variants (square and wide)
