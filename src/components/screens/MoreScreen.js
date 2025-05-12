@@ -21,14 +21,14 @@ const MoreScreen = ({ onNavigate, onLogout, user }) => {
       <div className="bg-white rounded-xl shadow overflow-hidden">
         <ul className="divide-y divide-gray-100">
           <MenuItem 
-            icon={<Calculator size={20} className="text-green-600" />}
-            label="Stock Feed Calculator"
-            onClick={() => onNavigate('stockfeed')}
-          />
-          <MenuItem 
             icon={<MapPin size={20} className="text-green-600" />}
             label="Locations"
             onClick={() => onNavigate('locations')}
+          />
+          <MenuItem 
+            icon={<Calculator size={20} className="text-green-600" />}
+            label="Stock Feed Calculator"
+            onClick={() => onNavigate('stockfeed')}
           />
           <MenuItem 
             icon={<Settings size={20} className="text-gray-600" />}
