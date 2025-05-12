@@ -111,7 +111,8 @@ const mockData = {
     { id: '1', name: 'Brigadier', cropTypeId: '1', dryMatter: '12-15%', yield: '20-30 t/acre', growingTime: '24-28 weeks', description: 'Low dry matter content, high sugar content. Suitable for all stock types. World\'s number one for strip grazing.' },
     { id: '2', name: 'Feldherr', cropTypeId: '1', dryMatter: '19-21%', yield: '16-20 t/ha', growingTime: '190-210 days' },
     { id: '3', name: 'Kyros', cropTypeId: '1', dryMatter: '17-19%', yield: '17-22 t/ha', growingTime: '185-205 days' },
-    { id: '4', name: 'Blizzard', cropTypeId: '1', dryMatter: '13-15%', yield: '15-19 t/ha', growingTime: '170-190 days' }
+    { id: '4', name: 'Blizzard', cropTypeId: '1', dryMatter: '13-15%', yield: '15-19 t/ha', growingTime: '170-190 days' },
+    { id: '5', name: 'Blaze', cropTypeId: '1', dryMatter: '16-18%', yield: '18-24 t/ha', growingTime: '180-200 days' }
   ],
   assessments: [
     { 
@@ -264,7 +265,9 @@ const mockData = {
       created: '2025-05-08',
       status: 'sent',
       pages: 3,
-      recipients: 1
+      recipients: 1,
+      cultivar: 'Brigadier',
+      season: '2024/2025'
     },
     {
       id: '2',
@@ -274,7 +277,9 @@ const mockData = {
       created: '2025-05-07',
       status: 'sent',
       pages: 4,
-      recipients: 2
+      recipients: 2,
+      cultivar: 'Kyros',
+      season: '2024/2025'
     },
     {
       id: '3',
@@ -284,7 +289,9 @@ const mockData = {
       created: '2025-05-06',
       status: 'sent',
       pages: 5,
-      recipients: 3
+      recipients: 3,
+      cultivar: 'Blizzard',
+      season: '2024/2025'
     },
     {
       id: '4',
@@ -294,7 +301,9 @@ const mockData = {
       created: '2024-11-12',
       status: 'sent',
       pages: 3,
-      recipients: 2
+      recipients: 2,
+      cultivar: 'Feldherr',
+      season: '2024/2025'
     },
     {
       id: '5',
@@ -304,7 +313,9 @@ const mockData = {
       created: '2024-09-22',
       status: 'sent',
       pages: 5,
-      recipients: 4
+      recipients: 4,
+      cultivar: 'Kyros',
+      season: '2024/2025'
     },
     {
       id: '6',
@@ -314,7 +325,9 @@ const mockData = {
       created: '2023-11-15',
       status: 'sent',
       pages: 4,
-      recipients: 2
+      recipients: 2,
+      cultivar: 'Brigadier',
+      season: '2023/2024'
     },
     {
       id: '7',
@@ -324,7 +337,9 @@ const mockData = {
       created: '2023-10-08',
       status: 'sent',
       pages: 4,
-      recipients: 3
+      recipients: 3,
+      cultivar: 'Blizzard',
+      season: '2023/2024'
     },
     {
       id: '8',
@@ -334,7 +349,9 @@ const mockData = {
       created: '2022-10-25',
       status: 'sent',
       pages: 3,
-      recipients: 2
+      recipients: 2,
+      cultivar: 'Kyros',
+      season: '2022/2023'
     },
     {
       id: '9',
@@ -344,7 +361,9 @@ const mockData = {
       created: '2024-11-14',
       status: 'draft',
       pages: 6,
-      recipients: 0
+      recipients: 0,
+      cultivar: 'Feldherr',
+      season: '2024/2025'
     }
   ]
 };
@@ -512,8 +531,7 @@ export const reportsAPI = {
       
       return {
         ...report,
-        location: location?.name || '',
-        cropType: cropType?.name || ''
+        location: location?.name || ''
       };
     });
   },
@@ -535,6 +553,17 @@ export const reportsAPI = {
     }
     
     const location = mockData.locations.find(l => l.id === assessment.locationId);
+    const cultivar = mockData.cultivars.find(c => c.id === assessment.cultivarId);
+    
+    // Determine season based on assessment date
+    const assessmentDate = new Date(assessment.date);
+    const year = assessmentDate.getFullYear();
+    const month = assessmentDate.getMonth() + 1; // January is 0
+    
+    // If month is after June, season is current/next year, otherwise previous/current year
+    const season = month > 6 
+      ? `${year}/${year + 1}` 
+      : `${year - 1}/${year}`;
     
     const newReport = {
       id: String(mockData.reports.length + 1),
@@ -544,7 +573,9 @@ export const reportsAPI = {
       created: new Date().toISOString().split('T')[0],
       status: 'draft',
       pages: type === 'basic' ? 3 : 5,
-      recipients: 0
+      recipients: 0,
+      cultivar: cultivar?.name || '',
+      season
     };
     
     mockData.reports.push(newReport);
