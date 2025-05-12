@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { User, Mail, Lock, ArrowLeft, Check } from 'lucide-react';
-import beetGuruWideLogo from '../../assets/BeetGuruWide.png';
+import beetGuruWideLogo from '../../BeetGuruWide.png';
 
 const RegisterScreen = ({ onBack, onComplete }) => {
   const [formData, setFormData] = useState({
