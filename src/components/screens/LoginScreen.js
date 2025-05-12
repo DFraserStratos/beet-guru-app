@@ -65,6 +65,7 @@ const LoginScreen = ({ onLogin, onRegister }) => {
     
     // Second click: Actually log in
     onLogin({ 
+      id: '1',  // Make sure this matches the userId in the mock locations
       email: formValues.email, 
       name: 'John Doe', 
       role: 'Farm Manager',
