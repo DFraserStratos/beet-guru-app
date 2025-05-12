@@ -4,6 +4,7 @@ import { FormField, FormButton } from '../ui/form';
 import { useForm } from '../../hooks';
 import api from '../../services/api';
 import ErrorBoundary from '../utility/ErrorBoundary';
+import beetGuruWideLogo from '../../assets/BeetGuruWide.png';
 
 /**
  * Login screen component
@@ -86,12 +87,11 @@ const LoginScreen = ({ onLogin, onRegister }) => {
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <ErrorBoundary>
         <div className="flex justify-center">
-          <div className="flex items-center">
-            <div className="bg-green-800 rounded-full h-14 w-14 flex items-center justify-center mr-3">
-              <div className="text-white font-bold text-2xl">B</div>
-            </div>
-            <span className="font-bold text-2xl text-green-800">Beet Guru</span>
-          </div>
+          <img 
+            src={beetGuruWideLogo} 
+            alt="Beet Guru Logo" 
+            className="h-16 w-auto" 
+          />
         </div>
         
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
