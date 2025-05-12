@@ -321,6 +321,13 @@ The app includes a service layer for API calls:
 
 ## Recent Updates History
 
+### Logo Implementation (May 2025)
+- Added official Beet Guru logo in two variants (square and wide)
+- Implemented wide logo on Login and Registration screens
+- Added square logo to Header and Sidebar navigation
+- Maintained consistent styling and branding throughout the app
+- See [README-LOGO-UPDATE.md](./README-LOGO-UPDATE.md) for details
+
 ### Code Refactoring (May 2025)
 - Implemented custom hooks for reusable functionality
 - Added error boundaries for improved error handling
