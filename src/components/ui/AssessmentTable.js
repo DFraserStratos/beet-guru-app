@@ -13,8 +13,14 @@ const AssessmentTable = ({
 }) => {
   if (!data || data.length === 0) {
     return (
-      <div className="bg-white rounded-xl shadow p-6 text-center text-gray-500">
-        {emptyMessage}
+      <div className="bg-white rounded-xl shadow overflow-hidden">
+        {typeof emptyMessage === 'string' ? (
+          <div className="p-6 text-center text-gray-500">
+            {emptyMessage}
+          </div>
+        ) : (
+          emptyMessage
+        )}
       </div>
     );
   }
