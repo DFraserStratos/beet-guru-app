@@ -1,12 +1,102 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PlusCircle, ChevronDown, Filter, X } from 'lucide-react';
+import AssessmentTable from '../ui/AssessmentTable';
+import api from '../../services/api';
+import { useApi } from '../../hooks';
 
+/**
+ * Screen for displaying and managing reports
+ * @param {Object} props - Component props
+ * @returns {JSX.Element} Rendered component
+ */
 const ReportsScreen = ({ isMobile }) => {
   const [showFilters, setShowFilters] = useState(false);
+  
+  // Use the API hook to fetch reports
+  const { 
+    data: reports, 
+    loading, 
+    error, 
+    execute: fetchReports 
+  } = useApi(api.reports.getAll);
+
+  // Use the API hook to fetch completed assessments
+  const {
+    data: completedAssessments,
+    loading: loadingAssessments,
+    error: assessmentsError,
+    execute: fetchCompletedAssessments
+  } = useApi(api.assessments.getCompletedAssessments);
+
+  useEffect(() => {
+    fetchReports();
+    fetchCompletedAssessments();
+  }, [fetchReports, fetchCompletedAssessments]);
   
   const toggleFilters = () => {
     setShowFilters(!showFilters);
   };
+
+  // Define table columns for the reports
+  const columns = [
+    { 
+      key: 'created', 
+      label: 'Date',
+      render: (item) => new Date(item.created).toLocaleDateString('en-NZ', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+      })
+    },
+    { 
+      key: 'title', 
+      label: 'Report Title' 
+    },
+    { 
+      key: 'location', 
+      label: 'Location' 
+    },
+    { 
+      key: 'cropType', 
+      label: 'Crop Type' 
+    },
+    { 
+      key: 'type', 
+      label: 'Report Type',
+      render: (item) => (
+        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+          item.type === 'basic' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'
+        }`}>
+          {item.type === 'basic' ? 'Basic Report' : 'Advanced Report'}
+        </span>
+      )
+    },
+    { 
+      key: 'status', 
+      label: 'Status',
+      render: (item) => (
+        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+          item.status === 'sent' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+        }`}>
+          {item.status === 'sent' ? 'Sent' : 'Draft'}
+        </span>
+      )
+    }
+  ];
+
+  // Add actions to each report
+  const reportsWithActions = reports ? reports.map(report => ({
+    ...report,
+    actions: [
+      { label: 'View', onClick: () => console.log('View report', report.id), className: 'text-blue-600 hover:text-blue-800' },
+      { label: 'Edit', onClick: () => console.log('Edit report', report.id), className: 'text-gray-600 hover:text-gray-800' },
+      { 
+        label: report.status === 'sent' ? 'Resend' : 'Send', 
+        onClick: () => console.log('Send report', report.id),
+        className: 'text-green-600 hover:text-green-800'
+      }
+    ]
+  })) : [];
   
   return (
     <div className="space-y-4">
@@ -96,77 +186,28 @@ const ReportsScreen = ({ isMobile }) => {
         </div>
       )}
       
-      {/* Reports Grid */}
-      <div className={`grid grid-cols-1 ${isMobile ? '' : 'md:grid-cols-2 lg:grid-cols-3'} gap-4`}>
-        {[...Array(6)].map((_, index) => (
-          <div key={index} className="bg-white rounded-xl shadow overflow-hidden">
-            <div className="p-4">
-              <div className="flex justify-between items-start mb-3">
-                <div>
-                  <span className={`px-2 py-1 inline-flex text-xs leading-4 font-semibold rounded-full ${ 
-                    index % 2 === 0 ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'
-                  }`}>
-                    {index % 2 === 0 ? 'Basic Report' : 'Advanced Report'}
-                  </span>
-                  <h3 className="mt-2 text-base font-medium text-gray-900 line-clamp-1">
-                    {['North Field Assessment', 'West Paddock Overview', 'East Field Analysis', 'South Block Report', 'Central Area Stats', 'Full Farm Summary'][index % 6]}
-                  </h3>
-                </div>
-                <span className={`px-2 py-1 inline-flex text-xs leading-4 font-semibold rounded-full ${
-                  index < 3 ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                }`}>
-                  {index < 3 ? 'Sent' : 'Draft'}
-                </span>
-              </div>
-              
-              <div className="text-sm text-gray-500 space-y-1">
-                <p>Created: {new Date(2025, 4, 8 - index).toLocaleDateString('en-NZ', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
-                <p>Crop Type: {['Fodder Beet', 'Sugar Beet', 'Mangels'][index % 3]}</p>
-              </div>
-              
-              <div className="mt-3 flex justify-between items-center text-sm">
-                <div className="flex items-center">
-                  <svg className="h-4 w-4 text-green-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
-                    <path fillRule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clipRule="evenodd" />
-                  </svg>
-                  <span className="ml-1 text-gray-500">{index + 3} pages</span>
-                </div>
-                
-                {index < 3 && (
-                  <div className="flex items-center">
-                    <svg className="h-4 w-4 text-green-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                      <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                    </svg>
-                    <span className="ml-1 text-gray-500">{index + 1} recipients</span>
-                  </div>
-                )}
-              </div>
-            </div>
-            
-            <div className="border-t border-gray-200 px-4 py-3 flex bg-gray-50">
-              <button className="text-sm text-blue-600 hover:text-blue-800 font-medium flex-1 text-center">
-                View
-              </button>
-              <div className="border-l border-gray-200"></div>
-              <button className="text-sm text-gray-600 hover:text-gray-800 font-medium flex-1 text-center">
-                Edit
-              </button>
-              <div className="border-l border-gray-200"></div>
-              <button className="text-sm text-green-600 hover:text-green-800 font-medium flex-1 text-center">
-                {index < 3 ? 'Resend' : 'Send'}
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+      {/* Loading State */}
+      {(loading || loadingAssessments) && (
+        <div className="bg-white rounded-xl shadow p-4 text-center text-gray-500">
+          Loading reports...
+        </div>
+      )}
       
-      {/* Mobile Load More Button */}
-      {isMobile && (
-        <button className="w-full bg-white text-green-600 font-medium py-3 rounded-lg shadow text-center">
-          Load More Reports
-        </button>
+      {/* Error State */}
+      {(error || assessmentsError) && (
+        <div className="bg-white rounded-xl shadow p-4 text-center text-red-500">
+          Error loading reports: {error?.message || assessmentsError?.message}
+        </div>
+      )}
+      
+      {/* Reports Table */}
+      {!loading && !error && reports && (
+        <AssessmentTable 
+          data={reportsWithActions}
+          columns={columns}
+          onRowClick={(report) => console.log('Row clicked', report.id)}
+          emptyMessage="No reports found. Complete an assessment to generate a report."
+        />
       )}
     </div>
   );
