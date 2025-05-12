@@ -37,7 +37,7 @@ const ReportsScreen = ({ isMobile }) => {
     setShowFilters(!showFilters);
   };
 
-  // Define table columns for the reports
+  // Define table columns for the reports - simplified to remove status and type
   const columns = [
     { 
       key: 'created', 
@@ -55,49 +55,35 @@ const ReportsScreen = ({ isMobile }) => {
     { 
       key: 'location', 
       label: 'Location' 
-    },
+    }
+  ];
+
+  // Common report actions
+  const getReportActions = (report) => [
+    { label: 'View', onClick: () => console.log('View report', report.id), className: 'text-blue-600 hover:text-blue-800' },
+    { label: 'Edit', onClick: () => console.log('Edit report', report.id), className: 'text-gray-600 hover:text-gray-800' },
     { 
-      key: 'cropType', 
-      label: 'Crop Type' 
-    },
-    { 
-      key: 'type', 
-      label: 'Report Type',
-      render: (item) => (
-        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-          item.type === 'basic' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'
-        }`}>
-          {item.type === 'basic' ? 'Basic Report' : 'Advanced Report'}
-        </span>
-      )
-    },
-    { 
-      key: 'status', 
-      label: 'Status',
-      render: (item) => (
-        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-          item.status === 'sent' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-        }`}>
-          {item.status === 'sent' ? 'Sent' : 'Draft'}
-        </span>
-      )
+      label: report.status === 'sent' ? 'Resend' : 'Send', 
+      onClick: () => console.log('Send report', report.id),
+      className: 'text-green-600 hover:text-green-800'
     }
   ];
 
   // Add actions to each report
   const reportsWithActions = reports ? reports.map(report => ({
     ...report,
-    actions: [
-      { label: 'View', onClick: () => console.log('View report', report.id), className: 'text-blue-600 hover:text-blue-800' },
-      { label: 'Edit', onClick: () => console.log('Edit report', report.id), className: 'text-gray-600 hover:text-gray-800' },
-      { 
-        label: report.status === 'sent' ? 'Resend' : 'Send', 
-        onClick: () => console.log('Send report', report.id),
-        className: 'text-green-600 hover:text-green-800'
-      }
-    ]
+    actions: getReportActions(report)
   })) : [];
   
+  // Format date for display
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-NZ', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    });
+  };
+
   return (
     <div className="space-y-4">
       {/* Action Button */}
@@ -139,18 +125,6 @@ const ReportsScreen = ({ isMobile }) => {
           
           <div className="flex flex-wrap gap-4">
             <div className={`${isMobile ? 'w-full' : 'flex-1 min-w-[200px]'}`}>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Report Type</label>
-              <div className="relative">
-                <select className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm py-2 pl-3 pr-10 appearance-none border">
-                  <option value="">All Report Types</option>
-                  <option value="basic">Basic Report</option>
-                  <option value="advanced">Advanced Report</option>
-                </select>
-                <ChevronDown size={16} className="absolute right-3 top-2.5 text-gray-400" />
-              </div>
-            </div>
-            
-            <div className={`${isMobile ? 'w-full' : 'flex-1 min-w-[200px]'}`}>
               <label className="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
               <div className="relative">
                 <select className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm py-2 pl-3 pr-10 appearance-none border">
@@ -158,18 +132,6 @@ const ReportsScreen = ({ isMobile }) => {
                   <option value="week">Last 7 Days</option>
                   <option value="month">Last 30 Days</option>
                   <option value="year">This Year</option>
-                </select>
-                <ChevronDown size={16} className="absolute right-3 top-2.5 text-gray-400" />
-              </div>
-            </div>
-            
-            <div className={`${isMobile ? 'w-full' : 'flex-1 min-w-[200px]'}`}>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-              <div className="relative">
-                <select className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm py-2 pl-3 pr-10 appearance-none border">
-                  <option value="">All Statuses</option>
-                  <option value="sent">Sent</option>
-                  <option value="draft">Draft</option>
                 </select>
                 <ChevronDown size={16} className="absolute right-3 top-2.5 text-gray-400" />
               </div>
@@ -200,14 +162,55 @@ const ReportsScreen = ({ isMobile }) => {
         </div>
       )}
       
-      {/* Reports Table */}
+      {/* Reports - Desktop Table View or Mobile Card View */}
       {!loading && !error && reports && (
-        <AssessmentTable 
-          data={reportsWithActions}
-          columns={columns}
-          onRowClick={(report) => console.log('Row clicked', report.id)}
-          emptyMessage="No reports found. Complete an assessment to generate a report."
-        />
+        <>
+          {isMobile ? (
+            // Mobile Card View
+            <div className="space-y-3">
+              {reportsWithActions.map((report) => (
+                <div key={report.id} className="bg-white rounded-xl shadow overflow-hidden">
+                  <div className="p-4">
+                    <h3 className="font-medium text-base text-gray-900 line-clamp-1 mb-1">
+                      {report.title}
+                    </h3>
+                    
+                    <div className="text-sm text-gray-600 space-y-1 mb-3">
+                      <p>Date: {formatDate(report.created)}</p>
+                      <p>Location: {report.location}</p>
+                    </div>
+                    
+                    <div className="border-t pt-3 flex justify-between">
+                      {report.actions.map((action, index) => (
+                        <button 
+                          key={index}
+                          className={`text-sm font-medium ${action.className}`}
+                          onClick={action.onClick}
+                        >
+                          {action.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {reportsWithActions.length === 0 && (
+                <div className="bg-white rounded-xl shadow p-4 text-center text-gray-500">
+                  No reports found. Complete an assessment to generate a report.
+                </div>
+              )}
+            </div>
+          ) : (
+            // Desktop Table View
+            <AssessmentTable 
+              data={reportsWithActions}
+              columns={columns}
+              onRowClick={(report) => console.log('Row clicked', report.id)}
+              emptyMessage="No reports found. Complete an assessment to generate a report."
+            />
+          )}
+        </>
       )}
     </div>
   );
