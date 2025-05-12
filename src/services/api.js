@@ -57,7 +57,7 @@ const mockData = {
   locations: [
     { 
       id: '1', 
-      name: 'North Field', 
+      name: 'North Paddock', 
       userId: '1',
       area: 3.5,
       latitude: -43.5280,
@@ -65,7 +65,7 @@ const mockData = {
     },
     { 
       id: '2', 
-      name: 'West Paddock', 
+      name: 'Mid Paddock', 
       userId: '1',
       area: 2.2,
       latitude: -43.5310,
@@ -73,19 +73,11 @@ const mockData = {
     },
     { 
       id: '3', 
-      name: 'East Field', 
+      name: 'South Paddock', 
       userId: '1',
       area: 4.1,
       latitude: -43.5270,
       longitude: 172.6400
-    },
-    { 
-      id: '4', 
-      name: 'South Block', 
-      userId: '1',
-      area: 5.8,
-      latitude: -43.5350,
-      longitude: 172.6350
     }
   ],
   cropTypes: [
@@ -150,7 +142,7 @@ const mockData = {
     {
       id: '1',
       assessmentId: '1',
-      title: 'North Field Assessment',
+      title: 'North Paddock Assessment',
       type: 'basic',
       created: '2025-05-08',
       status: 'sent',
@@ -160,7 +152,7 @@ const mockData = {
     {
       id: '2',
       assessmentId: '2',
-      title: 'West Paddock Overview',
+      title: 'Mid Paddock Overview',
       type: 'advanced',
       created: '2025-05-07',
       status: 'sent',
@@ -170,7 +162,7 @@ const mockData = {
     {
       id: '3',
       assessmentId: '3',
-      title: 'East Field Analysis',
+      title: 'South Paddock Analysis',
       type: 'basic',
       created: '2025-05-06',
       status: 'sent',
