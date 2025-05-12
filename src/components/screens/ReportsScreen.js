@@ -85,6 +85,17 @@ const ReportsScreen = ({ isMobile }) => {
     });
   };
 
+  // Empty state content
+  const emptyStateContent = (
+    <div className="p-8 text-center">
+      <FileText size={48} className="text-gray-300 mx-auto mb-4" />
+      <h3 className="text-lg font-medium text-gray-600 mb-2">No reports found</h3>
+      <p className="text-gray-500">
+        Complete an assessment to generate a report
+      </p>
+    </div>
+  );
+
   return (
     <div className="space-y-6">
       {/* Header Section */}
@@ -174,13 +185,7 @@ const ReportsScreen = ({ isMobile }) => {
             // Mobile Card View
             <div className="bg-white rounded-xl shadow overflow-hidden">
               {reportsWithActions.length === 0 ? (
-                <div className="p-8 text-center">
-                  <FileText size={48} className="text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-600 mb-2">No reports found</h3>
-                  <p className="text-gray-500">
-                    Complete an assessment to generate a report
-                  </p>
-                </div>
+                emptyStateContent
               ) : (
                 <ul className="divide-y divide-gray-200">
                   {reportsWithActions.map((report) => (
@@ -218,15 +223,7 @@ const ReportsScreen = ({ isMobile }) => {
               data={reportsWithActions}
               columns={columns}
               onRowClick={(report) => console.log('Row clicked', report.id)}
-              emptyMessage={
-                <div className="p-8 text-center">
-                  <FileText size={48} className="text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-600 mb-2">No reports found</h3>
-                  <p className="text-gray-500">
-                    Complete an assessment to generate a report
-                  </p>
-                </div>
-              }
+              emptyMessage={emptyStateContent}
             />
           )}
         </>
