@@ -55,10 +55,38 @@ const mockData = {
     { id: '2', name: 'Donald', email: 'donald@example.co.nz', role: 'Farm Manager' }
   ],
   locations: [
-    { id: '1', name: 'North Field', userId: '1' },
-    { id: '2', name: 'West Paddock', userId: '1' },
-    { id: '3', name: 'East Field', userId: '1' },
-    { id: '4', name: 'South Block', userId: '1' }
+    { 
+      id: '1', 
+      name: 'North Field', 
+      userId: '1',
+      area: 3.5,
+      latitude: -43.5280,
+      longitude: 172.6316
+    },
+    { 
+      id: '2', 
+      name: 'West Paddock', 
+      userId: '1',
+      area: 2.2,
+      latitude: -43.5310,
+      longitude: 172.6290
+    },
+    { 
+      id: '3', 
+      name: 'East Field', 
+      userId: '1',
+      area: 4.1,
+      latitude: -43.5270,
+      longitude: 172.6400
+    },
+    { 
+      id: '4', 
+      name: 'South Block', 
+      userId: '1',
+      area: 5.8,
+      latitude: -43.5350,
+      longitude: 172.6350
+    }
   ],
   cropTypes: [
     { id: '1', name: 'Fodder Beet' },
@@ -336,6 +364,58 @@ export const referencesAPI = {
     return mockData.locations;
   },
   
+  getLocationById: async (id) => {
+    await delay();
+    const location = mockData.locations.find(l => l.id === id);
+    if (!location) {
+      throw new Error('Location not found');
+    }
+    return location;
+  },
+  
+  createLocation: async (locationData) => {
+    await delay(800); // Slightly longer delay to simulate server processing
+    const newLocation = {
+      id: String(mockData.locations.length + 1),
+      ...locationData
+    };
+    mockData.locations.push(newLocation);
+    return newLocation;
+  },
+  
+  updateLocation: async (id, locationData) => {
+    await delay(800);
+    const index = mockData.locations.findIndex(l => l.id === id);
+    if (index === -1) {
+      throw new Error('Location not found');
+    }
+    
+    const updatedLocation = {
+      ...mockData.locations[index],
+      ...locationData
+    };
+    
+    mockData.locations[index] = updatedLocation;
+    return updatedLocation;
+  },
+  
+  deleteLocation: async (id) => {
+    await delay(800);
+    const index = mockData.locations.findIndex(l => l.id === id);
+    if (index === -1) {
+      throw new Error('Location not found');
+    }
+    
+    // Check if location is used in any assessments
+    const isUsed = mockData.assessments.some(a => a.locationId === id);
+    if (isUsed) {
+      throw new Error('Cannot delete location that is used in assessments');
+    }
+    
+    mockData.locations.splice(index, 1);
+    return { success: true };
+  },
+  
   getCropTypes: async () => {
     await delay();
     return mockData.cropTypes;
@@ -347,16 +427,6 @@ export const referencesAPI = {
       return mockData.cultivars.filter(c => c.cropTypeId === cropTypeId);
     }
     return mockData.cultivars;
-  },
-  
-  createLocation: async (locationData) => {
-    await delay();
-    const newLocation = {
-      id: String(mockData.locations.length + 1),
-      ...locationData
-    };
-    mockData.locations.push(newLocation);
-    return newLocation;
   },
   
   createCultivar: async (cultivarData) => {
