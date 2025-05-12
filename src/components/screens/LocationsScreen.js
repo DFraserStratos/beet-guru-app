@@ -40,9 +40,9 @@ const LocationsScreen = ({ isMobile, user }) => {
   const fetchLocations = async () => {
     const result = await getLocationsApi.execute();
     if (result) {
-      // Filter by current user if in farmer mode
-      const userLocations = result.filter(location => location.userId === user?.id);
-      setLocations(userLocations);
+      // For demo purposes, show all locations regardless of user ID
+      // In a real app, we would filter by: result.filter(location => location.userId === user?.id)
+      setLocations(result);
     }
   };
   
