@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FormField, FormButtonNav } from '../ui/form';
 import { AlertTriangle } from 'lucide-react';
 
@@ -8,10 +8,18 @@ import { AlertTriangle } from 'lucide-react';
  * @returns {JSX.Element} Rendered component
  */
 const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile }) => {
+  const [valueType, setValueType] = useState(formData.valueType || 'estimate');
+  
   // Handle form field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     onChange({ target: { name, value } });
+  };
+  
+  // Handle value type change
+  const handleValueTypeChange = (type) => {
+    setValueType(type);
+    onChange({ target: { name: 'valueType', value: type } });
   };
   
   // Handle Save as Draft
@@ -39,52 +47,97 @@ const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile
           </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormField
-            label="Dry Matter Percentage (%)"
-            name="dryMatterPercentage"
-            type="number"
-            value={formData.dryMatterPercentage || '14'}
-            onChange={handleChange}
-            hint="Default value - will be updated with measurements"
-            step="0.1"
-            min="0"
-            max="100"
-          />
+        {/* Field Measurements Section */}
+        <div>
+          <h3 className="text-lg font-medium text-gray-800 mb-4">Field Measurements</h3>
           
-          <FormField
-            label="Row Spacing (m)"
-            name="rowSpacing"
-            type="number"
-            value={formData.rowSpacing || '0.5'}
-            onChange={handleChange}
-            hint="Distance between rows"
-            step="0.01"
-            min="0.1"
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <FormField
+              label="Row Spacing (m)"
+              name="rowSpacing"
+              type="number"
+              value={formData.rowSpacing || '0.5'}
+              onChange={handleChange}
+              hint="Distance between rows"
+              step="0.01"
+              min="0.1"
+            />
+            
+            <FormField
+              label="Measurement Length (m)"
+              name="measurementLength"
+              type="number"
+              value={formData.measurementLength || '4'}
+              onChange={handleChange}
+              hint="Length of the measurement area"
+              step="0.1"
+              min="0.1"
+            />
+          </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormField
-            label="Row Count"
-            name="rowCount"
-            type="number"
-            value={formData.rowCount || '0'}
-            onChange={handleChange}
-            hint="Number of rows carved into the ground"
-            min="0"
-          />
+        {/* Dry Matter Estimates Section */}
+        <div>
+          <h3 className="text-lg font-medium text-gray-800 mb-4">Dry Matter Estimates</h3>
           
-          <FormField
-            label="Field Area (ha)"
-            name="fieldArea"
-            type="number"
-            placeholder="Enter field area"
-            value={formData.fieldArea || ''}
-            onChange={handleChange}
-            step="0.01"
-            min="0"
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <FormField
+              label="Bulb Estimate (DM%)"
+              name="bulbEstimate"
+              type="number"
+              value={formData.bulbEstimate || '2'}
+              onChange={handleChange}
+              hint="Estimated dry matter percentage for bulbs"
+              step="0.1"
+              min="0"
+              max="100"
+            />
+            
+            <FormField
+              label="Leaf Estimate (DM%)"
+              name="leafEstimate"
+              type="number"
+              value={formData.leafEstimate || '3'}
+              onChange={handleChange}
+              hint="Estimated dry matter percentage for leaves"
+              step="0.1"
+              min="0"
+              max="100"
+            />
+          </div>
+          
+          {/* Value Type Toggle */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Value Types
+            </label>
+            <div className="border border-gray-200 rounded-lg overflow-hidden">
+              <div className="flex">
+                <button
+                  type="button"
+                  className={`flex-1 py-2 px-3 text-center text-sm font-medium ${
+                    valueType === 'estimate' 
+                      ? 'bg-green-50 text-green-600' 
+                      : 'bg-white text-gray-700 hover:bg-gray-50'
+                  }`}
+                  onClick={() => handleValueTypeChange('estimate')}
+                >
+                  Estimate
+                </button>
+                <button
+                  type="button"
+                  className={`flex-1 py-2 px-3 text-center text-sm font-medium ${
+                    valueType === 'actual' 
+                      ? 'bg-green-50 text-green-600' 
+                      : 'bg-white text-gray-700 hover:bg-gray-50'
+                  }`}
+                  onClick={() => handleValueTypeChange('actual')}
+                >
+                  Actual
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
         
         {/* Button Navigation - Using the new FormButtonNav component */}
