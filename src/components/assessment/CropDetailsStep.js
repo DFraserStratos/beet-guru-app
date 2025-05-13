@@ -126,8 +126,8 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
           />
         </div>
         
-        {/* Second row with Cultivar */}
-        <div>
+        {/* Second row with Cultivar and Custom Cultivar */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             label="Cultivar"
             name="cultivarId"
@@ -139,18 +139,18 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
             loading={cultivarsApi.loading}
           />
           
-          {showCustomCultivar && (
-            <div className="mt-3">
-              <FormField
-                label="Custom Cultivar Name"
-                name="customCultivarName"
-                type="text"
-                placeholder="Enter cultivar name"
-                value={customCultivarName}
-                onChange={handleCustomCultivarChange}
-                required
-              />
-            </div>
+          {showCustomCultivar ? (
+            <FormField
+              label="Custom Cultivar Name"
+              name="customCultivarName"
+              type="text"
+              placeholder="Enter cultivar name"
+              value={customCultivarName}
+              onChange={handleCustomCultivarChange}
+              required
+            />
+          ) : (
+            <div></div> // Empty div to maintain layout
           )}
         </div>
         
@@ -253,7 +253,7 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
             placeholder="Enter cost per hectare"
             value={formData.estimatedGrowingCost || '2500'}
             onChange={handleChange}
-            hint="Seeds, fertilizer, labor, etc."
+            hint="Consider costs for seeds, fertilizer, irrigation, labor, equipment, and pest management"
             min="0"
             step="10"
           />
