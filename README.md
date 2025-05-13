@@ -85,7 +85,7 @@ src/
 - Form components (FormField, FormButton) for consistent styling
 
 #### Assessment Components
-- **StepProgress.js**: Wizard progress indicator
+- **StepProgress.js**: Wizard progress indicator for multi-step forms
 - **CropDetailsStep.js**: Step 1 of assessment creation
 - **FieldSetupStep.js**: Step 2 of assessment creation
 - **MeasurementsStep.js**: Step 3 of assessment creation
@@ -185,6 +185,15 @@ The assessment system allows farmers to record and track beet crop measurements:
 - Field measurement input forms with validation
 - Dry matter and row spacing calculators
 - Preview graphs for visualization
+
+### Progress Indicator
+The assessment wizard uses a custom StepProgress component that:
+- Shows the current step in the multi-step form
+- Displays numbered indicators for each step
+- Includes a progress bar that advances as steps are completed
+- Uses color coding to indicate current, completed, and upcoming steps
+- Maintains precise alignment between dots and the progress track
+- See [README-PROGRESS-BAR.md](./README-PROGRESS-BAR.md) for details
 
 ## Stock Feed Calculator
 
@@ -325,6 +334,14 @@ The app includes a service layer for API calls:
 - Responsive design that works well on both mobile and desktop
 
 ## Recent Updates History
+
+### Progress Bar Improvements (May 2025)
+- Enhanced the StepProgress component with exact alignment between dots and tracks
+- Fixed issues with the progress bar extending past endpoints
+- Implemented dynamic progress calculation based on current step
+- Added proper z-index layering for visual continuity
+- Ensured responsive behavior across all screen sizes
+- See [README-PROGRESS-BAR.md](./README-PROGRESS-BAR.md) for details
 
 ### Assessments and Reports Update (May 2025)
 - Split functionality between Assessments (in-progress) and Reports (completed)
