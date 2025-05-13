@@ -24,6 +24,14 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel }) => {
     });
   };
   
+  // Get cultivar display name (either selected or custom)
+  const getCultivarName = () => {
+    if (formData.cultivarId === 'other' && formData.customCultivarName) {
+      return formData.customCultivarName + ' (Custom)';
+    }
+    return 'Brigadier'; // Default mock data
+  };
+  
   // Calculate results based on sample measurements
   const calculateResults = () => {
     // Simplified calculation for demonstration
@@ -135,7 +143,7 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel }) => {
                   <div className="text-gray-900">North Field</div>
                   
                   <div className="text-gray-500">Cultivar:</div>
-                  <div className="text-gray-900">Brigadier</div>
+                  <div className="text-gray-900">{getCultivarName()}</div>
                   
                   <div className="text-gray-500">Planting Date:</div>
                   <div className="text-gray-900">{formatDate(formData.plantingDate)}</div>
