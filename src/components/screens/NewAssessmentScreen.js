@@ -70,12 +70,16 @@ const NewAssessmentScreen = ({
   const nextStep = () => {
     if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
+      // Scroll to top when changing steps
+      window.scrollTo(0, 0);
     }
   };
   
   const prevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
+      // Scroll to top when changing steps
+      window.scrollTo(0, 0);
     }
   };
   
@@ -110,7 +114,7 @@ const NewAssessmentScreen = ({
         <StepProgress currentStep={currentStep} />
         
         {/* Step Content */}
-        <div className={`bg-white rounded-xl shadow p-6 ${isMobile ? 'mb-20' : ''}`}>
+        <div className="bg-white rounded-xl shadow p-6 mb-4">
           <ErrorBoundary>
             {currentStep === 1 && (
               <CropDetailsStep
