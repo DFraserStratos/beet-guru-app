@@ -6,6 +6,32 @@ import React from 'react';
  * @returns {JSX.Element} Rendered component
  */
 const StepProgress = ({ currentStep, steps = ['Crop Details', 'Field Setup', 'Measurements', 'Review'] }) => {
+  // Calculate progress bar width and position
+  const calculateProgressStyle = () => {
+    const totalSteps = steps.length;
+    
+    if (currentStep === 1) {
+      // First step - no progress width
+      return { width: '0%', left: '0%' };
+    } else if (currentStep > totalSteps) {
+      // Completed all steps
+      return { width: '100%', left: '0%' };
+    } else {
+      // Calculate segment width based on number of segments (not steps)
+      const segmentWidth = 100 / (totalSteps - 1);
+      
+      // Calculate how many segments to fill (currentStep - 1)
+      const segments = currentStep - 1;
+      
+      // Calculate width as a percentage
+      const width = `${segmentWidth * segments}%`;
+      
+      return { width, left: '0%' };
+    }
+  };
+  
+  const progressStyle = calculateProgressStyle();
+  
   return (
     <div className="mb-8">
       {/* Main progress container using CSS Grid for alignment */}
@@ -37,23 +63,32 @@ const StepProgress = ({ currentStep, steps = ['Crop Details', 'Field Setup', 'Me
         
         {/* Progress track and dots row - positioned in the same grid columns for alignment */}
         <div className="col-span-full mt-4 relative">
-          {/* Background track */}
-          <div className="absolute inset-0 flex items-center" aria-hidden="true">
-            <div className="h-0.5 w-full bg-gray-200"></div>
-          </div>
-          
-          {/* Progress fill */}
-          <div className="absolute inset-0 flex items-center" aria-hidden="true">
-            <div 
-              className="h-0.5 bg-green-600 transition-all duration-300" 
-              style={{ 
-                width: `${(currentStep - 1) / (steps.length - 1) * 100}%`,
-              }}
-            ></div>
-          </div>
-          
           {/* Dots container - Grid ensures dots align with step numbers */}
           <div className="grid relative" style={{ gridTemplateColumns: `repeat(${steps.length}, 1fr)` }}>
+            {/* Background track - now positioned relative to the dots container for better alignment */}
+            <div className="absolute inset-0 flex items-center" aria-hidden="true">
+              <div className="h-0.5 w-full bg-gray-200" style={{
+                // Position the line to start at the first dot and end at the last dot
+                marginLeft: '2px',
+                marginRight: '2px',
+                width: 'calc(100% - 4px)'
+              }}></div>
+            </div>
+            
+            {/* Progress fill */}
+            <div className="absolute inset-0 flex items-center" aria-hidden="true">
+              <div 
+                className="h-0.5 bg-green-600 transition-all duration-300" 
+                style={{
+                  // Position the progress fill to start at the first dot
+                  marginLeft: '2px',
+                  width: progressStyle.width,
+                  left: progressStyle.left
+                }}
+              ></div>
+            </div>
+            
+            {/* Render the dots */}
             {steps.map((_, index) => {
               const step = index + 1;
               return (
