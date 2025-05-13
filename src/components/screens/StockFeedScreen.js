@@ -17,7 +17,16 @@ const StockFeedScreen = ({ isMobile }) => {
   
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-800">Stock Feed Calculator</h1>
+      {/* Page Header Card */}
+      <div className="bg-white rounded-xl shadow p-6">
+        <div className="flex items-center justify-between mb-1">
+          <h1 className="text-2xl font-bold text-gray-800">Stock Feed Calculator</h1>
+        </div>
+        <p className="text-gray-600">
+          Use this calculator to estimate how long your feed will last based on your stock count and feed amount.
+          The calculator takes into account the dry matter percentage of your feed.
+        </p>
+      </div>
       
       {/* Disclaimer Banner */}
       <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-lg">
@@ -31,14 +40,6 @@ const StockFeedScreen = ({ isMobile }) => {
             </p>
           </div>
         </div>
-      </div>
-      
-      {/* Instructions */}
-      <div className="bg-white rounded-xl shadow p-6">
-        <p className="text-gray-600">
-          Use this calculator to estimate how long your feed will last based on your stock count and feed amount.
-          The calculator takes into account the dry matter percentage of your feed.
-        </p>
       </div>
       
       {/* Feed Forecast Widget - Moved from Home Screen */}
