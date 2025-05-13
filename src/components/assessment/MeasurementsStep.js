@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { FormField, FormButton } from '../ui/form';
-import { PlusCircle, Trash2, BarChart3, Info, X, Save } from 'lucide-react';
+import { FormField, FormButton, FormButtonNav } from '../ui/form';
+import { PlusCircle, Trash2, BarChart3, Info } from 'lucide-react';
 
 /**
  * Sample area component for measurements
@@ -81,7 +81,7 @@ const SampleArea = ({ area, data, onChange, onRemove, showRemoveButton }) => {
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel }) => {
+const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile }) => {
   // Initialize sample areas
   const [sampleAreas, setSampleAreas] = useState(
     formData.sampleAreas || [
@@ -183,36 +183,16 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel }) => {
           </div>
         </div>
         
-        <div className="pt-4 flex justify-between">
-          <div className="flex space-x-4">
-            <FormButton 
-              onClick={onCancel}
-              variant="outline"
-              icon={<X size={16} />}
-            >
-              Cancel
-            </FormButton>
-            <FormButton 
-              onClick={handleSaveAsDraft}
-              variant="outline"
-              icon={<Save size={16} />}
-            >
-              Save as Draft
-            </FormButton>
-            <FormButton 
-              onClick={onBack}
-              variant="secondary"
-            >
-              Back
-            </FormButton>
-          </div>
-          <FormButton 
-            onClick={onNext}
-            variant="primary"
-          >
-            Review Assessment
-          </FormButton>
-        </div>
+        {/* Button Navigation - Using the new FormButtonNav component */}
+        <FormButtonNav
+          onNext={onNext}
+          onBack={onBack}
+          onCancel={onCancel}
+          onSaveAsDraft={handleSaveAsDraft}
+          showBack={true}
+          nextLabel="Review Assessment"
+          isMobile={isMobile}
+        />
       </div>
     </div>
   );
