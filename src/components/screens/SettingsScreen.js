@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Save, User, MapPin, Lock, ChevronLeft, Building } from 'lucide-react';
+import { Save, User, MapPin, Lock, ChevronLeft, Building, ChevronDown } from 'lucide-react';
 import { FormButton, FormField } from '../ui/form';
 import { useForm } from '../../hooks';
 
