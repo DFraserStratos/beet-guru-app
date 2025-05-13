@@ -36,10 +36,15 @@ const NewAssessmentScreen = ({
     assessmentDate: today,     // New field for assessment date
     waterType: 'irrigated',
     estimatedGrowingCost: '2500',
-    dryMatterPercentage: '14',
+    
+    // Field Setup - new structure
     rowSpacing: '0.5',
-    rowCount: '0',
-    fieldArea: '',
+    measurementLength: '4',
+    bulbEstimate: '2',
+    leafEstimate: '3',
+    valueType: 'estimate',
+    
+    // Field measurements
     sampleAreas: [
       { id: 1, sampleLength: '2', weight: '25.4', dryMatter: '14.2', notes: 'Northern edge of field, good plant density' },
       { id: 2, sampleLength: '', weight: '', dryMatter: '', notes: '' },
@@ -53,15 +58,13 @@ const NewAssessmentScreen = ({
       // Load draft assessment data
       setFormData({
         ...draftAssessment,
-        locationId: draftAssessment.locationId || (prefillLocation ? prefillLocation.id : ''),
-        fieldArea: draftAssessment.fieldArea || (prefillLocation ? prefillLocation.area.toString() : '')
+        locationId: draftAssessment.locationId || (prefillLocation ? prefillLocation.id : '')
       });
     } else if (prefillLocation) {
       // Just prefill location
       setFormData(prevData => ({
         ...prevData,
-        locationId: prefillLocation.id,
-        fieldArea: prefillLocation.area.toString()
+        locationId: prefillLocation.id
       }));
     }
   }, [prefillLocation, draftAssessment]);
