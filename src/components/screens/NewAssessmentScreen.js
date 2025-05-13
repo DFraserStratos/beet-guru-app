@@ -110,7 +110,7 @@ const NewAssessmentScreen = ({
         <StepProgress currentStep={currentStep} />
         
         {/* Step Content */}
-        <div className="bg-white rounded-xl shadow p-6">
+        <div className={`bg-white rounded-xl shadow p-6 ${isMobile ? 'mb-20' : ''}`}>
           <ErrorBoundary>
             {currentStep === 1 && (
               <CropDetailsStep
