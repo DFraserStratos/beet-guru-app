@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { FormButton } from '../ui/form';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
+import { X } from 'lucide-react';
 
 /**
  * Fourth and final step of assessment creation - review and submit
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const ReviewStep = ({ formData, onBack, onComplete }) => {
+const ReviewStep = ({ formData, onBack, onComplete, onCancel }) => {
   const [reportType, setReportType] = useState('basic');
   
   // Format data for display
@@ -133,9 +134,6 @@ const ReviewStep = ({ formData, onBack, onComplete }) => {
                   <div className="text-gray-500">Location:</div>
                   <div className="text-gray-900">North Field</div>
                   
-                  <div className="text-gray-500">Crop Type:</div>
-                  <div className="text-gray-900">Fodder Beet</div>
-                  
                   <div className="text-gray-500">Cultivar:</div>
                   <div className="text-gray-900">Brigadier</div>
                   
@@ -143,7 +141,7 @@ const ReviewStep = ({ formData, onBack, onComplete }) => {
                   <div className="text-gray-900">{formatDate(formData.plantingDate)}</div>
                   
                   <div className="text-gray-500">Water Type:</div>
-                  <div className="text-gray-900">{formData.waterType || 'Irrigated'}</div>
+                  <div className="text-gray-900">{formData.waterType === 'irrigated' ? 'Irrigated' : 'Dryland'}</div>
                   
                   <div className="text-gray-500">Est. Growing Cost:</div>
                   <div className="text-gray-900">${formData.estimatedGrowingCost || '0'}/ha</div>
@@ -233,12 +231,21 @@ const ReviewStep = ({ formData, onBack, onComplete }) => {
         </div>
         
         <div className="pt-4 flex justify-between">
-          <FormButton 
-            onClick={onBack}
-            variant="secondary"
-          >
-            Back
-          </FormButton>
+          <div className="flex space-x-4">
+            <FormButton 
+              onClick={onCancel}
+              variant="outline"
+              icon={<X size={16} />}
+            >
+              Cancel
+            </FormButton>
+            <FormButton 
+              onClick={onBack}
+              variant="secondary"
+            >
+              Back
+            </FormButton>
+          </div>
           <div className="flex gap-3">
             <FormButton
               onClick={handleSaveAsDraft}
