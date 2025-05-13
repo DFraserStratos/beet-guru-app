@@ -258,59 +258,32 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
             step="10"
           />
         </div>
-      </div>
-      
-      {/* Fixed bottom button bar for mobile */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 flex items-center gap-2 z-10 sm:hidden">
-        <FormButton 
-          onClick={onCancel}
-          variant="outline"
-          icon={<X size={20} />}
-          iconOnly={true}
-          className="w-1/4 py-2"
-          aria-label="Cancel"
-        />
-        <FormButton 
-          onClick={handleSaveAsDraft}
-          variant="outline"
-          icon={<Save size={16} />}
-          className="w-1/4 py-2"
-        >
-          Draft
-        </FormButton>
-        <FormButton 
-          onClick={onNext}
-          variant="primary"
-          className="w-1/2 py-2"
-        >
-          Continue
-        </FormButton>
-      </div>
-      
-      {/* Desktop button layout */}
-      <div className="hidden sm:flex pt-4 justify-between">
-        <div className="flex space-x-4">
+        
+        {/* Button Section - Show on both mobile and desktop */}
+        <div className="pt-4 flex justify-between">
+          <div className="flex space-x-4">
+            <FormButton 
+              onClick={onCancel}
+              variant="outline"
+              icon={<X size={16} />}
+            >
+              Cancel
+            </FormButton>
+            <FormButton 
+              onClick={handleSaveAsDraft}
+              variant="outline"
+              icon={<Save size={16} />}
+            >
+              Save as Draft
+            </FormButton>
+          </div>
           <FormButton 
-            onClick={onCancel}
-            variant="outline"
-            icon={<X size={16} />}
+            onClick={onNext}
+            variant="primary"
           >
-            Cancel
-          </FormButton>
-          <FormButton 
-            onClick={handleSaveAsDraft}
-            variant="outline"
-            icon={<Save size={16} />}
-          >
-            Save as Draft
+            Continue
           </FormButton>
         </div>
-        <FormButton 
-          onClick={onNext}
-          variant="primary"
-        >
-          Continue
-        </FormButton>
       </div>
     </div>
   );
