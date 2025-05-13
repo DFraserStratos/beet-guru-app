@@ -1,17 +1,24 @@
 import React from 'react';
 import { FormField, FormButton } from '../ui/form';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, X, Save } from 'lucide-react';
 
 /**
  * Second step of assessment creation - field setup
  * @param {Object} props - Component props 
  * @returns {JSX.Element} Rendered component
  */
-const FieldSetupStep = ({ formData, onChange, onNext, onBack }) => {
+const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel }) => {
   // Handle form field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     onChange({ target: { name, value } });
+  };
+  
+  // Handle Save as Draft
+  const handleSaveAsDraft = () => {
+    console.log('Saving as draft:', formData);
+    // In a real implementation, this would call an API to save the draft
+    alert('Assessment saved as draft successfully!');
   };
   
   return (
@@ -81,12 +88,28 @@ const FieldSetupStep = ({ formData, onChange, onNext, onBack }) => {
         </div>
         
         <div className="pt-4 flex justify-between">
-          <FormButton 
-            onClick={onBack}
-            variant="secondary"
-          >
-            Back
-          </FormButton>
+          <div className="flex space-x-4">
+            <FormButton 
+              onClick={onCancel}
+              variant="outline"
+              icon={<X size={16} />}
+            >
+              Cancel
+            </FormButton>
+            <FormButton 
+              onClick={handleSaveAsDraft}
+              variant="outline"
+              icon={<Save size={16} />}
+            >
+              Save as Draft
+            </FormButton>
+            <FormButton 
+              onClick={onBack}
+              variant="secondary"
+            >
+              Back
+            </FormButton>
+          </div>
           <FormButton 
             onClick={onNext}
             variant="primary"
