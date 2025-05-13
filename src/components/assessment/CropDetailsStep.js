@@ -258,7 +258,7 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel, isMobile }) => 
           />
         </div>
         
-        {/* Button Navigation - Using the new FormButtonNav component */}
+        {/* Button Navigation - Using the enhanced FormButtonNav component */}
         <FormButtonNav
           onNext={onNext}
           onCancel={onCancel}
