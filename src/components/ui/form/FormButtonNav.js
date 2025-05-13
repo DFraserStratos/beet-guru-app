@@ -16,7 +16,7 @@ const FormButtonNav = ({
   showSaveAsDraft = true,
   showBack = false,
   isGeneratingReport = false,
-  isMobile = true
+  isMobile = false
 }) => {
   // If mobile, use a vertically stacked layout with full-width buttons
   if (isMobile) {
@@ -26,7 +26,7 @@ const FormButtonNav = ({
         <FormButton
           onClick={onNext}
           variant="primary"
-          icon={nextLabel.includes('Report') ? null : <ArrowRight size={16} />}
+          icon={<ArrowRight size={16} />}
           fullWidth
           isLoading={isGeneratingReport}
         >
@@ -70,47 +70,59 @@ const FormButtonNav = ({
     );
   }
   
-  // For desktop, use a more standard horizontal layout
+  // For desktop, use a horizontal layout with clear visual hierarchy
   return (
-    <div className="hidden md:flex justify-between pt-6">
-      <div className="flex space-x-4">
+    <div className="hidden md:flex justify-between items-center pt-6 border-t mt-6">
+      {/* Left side - Secondary actions */}
+      <div className="flex items-center space-x-3">
+        {/* Cancel - Least prominent */}
         <FormButton 
           onClick={onCancel}
-          variant="outline"
+          variant="link"
           icon={<X size={16} />}
+          size="sm"
         >
           Cancel
         </FormButton>
         
-        {showSaveAsDraft && (
-          <FormButton 
-            onClick={onSaveAsDraft}
-            variant="outline"
-            icon={<Save size={16} />}
-          >
-            Save as Draft
-          </FormButton>
-        )}
-        
+        {/* Back - Secondary prominence */}
         {showBack && (
           <FormButton 
             onClick={onBack}
             variant="secondary"
             icon={<ArrowLeft size={16} />}
+            size="md"
           >
             Back
           </FormButton>
         )}
       </div>
       
-      <FormButton 
-        onClick={onNext}
-        variant="primary"
-        icon={nextLabel.includes('Report') ? null : <ArrowRight size={16} />}
-        isLoading={isGeneratingReport}
-      >
-        {nextLabel}
-      </FormButton>
+      {/* Right side - Primary actions */}
+      <div className="flex items-center space-x-3">
+        {/* Save as Draft - Tertiary prominence */}
+        {showSaveAsDraft && (
+          <FormButton 
+            onClick={onSaveAsDraft}
+            variant="outline"
+            icon={<Save size={16} />}
+            size="md"
+          >
+            Save as Draft
+          </FormButton>
+        )}
+        
+        {/* Next/Generate - Highest prominence */}
+        <FormButton 
+          onClick={onNext}
+          variant="primary"
+          icon={<ArrowRight size={16} />}
+          isLoading={isGeneratingReport}
+          size="md"
+        >
+          {nextLabel}
+        </FormButton>
+      </div>
     </div>
   );
 };
