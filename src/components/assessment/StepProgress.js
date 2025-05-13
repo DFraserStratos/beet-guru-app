@@ -92,12 +92,28 @@ const StepProgress = ({ currentStep, steps = ['Crop Details', 'Field Setup', 'Me
         
         {/* Progress track and dots row */}
         <div className="col-span-full mt-4">
-          {/* Container for dots and progress bar */}
+          {/* Container for the entire progress bar */}
           <div 
             ref={progressContainerRef}
-            className="grid relative h-4" 
-            style={{ gridTemplateColumns: `repeat(${steps.length}, 1fr)` }}
+            className="grid relative" 
+            style={{ gridTemplateColumns: `repeat(${steps.length}, 1fr)`, height: '16px' }}
           >
+            {/* Track container - positioned exactly between dot centers */}
+            <div 
+              className="absolute top-1/2 transform -translate-y-1/2 flex items-center z-10" 
+              style={trackContainerStyle}
+              aria-hidden="true"
+            >
+              {/* Background track */}
+              <div className="h-0.5 w-full bg-gray-200"></div>
+              
+              {/* Progress fill */}
+              <div 
+                className="h-0.5 bg-green-600 absolute left-0 top-0 transition-all duration-300" 
+                style={{ width: progressWidth }}
+              ></div>
+            </div>
+            
             {/* Dots - positioned in grid cells and showing through z-index */}
             {steps.map((_, index) => {
               const step = index + 1;
@@ -111,22 +127,6 @@ const StepProgress = ({ currentStep, steps = ['Crop Details', 'Field Setup', 'Me
                 </div>
               );
             })}
-            
-            {/* Track container - positioned exactly between dot centers */}
-            <div 
-              className="absolute inset-y-0 flex items-center z-10" 
-              style={trackContainerStyle}
-              aria-hidden="true"
-            >
-              {/* Background track */}
-              <div className="h-0.5 w-full bg-gray-200"></div>
-              
-              {/* Progress fill */}
-              <div 
-                className="h-0.5 bg-green-600 absolute left-0 top-0 bottom-0 transition-all duration-300" 
-                style={{ width: progressWidth }}
-              ></div>
-            </div>
           </div>
         </div>
       </div>
