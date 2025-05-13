@@ -21,8 +21,8 @@ const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile
   
   // Calculate total area when local form values change
   useEffect(() => {
-    const rowSpacing = parseFloat(localFormData.rowSpacing) || 0;
-    const measurementLength = parseFloat(localFormData.measurementLength) || 0;
+    const rowSpacing = parseFloat(localFormData.rowSpacing) || 0.5;
+    const measurementLength = parseFloat(localFormData.measurementLength) || 4;
     
     // Calculate the total area in square meters
     const area = rowSpacing * measurementLength;
@@ -88,6 +88,7 @@ const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile
               hint="Distance between rows"
               step="0.01"
               min="0.1"
+              placeholder="0.5"
             />
             
             <FormField
@@ -99,6 +100,7 @@ const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile
               hint="Length of the measurement area"
               step="0.1"
               min="0.1"
+              placeholder="4"
             />
           </div>
           
@@ -135,6 +137,7 @@ const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile
               step="0.1"
               min="0"
               max="100"
+              placeholder="2"
             />
             
             <FormField
@@ -147,6 +150,7 @@ const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile
               step="0.1"
               min="0"
               max="100"
+              placeholder="3"
             />
           </div>
           
