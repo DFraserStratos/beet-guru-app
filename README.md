@@ -87,7 +87,7 @@ src/
 #### Assessment Components
 - **StepProgress.js**: Wizard progress indicator for multi-step forms
 - **CropDetailsStep.js**: Step 1 of assessment creation
-- **FieldSetupStep.js**: Step 2 of assessment creation
+- **FieldSetupStep.js**: Step 2 of assessment creation - field measurements and dry matter estimates
 - **MeasurementsStep.js**: Step 3 of assessment creation
 - **ReviewStep.js**: Step 4 of assessment creation
 
@@ -194,6 +194,14 @@ The assessment wizard uses a custom StepProgress component that:
 - Uses color coding to indicate current, completed, and upcoming steps
 - Maintains precise alignment between dots and the progress track
 - See [README-PROGRESS-BAR.md](./README-PROGRESS-BAR.md) for details
+
+### Field Setup Form
+The Field Setup step provides important tools for measuring crop samples:
+- Organized into Field Measurements and Dry Matter Estimates sections
+- Real-time calculation of sample area based on row spacing and measurement length
+- Input fields for bulb and leaf dry matter estimates
+- Toggle between estimate and actual value types
+- See [README-FIELD-SETUP-FORM.md](./README-FIELD-SETUP-FORM.md) for details
 
 ## Stock Feed Calculator
 
@@ -334,6 +342,14 @@ The app includes a service layer for API calls:
 - Responsive design that works well on both mobile and desktop
 
 ## Recent Updates History
+
+### Field Setup Form Updates (May 2025)
+- Reorganized the form into distinct sections for Field Measurements and Dry Matter Estimates
+- Added real-time area calculation for sample measurements
+- Added toggle between Estimate and Actual value types for dry matter content
+- Improved form handling to allow clearing and editing all fields
+- Maintained sensible defaults with user-friendly placeholders
+- See [README-FIELD-SETUP-FORM.md](./README-FIELD-SETUP-FORM.md) for details
 
 ### Progress Bar Improvements (May 2025)
 - Enhanced the StepProgress component with exact alignment between dots and tracks
