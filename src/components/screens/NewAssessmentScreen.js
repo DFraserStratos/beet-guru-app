@@ -26,6 +26,7 @@ const NewAssessmentScreen = ({
   const [formData, setFormData] = useState({
     // Initial values for the form
     locationId: '',
+    stockType: '',
     cultivarId: '',
     customCultivarName: '',
     plantingDate: '2024-10-20',
