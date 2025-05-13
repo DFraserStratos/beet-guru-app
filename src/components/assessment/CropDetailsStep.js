@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FormField, FormButton } from '../ui/form';
+import { FormField, FormButton, FormButtonNav } from '../ui/form';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
 import { X, Save } from 'lucide-react';
@@ -9,7 +9,7 @@ import { X, Save } from 'lucide-react';
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
+const CropDetailsStep = ({ formData, onChange, onNext, onCancel, isMobile }) => {
   const [selectedCultivar, setSelectedCultivar] = useState(formData.cultivarId || '');
   const [cultivarInfo, setCultivarInfo] = useState(null);
   const [showCustomCultivar, setShowCustomCultivar] = useState(selectedCultivar === 'other');
@@ -259,31 +259,14 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
           />
         </div>
         
-        {/* Button Section - Show on both mobile and desktop */}
-        <div className="pt-4 flex justify-between">
-          <div className="flex space-x-4">
-            <FormButton 
-              onClick={onCancel}
-              variant="outline"
-              icon={<X size={16} />}
-            >
-              Cancel
-            </FormButton>
-            <FormButton 
-              onClick={handleSaveAsDraft}
-              variant="outline"
-              icon={<Save size={16} />}
-            >
-              Save as Draft
-            </FormButton>
-          </div>
-          <FormButton 
-            onClick={onNext}
-            variant="primary"
-          >
-            Continue
-          </FormButton>
-        </div>
+        {/* Button Navigation - Using the new FormButtonNav component */}
+        <FormButtonNav
+          onNext={onNext}
+          onCancel={onCancel}
+          onSaveAsDraft={handleSaveAsDraft}
+          showBack={false}
+          isMobile={isMobile}
+        />
       </div>
     </div>
   );
