@@ -265,19 +265,18 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
         <FormButton 
           onClick={onCancel}
           variant="outline"
-          icon={<X size={16} />}
+          icon={<X size={20} />}
+          iconOnly={true}
           className="w-1/4 py-2"
           aria-label="Cancel"
-        >
-          <span className="hidden sm:inline">Cancel</span>
-        </FormButton>
+        />
         <FormButton 
           onClick={handleSaveAsDraft}
           variant="outline"
           icon={<Save size={16} />}
           className="w-1/4 py-2"
         >
-          <span className="hidden sm:inline">Save as </span>Draft
+          Draft
         </FormButton>
         <FormButton 
           onClick={onNext}
