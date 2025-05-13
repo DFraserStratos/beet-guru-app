@@ -1,16 +1,13 @@
 # Settings Screen Implementation
 
-This branch adds a comprehensive Settings screen to the Beet Guru application with the following features:
+This branch adds a focused Settings screen to the Beet Guru application with three essential sections:
 
 ## Features Added
 
-### 1. Settings Screen with Multiple Sections
+### 1. Settings Screen with Key Sections
 - **Profile Information**: Manage user details (name, email, role, phone)
 - **Farm Details**: Store farm information including address, region, and country
-- **Notifications**: Configure notification preferences
-- **App Preferences**: Set default values and measurement units
-- **Data Management**: Control data sync and backup settings
-- **Security**: Password management and security features
+- **Security**: Password management
 
 ### 2. Responsive Design
 - Desktop view with sidebar navigation for settings categories
@@ -25,12 +22,6 @@ Added ability to manage farm address information including:
 - Postal code
 - Region (Canterbury)
 - Country (New Zealand)
-
-### 4. Default Application Settings
-Added configuration options for application defaults:
-- Default dry matter percentage (14%)
-- Default row spacing (0.5m)
-- Measurement unit preference (metric/imperial)
 
 ## Implementation Details
 
@@ -58,5 +49,4 @@ For future iterations:
 - Add form validation for all inputs
 - Implement actual data persistence through API calls
 - Add user avatar upload functionality
-- Add theme selection option (light/dark mode)
-- Implement two-factor authentication
+- Add additional settings sections as needed (notifications, preferences, etc.)
