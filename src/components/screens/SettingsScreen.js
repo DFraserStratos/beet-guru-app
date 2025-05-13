@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Save, User, MapPin, Lock, ChevronLeft, Building, ChevronDown } from 'lucide-react';
+import { Save, User, MapPin, Lock, ChevronLeft, Building } from 'lucide-react';
 import { FormButton, FormField } from '../ui/form';
 import { useForm } from '../../hooks';
 
@@ -46,13 +46,6 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
     
     // Show success message
     alert('Settings saved successfully!');
-  };
-  
-  // Handle section change for mobile dropdown
-  const handleSectionChange = (e) => {
-    const newSection = e.target.value;
-    console.log('Changing section to:', newSection);
-    setActiveSection(newSection);
   };
   
   // Determine if we should show the sidebar (desktop) or use mobile view
@@ -118,32 +111,7 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
         {/* Settings Content */}
         <div className={`${shouldShowSidebar ? 'md:w-3/4' : 'w-full'}`}>
           <div className="bg-white rounded-xl shadow p-6">
-            {/* Mobile Section Selector */}
-            {isMobile && (
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Settings Section
-                </label>
-                <div className="relative">
-                  <select
-                    id="settings-section-selector"
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm py-2 pl-3 pr-10 appearance-none border"
-                    value={activeSection}
-                    onChange={handleSectionChange}
-                  >
-                    <option value="profile">Profile Information</option>
-                    <option value="farm">Farm Details</option>
-                    <option value="security">Security</option>
-                  </select>
-                  <ChevronDown 
-                    size={16} 
-                    className="absolute right-3 top-2.5 text-gray-400 pointer-events-none" 
-                  />
-                </div>
-              </div>
-            )}
-            
-            {/* Alternative Mobile Navigation with Buttons */}
+            {/* Mobile Tab Navigation */}
             {isMobile && (
               <div className="mb-6 flex border border-gray-200 rounded-lg overflow-hidden">
                 <button
