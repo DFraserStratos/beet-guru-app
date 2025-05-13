@@ -11,7 +11,10 @@ This branch adds a focused Settings screen to the Beet Guru application with thr
 
 ### 2. Responsive Design
 - Desktop view with sidebar navigation for settings categories
-- Mobile view with dropdown selection for settings categories
+- Mobile view with multiple navigation options:
+  - Tab buttons at the top for quick section switching
+  - Next/Previous buttons at the bottom for sequential navigation
+  - Dropdown selector for direct access to any section
 - Consistent styling matching the rest of the application
 
 ### 3. Farm Address Management
@@ -28,7 +31,17 @@ Added ability to manage farm address information including:
 - Created `SettingsScreen.js` component in the screens directory
 - Updated `App.js` to use the new component instead of the placeholder
 - Leveraged existing form components and hooks for consistent UI
+- Added redundant mobile navigation options to ensure users can easily navigate between sections
 - Mobile and desktop optimized layouts
+
+## Mobile Navigation Improvements
+
+The initial implementation had an issue with mobile navigation between sections. The following improvements were made:
+
+1. **Tab-Style Navigation**: Added horizontal tab buttons at the top of the settings content for intuitive navigation between sections
+2. **Next/Previous Buttons**: Added buttons at the bottom of each section to facilitate sequential navigation
+3. **Enhanced Dropdown**: Improved the dropdown select component with proper event handling and visual cues
+4. **Debugging Helpers**: Added console logging for navigation state changes to assist with debugging
 
 ## Testing
 
@@ -38,8 +51,12 @@ To test this implementation:
    - The Settings option in the "More" tab (mobile)
    - The Settings link in the sidebar (desktop)
 3. Verify that all settings sections display correctly
-4. Test form input validation and submission
-5. Verify responsive design by testing on different screen sizes
+4. On mobile, test all navigation methods:
+   - Tap the tab buttons at the top
+   - Use the dropdown selector
+   - Use the Next/Previous buttons at the bottom
+5. Test form input validation and submission
+6. Verify responsive design by testing on different screen sizes
 
 Note: In this implementation, saving settings will only log them to the console, since there's no backend integration yet.
 
