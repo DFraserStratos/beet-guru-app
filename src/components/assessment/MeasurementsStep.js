@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FormField, FormButton } from '../ui/form';
-import { PlusCircle, Trash2, BarChart3, Info } from 'lucide-react';
+import { PlusCircle, Trash2, BarChart3, Info, X, Save } from 'lucide-react';
 
 /**
  * Sample area component for measurements
@@ -81,7 +81,7 @@ const SampleArea = ({ area, data, onChange, onRemove, showRemoveButton }) => {
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const MeasurementsStep = ({ formData, onChange, onNext, onBack }) => {
+const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel }) => {
   // Initialize sample areas
   const [sampleAreas, setSampleAreas] = useState(
     formData.sampleAreas || [
@@ -112,6 +112,13 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack }) => {
     setSampleAreas(sampleAreas.map(area => 
       area.id === areaId ? { ...area, [name]: value } : area
     ));
+  };
+  
+  // Handle Save as Draft
+  const handleSaveAsDraft = () => {
+    console.log('Saving as draft:', formData);
+    // In a real implementation, this would call an API to save the draft
+    alert('Assessment saved as draft successfully!');
   };
   
   return (
@@ -177,12 +184,28 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack }) => {
         </div>
         
         <div className="pt-4 flex justify-between">
-          <FormButton 
-            onClick={onBack}
-            variant="secondary"
-          >
-            Back
-          </FormButton>
+          <div className="flex space-x-4">
+            <FormButton 
+              onClick={onCancel}
+              variant="outline"
+              icon={<X size={16} />}
+            >
+              Cancel
+            </FormButton>
+            <FormButton 
+              onClick={handleSaveAsDraft}
+              variant="outline"
+              icon={<Save size={16} />}
+            >
+              Save as Draft
+            </FormButton>
+            <FormButton 
+              onClick={onBack}
+              variant="secondary"
+            >
+              Back
+            </FormButton>
+          </div>
           <FormButton 
             onClick={onNext}
             variant="primary"
