@@ -48,6 +48,13 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
     alert('Settings saved successfully!');
   };
   
+  // Handle section change for mobile dropdown
+  const handleSectionChange = (e) => {
+    const newSection = e.target.value;
+    console.log('Changing section to:', newSection);
+    setActiveSection(newSection);
+  };
+  
   // Determine if we should show the sidebar (desktop) or use mobile view
   const shouldShowSidebar = !isMobile;
   
@@ -117,15 +124,58 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Settings Section
                 </label>
-                <select
-                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm py-2 pl-3 pr-10 appearance-none border"
-                  value={activeSection}
-                  onChange={(e) => setActiveSection(e.target.value)}
+                <div className="relative">
+                  <select
+                    id="settings-section-selector"
+                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm py-2 pl-3 pr-10 appearance-none border"
+                    value={activeSection}
+                    onChange={handleSectionChange}
+                  >
+                    <option value="profile">Profile Information</option>
+                    <option value="farm">Farm Details</option>
+                    <option value="security">Security</option>
+                  </select>
+                  <ChevronDown 
+                    size={16} 
+                    className="absolute right-3 top-2.5 text-gray-400 pointer-events-none" 
+                  />
+                </div>
+              </div>
+            )}
+            
+            {/* Alternative Mobile Navigation with Buttons */}
+            {isMobile && (
+              <div className="mb-6 flex border border-gray-200 rounded-lg overflow-hidden">
+                <button
+                  className={`flex-1 py-2 px-3 text-center text-sm font-medium ${
+                    activeSection === 'profile' 
+                      ? 'bg-green-50 text-green-600' 
+                      : 'bg-white text-gray-700 hover:bg-gray-50'
+                  }`}
+                  onClick={() => setActiveSection('profile')}
                 >
-                  <option value="profile">Profile Information</option>
-                  <option value="farm">Farm Details</option>
-                  <option value="security">Security</option>
-                </select>
+                  Profile
+                </button>
+                <button
+                  className={`flex-1 py-2 px-3 text-center text-sm font-medium ${
+                    activeSection === 'farm' 
+                      ? 'bg-green-50 text-green-600' 
+                      : 'bg-white text-gray-700 hover:bg-gray-50'
+                  }`}
+                  onClick={() => setActiveSection('farm')}
+                >
+                  Farm
+                </button>
+                <button
+                  className={`flex-1 py-2 px-3 text-center text-sm font-medium ${
+                    activeSection === 'security' 
+                      ? 'bg-green-50 text-green-600' 
+                      : 'bg-white text-gray-700 hover:bg-gray-50'
+                  }`}
+                  onClick={() => setActiveSection('security')}
+                >
+                  Security
+                </button>
               </div>
             )}
             
@@ -321,6 +371,39 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
                   </p>
                 </div>
               </form>
+            )}
+            
+            {/* Mobile Section Navigation Buttons */}
+            {isMobile && (
+              <div className="flex justify-between mt-8 pt-4 border-t border-gray-200">
+                {activeSection !== 'profile' && (
+                  <FormButton
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const prevSection = activeSection === 'security' ? 'farm' : 'profile';
+                      setActiveSection(prevSection);
+                    }}
+                  >
+                    Previous
+                  </FormButton>
+                )}
+                {activeSection === 'profile' && (
+                  <div></div> // Empty div for spacing when on first section
+                )}
+                {activeSection !== 'security' && (
+                  <FormButton
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const nextSection = activeSection === 'profile' ? 'farm' : 'security';
+                      setActiveSection(nextSection);
+                    }}
+                  >
+                    Next
+                  </FormButton>
+                )}
+              </div>
             )}
           </div>
         </div>
