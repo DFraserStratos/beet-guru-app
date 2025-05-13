@@ -2,26 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { FormField, FormButton } from '../ui/form';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
+import { X, Save } from 'lucide-react';
 
 /**
  * First step of assessment creation - crop details
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const CropDetailsStep = ({ formData, onChange, onNext }) => {
+const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
   const [selectedCultivar, setSelectedCultivar] = useState(formData.cultivarId || '');
   const [cultivarInfo, setCultivarInfo] = useState(null);
   
   // API hooks
   const locationsApi = useApi(api.references.getLocations);
-  const cropTypesApi = useApi(api.references.getCropTypes);
   const cultivarsApi = useApi(api.references.getCultivars);
   
   // Fetch reference data on mount
   useEffect(() => {
     const loadData = async () => {
       await locationsApi.execute();
-      await cropTypesApi.execute();
       await cultivarsApi.execute();
     };
     
@@ -56,14 +55,17 @@ const CropDetailsStep = ({ formData, onChange, onNext }) => {
     ? locationsApi.data.map(loc => ({ value: loc.id, label: loc.name }))
     : [];
     
-  const cropTypeOptions = cropTypesApi.data 
-    ? cropTypesApi.data.map(ct => ({ value: ct.id, label: ct.name }))
-    : [];
-    
   const cultivarOptions = cultivarsApi.data 
     ? cultivarsApi.data.map(c => ({ value: c.id, label: c.name }))
     : [];
   
+  // Handle Save as Draft
+  const handleSaveAsDraft = () => {
+    console.log('Saving as draft:', formData);
+    // In a real implementation, this would call an API to save the draft
+    alert('Assessment saved as draft successfully!');
+  };
+
   return (
     <div>
       <h2 className="text-xl font-semibold mb-6">Crop Details</h2>
@@ -79,33 +81,6 @@ const CropDetailsStep = ({ formData, onChange, onNext }) => {
             onChange={handleChange}
             options={locationOptions}
             loading={locationsApi.loading}
-          />
-          
-          <FormField
-            label="Grower"
-            name="growerId"
-            type="select"
-            placeholder="Select a Grower"
-            value={formData.growerId || ''}
-            onChange={handleChange}
-            options={[
-              { value: 'self', label: 'Self' },
-              { value: 'contractor', label: 'Contractor A' },
-              { value: 'other', label: 'Other Grower' }
-            ]}
-          />
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormField
-            label="Crop Type"
-            name="cropTypeId"
-            type="select"
-            placeholder="Select Crop Type"
-            value={formData.cropTypeId || ''}
-            onChange={handleChange}
-            options={cropTypeOptions}
-            loading={cropTypesApi.loading}
           />
           
           <FormField
@@ -155,20 +130,40 @@ const CropDetailsStep = ({ formData, onChange, onNext }) => {
             type="date"
             value={formData.plantingDate || '2024-10-20'}
             onChange={handleChange}
-            hint="Default: October 20 of previous year"
           />
           
-          <FormField
-            label="Water Type"
-            name="waterType"
-            type="select"
-            value={formData.waterType || 'irrigated'}
-            onChange={handleChange}
-            options={[
-              { value: 'irrigated', label: 'Irrigated' },
-              { value: 'dryland', label: 'Dryland' }
-            ]}
-          />
+          {/* Water Type as a selector instead of dropdown */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Water Type
+            </label>
+            <div className="border border-gray-200 rounded-lg overflow-hidden">
+              <div className="flex">
+                <button
+                  type="button"
+                  className={`flex-1 py-2 px-3 text-center text-sm font-medium ${
+                    formData.waterType === 'irrigated' 
+                      ? 'bg-green-50 text-green-600' 
+                      : 'bg-white text-gray-700 hover:bg-gray-50'
+                  }`}
+                  onClick={() => onChange({ target: { name: 'waterType', value: 'irrigated' } })}
+                >
+                  Irrigated
+                </button>
+                <button
+                  type="button"
+                  className={`flex-1 py-2 px-3 text-center text-sm font-medium ${
+                    formData.waterType === 'dryland' 
+                      ? 'bg-green-50 text-green-600' 
+                      : 'bg-white text-gray-700 hover:bg-gray-50'
+                  }`}
+                  onClick={() => onChange({ target: { name: 'waterType', value: 'dryland' } })}
+                >
+                  Dryland
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
         
         <FormField
@@ -178,12 +173,28 @@ const CropDetailsStep = ({ formData, onChange, onNext }) => {
           placeholder="Enter cost per hectare"
           value={formData.estimatedGrowingCost || '2500'}
           onChange={handleChange}
-          hint="This covers ALL costs associated with growing"
+          hint="Consider costs for seeds, fertilizer, irrigation, labor, equipment, and pest management"
           min="0"
           step="10"
         />
         
-        <div className="pt-4 flex justify-end">
+        <div className="pt-4 flex justify-between">
+          <div className="flex space-x-4">
+            <FormButton 
+              onClick={onCancel}
+              variant="outline"
+              icon={<X size={16} />}
+            >
+              Cancel
+            </FormButton>
+            <FormButton 
+              onClick={handleSaveAsDraft}
+              variant="outline"
+              icon={<Save size={16} />}
+            >
+              Save as Draft
+            </FormButton>
+          </div>
           <FormButton 
             onClick={onNext}
             variant="primary"
