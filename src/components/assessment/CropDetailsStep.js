@@ -77,6 +77,16 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
       ]
     : [{ value: 'other', label: 'Other (specify)' }];
   
+  // Stock Type options
+  const stockTypeOptions = [
+    { value: 'dairy', label: 'Dairy cows' },
+    { value: 'beef', label: 'Beef cattle' },
+    { value: 'ewes', label: 'Ewes' },
+    { value: 'lambs', label: 'Lambs' },
+    { value: 'goats', label: 'Goats' },
+    { value: 'horses', label: 'Horses' }
+  ];
+  
   // Handle Save as Draft
   const handleSaveAsDraft = () => {
     console.log('Saving as draft:', formData);
@@ -89,6 +99,7 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
       <h2 className="text-xl font-semibold mb-6">Crop Details</h2>
       
       <div className="space-y-6">
+        {/* First row with Location and Stock Type */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             label="Location"
@@ -101,32 +112,43 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
             loading={locationsApi.loading}
           />
           
-          <div>
-            <FormField
-              label="Cultivar"
-              name="cultivarId"
-              type="select"
-              placeholder="Select Cultivar"
-              value={selectedCultivar}
-              onChange={handleCultivarChange}
-              options={cultivarOptions}
-              loading={cultivarsApi.loading}
-            />
-            
-            {showCustomCultivar && (
-              <div className="mt-3">
-                <FormField
-                  label="Custom Cultivar Name"
-                  name="customCultivarName"
-                  type="text"
-                  placeholder="Enter cultivar name"
-                  value={customCultivarName}
-                  onChange={handleCustomCultivarChange}
-                  required
-                />
-              </div>
-            )}
-          </div>
+          <FormField
+            label="Stock Type"
+            name="stockType"
+            type="select"
+            placeholder="Select Stock Type"
+            value={formData.stockType || ''}
+            onChange={handleChange}
+            options={stockTypeOptions}
+          />
+        </div>
+        
+        {/* Second row with Cultivar */}
+        <div>
+          <FormField
+            label="Cultivar"
+            name="cultivarId"
+            type="select"
+            placeholder="Select Cultivar"
+            value={selectedCultivar}
+            onChange={handleCultivarChange}
+            options={cultivarOptions}
+            loading={cultivarsApi.loading}
+          />
+          
+          {showCustomCultivar && (
+            <div className="mt-3">
+              <FormField
+                label="Custom Cultivar Name"
+                name="customCultivarName"
+                type="text"
+                placeholder="Enter cultivar name"
+                value={customCultivarName}
+                onChange={handleCustomCultivarChange}
+                required
+              />
+            </div>
+          )}
         </div>
         
         {/* Cultivar Information Section */}
