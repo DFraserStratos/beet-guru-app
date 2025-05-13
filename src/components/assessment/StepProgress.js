@@ -7,50 +7,58 @@ import React, { useRef, useEffect, useState } from 'react';
  */
 const StepProgress = ({ currentStep, steps = ['Crop Details', 'Field Setup', 'Measurements', 'Review'] }) => {
   const progressContainerRef = useRef(null);
-  const [progressBarStyle, setProgressBarStyle] = useState({
-    width: '0',
-    left: '0'
+  const [trackContainerStyle, setTrackContainerStyle] = useState({
+    width: '100%',
+    marginLeft: '0px',
+    marginRight: '0px'
   });
+  const [progressWidth, setProgressWidth] = useState('0%');
   
-  // Calculate and update progress bar dimensions based on actual dot positions
+  // Calculate exact track container dimensions and progress width based on dot positions
   useEffect(() => {
     if (!progressContainerRef.current) return;
     
     const container = progressContainerRef.current;
     const dots = container.querySelectorAll('.step-dot');
     
-    if (dots.length === 0) return;
+    if (dots.length < 2) return;
     
-    // Calculate positions of all dots relative to the container
+    // Get container dimensions
     const containerRect = container.getBoundingClientRect();
-    const dotPositions = Array.from(dots).map(dot => {
-      const rect = dot.getBoundingClientRect();
-      // Return the center position of the dot
-      return rect.left + (rect.width / 2) - containerRect.left;
+    
+    // Calculate positions of first and last dots relative to the container
+    const firstDot = dots[0].getBoundingClientRect();
+    const lastDot = dots[dots.length - 1].getBoundingClientRect();
+    
+    // Get the center positions of first and last dots
+    const firstDotCenter = firstDot.left + (firstDot.width / 2) - containerRect.left;
+    const lastDotCenter = lastDot.left + (lastDot.width / 2) - containerRect.left;
+    
+    // Calculate the exact width needed for the track (distance between first and last dot centers)
+    const trackWidth = lastDotCenter - firstDotCenter;
+    
+    // Update track container style to position it exactly between first and last dot centers
+    setTrackContainerStyle({
+      width: `${trackWidth}px`,
+      marginLeft: `${firstDotCenter}px`,
+      marginRight: `calc(100% - ${lastDotCenter}px)`
     });
     
-    // No progress for step 1
+    // Calculate progress as percentage of track width based on current step
     if (currentStep <= 1) {
-      setProgressBarStyle({
-        width: '0',
-        left: `${dotPositions[0]}px`
-      });
-      return;
+      setProgressWidth('0%');
+    } else {
+      // Get the position of the target dot (current step - 1)
+      const targetDotIndex = Math.min(currentStep - 1, dots.length - 1);
+      const targetDot = dots[targetDotIndex].getBoundingClientRect();
+      const targetDotCenter = targetDot.left + (targetDot.width / 2) - containerRect.left;
+      
+      // Calculate progress as percentage of the track width
+      const progressDistance = targetDotCenter - firstDotCenter;
+      const progressPercentage = (progressDistance / trackWidth) * 100;
+      
+      setProgressWidth(`${progressPercentage}%`);
     }
-    
-    // Calculate exact progress width based on current step
-    // Progress should go from first dot to the dot representing previous step
-    const targetDotIndex = Math.min(currentStep - 1, dots.length - 1);
-    const startPos = dotPositions[0];
-    const endPos = dotPositions[targetDotIndex];
-    const width = endPos - startPos;
-    
-    // Update progress bar style with exact positioning
-    setProgressBarStyle({
-      width: `${width}px`,
-      left: `${startPos}px`
-    });
-    
   }, [currentStep]);
   
   return (
@@ -90,20 +98,19 @@ const StepProgress = ({ currentStep, steps = ['Crop Details', 'Field Setup', 'Me
             className="grid relative h-4" 
             style={{ gridTemplateColumns: `repeat(${steps.length}, 1fr)` }}
           >
-            {/* Background track - spans between first and last dot */}
-            <div className="absolute inset-y-0 left-0 right-0 flex items-center" aria-hidden="true">
+            {/* Track container - positioned exactly between dot centers */}
+            <div 
+              className="absolute inset-y-0 flex items-center" 
+              style={trackContainerStyle}
+              aria-hidden="true"
+            >
+              {/* Background track */}
               <div className="h-0.5 w-full bg-gray-200"></div>
-            </div>
-            
-            {/* Progress fill - with exact positioning to align with dots */}
-            <div className="absolute inset-y-0 flex items-center pointer-events-none" aria-hidden="true">
+              
+              {/* Progress fill */}
               <div 
-                className="h-0.5 bg-green-600 transition-all duration-300" 
-                style={{ 
-                  position: 'absolute',
-                  width: progressBarStyle.width,
-                  left: progressBarStyle.left
-                }}
+                className="h-0.5 bg-green-600 absolute left-0 top-0 bottom-0 transition-all duration-300" 
+                style={{ width: progressWidth }}
               ></div>
             </div>
             
