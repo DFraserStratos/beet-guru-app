@@ -119,6 +119,7 @@ const NewAssessmentScreen = ({
                 onNext={nextStep}
                 onCancel={handleCancel}
                 prefillLocation={prefillLocation}
+                isMobile={isMobile}
               />
             )}
             
@@ -129,6 +130,7 @@ const NewAssessmentScreen = ({
                 onNext={nextStep}
                 onBack={prevStep}
                 onCancel={handleCancel}
+                isMobile={isMobile}
               />
             )}
             
@@ -139,6 +141,7 @@ const NewAssessmentScreen = ({
                 onNext={nextStep}
                 onBack={prevStep}
                 onCancel={handleCancel}
+                isMobile={isMobile}
               />
             )}
             
@@ -148,6 +151,7 @@ const NewAssessmentScreen = ({
                 onBack={prevStep}
                 onComplete={handleComplete}
                 onCancel={handleCancel}
+                isMobile={isMobile}
               />
             )}
           </ErrorBoundary>
