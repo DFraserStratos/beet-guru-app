@@ -98,12 +98,12 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
   };
 
   return (
-    <div>
-      <h2 className="text-xl font-semibold mb-6">Crop Details</h2>
+    <div className="pb-20 sm:pb-0">
+      <h2 className="text-xl font-semibold mb-4 sm:mb-6">Crop Details</h2>
       
-      <div className="space-y-6">
+      <div className="space-y-3 sm:space-y-6">
         {/* First row with Location and Stock Type */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6">
           <FormField
             label="Location"
             name="locationId"
@@ -127,7 +127,7 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
         </div>
         
         {/* Second row with Cultivar and Custom Cultivar */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6">
           <FormField
             label="Cultivar"
             name="cultivarId"
@@ -155,11 +155,11 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
         </div>
         
         {/* Cultivar Information Section */}
-        <div className="bg-green-50 rounded-lg p-4 border border-green-100">
-          <h3 className="text-sm font-medium text-green-800 mb-2">Cultivar Information</h3>
+        <div className="bg-green-50 rounded-lg p-3 sm:p-4 border border-green-100 my-2 sm:my-0">
+          <h3 className="text-sm font-medium text-green-800 mb-1 sm:mb-2">Cultivar Information</h3>
           
           {cultivarInfo ? (
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               <p className="text-sm text-green-700">
                 <strong>{cultivarInfo.name}</strong> - {cultivarInfo.description || 'No description available.'}
               </p>
@@ -176,7 +176,7 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
               </div>
             </div>
           ) : showCustomCultivar && customCultivarName ? (
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               <p className="text-sm text-green-700">
                 <strong>{customCultivarName}</strong> - Custom cultivar information not available.
               </p>
@@ -192,7 +192,7 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
         </div>
         
         {/* Third row with Sowing Date and Assessment Date */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6">
           <FormField
             label="Sowing Date"
             name="sowingDate"
@@ -211,7 +211,7 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
         </div>
         
         {/* Fourth row with Water Type and Growing Cost */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6">
           {/* Water Type section */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -258,31 +258,60 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
             step="10"
           />
         </div>
-        
-        <div className="pt-4 flex justify-between">
-          <div className="flex space-x-4">
-            <FormButton 
-              onClick={onCancel}
-              variant="outline"
-              icon={<X size={16} />}
-            >
-              Cancel
-            </FormButton>
-            <FormButton 
-              onClick={handleSaveAsDraft}
-              variant="outline"
-              icon={<Save size={16} />}
-            >
-              Save as Draft
-            </FormButton>
-          </div>
+      </div>
+      
+      {/* Fixed bottom button bar for mobile */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 flex items-center gap-2 z-10 sm:hidden">
+        <FormButton 
+          onClick={onCancel}
+          variant="outline"
+          icon={<X size={16} />}
+          className="w-1/4 py-2"
+          aria-label="Cancel"
+        >
+          <span className="hidden sm:inline">Cancel</span>
+        </FormButton>
+        <FormButton 
+          onClick={handleSaveAsDraft}
+          variant="outline"
+          icon={<Save size={16} />}
+          className="w-1/4 py-2"
+        >
+          <span className="hidden sm:inline">Save as </span>Draft
+        </FormButton>
+        <FormButton 
+          onClick={onNext}
+          variant="primary"
+          className="w-1/2 py-2"
+        >
+          Continue
+        </FormButton>
+      </div>
+      
+      {/* Desktop button layout */}
+      <div className="hidden sm:flex pt-4 justify-between">
+        <div className="flex space-x-4">
           <FormButton 
-            onClick={onNext}
-            variant="primary"
+            onClick={onCancel}
+            variant="outline"
+            icon={<X size={16} />}
           >
-            Continue
+            Cancel
+          </FormButton>
+          <FormButton 
+            onClick={handleSaveAsDraft}
+            variant="outline"
+            icon={<Save size={16} />}
+          >
+            Save as Draft
           </FormButton>
         </div>
+        <FormButton 
+          onClick={onNext}
+          variant="primary"
+        >
+          Continue
+        </FormButton>
       </div>
     </div>
   );
