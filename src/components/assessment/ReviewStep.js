@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import { FormButton } from '../ui/form';
+import { FormButtonNav } from '../ui/form';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
-import { X } from 'lucide-react';
 
 /**
  * Fourth and final step of assessment creation - review and submit
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const ReviewStep = ({ formData, onBack, onComplete, onCancel }) => {
+const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
   const [reportType, setReportType] = useState('basic');
   
   // Format data for display
@@ -258,39 +257,17 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel }) => {
           </div>
         </div>
         
-        <div className="pt-4 flex justify-between">
-          <div className="flex space-x-4">
-            <FormButton 
-              onClick={onCancel}
-              variant="outline"
-              icon={<X size={16} />}
-            >
-              Cancel
-            </FormButton>
-            <FormButton 
-              onClick={onBack}
-              variant="secondary"
-            >
-              Back
-            </FormButton>
-          </div>
-          <div className="flex gap-3">
-            <FormButton
-              onClick={handleSaveAsDraft}
-              variant="outline"
-              isLoading={saveAssessmentApi.loading}
-            >
-              Save as Draft
-            </FormButton>
-            <FormButton
-              onClick={handleSaveAndGenerateReport}
-              variant="primary"
-              isLoading={saveAssessmentApi.loading || generateReportApi.loading}
-            >
-              Generate Report
-            </FormButton>
-          </div>
-        </div>
+        {/* Button Navigation - Using the new FormButtonNav component */}
+        <FormButtonNav
+          onNext={handleSaveAndGenerateReport}
+          onBack={onBack}
+          onCancel={onCancel}
+          onSaveAsDraft={handleSaveAsDraft}
+          showBack={true}
+          nextLabel="Generate Report"
+          isGeneratingReport={saveAssessmentApi.loading || generateReportApi.loading}
+          isMobile={isMobile}
+        />
       </div>
     </div>
   );
