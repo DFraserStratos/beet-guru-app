@@ -90,14 +90,9 @@ const StepProgress = ({ currentStep, steps = ['Crop Details', 'Field Setup', 'Me
             className="grid relative h-4" 
             style={{ gridTemplateColumns: `repeat(${steps.length}, 1fr)` }}
           >
-            {/* Background track - only within the dots range */}
-            <div className="absolute inset-y-0 flex items-center" aria-hidden="true">
-              <div className="h-0.5 bg-gray-200" style={{ 
-                position: 'absolute',
-                left: '0',
-                right: '0',
-                width: '100%'
-              }}></div>
+            {/* Background track - spans between first and last dot */}
+            <div className="absolute inset-y-0 left-0 right-0 flex items-center" aria-hidden="true">
+              <div className="h-0.5 w-full bg-gray-200"></div>
             </div>
             
             {/* Progress fill - with exact positioning to align with dots */}
