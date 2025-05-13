@@ -1,0 +1,569 @@
+import { useState, useEffect } from 'react';
+import { Save, User, MapPin, Bell, Lock, ChevronLeft, Building, Cloud, FileText } from 'lucide-react';
+import { FormButton, FormField } from '../ui/form';
+import { useForm } from '../../hooks';
+
+/**
+ * Settings screen for managing user and farm information
+ * @param {Object} props - Component props
+ * @returns {JSX.Element} Rendered component
+ */
+const SettingsScreen = ({ isMobile, onNavigate, user }) => {
+  const [activeSection, setActiveSection] = useState('profile');
+  
+  // Initialize form with user data and default farm information
+  const initialValues = {
+    // User profile
+    name: user?.name || '',
+    email: user?.email || '',
+    role: user?.role || '',
+    phone: '',
+    
+    // Farm information
+    farmName: 'Oxford Valley Farm',
+    farmAddress: '123 Canterbury Plains Rd',
+    city: 'Oxford',
+    postalCode: '7495',
+    region: 'Canterbury',
+    country: 'New Zealand',
+    
+    // Notification settings
+    emailNotifications: true,
+    reminderNotifications: true,
+    reportNotifications: true,
+    weatherAlerts: true,
+    
+    // App settings
+    autoSaveDrafts: true,
+    defaultDryMatter: '14',
+    defaultRowSpacing: '0.5',
+    measurementUnit: 'metric', // metric or imperial
+    
+    // Data management
+    dataSync: true,
+    backupFrequency: 'weekly'
+  };
+  
+  // Set up form management
+  const { 
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleBlur,
+    setFieldValue
+  } = useForm(initialValues);
+  
+  // Handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // In a real app, this would save the settings to the backend
+    console.log('Saving settings:', values);
+    
+    // Show success message
+    alert('Settings saved successfully!');
+  };
+  
+  // Determine if we should show the sidebar (desktop) or use mobile view
+  const shouldShowSidebar = !isMobile;
+  
+  return (
+    <div className="max-w-7xl mx-auto">
+      <div className="bg-white rounded-xl shadow p-6 mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center">
+            {isMobile && (
+              <button
+                onClick={() => onNavigate('more')}
+                className="mr-2 p-1.5 rounded-full hover:bg-gray-100"
+              >
+                <ChevronLeft size={20} className="text-gray-600" />
+              </button>
+            )}
+            <h1 className="text-2xl font-bold text-gray-800">Settings</h1>
+          </div>
+          <FormButton
+            variant="primary"
+            icon={<Save size={16} />}
+            onClick={handleSubmit}
+          >
+            Save Changes
+          </FormButton>
+        </div>
+        <p className="text-gray-600">
+          Manage your profile, farm information, and application preferences
+        </p>
+      </div>
+      
+      <div className="flex flex-col md:flex-row gap-6">
+        {/* Settings Navigation */}
+        {shouldShowSidebar && (
+          <div className="md:w-1/4">
+            <div className="bg-white rounded-xl shadow overflow-hidden">
+              <ul className="divide-y divide-gray-100">
+                <SettingsNavItem
+                  label="Profile Information"
+                  icon={<User size={18} />}
+                  isActive={activeSection === 'profile'}
+                  onClick={() => setActiveSection('profile')}
+                />
+                <SettingsNavItem
+                  label="Farm Details"
+                  icon={<Building size={18} />}
+                  isActive={activeSection === 'farm'}
+                  onClick={() => setActiveSection('farm')}
+                />
+                <SettingsNavItem
+                  label="Notifications"
+                  icon={<Bell size={18} />}
+                  isActive={activeSection === 'notifications'}
+                  onClick={() => setActiveSection('notifications')}
+                />
+                <SettingsNavItem
+                  label="App Preferences"
+                  icon={<FileText size={18} />}
+                  isActive={activeSection === 'preferences'}
+                  onClick={() => setActiveSection('preferences')}
+                />
+                <SettingsNavItem
+                  label="Data Management"
+                  icon={<Cloud size={18} />}
+                  isActive={activeSection === 'data'}
+                  onClick={() => setActiveSection('data')}
+                />
+                <SettingsNavItem
+                  label="Security"
+                  icon={<Lock size={18} />}
+                  isActive={activeSection === 'security'}
+                  onClick={() => setActiveSection('security')}
+                />
+              </ul>
+            </div>
+          </div>
+        )}
+        
+        {/* Settings Content */}
+        <div className={`${shouldShowSidebar ? 'md:w-3/4' : 'w-full'}`}>
+          <div className="bg-white rounded-xl shadow p-6">
+            {/* Mobile Section Selector */}
+            {isMobile && (
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Settings Section
+                </label>
+                <select
+                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm py-2 pl-3 pr-10 appearance-none border"
+                  value={activeSection}
+                  onChange={(e) => setActiveSection(e.target.value)}
+                >
+                  <option value="profile">Profile Information</option>
+                  <option value="farm">Farm Details</option>
+                  <option value="notifications">Notifications</option>
+                  <option value="preferences">App Preferences</option>
+                  <option value="data">Data Management</option>
+                  <option value="security">Security</option>
+                </select>
+              </div>
+            )}
+            
+            {/* Profile Information Section */}
+            {activeSection === 'profile' && (
+              <form>
+                <h2 className="text-xl font-semibold mb-4">Profile Information</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                  <FormField
+                    label="Full Name"
+                    name="name"
+                    type="text"
+                    value={values.name}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={errors.name}
+                    touched={touched.name}
+                    placeholder="Your full name"
+                    required
+                  />
+                  <FormField
+                    label="Email Address"
+                    name="email"
+                    type="email"
+                    value={values.email}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={errors.email}
+                    touched={touched.email}
+                    placeholder="Your email address"
+                    required
+                  />
+                  <FormField
+                    label="Role"
+                    name="role"
+                    type="text"
+                    value={values.role}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={errors.role}
+                    touched={touched.role}
+                    placeholder="Your role (e.g. Farm Manager)"
+                  />
+                  <FormField
+                    label="Phone Number"
+                    name="phone"
+                    type="text"
+                    value={values.phone}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={errors.phone}
+                    touched={touched.phone}
+                    placeholder="Your phone number"
+                  />
+                </div>
+                <div className="border-t border-gray-200 pt-4">
+                  <p className="text-sm text-gray-500 mb-4">
+                    Profile information will be used for reports and notifications
+                  </p>
+                </div>
+              </form>
+            )}
+            
+            {/* Farm Details Section */}
+            {activeSection === 'farm' && (
+              <form>
+                <h2 className="text-xl font-semibold mb-4">Farm Details</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                  <FormField
+                    label="Farm Name"
+                    name="farmName"
+                    type="text"
+                    value={values.farmName}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={errors.farmName}
+                    touched={touched.farmName}
+                    placeholder="Your farm name"
+                    required
+                  />
+                  <FormField
+                    label="Farm Address"
+                    name="farmAddress"
+                    type="text"
+                    value={values.farmAddress}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={errors.farmAddress}
+                    touched={touched.farmAddress}
+                    placeholder="Street address"
+                    required
+                  />
+                  <FormField
+                    label="City/Town"
+                    name="city"
+                    type="text"
+                    value={values.city}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={errors.city}
+                    touched={touched.city}
+                    placeholder="City or town"
+                    required
+                  />
+                  <FormField
+                    label="Postal Code"
+                    name="postalCode"
+                    type="text"
+                    value={values.postalCode}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={errors.postalCode}
+                    touched={touched.postalCode}
+                    placeholder="Postal code"
+                  />
+                  <FormField
+                    label="Region"
+                    name="region"
+                    type="text"
+                    value={values.region}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={errors.region}
+                    touched={touched.region}
+                    placeholder="Region/State/Province"
+                    required
+                  />
+                  <FormField
+                    label="Country"
+                    name="country"
+                    type="text"
+                    value={values.country}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={errors.country}
+                    touched={touched.country}
+                    placeholder="Country"
+                    required
+                  />
+                </div>
+                <div className="border-t border-gray-200 pt-4">
+                  <p className="text-sm text-gray-500 mb-4">
+                    Farm details will be used on reports and for weather information
+                  </p>
+                </div>
+              </form>
+            )}
+            
+            {/* Notifications Section */}
+            {activeSection === 'notifications' && (
+              <form>
+                <h2 className="text-xl font-semibold mb-4">Notification Settings</h2>
+                <div className="space-y-4 mb-6">
+                  <FormField
+                    label="Email Notifications"
+                    name="emailNotifications"
+                    type="checkbox"
+                    checked={values.emailNotifications}
+                    onChange={handleChange}
+                    hint="Receive important notifications via email"
+                  />
+                  <FormField
+                    label="Task Reminders"
+                    name="reminderNotifications"
+                    type="checkbox"
+                    checked={values.reminderNotifications}
+                    onChange={handleChange}
+                    hint="Get reminders about upcoming tasks and deadlines"
+                  />
+                  <FormField
+                    label="Report Notifications"
+                    name="reportNotifications"
+                    type="checkbox"
+                    checked={values.reportNotifications}
+                    onChange={handleChange}
+                    hint="Be notified when reports are generated or shared"
+                  />
+                  <FormField
+                    label="Weather Alerts"
+                    name="weatherAlerts"
+                    type="checkbox"
+                    checked={values.weatherAlerts}
+                    onChange={handleChange}
+                    hint="Receive alerts about important weather changes"
+                  />
+                </div>
+                <div className="border-t border-gray-200 pt-4">
+                  <p className="text-sm text-gray-500 mb-4">
+                    Notification settings help you stay informed about important events
+                  </p>
+                </div>
+              </form>
+            )}
+            
+            {/* App Preferences Section */}
+            {activeSection === 'preferences' && (
+              <form>
+                <h2 className="text-xl font-semibold mb-4">App Preferences</h2>
+                <div className="space-y-4 mb-6">
+                  <FormField
+                    label="Auto-save Drafts"
+                    name="autoSaveDrafts"
+                    type="checkbox"
+                    checked={values.autoSaveDrafts}
+                    onChange={handleChange}
+                    hint="Automatically save assessment drafts while working"
+                  />
+                  <FormField
+                    label="Default Dry Matter (%)"
+                    name="defaultDryMatter"
+                    type="text"
+                    value={values.defaultDryMatter}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={errors.defaultDryMatter}
+                    touched={touched.defaultDryMatter}
+                    hint="Default dry matter percentage for new assessments"
+                  />
+                  <FormField
+                    label="Default Row Spacing (m)"
+                    name="defaultRowSpacing"
+                    type="text"
+                    value={values.defaultRowSpacing}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={errors.defaultRowSpacing}
+                    touched={touched.defaultRowSpacing}
+                    hint="Default row spacing for new assessments (meters)"
+                  />
+                  <FormField
+                    label="Measurement Unit"
+                    name="measurementUnit"
+                    type="select"
+                    value={values.measurementUnit}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    options={[
+                      { value: 'metric', label: 'Metric (kg, ha, tonnes)' },
+                      { value: 'imperial', label: 'Imperial (lb, acre, tons)' }
+                    ]}
+                    hint="Preferred measurement units for calculations and display"
+                  />
+                </div>
+                <div className="border-t border-gray-200 pt-4">
+                  <p className="text-sm text-gray-500 mb-4">
+                    App preferences customize how the application works for you
+                  </p>
+                </div>
+              </form>
+            )}
+            
+            {/* Data Management Section */}
+            {activeSection === 'data' && (
+              <form>
+                <h2 className="text-xl font-semibold mb-4">Data Management</h2>
+                <div className="space-y-4 mb-6">
+                  <FormField
+                    label="Sync Data Across Devices"
+                    name="dataSync"
+                    type="checkbox"
+                    checked={values.dataSync}
+                    onChange={handleChange}
+                    hint="Keep your data consistent across multiple devices"
+                  />
+                  <FormField
+                    label="Backup Frequency"
+                    name="backupFrequency"
+                    type="select"
+                    value={values.backupFrequency}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    options={[
+                      { value: 'daily', label: 'Daily' },
+                      { value: 'weekly', label: 'Weekly' },
+                      { value: 'monthly', label: 'Monthly' },
+                      { value: 'never', label: 'Never' }
+                    ]}
+                    hint="How often your data should be backed up"
+                  />
+                  <div className="border-t border-gray-200 pt-4 mb-4">
+                    <h3 className="font-medium mb-2">Data Import/Export</h3>
+                    <div className="flex space-x-2">
+                      <FormButton
+                        variant="outline"
+                        size="sm"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          alert('Export functionality would be implemented here');
+                        }}
+                      >
+                        Export Data
+                      </FormButton>
+                      <FormButton
+                        variant="outline"
+                        size="sm"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          alert('Import functionality would be implemented here');
+                        }}
+                      >
+                        Import Data
+                      </FormButton>
+                    </div>
+                  </div>
+                </div>
+                <div className="border-t border-gray-200 pt-4">
+                  <p className="text-sm text-gray-500 mb-4">
+                    Data management settings help ensure your information is secure and accessible
+                  </p>
+                </div>
+              </form>
+            )}
+            
+            {/* Security Section */}
+            {activeSection === 'security' && (
+              <form>
+                <h2 className="text-xl font-semibold mb-4">Security Settings</h2>
+                <div className="space-y-4 mb-6">
+                  <div className="border-b border-gray-200 pb-4">
+                    <h3 className="font-medium mb-2">Change Password</h3>
+                    <div className="grid grid-cols-1 gap-4">
+                      <FormField
+                        label="Current Password"
+                        name="currentPassword"
+                        type="password"
+                        placeholder="Your current password"
+                      />
+                      <FormField
+                        label="New Password"
+                        name="newPassword"
+                        type="password"
+                        placeholder="New password"
+                      />
+                      <FormField
+                        label="Confirm New Password"
+                        name="confirmPassword"
+                        type="password"
+                        placeholder="Confirm new password"
+                      />
+                      <div>
+                        <FormButton
+                          variant="outline"
+                          size="sm"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            alert('Password change functionality would be implemented here');
+                          }}
+                        >
+                          Update Password
+                        </FormButton>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="pt-2">
+                    <h3 className="font-medium mb-2">Account Security</h3>
+                    <FormField
+                      label="Two-Factor Authentication"
+                      name="twoFactorAuth"
+                      type="checkbox"
+                      checked={false}
+                      onChange={() => {
+                        alert('Two-factor authentication would be implemented here');
+                      }}
+                      hint="Add an extra layer of security to your account (Coming Soon)"
+                    />
+                  </div>
+                </div>
+                <div className="border-t border-gray-200 pt-4">
+                  <p className="text-sm text-gray-500 mb-4">
+                    Keeping your account secure helps protect your farm data
+                  </p>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Navigation item for the settings sidebar
+ */
+const SettingsNavItem = ({ label, icon, isActive, onClick }) => {
+  return (
+    <li>
+      <button
+        className={`w-full p-4 flex items-center text-left ${
+          isActive ? 'bg-green-50 text-green-600 font-medium' : 'hover:bg-gray-50'
+        }`}
+        onClick={onClick}
+      >
+        <div className={`mr-3 ${isActive ? 'text-green-600' : 'text-gray-500'}`}>
+          {icon}
+        </div>
+        <span>{label}</span>
+      </button>
+    </li>
+  );
+};
+
+export default SettingsScreen;
