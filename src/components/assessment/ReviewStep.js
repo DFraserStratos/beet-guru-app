@@ -162,8 +162,11 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel }) => {
                   <div className="text-gray-500">Cultivar:</div>
                   <div className="text-gray-900">{getCultivarName()}</div>
                   
-                  <div className="text-gray-500">Planting Date:</div>
-                  <div className="text-gray-900">{formatDate(formData.plantingDate)}</div>
+                  <div className="text-gray-500">Sowing Date:</div>
+                  <div className="text-gray-900">{formatDate(formData.sowingDate)}</div>
+                  
+                  <div className="text-gray-500">Assessment Date:</div>
+                  <div className="text-gray-900">{formatDate(formData.assessmentDate)}</div>
                   
                   <div className="text-gray-500">Water Type:</div>
                   <div className="text-gray-900">{formData.waterType === 'irrigated' ? 'Irrigated' : 'Dryland'}</div>
