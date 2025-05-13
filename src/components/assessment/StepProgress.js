@@ -38,21 +38,19 @@ const StepProgress = ({ currentStep, steps = ['Crop Details', 'Field Setup', 'Me
         <div className="absolute inset-0 flex items-center" aria-hidden="true">
           <div className="h-0.5 w-full bg-gray-200"></div>
         </div>
-        <div className="relative flex justify-between">
-          {steps.map((_, index) => {
-            const step = index + 1;
-            const isLast = step === steps.length;
-            
-            return (
-              <div
-                key={step}
-                className={`h-0.5 ${
-                  step <= currentStep ? 'bg-green-600' : 'bg-gray-200'
-                }`}
-                style={{ width: isLast ? '0%' : `${100 / (steps.length - 1)}%` }}
-              ></div>
-            );
-          })}
+        <div className="relative flex justify-start">
+          <div
+            className={`h-0.5 ${currentStep >= 1 ? 'bg-green-600' : 'bg-gray-200'}`}
+            style={{ width: `${100 / 3}%` }}
+          ></div>
+          <div
+            className={`h-0.5 ${currentStep >= 2 ? 'bg-green-600' : 'bg-gray-200'}`}
+            style={{ width: `${100 / 3}%` }}
+          ></div>
+          <div
+            className={`h-0.5 ${currentStep >= 3 ? 'bg-green-600' : 'bg-gray-200'}`}
+            style={{ width: `${100 / 3}%` }}
+          ></div>
         </div>
       </div>
     </div>
