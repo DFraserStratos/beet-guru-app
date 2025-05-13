@@ -13,7 +13,7 @@ const StepProgress = ({ currentStep, steps = ['Crop Details', 'Field Setup', 'Me
         {steps.map((stepLabel, index) => {
           const step = index + 1;
           return (
-            <div key={step} className="flex flex-col items-center">
+            <div key={step} className="flex flex-col items-center relative">
               <div 
                 className={`w-10 h-10 rounded-full flex items-center justify-center ${
                   step === currentStep 
@@ -35,22 +35,40 @@ const StepProgress = ({ currentStep, steps = ['Crop Details', 'Field Setup', 'Me
       
       {/* Progress Bar */}
       <div className="relative mt-4">
+        {/* Background track */}
         <div className="absolute inset-0 flex items-center" aria-hidden="true">
           <div className="h-0.5 w-full bg-gray-200"></div>
         </div>
-        <div className="relative flex justify-start">
-          <div
-            className={`h-0.5 ${currentStep >= 1 ? 'bg-green-600' : 'bg-gray-200'}`}
-            style={{ width: `${100 / 3}%` }}
-          ></div>
-          <div
-            className={`h-0.5 ${currentStep >= 2 ? 'bg-green-600' : 'bg-gray-200'}`}
-            style={{ width: `${100 / 3}%` }}
-          ></div>
-          <div
-            className={`h-0.5 ${currentStep >= 3 ? 'bg-green-600' : 'bg-gray-200'}`}
-            style={{ width: `${100 / 3}%` }}
-          ></div>
+        
+        {/* Progress indicators */}
+        <div className="relative">
+          <div className="flex justify-between">
+            {steps.map((_, index) => {
+              const step = index + 1;
+              return (
+                <div 
+                  key={step} 
+                  className={`w-4 h-4 rounded-full border-2 border-white ${
+                    step <= currentStep ? 'bg-green-600' : 'bg-gray-200'
+                  } ${step === steps.length ? '' : ''}`}
+                  style={{
+                    marginLeft: step === 1 ? '0' : '',
+                    marginRight: step === steps.length ? '0' : '',
+                  }}
+                ></div>
+              );
+            })}
+          </div>
+          
+          {/* Progress fill */}
+          <div className="absolute inset-0 flex items-center" aria-hidden="true">
+            <div 
+              className="h-0.5 bg-green-600 transition-all duration-300" 
+              style={{ 
+                width: `${(currentStep - 1) / (steps.length - 1) * 100}%`,
+              }}
+            ></div>
+          </div>
         </div>
       </div>
     </div>
