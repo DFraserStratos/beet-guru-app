@@ -35,14 +35,19 @@ const FormButton = ({
   isLoading = false,
   disabled = false,
   icon = null,
+  iconOnly = false,
   onClick,
   className = '',
   ...rest
 }) => {
-  // Merge classes based on variant and size
+  // Adjust padding when only showing an icon
+  const iconOnlyClasses = iconOnly ? 'px-3' : '';
+  
+  // Merge classes based on variant, size and other props
   const buttonClasses = `
     ${VARIANTS[variant] || VARIANTS.primary}
-    ${SIZES[size] || SIZES.md}
+    ${!iconOnly ? SIZES[size] || SIZES.md : ''}
+    ${iconOnlyClasses}
     ${fullWidth ? 'w-full' : ''}
     transition-colors rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50
     flex justify-center items-center
@@ -65,8 +70,8 @@ const FormButton = ({
         </>
       ) : (
         <>
-          {icon && <span className="mr-2">{icon}</span>}
-          {children}
+          {icon && <span className={iconOnly ? '' : 'mr-2'}>{icon}</span>}
+          {!iconOnly && children}
         </>
       )}
     </button>
