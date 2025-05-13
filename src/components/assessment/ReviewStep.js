@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FormButtonNav } from '../ui/form';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
@@ -9,7 +9,7 @@ import { useApi } from '../../hooks';
  * @returns {JSX.Element} Rendered component
  */
 const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
-  const [reportType, setReportType] = useState('basic');
+  const [reportType, setReportType] = React.useState('basic');
   
   // Format data for display
   const formatDate = (dateString) => {
