@@ -6,31 +6,24 @@ import React from 'react';
  * @returns {JSX.Element} Rendered component
  */
 const StepProgress = ({ currentStep, steps = ['Crop Details', 'Field Setup', 'Measurements', 'Review'] }) => {
-  // Calculate progress bar width and position
-  const calculateProgressStyle = () => {
+  // Calculate progress width to exactly match step positions
+  const calculateProgressWidth = () => {
+    // Zero-indexed step for calculations
+    const stepIndex = currentStep - 1;
     const totalSteps = steps.length;
     
-    if (currentStep === 1) {
-      // First step - no progress width
-      return { width: '0%', left: '0%' };
-    } else if (currentStep > totalSteps) {
-      // Completed all steps
-      return { width: '100%', left: '0%' };
+    if (stepIndex === 0) {
+      // First step, no progress
+      return '0%';
+    } else if (stepIndex >= totalSteps) {
+      // Beyond last step, full progress
+      return '100%';
     } else {
-      // Calculate segment width based on number of segments (not steps)
-      const segmentWidth = 100 / (totalSteps - 1);
-      
-      // Calculate how many segments to fill (currentStep - 1)
-      const segments = currentStep - 1;
-      
-      // Calculate width as a percentage
-      const width = `${segmentWidth * segments}%`;
-      
-      return { width, left: '0%' };
+      // Calculate percentage based on current step position
+      // This ensures the progress bar always ends exactly at the current step's dot
+      return `${(stepIndex / (totalSteps - 1)) * 100}%`;
     }
   };
-  
-  const progressStyle = calculateProgressStyle();
   
   return (
     <div className="mb-8">
@@ -61,38 +54,38 @@ const StepProgress = ({ currentStep, steps = ['Crop Details', 'Field Setup', 'Me
           })}
         </div>
         
-        {/* Progress track and dots row - positioned in the same grid columns for alignment */}
+        {/* Progress track and dots row */}
         <div className="col-span-full mt-4 relative">
-          {/* Dots container - Grid ensures dots align with step numbers */}
+          {/* Dots container with relative positioning to serve as reference for the line */}
           <div className="grid relative" style={{ gridTemplateColumns: `repeat(${steps.length}, 1fr)` }}>
-            {/* Background track - now positioned relative to the dots container for better alignment */}
-            <div className="absolute inset-0 flex items-center" aria-hidden="true">
-              <div className="h-0.5 w-full bg-gray-200" style={{
-                // Position the line to start at the first dot and end at the last dot
-                marginLeft: '2px',
-                marginRight: '2px',
+            {/* Background track - positioned relative to the dots */}
+            <div className="absolute inset-0 flex items-center pointer-events-none" aria-hidden="true">
+              {/* Position this line to start at the center of the first dot and end at the center of the last dot */}
+              <div className="h-0.5 bg-gray-200" style={{
+                position: 'absolute',
+                left: '2px', // Half the dot width (4px / 2)
+                right: '2px', // Half the dot width (4px / 2)
                 width: 'calc(100% - 4px)'
               }}></div>
             </div>
             
-            {/* Progress fill */}
-            <div className="absolute inset-0 flex items-center" aria-hidden="true">
+            {/* Progress fill - aligned to start at the first dot's center */}
+            <div className="absolute inset-0 flex items-center pointer-events-none" aria-hidden="true">
               <div 
                 className="h-0.5 bg-green-600 transition-all duration-300" 
                 style={{
-                  // Position the progress fill to start at the first dot
-                  marginLeft: '2px',
-                  width: progressStyle.width,
-                  left: progressStyle.left
+                  position: 'absolute',
+                  left: '2px', // Half the dot width (4px / 2)
+                  width: calculateProgressWidth()
                 }}
               ></div>
             </div>
             
-            {/* Render the dots */}
+            {/* Dots themselves */}
             {steps.map((_, index) => {
               const step = index + 1;
               return (
-                <div key={step} className="flex justify-center">
+                <div key={step} className="flex justify-center relative z-10">
                   <div 
                     className={`w-4 h-4 rounded-full border-2 border-white ${
                       step <= currentStep ? 'bg-green-600' : 'bg-gray-200'
