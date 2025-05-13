@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Save, User, MapPin, Bell, Lock, ChevronLeft, Building, Cloud, FileText } from 'lucide-react';
+import { Save, User, MapPin, Lock, ChevronLeft, Building } from 'lucide-react';
 import { FormButton, FormField } from '../ui/form';
 import { useForm } from '../../hooks';
 
@@ -26,22 +26,6 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
     postalCode: '7495',
     region: 'Canterbury',
     country: 'New Zealand',
-    
-    // Notification settings
-    emailNotifications: true,
-    reminderNotifications: true,
-    reportNotifications: true,
-    weatherAlerts: true,
-    
-    // App settings
-    autoSaveDrafts: true,
-    defaultDryMatter: '14',
-    defaultRowSpacing: '0.5',
-    measurementUnit: 'metric', // metric or imperial
-    
-    // Data management
-    dataSync: true,
-    backupFrequency: 'weekly'
   };
   
   // Set up form management
@@ -91,7 +75,7 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
           </FormButton>
         </div>
         <p className="text-gray-600">
-          Manage your profile, farm information, and application preferences
+          Manage your profile, farm information, and security settings
         </p>
       </div>
       
@@ -112,24 +96,6 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
                   icon={<Building size={18} />}
                   isActive={activeSection === 'farm'}
                   onClick={() => setActiveSection('farm')}
-                />
-                <SettingsNavItem
-                  label="Notifications"
-                  icon={<Bell size={18} />}
-                  isActive={activeSection === 'notifications'}
-                  onClick={() => setActiveSection('notifications')}
-                />
-                <SettingsNavItem
-                  label="App Preferences"
-                  icon={<FileText size={18} />}
-                  isActive={activeSection === 'preferences'}
-                  onClick={() => setActiveSection('preferences')}
-                />
-                <SettingsNavItem
-                  label="Data Management"
-                  icon={<Cloud size={18} />}
-                  isActive={activeSection === 'data'}
-                  onClick={() => setActiveSection('data')}
                 />
                 <SettingsNavItem
                   label="Security"
@@ -158,9 +124,6 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
                 >
                   <option value="profile">Profile Information</option>
                   <option value="farm">Farm Details</option>
-                  <option value="notifications">Notifications</option>
-                  <option value="preferences">App Preferences</option>
-                  <option value="data">Data Management</option>
                   <option value="security">Security</option>
                 </select>
               </div>
@@ -311,171 +274,6 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
               </form>
             )}
             
-            {/* Notifications Section */}
-            {activeSection === 'notifications' && (
-              <form>
-                <h2 className="text-xl font-semibold mb-4">Notification Settings</h2>
-                <div className="space-y-4 mb-6">
-                  <FormField
-                    label="Email Notifications"
-                    name="emailNotifications"
-                    type="checkbox"
-                    checked={values.emailNotifications}
-                    onChange={handleChange}
-                    hint="Receive important notifications via email"
-                  />
-                  <FormField
-                    label="Task Reminders"
-                    name="reminderNotifications"
-                    type="checkbox"
-                    checked={values.reminderNotifications}
-                    onChange={handleChange}
-                    hint="Get reminders about upcoming tasks and deadlines"
-                  />
-                  <FormField
-                    label="Report Notifications"
-                    name="reportNotifications"
-                    type="checkbox"
-                    checked={values.reportNotifications}
-                    onChange={handleChange}
-                    hint="Be notified when reports are generated or shared"
-                  />
-                  <FormField
-                    label="Weather Alerts"
-                    name="weatherAlerts"
-                    type="checkbox"
-                    checked={values.weatherAlerts}
-                    onChange={handleChange}
-                    hint="Receive alerts about important weather changes"
-                  />
-                </div>
-                <div className="border-t border-gray-200 pt-4">
-                  <p className="text-sm text-gray-500 mb-4">
-                    Notification settings help you stay informed about important events
-                  </p>
-                </div>
-              </form>
-            )}
-            
-            {/* App Preferences Section */}
-            {activeSection === 'preferences' && (
-              <form>
-                <h2 className="text-xl font-semibold mb-4">App Preferences</h2>
-                <div className="space-y-4 mb-6">
-                  <FormField
-                    label="Auto-save Drafts"
-                    name="autoSaveDrafts"
-                    type="checkbox"
-                    checked={values.autoSaveDrafts}
-                    onChange={handleChange}
-                    hint="Automatically save assessment drafts while working"
-                  />
-                  <FormField
-                    label="Default Dry Matter (%)"
-                    name="defaultDryMatter"
-                    type="text"
-                    value={values.defaultDryMatter}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={errors.defaultDryMatter}
-                    touched={touched.defaultDryMatter}
-                    hint="Default dry matter percentage for new assessments"
-                  />
-                  <FormField
-                    label="Default Row Spacing (m)"
-                    name="defaultRowSpacing"
-                    type="text"
-                    value={values.defaultRowSpacing}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={errors.defaultRowSpacing}
-                    touched={touched.defaultRowSpacing}
-                    hint="Default row spacing for new assessments (meters)"
-                  />
-                  <FormField
-                    label="Measurement Unit"
-                    name="measurementUnit"
-                    type="select"
-                    value={values.measurementUnit}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    options={[
-                      { value: 'metric', label: 'Metric (kg, ha, tonnes)' },
-                      { value: 'imperial', label: 'Imperial (lb, acre, tons)' }
-                    ]}
-                    hint="Preferred measurement units for calculations and display"
-                  />
-                </div>
-                <div className="border-t border-gray-200 pt-4">
-                  <p className="text-sm text-gray-500 mb-4">
-                    App preferences customize how the application works for you
-                  </p>
-                </div>
-              </form>
-            )}
-            
-            {/* Data Management Section */}
-            {activeSection === 'data' && (
-              <form>
-                <h2 className="text-xl font-semibold mb-4">Data Management</h2>
-                <div className="space-y-4 mb-6">
-                  <FormField
-                    label="Sync Data Across Devices"
-                    name="dataSync"
-                    type="checkbox"
-                    checked={values.dataSync}
-                    onChange={handleChange}
-                    hint="Keep your data consistent across multiple devices"
-                  />
-                  <FormField
-                    label="Backup Frequency"
-                    name="backupFrequency"
-                    type="select"
-                    value={values.backupFrequency}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    options={[
-                      { value: 'daily', label: 'Daily' },
-                      { value: 'weekly', label: 'Weekly' },
-                      { value: 'monthly', label: 'Monthly' },
-                      { value: 'never', label: 'Never' }
-                    ]}
-                    hint="How often your data should be backed up"
-                  />
-                  <div className="border-t border-gray-200 pt-4 mb-4">
-                    <h3 className="font-medium mb-2">Data Import/Export</h3>
-                    <div className="flex space-x-2">
-                      <FormButton
-                        variant="outline"
-                        size="sm"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          alert('Export functionality would be implemented here');
-                        }}
-                      >
-                        Export Data
-                      </FormButton>
-                      <FormButton
-                        variant="outline"
-                        size="sm"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          alert('Import functionality would be implemented here');
-                        }}
-                      >
-                        Import Data
-                      </FormButton>
-                    </div>
-                  </div>
-                </div>
-                <div className="border-t border-gray-200 pt-4">
-                  <p className="text-sm text-gray-500 mb-4">
-                    Data management settings help ensure your information is secure and accessible
-                  </p>
-                </div>
-              </form>
-            )}
-            
             {/* Security Section */}
             {activeSection === 'security' && (
               <form>
@@ -515,20 +313,6 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
                         </FormButton>
                       </div>
                     </div>
-                  </div>
-                  
-                  <div className="pt-2">
-                    <h3 className="font-medium mb-2">Account Security</h3>
-                    <FormField
-                      label="Two-Factor Authentication"
-                      name="twoFactorAuth"
-                      type="checkbox"
-                      checked={false}
-                      onChange={() => {
-                        alert('Two-factor authentication would be implemented here');
-                      }}
-                      hint="Add an extra layer of security to your account (Coming Soon)"
-                    />
                   </div>
                 </div>
                 <div className="border-t border-gray-200 pt-4">
