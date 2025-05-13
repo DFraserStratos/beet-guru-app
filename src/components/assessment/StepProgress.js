@@ -98,9 +98,23 @@ const StepProgress = ({ currentStep, steps = ['Crop Details', 'Field Setup', 'Me
             className="grid relative h-4" 
             style={{ gridTemplateColumns: `repeat(${steps.length}, 1fr)` }}
           >
+            {/* Dots - positioned in grid cells and showing through z-index */}
+            {steps.map((_, index) => {
+              const step = index + 1;
+              return (
+                <div key={step} className="flex justify-center items-center h-full relative z-20">
+                  <div 
+                    className={`step-dot w-4 h-4 rounded-full border-2 border-white ${
+                      step <= currentStep ? 'bg-green-600' : 'bg-gray-200'
+                    }`}
+                  ></div>
+                </div>
+              );
+            })}
+            
             {/* Track container - positioned exactly between dot centers */}
             <div 
-              className="absolute inset-y-0 flex items-center" 
+              className="absolute inset-y-0 flex items-center z-10" 
               style={trackContainerStyle}
               aria-hidden="true"
             >
@@ -113,20 +127,6 @@ const StepProgress = ({ currentStep, steps = ['Crop Details', 'Field Setup', 'Me
                 style={{ width: progressWidth }}
               ></div>
             </div>
-            
-            {/* Dots - positioned in grid cells */}
-            {steps.map((_, index) => {
-              const step = index + 1;
-              return (
-                <div key={step} className="flex justify-center items-center h-full relative z-10">
-                  <div 
-                    className={`step-dot w-4 h-4 rounded-full border-2 border-white ${
-                      step <= currentStep ? 'bg-green-600' : 'bg-gray-200'
-                    }`}
-                  ></div>
-                </div>
-              );
-            })}
           </div>
         </div>
       </div>
