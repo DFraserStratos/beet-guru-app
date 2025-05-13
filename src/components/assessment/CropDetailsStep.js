@@ -15,6 +15,9 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
   const [showCustomCultivar, setShowCustomCultivar] = useState(selectedCultivar === 'other');
   const [customCultivarName, setCustomCultivarName] = useState(formData.customCultivarName || '');
   
+  // Get today's date in YYYY-MM-DD format for default assessment date
+  const today = new Date().toISOString().split('T')[0];
+  
   // API hooks
   const locationsApi = useApi(api.references.getLocations);
   const cultivarsApi = useApi(api.references.getCultivars);
@@ -188,17 +191,29 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
           )}
         </div>
         
+        {/* Third row with Sowing Date and Assessment Date */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
-            label="Planting Date"
+            label="Sowing Date"
             name="plantingDate"
             type="date"
             value={formData.plantingDate || '2024-10-20'}
             onChange={handleChange}
           />
           
-          {/* Water Type as a selector instead of dropdown */}
-          <div className="mb-4">
+          <FormField
+            label="Assessment Date"
+            name="assessmentDate"
+            type="date"
+            value={formData.assessmentDate || today}
+            onChange={handleChange}
+          />
+        </div>
+        
+        {/* Fourth row with Water Type and Growing Cost */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Water Type section - takes up 2/3 of the row */}
+          <div className="md:col-span-2 mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Water Type
             </label>
@@ -229,19 +244,22 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
               </div>
             </div>
           </div>
+          
+          {/* Estimated Growing Cost - takes up 1/3 of the row */}
+          <div>
+            <FormField
+              label="Estimated Growing Cost ($/ha)"
+              name="estimatedGrowingCost"
+              type="number"
+              placeholder="Enter cost per hectare"
+              value={formData.estimatedGrowingCost || '2500'}
+              onChange={handleChange}
+              hint="Seeds, fertilizer, labor, etc."
+              min="0"
+              step="10"
+            />
+          </div>
         </div>
-        
-        <FormField
-          label="Estimated Growing Cost ($/ha)"
-          name="estimatedGrowingCost"
-          type="number"
-          placeholder="Enter cost per hectare"
-          value={formData.estimatedGrowingCost || '2500'}
-          onChange={handleChange}
-          hint="Consider costs for seeds, fertilizer, irrigation, labor, equipment, and pest management"
-          min="0"
-          step="10"
-        />
         
         <div className="pt-4 flex justify-between">
           <div className="flex space-x-4">
