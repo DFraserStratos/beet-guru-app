@@ -6,38 +6,51 @@ import React, { useRef, useEffect, useState } from 'react';
  * @returns {JSX.Element} Rendered component
  */
 const StepProgress = ({ currentStep, steps = ['Crop Details', 'Field Setup', 'Measurements', 'Review'] }) => {
-  const dotsContainerRef = useRef(null);
-  const [progressWidth, setProgressWidth] = useState('0%');
+  const progressContainerRef = useRef(null);
+  const [progressBarStyle, setProgressBarStyle] = useState({
+    width: '0',
+    left: '0'
+  });
   
-  // Calculate progress width based on dots positions
+  // Calculate and update progress bar dimensions based on actual dot positions
   useEffect(() => {
-    if (dotsContainerRef.current) {
-      const container = dotsContainerRef.current;
-      const dots = container.querySelectorAll('.step-dot');
-      
-      // If we have dots and a current step
-      if (dots.length > 0 && currentStep > 1) {
-        // Get first dot position (left edge of container is 0)
-        const firstDot = dots[0].getBoundingClientRect();
-        const firstDotCenter = firstDot.left + (firstDot.width / 2) - container.getBoundingClientRect().left;
-        
-        // Get position of the current step's dot
-        const currentStepIndex = Math.min(currentStep - 1, dots.length - 1);
-        const currentDot = dots[currentStepIndex].getBoundingClientRect();
-        const currentDotCenter = currentDot.left + (currentDot.width / 2) - container.getBoundingClientRect().left;
-        
-        // Calculate the exact width needed
-        const exactWidth = currentDotCenter - firstDotCenter;
-        
-        // Set progress width as a percentage of container width
-        const containerWidth = container.offsetWidth;
-        const widthPercentage = (exactWidth / containerWidth) * 100;
-        
-        setProgressWidth(`${widthPercentage}%`);
-      } else {
-        setProgressWidth('0%');
-      }
+    if (!progressContainerRef.current) return;
+    
+    const container = progressContainerRef.current;
+    const dots = container.querySelectorAll('.step-dot');
+    
+    if (dots.length === 0) return;
+    
+    // Calculate positions of all dots relative to the container
+    const containerRect = container.getBoundingClientRect();
+    const dotPositions = Array.from(dots).map(dot => {
+      const rect = dot.getBoundingClientRect();
+      // Return the center position of the dot
+      return rect.left + (rect.width / 2) - containerRect.left;
+    });
+    
+    // No progress for step 1
+    if (currentStep <= 1) {
+      setProgressBarStyle({
+        width: '0',
+        left: `${dotPositions[0]}px`
+      });
+      return;
     }
+    
+    // Calculate exact progress width based on current step
+    // Progress should go from first dot to the dot representing previous step
+    const targetDotIndex = Math.min(currentStep - 1, dots.length - 1);
+    const startPos = dotPositions[0];
+    const endPos = dotPositions[targetDotIndex];
+    const width = endPos - startPos;
+    
+    // Update progress bar style with exact positioning
+    setProgressBarStyle({
+      width: `${width}px`,
+      left: `${startPos}px`
+    });
+    
   }, [currentStep]);
   
   return (
@@ -70,31 +83,40 @@ const StepProgress = ({ currentStep, steps = ['Crop Details', 'Field Setup', 'Me
         </div>
         
         {/* Progress track and dots row */}
-        <div className="col-span-full mt-4 relative">
-          {/* Dots container */}
+        <div className="col-span-full mt-4">
+          {/* Container for dots and progress bar */}
           <div 
-            ref={dotsContainerRef}
-            className="grid relative" 
+            ref={progressContainerRef}
+            className="grid relative h-4" 
             style={{ gridTemplateColumns: `repeat(${steps.length}, 1fr)` }}
           >
-            {/* Background track - spans between first and last dot centers */}
-            <div className="absolute inset-y-0 left-0 right-0 flex items-center pointer-events-none" aria-hidden="true">
-              <div className="h-0.5 w-full bg-gray-200"></div>
+            {/* Background track - only within the dots range */}
+            <div className="absolute inset-y-0 flex items-center" aria-hidden="true">
+              <div className="h-0.5 bg-gray-200" style={{ 
+                position: 'absolute',
+                left: '0',
+                right: '0',
+                width: '100%'
+              }}></div>
             </div>
             
-            {/* Progress fill - positioned to start at first dot center */}
-            <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none" aria-hidden="true">
+            {/* Progress fill - with exact positioning to align with dots */}
+            <div className="absolute inset-y-0 flex items-center pointer-events-none" aria-hidden="true">
               <div 
                 className="h-0.5 bg-green-600 transition-all duration-300" 
-                style={{ width: progressWidth }}
+                style={{ 
+                  position: 'absolute',
+                  width: progressBarStyle.width,
+                  left: progressBarStyle.left
+                }}
               ></div>
             </div>
             
-            {/* Dots */}
+            {/* Dots - positioned in grid cells */}
             {steps.map((_, index) => {
               const step = index + 1;
               return (
-                <div key={step} className="flex justify-center relative z-10">
+                <div key={step} className="flex justify-center items-center h-full relative z-10">
                   <div 
                     className={`step-dot w-4 h-4 rounded-full border-2 border-white ${
                       step <= currentStep ? 'bg-green-600' : 'bg-gray-200'
