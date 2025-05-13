@@ -74,9 +74,9 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
     const rowSpacing = Number(formData.rowSpacing) || 0.5;
     const yieldPerHa = avgWeightPerMeter * (10000 / (rowSpacing * 100)) * (avgDryMatter / 100);
     
-    // Total yield based on field area
-    const fieldArea = Number(formData.fieldArea) || 0;
-    const totalYield = yieldPerHa * fieldArea;
+    // Calculate total yield (assuming 3.5 ha as default)
+    const assumedFieldArea = 3.5;
+    const totalYield = yieldPerHa * assumedFieldArea;
     
     // Calculate feeding days (50 cows as default)
     const cowCount = 50;
@@ -87,7 +87,8 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
       yield: yieldPerHa.toFixed(1) + ' t/ha',
       totalYield: totalYield.toFixed(1) + ' tonnes',
       feedingDays: feedingDays + ' days',
-      cowCount
+      cowCount,
+      fieldArea: assumedFieldArea + ' ha'
     };
   };
   
@@ -104,7 +105,7 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
       const assessment = await saveAssessmentApi.execute({
         ...formData,
         status: 'completed',
-        dryMatter: formData.sampleAreas?.[0]?.dryMatter || formData.dryMatterPercentage,
+        dryMatter: formData.sampleAreas?.[0]?.dryMatter || formData.bulbEstimate,
         estimatedYield: results.yield,
         totalYield: results.totalYield,
         feedingCapacity: results.feedingDays,
@@ -177,17 +178,26 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
               <div className="p-4">
                 <h4 className="font-medium text-gray-900 mb-3">Field Setup & Measurements</h4>
                 <div className="grid grid-cols-2 gap-y-3 text-sm">
-                  <div className="text-gray-500">Dry Matter %:</div>
-                  <div className="text-gray-900">{formData.sampleAreas?.[0]?.dryMatter || formData.dryMatterPercentage || '0'}%</div>
+                  <div className="text-gray-500">Field Measurements:</div>
+                  <div className="text-gray-900"></div>
                   
-                  <div className="text-gray-500">Row Spacing:</div>
+                  <div className="text-gray-500 pl-2">Row Spacing:</div>
                   <div className="text-gray-900">{formData.rowSpacing || '0.5'} m</div>
                   
-                  <div className="text-gray-500">Row Count:</div>
-                  <div className="text-gray-900">{formData.rowCount || '0'}</div>
+                  <div className="text-gray-500 pl-2">Measurement Length:</div>
+                  <div className="text-gray-900">{formData.measurementLength || '4'} m</div>
                   
-                  <div className="text-gray-500">Field Area:</div>
-                  <div className="text-gray-900">{formData.fieldArea || '0'} ha</div>
+                  <div className="text-gray-500">Dry Matter Estimates:</div>
+                  <div className="text-gray-900"></div>
+                  
+                  <div className="text-gray-500 pl-2">Bulb Estimate:</div>
+                  <div className="text-gray-900">{formData.bulbEstimate || '2'}%</div>
+                  
+                  <div className="text-gray-500 pl-2">Leaf Estimate:</div>
+                  <div className="text-gray-900">{formData.leafEstimate || '3'}%</div>
+                  
+                  <div className="text-gray-500 pl-2">Value Type:</div>
+                  <div className="text-gray-900">{formData.valueType === 'estimate' ? 'Estimate' : 'Actual'}</div>
                   
                   <div className="text-gray-500">Samples:</div>
                   <div className="text-gray-900">{formData.sampleAreas?.length || '0'} areas</div>
@@ -210,6 +220,7 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
                     <div className="text-sm text-gray-500 mb-1">Estimated Yield</div>
                     <div className="text-3xl font-bold text-green-600">{results.yield}</div>
                     <div className="text-sm text-gray-500 mt-1">Total: {results.totalYield}</div>
+                    <div className="text-xs text-gray-400 mt-1">Based on {results.fieldArea} field</div>
                   </div>
                 </div>
                 
