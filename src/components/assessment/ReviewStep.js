@@ -32,6 +32,20 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel }) => {
     return 'Brigadier'; // Default mock data
   };
   
+  // Get stock type display name
+  const getStockTypeDisplay = () => {
+    const stockTypes = {
+      'dairy': 'Dairy cows',
+      'beef': 'Beef cattle',
+      'ewes': 'Ewes',
+      'lambs': 'Lambs',
+      'goats': 'Goats',
+      'horses': 'Horses'
+    };
+    
+    return stockTypes[formData.stockType] || 'Not specified';
+  };
+  
   // Calculate results based on sample measurements
   const calculateResults = () => {
     // Simplified calculation for demonstration
@@ -142,6 +156,9 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel }) => {
                   <div className="text-gray-500">Location:</div>
                   <div className="text-gray-900">North Field</div>
                   
+                  <div className="text-gray-500">Stock Type:</div>
+                  <div className="text-gray-900">{getStockTypeDisplay()}</div>
+                  
                   <div className="text-gray-500">Cultivar:</div>
                   <div className="text-gray-900">{getCultivarName()}</div>
                   
@@ -198,7 +215,7 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel }) => {
                   <div className="text-center">
                     <div className="text-sm text-gray-500 mb-1">Feeding Capacity</div>
                     <div className="text-3xl font-bold text-green-600">{results.feedingDays}</div>
-                    <div className="text-sm text-gray-500 mt-1">For {results.cowCount} cows</div>
+                    <div className="text-sm text-gray-500 mt-1">For {results.cowCount} {getStockTypeDisplay()}</div>
                   </div>
                 </div>
               </div>
