@@ -21,7 +21,7 @@ const FormButtonNav = ({
   // If mobile, use a vertically stacked layout with full-width buttons
   if (isMobile) {
     return (
-      <div className="flex flex-col space-y-3 pt-6 pb-16 md:pb-0 px-1">
+      <div className="flex flex-col space-y-3 pt-6 mb-2">
         {/* Primary Action Button - Always at the bottom for easy thumb access */}
         <FormButton
           onClick={onNext}
