@@ -11,20 +11,35 @@ const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile
   const [valueType, setValueType] = useState(formData.valueType || 'estimate');
   const [totalArea, setTotalArea] = useState(0);
   
-  // Calculate total area when row spacing or measurement length changes
+  // Initialize state for local form values with defaults only applied initially
+  const [localFormData, setLocalFormData] = useState({
+    rowSpacing: formData.rowSpacing === undefined ? '0.5' : formData.rowSpacing,
+    measurementLength: formData.measurementLength === undefined ? '4' : formData.measurementLength,
+    bulbEstimate: formData.bulbEstimate === undefined ? '2' : formData.bulbEstimate,
+    leafEstimate: formData.leafEstimate === undefined ? '3' : formData.leafEstimate
+  });
+  
+  // Calculate total area when local form values change
   useEffect(() => {
-    const rowSpacing = parseFloat(formData.rowSpacing) || 0.5;
-    const measurementLength = parseFloat(formData.measurementLength) || 4;
+    const rowSpacing = parseFloat(localFormData.rowSpacing) || 0;
+    const measurementLength = parseFloat(localFormData.measurementLength) || 0;
     
     // Calculate the total area in square meters
-    // For a single row sample, the area is rowSpacing × measurementLength
     const area = rowSpacing * measurementLength;
     setTotalArea(area);
-  }, [formData.rowSpacing, formData.measurementLength]);
+  }, [localFormData.rowSpacing, localFormData.measurementLength]);
   
   // Handle form field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    // Update both local state and parent state
+    setLocalFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    // Also propagate the change to parent
     onChange({ target: { name, value } });
   };
   
@@ -68,7 +83,7 @@ const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile
               label="Row Spacing (m)"
               name="rowSpacing"
               type="number"
-              value={formData.rowSpacing || '0.5'}
+              value={localFormData.rowSpacing}
               onChange={handleChange}
               hint="Distance between rows"
               step="0.01"
@@ -79,7 +94,7 @@ const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile
               label="Measurement Length (m)"
               name="measurementLength"
               type="number"
-              value={formData.measurementLength || '4'}
+              value={localFormData.measurementLength}
               onChange={handleChange}
               hint="Length of the measurement area"
               step="0.1"
@@ -114,7 +129,7 @@ const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile
               label="Bulb Estimate (DM%)"
               name="bulbEstimate"
               type="number"
-              value={formData.bulbEstimate || '2'}
+              value={localFormData.bulbEstimate}
               onChange={handleChange}
               hint="Estimated dry matter percentage for bulbs"
               step="0.1"
@@ -126,7 +141,7 @@ const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile
               label="Leaf Estimate (DM%)"
               name="leafEstimate"
               type="number"
-              value={formData.leafEstimate || '3'}
+              value={localFormData.leafEstimate}
               onChange={handleChange}
               hint="Estimated dry matter percentage for leaves"
               step="0.1"
