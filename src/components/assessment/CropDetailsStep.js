@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { FormField, FormButton, FormButtonNav } from '../ui/form';
+import { FormField, FormButtonNav } from '../ui/form';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
-import { X, Save } from 'lucide-react';
 
 /**
  * First step of assessment creation - crop details
@@ -98,7 +97,7 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel, isMobile }) => 
   };
 
   return (
-    <div className="pb-20 sm:pb-0">
+    <div>
       <h2 className="text-xl font-semibold mb-4 sm:mb-6">Crop Details</h2>
       
       <div className="space-y-3 sm:space-y-6">
