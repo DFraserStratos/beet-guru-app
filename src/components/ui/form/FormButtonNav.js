@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormButton } from '../form';
+import FormButton from './FormButton';
 import { X, Save, ArrowRight, ArrowLeft } from 'lucide-react';
 
 /**
