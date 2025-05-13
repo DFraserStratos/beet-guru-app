@@ -11,6 +11,7 @@ import LoginScreen from './components/screens/LoginScreen';
 import RegisterScreen from './components/screens/RegisterScreen';
 import StockFeedScreen from './components/screens/StockFeedScreen';
 import LocationsScreen from './components/screens/LocationsScreen';
+import SettingsScreen from './components/screens/SettingsScreen';
 import ErrorBoundary from './components/utility/ErrorBoundary';
 import { useDeviceDetection, useLocalStorage } from './hooks';
 
@@ -133,7 +134,7 @@ function App() {
             {activeScreen === 'stockfeed' && <StockFeedScreen isMobile={isMobile} />}
             {activeScreen === 'more' && <MoreScreen onNavigate={handleNavigate} isMobile={isMobile} onLogout={handleLogout} user={user} />}
             {activeScreen === 'locations' && <LocationsScreen isMobile={isMobile} user={user} />}
-            {activeScreen === 'settings' && <div className="p-4">Settings Screen (Coming Soon)</div>}
+            {activeScreen === 'settings' && <SettingsScreen isMobile={isMobile} onNavigate={handleNavigate} user={user} />}
           </ErrorBoundary>
         </div>
         
