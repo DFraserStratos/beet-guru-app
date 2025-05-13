@@ -195,9 +195,9 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             label="Sowing Date"
-            name="plantingDate"
+            name="sowingDate"
             type="date"
-            value={formData.plantingDate || '2024-10-20'}
+            value={formData.sowingDate || '2024-10-20'}
             onChange={handleChange}
           />
           
