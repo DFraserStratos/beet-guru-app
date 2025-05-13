@@ -19,6 +19,9 @@ const NewAssessmentScreen = ({
   prefillLocation = null,
   draftAssessment = null 
 }) => {
+  // Get today's date in YYYY-MM-DD format
+  const today = new Date().toISOString().split('T')[0];
+  
   // State for current step in the wizard
   const [currentStep, setCurrentStep] = useState(1);
   
@@ -29,7 +32,8 @@ const NewAssessmentScreen = ({
     stockType: '',
     cultivarId: '',
     customCultivarName: '',
-    plantingDate: '2024-10-20',
+    sowingDate: '2024-10-20',  // Renamed from plantingDate to sowingDate
+    assessmentDate: today,     // New field for assessment date
     waterType: 'irrigated',
     estimatedGrowingCost: '2500',
     dryMatterPercentage: '14',
