@@ -211,9 +211,9 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
         </div>
         
         {/* Fourth row with Water Type and Growing Cost */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Water Type section - takes up 2/3 of the row */}
-          <div className="md:col-span-2 mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Water Type section */}
+          <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Water Type
             </label>
@@ -245,20 +245,18 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
             </div>
           </div>
           
-          {/* Estimated Growing Cost - takes up 1/3 of the row */}
-          <div>
-            <FormField
-              label="Estimated Growing Cost ($/ha)"
-              name="estimatedGrowingCost"
-              type="number"
-              placeholder="Enter cost per hectare"
-              value={formData.estimatedGrowingCost || '2500'}
-              onChange={handleChange}
-              hint="Seeds, fertilizer, labor, etc."
-              min="0"
-              step="10"
-            />
-          </div>
+          {/* Estimated Growing Cost */}
+          <FormField
+            label="Estimated Growing Cost ($/ha)"
+            name="estimatedGrowingCost"
+            type="number"
+            placeholder="Enter cost per hectare"
+            value={formData.estimatedGrowingCost || '2500'}
+            onChange={handleChange}
+            hint="Seeds, fertilizer, labor, etc."
+            min="0"
+            step="10"
+          />
         </div>
         
         <div className="pt-4 flex justify-between">
