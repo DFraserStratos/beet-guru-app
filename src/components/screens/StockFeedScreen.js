@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Calculator, Save } from 'lucide-react';
+import { Calculator, Save, AlertTriangle } from 'lucide-react';
 import FeedForecastWidget from '../ui/FeedForecastWidget';
 
 const StockFeedScreen = ({ isMobile }) => {
@@ -18,6 +18,20 @@ const StockFeedScreen = ({ isMobile }) => {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-gray-800">Stock Feed Calculator</h1>
+      
+      {/* Disclaimer Banner */}
+      <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-lg">
+        <div className="flex">
+          <div className="flex-shrink-0">
+            <AlertTriangle className="h-5 w-5 text-amber-400" aria-hidden="true" />
+          </div>
+          <div className="ml-3">
+            <p className="text-sm text-amber-700">
+              <span className="font-medium">Work in Progress:</span> This Stock Feed Calculator is an early concept exploration and is still under development. Calculations are based on simplified models and should be verified with actual field measurements.
+            </p>
+          </div>
+        </div>
+      </div>
       
       {/* Instructions */}
       <div className="bg-white rounded-xl shadow p-6">
