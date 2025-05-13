@@ -26,8 +26,6 @@ const NewAssessmentScreen = ({
   const [formData, setFormData] = useState({
     // Initial values for the form
     locationId: '',
-    growerId: '',
-    cropTypeId: '',
     cultivarId: '',
     plantingDate: '2024-10-20',
     waterType: 'irrigated',
@@ -89,6 +87,16 @@ const NewAssessmentScreen = ({
     onNavigate('assessments');
   };
   
+  // Handle cancel
+  const handleCancel = () => {
+    // Confirm before canceling
+    if (window.confirm('Are you sure you want to cancel? Any unsaved changes will be lost.')) {
+      setFormData({});
+      setCurrentStep(1);
+      onNavigate('assessments');
+    }
+  };
+  
   return (
     <div className="max-w-4xl mx-auto">
       <ErrorBoundary>
@@ -103,6 +111,7 @@ const NewAssessmentScreen = ({
                 formData={formData}
                 onChange={handleFieldChange}
                 onNext={nextStep}
+                onCancel={handleCancel}
                 prefillLocation={prefillLocation}
               />
             )}
@@ -113,6 +122,7 @@ const NewAssessmentScreen = ({
                 onChange={handleFieldChange}
                 onNext={nextStep}
                 onBack={prevStep}
+                onCancel={handleCancel}
               />
             )}
             
@@ -122,6 +132,7 @@ const NewAssessmentScreen = ({
                 onChange={handleFieldChange}
                 onNext={nextStep}
                 onBack={prevStep}
+                onCancel={handleCancel}
               />
             )}
             
@@ -130,6 +141,7 @@ const NewAssessmentScreen = ({
                 formData={formData}
                 onBack={prevStep}
                 onComplete={handleComplete}
+                onCancel={handleCancel}
               />
             )}
           </ErrorBoundary>
