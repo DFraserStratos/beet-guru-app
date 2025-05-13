@@ -1,13 +1,13 @@
 import React from 'react';
-import { FormField, FormButton } from '../ui/form';
-import { AlertTriangle, X, Save } from 'lucide-react';
+import { FormField, FormButtonNav } from '../ui/form';
+import { AlertTriangle } from 'lucide-react';
 
 /**
  * Second step of assessment creation - field setup
  * @param {Object} props - Component props 
  * @returns {JSX.Element} Rendered component
  */
-const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel }) => {
+const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile }) => {
   // Handle form field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -87,36 +87,15 @@ const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel }) => {
           />
         </div>
         
-        <div className="pt-4 flex justify-between">
-          <div className="flex space-x-4">
-            <FormButton 
-              onClick={onCancel}
-              variant="outline"
-              icon={<X size={16} />}
-            >
-              Cancel
-            </FormButton>
-            <FormButton 
-              onClick={handleSaveAsDraft}
-              variant="outline"
-              icon={<Save size={16} />}
-            >
-              Save as Draft
-            </FormButton>
-            <FormButton 
-              onClick={onBack}
-              variant="secondary"
-            >
-              Back
-            </FormButton>
-          </div>
-          <FormButton 
-            onClick={onNext}
-            variant="primary"
-          >
-            Continue
-          </FormButton>
-        </div>
+        {/* Button Navigation - Using the new FormButtonNav component */}
+        <FormButtonNav
+          onNext={onNext}
+          onBack={onBack}
+          onCancel={onCancel}
+          onSaveAsDraft={handleSaveAsDraft}
+          showBack={true}
+          isMobile={isMobile}
+        />
       </div>
     </div>
   );
