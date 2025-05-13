@@ -12,6 +12,8 @@ import { X, Save } from 'lucide-react';
 const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
   const [selectedCultivar, setSelectedCultivar] = useState(formData.cultivarId || '');
   const [cultivarInfo, setCultivarInfo] = useState(null);
+  const [showCustomCultivar, setShowCustomCultivar] = useState(selectedCultivar === 'other');
+  const [customCultivarName, setCustomCultivarName] = useState(formData.customCultivarName || '');
   
   // API hooks
   const locationsApi = useApi(api.references.getLocations);
@@ -29,11 +31,16 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
   
   // Load cultivar details when selected
   useEffect(() => {
-    if (selectedCultivar && cultivarsApi.data) {
+    if (selectedCultivar && selectedCultivar !== 'other' && cultivarsApi.data) {
       const selectedInfo = cultivarsApi.data.find(c => c.id === selectedCultivar);
       setCultivarInfo(selectedInfo);
+      setShowCustomCultivar(false);
+    } else if (selectedCultivar === 'other') {
+      setCultivarInfo(null);
+      setShowCustomCultivar(true);
     } else {
       setCultivarInfo(null);
+      setShowCustomCultivar(false);
     }
   }, [selectedCultivar, cultivarsApi.data]);
   
@@ -42,6 +49,13 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
     const value = e.target.value;
     setSelectedCultivar(value);
     onChange({ target: { name: 'cultivarId', value } });
+  };
+
+  // Handle custom cultivar change
+  const handleCustomCultivarChange = (e) => {
+    const value = e.target.value;
+    setCustomCultivarName(value);
+    onChange({ target: { name: 'customCultivarName', value } });
   };
   
   // Handle form field changes
@@ -55,9 +69,13 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
     ? locationsApi.data.map(loc => ({ value: loc.id, label: loc.name }))
     : [];
     
+  // Add "Other" option to cultivar options
   const cultivarOptions = cultivarsApi.data 
-    ? cultivarsApi.data.map(c => ({ value: c.id, label: c.name }))
-    : [];
+    ? [
+        ...cultivarsApi.data.map(c => ({ value: c.id, label: c.name })),
+        { value: 'other', label: 'Other (specify)' }
+      ]
+    : [{ value: 'other', label: 'Other (specify)' }];
   
   // Handle Save as Draft
   const handleSaveAsDraft = () => {
@@ -83,16 +101,32 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
             loading={locationsApi.loading}
           />
           
-          <FormField
-            label="Cultivar"
-            name="cultivarId"
-            type="select"
-            placeholder="Select Cultivar"
-            value={selectedCultivar}
-            onChange={handleCultivarChange}
-            options={cultivarOptions}
-            loading={cultivarsApi.loading}
-          />
+          <div>
+            <FormField
+              label="Cultivar"
+              name="cultivarId"
+              type="select"
+              placeholder="Select Cultivar"
+              value={selectedCultivar}
+              onChange={handleCultivarChange}
+              options={cultivarOptions}
+              loading={cultivarsApi.loading}
+            />
+            
+            {showCustomCultivar && (
+              <div className="mt-3">
+                <FormField
+                  label="Custom Cultivar Name"
+                  name="customCultivarName"
+                  type="text"
+                  placeholder="Enter cultivar name"
+                  value={customCultivarName}
+                  onChange={handleCustomCultivarChange}
+                  required
+                />
+              </div>
+            )}
+          </div>
         </div>
         
         {/* Cultivar Information Section */}
@@ -114,6 +148,15 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel }) => {
                 <div>
                   <span className="font-medium">Dry Matter:</span> {cultivarInfo.dryMatter || 'N/A'}
                 </div>
+              </div>
+            </div>
+          ) : showCustomCultivar && customCultivarName ? (
+            <div className="space-y-3">
+              <p className="text-sm text-green-700">
+                <strong>{customCultivarName}</strong> - Custom cultivar information not available.
+              </p>
+              <div className="text-xs text-green-700">
+                <p>For custom cultivars, please use your own knowledge of the variety or consult with your seed supplier for specific characteristics.</p>
               </div>
             </div>
           ) : (
