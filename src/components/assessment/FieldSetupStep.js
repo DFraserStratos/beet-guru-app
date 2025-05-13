@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FormField, FormButtonNav } from '../ui/form';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, Calculator } from 'lucide-react';
 
 /**
  * Second step of assessment creation - field setup
@@ -9,6 +9,18 @@ import { AlertTriangle } from 'lucide-react';
  */
 const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile }) => {
   const [valueType, setValueType] = useState(formData.valueType || 'estimate');
+  const [totalArea, setTotalArea] = useState(0);
+  
+  // Calculate total area when row spacing or measurement length changes
+  useEffect(() => {
+    const rowSpacing = parseFloat(formData.rowSpacing) || 0.5;
+    const measurementLength = parseFloat(formData.measurementLength) || 4;
+    
+    // Calculate the total area in square meters
+    // For a single row sample, the area is rowSpacing × measurementLength
+    const area = rowSpacing * measurementLength;
+    setTotalArea(area);
+  }, [formData.rowSpacing, formData.measurementLength]);
   
   // Handle form field changes
   const handleChange = (e) => {
@@ -51,7 +63,7 @@ const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile
         <div>
           <h3 className="text-lg font-medium text-gray-800 mb-4">Field Measurements</h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
             <FormField
               label="Row Spacing (m)"
               name="rowSpacing"
@@ -73,6 +85,23 @@ const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile
               step="0.1"
               min="0.1"
             />
+          </div>
+          
+          {/* Area Calculation Display */}
+          <div className="bg-green-50 p-4 rounded-lg mb-6">
+            <div className="flex items-center">
+              <Calculator className="h-5 w-5 text-green-600 mr-2" />
+              <h4 className="text-sm font-medium text-green-800">Calculated Measurement Area</h4>
+            </div>
+            <div className="mt-2 pl-7">
+              <div className="flex items-baseline">
+                <span className="text-2xl font-bold text-green-700">{totalArea.toFixed(2)}</span>
+                <span className="ml-1 text-sm text-green-600">m²</span>
+              </div>
+              <p className="text-xs text-green-700 mt-1">
+                This is the area of a single row sample based on your measurements
+              </p>
+            </div>
           </div>
         </div>
         
