@@ -27,6 +27,7 @@ const NewAssessmentScreen = ({
     // Initial values for the form
     locationId: '',
     cultivarId: '',
+    customCultivarName: '',
     plantingDate: '2024-10-20',
     waterType: 'irrigated',
     estimatedGrowingCost: '2500',
