@@ -114,12 +114,17 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
       });
       
       // Generate report
+      let reportId = null;
       if (assessment) {
-        await generateReportApi.execute(assessment.id, reportType);
+        const report = await generateReportApi.execute(assessment.id, reportType);
+        reportId = report?.id || '1'; // Use a default ID if none returned
       }
       
-      // Complete the process
-      onComplete(assessment);
+      // Complete the process with report ID included
+      onComplete({
+        ...assessment,
+        reportId
+      });
     } catch (error) {
       console.error('Error saving assessment:', error);
     }
