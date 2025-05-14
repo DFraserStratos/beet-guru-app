@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Info } from 'lucide-react';
 
-const CultivarInfoWidget = () => {
+const CultivarInfoWidget = ({ isSimplified = false }) => {
   const [selectedCultivar, setSelectedCultivar] = useState('Brigadier');
   
   // Common beet cultivar information for Canterbury, NZ
@@ -41,6 +41,57 @@ const CultivarInfoWidget = () => {
   };
   
   const selectedInfo = cultivars[selectedCultivar];
+  
+  if (isSimplified) {
+    return (
+      <div className="bg-white rounded-lg shadow">
+        <div className="flex items-center p-4 border-b">
+          <Info size={18} className="text-green-600 mr-2" />
+          <h3 className="font-medium">Cultivar Information</h3>
+        </div>
+        
+        <div className="p-4">
+          <div className="mb-4">
+            <label className="block text-sm text-gray-500 mb-1">
+              Select Cultivar
+            </label>
+            <select
+              className="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm py-2 px-3 border"
+              value={selectedCultivar}
+              onChange={handleCultivarChange}
+            >
+              {Object.keys(cultivars).map(name => (
+                <option key={name} value={name}>{name}</option>
+              ))}
+            </select>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <div className="text-sm text-gray-500">Type</div>
+              <div className="font-medium">Fodder Beet</div>
+            </div>
+            <div>
+              <div className="text-sm text-gray-500">Dry Matter</div>
+              <div className="font-medium">12-15%</div>
+            </div>
+            <div>
+              <div className="text-sm text-gray-500">Avg. Yield</div>
+              <div className="font-medium">20-30 t/acre</div>
+            </div>
+            <div>
+              <div className="text-sm text-gray-500">Growing Time</div>
+              <div className="font-medium">24-28 weeks</div>
+            </div>
+          </div>
+          
+          <div className="text-sm text-gray-700">
+            Low dry matter content, high sugar content. Suitable for all stock types. World's number one for strip grazing.
+          </div>
+        </div>
+      </div>
+    );
+  }
   
   return (
     <div className="bg-white rounded-xl shadow overflow-hidden">
