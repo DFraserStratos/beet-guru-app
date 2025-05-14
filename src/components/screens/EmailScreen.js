@@ -100,6 +100,20 @@ const EmailScreen = ({ onEmailSubmit, onRegister, onKnownUser, onNewUser }) => {
     }
   };
   
+  // Handle immediate continue for demo - for newly added "Demo: Continue with Email" button
+  const handleDemoContinue = (e) => {
+    e.preventDefault();
+    
+    // If form not filled, fill it first
+    if (!formFilled) {
+      fillFormWithSampleData();
+    }
+    
+    // Then immediately handle submission (no need for second click)
+    onEmailSubmit('john.doe@example.com');
+    onKnownUser();
+  };
+  
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <ErrorBoundary>
@@ -130,16 +144,28 @@ const EmailScreen = ({ onEmailSubmit, onRegister, onKnownUser, onNewUser }) => {
               />
               
               <div className="pt-2">
-                <FormButton
-                  type="button"
-                  onClick={handleContinueClick}
-                  variant="primary"
-                  fullWidth
-                  isLoading={isProcessing}
-                  icon={formFilled ? <ArrowRight size={16} /> : null}
-                >
-                  {formFilled ? 'Continue with Email' : 'Continue'}
-                </FormButton>
+                {formFilled ? (
+                  <FormButton
+                    type="button"
+                    onClick={handleContinueClick}
+                    variant="primary"
+                    fullWidth
+                    isLoading={isProcessing}
+                    icon={<ArrowRight size={16} />}
+                  >
+                    Continue with Email
+                  </FormButton>
+                ) : (
+                  <FormButton
+                    type="button"
+                    onClick={handleDemoContinue}
+                    variant="primary"
+                    fullWidth
+                    isLoading={isProcessing}
+                  >
+                    Demo: Continue with Email
+                  </FormButton>
+                )}
               </div>
             </form>
             
