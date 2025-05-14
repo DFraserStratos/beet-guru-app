@@ -1,14 +1,17 @@
 import { useState } from 'react';
 
-const SeasonalTimeline = () => {
+const SeasonalTimeline = ({ isSimplified = false }) => {
   // Current month (1-12)
   const currentMonth = new Date().getMonth() + 1;
   
-  // Define seasons for fodder beet in Canterbury, NZ
+  // Define seasons for fodder beet in Canterbury, NZ with pastel colors
   const seasons = [
-    { id: 'planting', name: 'Planting', months: [10, 11], color: 'bg-amber-500' },
-    { id: 'growing', name: 'Growing', months: [12, 1, 2, 3, 4], color: 'bg-green-500' },
-    { id: 'harvesting', name: 'Harvesting', months: [5, 6, 7, 8, 9], color: 'bg-purple-500' },
+    { id: 'planting', name: 'Planting', months: [10, 11], 
+      color: 'bg-green-100', textColor: 'text-green-800' },
+    { id: 'growing', name: 'Growing', months: [12, 1, 2, 3, 4], 
+      color: 'bg-blue-100', textColor: 'text-blue-800' },
+    { id: 'harvesting', name: 'Harvesting', months: [5, 6, 7, 8, 9], 
+      color: 'bg-amber-100', textColor: 'text-amber-800' },
   ];
   
   // Month names
@@ -30,14 +33,27 @@ const SeasonalTimeline = () => {
   
   return (
     <div className="w-full">
-      <div className="mb-2 flex justify-between">
-        {seasons.map(season => (
-          <div key={season.id} className="flex items-center">
-            <div className={`w-3 h-3 rounded-full ${season.color} mr-1`}></div>
-            <span className="text-xs font-medium">{season.name}</span>
-          </div>
-        ))}
-      </div>
+      {!isSimplified && (
+        <div className="mb-2 flex justify-between">
+          {seasons.map(season => (
+            <div key={season.id} className="flex items-center">
+              <div className={`w-3 h-3 rounded-full ${season.color} border border-${season.textColor.split('-')[1]}-300 mr-1`}></div>
+              <span className={`text-xs font-medium ${season.textColor}`}>{season.name}</span>
+            </div>
+          ))}
+        </div>
+      )}
+      
+      {isSimplified && (
+        <div className="mb-2 flex items-center space-x-4">
+          {seasons.map(season => (
+            <div key={season.id} className="flex items-center">
+              <div className={`w-3 h-3 rounded-full ${season.color} border border-${season.textColor.split('-')[1]}-300 mr-1`}></div>
+              <span className={`text-xs font-medium ${season.textColor}`}>{season.name}</span>
+            </div>
+          ))}
+        </div>
+      )}
       
       <div className="grid grid-cols-12 gap-1">
         {monthNames.map((month, index) => {
@@ -52,11 +68,12 @@ const SeasonalTimeline = () => {
               key={month} 
               className={`
                 rounded text-center py-1
-                ${season ? season.color : 'bg-gray-200'} 
-                ${isCurrentMonth(monthNum) ? 'ring-2 ring-blue-500' : ''}
+                ${season ? season.color : 'bg-gray-100'} 
+                ${isCurrentMonth(monthNum) ? 'ring-2 ring-blue-400' : ''}
+                ${season ? `border border-${season.textColor.split('-')[1]}-200` : 'border border-gray-200'}
               `}
             >
-              <span className={`text-xs font-medium ${season ? 'text-white' : 'text-gray-600'}`}>
+              <span className={`text-xs font-medium ${season ? season.textColor : 'text-gray-600'}`}>
                 {month}
               </span>
             </div>
@@ -64,9 +81,11 @@ const SeasonalTimeline = () => {
         })}
       </div>
       
-      <div className="mt-2 text-xs text-gray-500">
-        <p>Typical season for fodder beet in Canterbury, NZ</p>
-      </div>
+      {!isSimplified && (
+        <div className="mt-2 text-xs text-gray-500">
+          <p>Typical season for fodder beet in Canterbury, NZ</p>
+        </div>
+      )}
     </div>
   );
 };
