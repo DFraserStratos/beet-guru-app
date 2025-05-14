@@ -1,15 +1,15 @@
 import { useState, useCallback } from 'react';
 
 /**
- * Hook for API calls with loading and error state handling
- * @param {Function} apiFunction - API function to call
- * @returns {Object} API state and call method
+ * Custom hook for making API calls with loading and error states
+ * @param {Function} apiFunction - The API function to call
+ * @returns {Object} Object containing data, loading state, error, and execute function
  */
 const useApi = (apiFunction) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  
+
   const execute = useCallback(async (...args) => {
     try {
       setLoading(true);
@@ -18,26 +18,14 @@ const useApi = (apiFunction) => {
       setData(result);
       return result;
     } catch (err) {
-      setError(err.message || 'An error occurred');
+      setError(err);
       return null;
     } finally {
       setLoading(false);
     }
   }, [apiFunction]);
-  
-  const reset = useCallback(() => {
-    setData(null);
-    setError(null);
-    setLoading(false);
-  }, []);
-  
-  return {
-    data,
-    loading,
-    error,
-    execute,
-    reset
-  };
+
+  return { data, loading, error, execute };
 };
 
 export default useApi;
