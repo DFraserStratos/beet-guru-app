@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Info } from 'lucide-react';
 
-const CultivarInfoWidget = () => {
+const CultivarInfoWidget = ({ isSimplified = false }) => {
   const [selectedCultivar, setSelectedCultivar] = useState('Brigadier');
   
   // Common beet cultivar information for Canterbury, NZ
@@ -43,13 +43,13 @@ const CultivarInfoWidget = () => {
   const selectedInfo = cultivars[selectedCultivar];
   
   return (
-    <div className="bg-white rounded-xl shadow overflow-hidden">
-      <div className="flex items-center p-4">
+    <div className="bg-white rounded-lg shadow h-full">
+      <div className="flex items-center p-4 border-b">
         <Info size={18} className="text-green-600 mr-2" />
-        <h3 className="font-medium">Cultivar Information</h3>
+        <h3 className="font-medium text-gray-800">Cultivar Information</h3>
       </div>
       
-      <div className="px-4 pb-4">
+      <div className="px-4 pb-4 pt-2">
         <div className="mb-3">
           <label htmlFor="cultivar-select" className="block text-sm text-gray-500 mb-1">
             Select Cultivar
@@ -88,9 +88,19 @@ const CultivarInfoWidget = () => {
           </div>
         </div>
         
-        <div className="text-sm text-gray-600">
-          {selectedInfo.description}
-        </div>
+        {!isSimplified && (
+          <div className="text-sm text-gray-600">
+            {selectedInfo.description}
+          </div>
+        )}
+        
+        {isSimplified && (
+          <div className="text-sm text-gray-600 truncate">
+            {selectedInfo.description.length > 70 
+              ? selectedInfo.description.substring(0, 70) + '...' 
+              : selectedInfo.description}
+          </div>
+        )}
       </div>
     </div>
   );
