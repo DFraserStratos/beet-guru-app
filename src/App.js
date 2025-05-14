@@ -12,6 +12,7 @@ import RegisterScreen from './components/screens/RegisterScreen';
 import StockFeedScreen from './components/screens/StockFeedScreen';
 import LocationsScreen from './components/screens/LocationsScreen';
 import SettingsScreen from './components/screens/SettingsScreen';
+import ReportViewerScreen from './components/screens/ReportViewerScreen';
 import ErrorBoundary from './components/utility/ErrorBoundary';
 import { useDeviceDetection, useLocalStorage } from './hooks';
 
@@ -29,11 +30,19 @@ function App() {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [draftAssessment, setDraftAssessment] = useState(null);
   
+  // Add state for selected report
+  const [selectedReportId, setSelectedReportId] = useState(null);
+  
   const handleNavigate = (screen) => {
     // Reset selected data when navigating away from assessment screens
     if (screen !== 'new-assessment' && screen !== 'draft-assessment') {
       setSelectedLocation(null);
       setDraftAssessment(null);
+    }
+    
+    // Reset selected report when navigating away from report viewer
+    if (screen !== 'report-viewer') {
+      setSelectedReportId(null);
     }
     
     setActiveScreen(screen);
@@ -48,6 +57,11 @@ function App() {
     setSelectedLocation(location);
     setDraftAssessment(assessment);
     setActiveScreen('new-assessment');
+  };
+  
+  const handleViewReport = (reportId) => {
+    setSelectedReportId(reportId);
+    setActiveScreen('report-viewer');
   };
   
   const handleLogin = (userData) => {
@@ -122,13 +136,21 @@ function App() {
                 onContinueDraft={handleContinueDraft}
               />
             )}
-            {activeScreen === 'reports' && <ReportsScreen isMobile={isMobile} />}
+            {activeScreen === 'reports' && <ReportsScreen isMobile={isMobile} onViewReport={handleViewReport} />}
             {activeScreen === 'new-assessment' && (
               <NewAssessmentScreen 
                 isMobile={isMobile} 
                 onNavigate={handleNavigate}
+                onViewReport={handleViewReport}
                 prefillLocation={selectedLocation}
                 draftAssessment={draftAssessment}
+              />
+            )}
+            {activeScreen === 'report-viewer' && (
+              <ReportViewerScreen
+                reportId={selectedReportId}
+                isMobile={isMobile}
+                onBack={() => handleNavigate('reports')}
               />
             )}
             {activeScreen === 'stockfeed' && <StockFeedScreen isMobile={isMobile} />}
