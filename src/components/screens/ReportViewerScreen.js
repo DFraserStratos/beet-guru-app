@@ -11,7 +11,7 @@ import {
   Droplets
 } from 'lucide-react';
 import { useApi } from '../../hooks';
-import api from '../../services/api';
+import enhancedApi from '../../services/enhancedApi';
 import { FormButton } from '../ui/form';
 
 /**
@@ -26,20 +26,20 @@ const ReportViewerScreen = ({
 }) => {
   const [assessmentData, setAssessmentData] = useState(null);
   
-  // Use API hooks to fetch report and assessment data
+  // Use API hooks to fetch report and assessment data with the enhanced API
   const { 
     data: report, 
     loading: loadingReport, 
     error: reportError, 
     execute: fetchReport 
-  } = useApi(api.reports.getById);
+  } = useApi(enhancedApi.reports.getById);
   
   const { 
     data: assessment, 
     loading: loadingAssessment, 
     error: assessmentError, 
     execute: fetchAssessment 
-  } = useApi(api.assessments.getById);
+  } = useApi(enhancedApi.assessments.getById);
 
   // Fetch report data on component mount
   useEffect(() => {
@@ -65,7 +65,11 @@ const ReportViewerScreen = ({
         reportCreated: report.created,
         reportStatus: report.status,
         reportCultivar: report.cultivar,
-        reportSeason: report.season
+        reportSeason: report.season,
+        executiveSummary: report.executive_summary,
+        recommendations: report.recommendations,
+        notes: report.notes,
+        yieldBreakdown: assessment.yieldBreakdown
       });
     }
   }, [report, assessment]);
@@ -180,11 +184,11 @@ const ReportViewerScreen = ({
       <div className="bg-white rounded-xl shadow p-6">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Executive Summary</h2>
         <p className="text-gray-600">
-          This report provides a comprehensive analysis of the {assessmentData.reportCultivar} fodder beet crop 
-          at {assessmentData.location}. The assessment was conducted on {formatDate(assessmentData.date)} 
-          and shows an estimated yield of {assessmentData.estimatedYield} with a total production of {assessmentData.totalYield} 
-          for the field. The crop has a dry matter content of {assessmentData.dryMatter} and is suitable for 
-          feeding {assessmentData.stockCount} animals for approximately {assessmentData.feedingCapacity}.
+          {assessmentData.executiveSummary || `This report provides a comprehensive analysis of the ${assessmentData.reportCultivar} fodder beet crop 
+          at ${assessmentData.location}. The assessment was conducted on ${formatDate(assessmentData.date)} 
+          and shows an estimated yield of ${assessmentData.estimatedYield} with a total production of ${assessmentData.totalYield} 
+          for the field. The crop has a dry matter content of ${assessmentData.dryMatter} and is suitable for 
+          feeding ${assessmentData.stockCount} animals for approximately ${assessmentData.feedingCapacity}.`}
         </p>
       </div>
 
@@ -299,21 +303,43 @@ const ReportViewerScreen = ({
           <div className="flex justify-center">
             <div className="h-64 w-full max-w-lg flex items-center justify-center bg-gray-100 rounded p-4">
               <div className="flex space-x-12 items-end h-full w-full max-w-md">
-                <div className="flex flex-col items-center">
-                  <div className="bg-green-200 w-20 rounded-t" style={{ height: '30%' }}></div>
-                  <p className="mt-2 text-sm font-medium">Leaf</p>
-                  <p className="text-xs text-gray-500">6.7 t/ha</p>
-                </div>
-                <div className="flex flex-col items-center">
-                  <div className="bg-green-500 w-20 rounded-t" style={{ height: '70%' }}></div>
-                  <p className="mt-2 text-sm font-medium">Bulb</p>
-                  <p className="text-xs text-gray-500">15.7 t/ha</p>
-                </div>
-                <div className="flex flex-col items-center">
-                  <div className="bg-green-700 w-20 rounded-t" style={{ height: '100%' }}></div>
-                  <p className="mt-2 text-sm font-medium">Total</p>
-                  <p className="text-xs text-gray-500">22.4 t/ha</p>
-                </div>
+                {assessmentData.yieldBreakdown ? (
+                  <>
+                    <div className="flex flex-col items-center">
+                      <div className="bg-green-200 w-20 rounded-t" style={{ height: '30%' }}></div>
+                      <p className="mt-2 text-sm font-medium">Leaf</p>
+                      <p className="text-xs text-gray-500">{assessmentData.yieldBreakdown.leafYield}</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <div className="bg-green-500 w-20 rounded-t" style={{ height: '70%' }}></div>
+                      <p className="mt-2 text-sm font-medium">Bulb</p>
+                      <p className="text-xs text-gray-500">{assessmentData.yieldBreakdown.bulbYield}</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <div className="bg-green-700 w-20 rounded-t" style={{ height: '100%' }}></div>
+                      <p className="mt-2 text-sm font-medium">Total</p>
+                      <p className="text-xs text-gray-500">{assessmentData.yieldBreakdown.totalYield}</p>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex flex-col items-center">
+                      <div className="bg-green-200 w-20 rounded-t" style={{ height: '30%' }}></div>
+                      <p className="mt-2 text-sm font-medium">Leaf</p>
+                      <p className="text-xs text-gray-500">6.7 t/ha</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <div className="bg-green-500 w-20 rounded-t" style={{ height: '70%' }}></div>
+                      <p className="mt-2 text-sm font-medium">Bulb</p>
+                      <p className="text-xs text-gray-500">15.7 t/ha</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <div className="bg-green-700 w-20 rounded-t" style={{ height: '100%' }}></div>
+                      <p className="mt-2 text-sm font-medium">Total</p>
+                      <p className="text-xs text-gray-500">{assessmentData.estimatedYield}</p>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -325,12 +351,20 @@ const ReportViewerScreen = ({
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Recommendations</h2>
         
         <ul className="space-y-2 text-gray-600 list-disc list-inside">
-          <li>Begin transitioning animals to fodder beet gradually over a 10-14 day period</li>
-          <li>Use electric fencing to implement strip grazing for optimal utilization</li>
-          <li>Provide fiber supplementation (hay or straw) during the transition period</li>
-          <li>Monitor animal health closely, especially during the first 3 weeks</li>
-          <li>Consider mineral supplementation to balance the low phosphorus and sodium content of fodder beet</li>
-          <li>Schedule a follow-up assessment in 4-6 weeks to monitor crop development</li>
+          {assessmentData.recommendations ? (
+            assessmentData.recommendations.map((recommendation, index) => (
+              <li key={index}>{recommendation}</li>
+            ))
+          ) : (
+            <>
+              <li>Begin transitioning animals to fodder beet gradually over a 10-14 day period</li>
+              <li>Use electric fencing to implement strip grazing for optimal utilization</li>
+              <li>Provide fiber supplementation (hay or straw) during the transition period</li>
+              <li>Monitor animal health closely, especially during the first 3 weeks</li>
+              <li>Consider mineral supplementation to balance the low phosphorus and sodium content of fodder beet</li>
+              <li>Schedule a follow-up assessment in 4-6 weeks to monitor crop development</li>
+            </>
+          )}
         </ul>
       </div>
 
@@ -339,10 +373,10 @@ const ReportViewerScreen = ({
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Notes</h2>
         
         <p className="text-gray-600">
-          This assessment was conducted using industry standard methods and calculations. The {assessmentData.reportCultivar} cultivar 
+          {assessmentData.notes || `This assessment was conducted using industry standard methods and calculations. The ${assessmentData.reportCultivar} cultivar 
           is performing well in the current conditions. The crop shows good uniformity across the field with minimal signs of disease 
           or pest damage. Weather conditions have been favorable with adequate rainfall/irrigation, which has supported optimal growth. 
-          The estimated dry matter percentage is within the expected range for this cultivar and growth stage.
+          The estimated dry matter percentage is within the expected range for this cultivar and growth stage.`}
         </p>
       </div>
     </div>
