@@ -75,16 +75,20 @@ const SampleArea = ({ area, data, onChange, onRemove, showRemoveButton }) => {
  */
 const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile }) => {
   // Initialize sample areas with just one sample
-  const [sampleAreas, setSampleAreas] = useState(
-    formData.sampleAreas || [
-      { 
+  const [sampleAreas, setSampleAreas] = useState(() => {
+    // If there are existing sample areas in formData, use only the first one
+    // Otherwise create a new sample with default values
+    if (formData.sampleAreas && formData.sampleAreas.length > 0) {
+      return [formData.sampleAreas[0]];
+    } else {
+      return [{ 
         id: 1, 
-        leafWeight: '3.2', 
-        bulbWeight: '22.5', 
-        plantCount: '24'
-      }
-    ]
-  );
+        leafWeight: '', 
+        bulbWeight: '', 
+        plantCount: ''
+      }];
+    }
+  });
   
   // Update form data when sample areas change
   React.useEffect(() => {
