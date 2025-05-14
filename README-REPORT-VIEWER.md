@@ -29,11 +29,19 @@ The main component that displays a detailed view of a selected report with the f
    - **Recommendations**: Actionable advice with checkmark bullets
    - **Notes**: Additional context and disclaimers
 
-### Integration with ReportsScreen
+### Integration Points
 
-- Enhanced ReportsScreen to handle report selection
-- Added navigation between reports list and detailed view
-- Preserved filtering and sorting capabilities
+The Report Viewer is integrated with the application at two key points:
+
+1. **Reports Screen Integration**
+   - Enhanced ReportsScreen to handle report selection
+   - Added navigation between reports list and detailed view
+   - Preserved filtering and sorting capabilities
+
+2. **Assessment Workflow Integration**
+   - "Generate Report" button in the Review step of the assessment wizard now navigates directly to the Report Viewer
+   - Shows the newly generated report immediately after completion
+   - Maintains proper back navigation to return to the main application flow
 
 ### Enhanced API Service
 
@@ -74,11 +82,16 @@ The main component that displays a detailed view of a selected report with the f
 
 ### Data Flow
 
-1. User clicks on a report in the ReportsScreen
-2. Selected report ID is stored and used to render the ReportViewerScreen
-3. ReportViewerScreen fetches both report and assessment data
-4. Data is combined and formatted for display
-5. User can navigate back to the reports list via the back button
+1. **Reports List Flow**:
+   - User clicks on a report in the ReportsScreen
+   - Selected report ID is stored and used to render the ReportViewerScreen
+   - User can navigate back to the reports list via the back button
+
+2. **Assessment Completion Flow**:
+   - User completes an assessment and clicks "Generate Report"
+   - Assessment is saved and a report is generated
+   - User is immediately shown the new report in the ReportViewerScreen
+   - User can return to the main application workflow via the back button
 
 ### Technical Implementation
 
@@ -110,16 +123,23 @@ The main component that displays a detailed view of a selected report with the f
    - Consistent styling throughout
 
 5. **Seamless Navigation**
-   - Easy return to reports list
+   - Easy return to reports list or assessment workflow
    - Share functionality for distribution
 
 ## Usage
 
+### Accessing Reports from Reports Screen
 1. Navigate to the Reports screen
 2. Click on any report in the list (table row on desktop, card on mobile)
 3. View the detailed report with all sections
 4. Click "Back to Reports" to return to the reports list
-5. Use "Share Report" to send the report (currently shows an alert)
+
+### Accessing Reports from Assessment
+1. Complete the assessment steps (Crop Details, Field Setup, Measurements)
+2. Review the assessment summary
+3. Click "Generate Report" to save the assessment and generate a report
+4. View the detailed report immediately
+5. Click "Back to Reports" to go to the Reports screen
 
 ## Future Enhancements
 
