@@ -7,20 +7,22 @@ import { FormButton } from '../ui/form';
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const TermsScreen = ({ onNavigate }) => {
+const TermsScreen = ({ onNavigate, isMobile = false }) => {
   return (
     <div className="space-y-6">
-      {/* Header with back button */}
-      <div className="flex items-center mb-4">
-        <FormButton
-          variant="outline"
-          icon={<ArrowLeft size={16} />}
-          onClick={() => onNavigate('more')}
-          size="sm"
-        >
-          Back
-        </FormButton>
-      </div>
+      {/* Header with back button - only shown on mobile */}
+      {isMobile && (
+        <div className="flex items-center mb-4">
+          <FormButton
+            variant="outline"
+            icon={<ArrowLeft size={16} />}
+            onClick={() => onNavigate('more')}
+            size="sm"
+          >
+            Back
+          </FormButton>
+        </div>
+      )}
       
       {/* Main content */}
       <div className="bg-white rounded-xl shadow p-6">
