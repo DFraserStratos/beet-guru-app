@@ -144,28 +144,30 @@ The app uses different navigation patterns for desktop and mobile:
 The home screen provides a dashboard view with important information for farmers:
 
 ### Key Components
-- Welcome Section with user greeting and app introduction
-- Prominent "New Assessment" button for quick access
-- ReminderWidget for notifications and action items
+- Standardized header card with welcome message and app description
+- Optimized 2×2 grid layout for desktop view
+- Action Items widget with color-coded notifications
 - WeatherWidget showing conditions for Oxford, Canterbury
-- SeasonalTimeline displaying growing seasons visually
+- SeasonalTimeline with pastel colors displaying growing seasons
 - CultivarInfoWidget with reference information about beet varieties
+- Integrated "New Assessment" button in the header card
 
 ### Layout Design
-- Mobile view: Single-column stacked layout
-- Desktop view: Two-column grid (2/3 and 1/3 width columns)
-- Responsive design that adapts to different screen sizes
+- Mobile view: Single-column stacked layout with full-width cards
+- Desktop view: Precise 12-column grid (8-4 column split) with two rows
+- Responsive design using separate mobile/desktop DOM structures
+- Perfect alignment at grid intersections
+- Consistent card heights using h-full
+- Seasonal notes section only visible on desktop
 
-### Home Screen Component Hierarchy
-```
-HomeScreen
-├── Welcome Section
-├── New Assessment Button
-├── ReminderWidget
-├── WeatherWidget
-├── SeasonalTimeline
-└── CultivarInfoWidget
-```
+### Design Features
+- Pastel color scheme for seasonal indicators (green, blue, amber)
+- Card-based design for all content with subtle shadows
+- Consistent typography and spacing throughout
+- Color-coded notifications with actionable buttons
+- Simplified content for mobile views
+
+See [README-HOME-SCREEN-UPDATE-V3.md](./README-HOME-SCREEN-UPDATE-V3.md) for full details.
 
 ## Assessment System
 
@@ -351,6 +353,18 @@ The app includes a service layer for API calls:
 - Responsive design that works well on both mobile and desktop
 
 ## Recent Updates History
+
+### Home Screen Update V3 (May 2025)
+- Completely redesigned layout with optimized 2×2 grid for desktop
+- Implemented separate mobile and desktop layouts for maximum control
+- Added Action Items widget with color-coded notifications
+- Updated seasonal timeline with pastel color scheme
+- Added desktop-only seasonal notes section
+- Standardized header card with integrated action button
+- Enhanced widget components with improved h-full support
+- Improved alignment and spacing between all elements
+- Implemented 12-column grid system for precise layout control
+- See [README-HOME-SCREEN-UPDATE-V3.md](./README-HOME-SCREEN-UPDATE-V3.md) for details
 
 ### Measurements Form Updates (May 2025)
 - Redesigned the measurements step to capture leaf weight, bulb weight, and plant count
