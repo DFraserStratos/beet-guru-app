@@ -5,7 +5,8 @@ import {
   MapPin,
   Settings,
   LogOut,
-  Calculator
+  Calculator,
+  HelpCircle
 } from 'lucide-react';
 import beetGuruSquareLogo from '../../BeetGuruSq.png';
 
@@ -83,6 +84,18 @@ const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
               label="Settings" 
               isActive={activeScreen === 'settings'} 
               onClick={() => handleNavigate('settings')}
+            />
+            <SidebarItem 
+              icon={<HelpCircle size={20} />} 
+              label="About Us" 
+              isActive={activeScreen === 'about-us'} 
+              onClick={() => handleNavigate('about-us')}
+            />
+            <SidebarItem 
+              icon={<FileText size={20} />} 
+              label="Terms & Conditions" 
+              isActive={activeScreen === 'terms'} 
+              onClick={() => handleNavigate('terms')}
             />
             <SidebarItem 
               icon={<LogOut size={20} />} 
