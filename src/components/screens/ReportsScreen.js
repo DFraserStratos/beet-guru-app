@@ -4,6 +4,7 @@ import AssessmentTable from '../ui/AssessmentTable';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
 import { FormButton } from '../ui/form';
+import ReportViewerScreen from './ReportViewerScreen';
 
 /**
  * Screen for displaying and managing reports
@@ -12,6 +13,7 @@ import { FormButton } from '../ui/form';
  */
 const ReportsScreen = ({ isMobile }) => {
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedReportId, setSelectedReportId] = useState(null);
   const [filters, setFilters] = useState({
     dateRange: 'all',
     cultivar: 'all',
@@ -99,10 +101,33 @@ const ReportsScreen = ({ isMobile }) => {
     }
   ];
 
+  // Handle row clicks for viewing reports
+  const handleRowClick = (report) => {
+    setSelectedReportId(report.id);
+  };
+
+  // Handle report view action
+  const handleViewReport = (reportId) => {
+    setSelectedReportId(reportId);
+  };
+
+  // Handle back from report viewer
+  const handleBackToReports = () => {
+    setSelectedReportId(null);
+  };
+
   // Common report actions
   const getReportActions = (report) => [
-    { label: 'View', onClick: () => console.log('View report', report.id), className: 'text-blue-600 hover:text-blue-800' },
-    { label: 'Edit', onClick: () => console.log('Edit report', report.id), className: 'text-gray-600 hover:text-gray-800' },
+    { 
+      label: 'View', 
+      onClick: () => handleViewReport(report.id), 
+      className: 'text-blue-600 hover:text-blue-800' 
+    },
+    { 
+      label: 'Edit', 
+      onClick: () => console.log('Edit report', report.id), 
+      className: 'text-gray-600 hover:text-gray-800' 
+    },
     { 
       label: report.status === 'sent' ? 'Resend' : 'Send', 
       onClick: () => console.log('Send report', report.id),
@@ -139,6 +164,17 @@ const ReportsScreen = ({ isMobile }) => {
   // Get unique cultivars and seasons for filter options
   const cultivars = ['All Cultivars', 'Brigadier', 'Kyros', 'Feldherr', 'Blizzard', 'Blaze'];
   const seasons = ['All Seasons', '2024/2025', '2023/2024', '2022/2023'];
+
+  // If a report is selected, show the report viewer
+  if (selectedReportId) {
+    return (
+      <ReportViewerScreen 
+        reportId={selectedReportId} 
+        onBack={handleBackToReports}
+        isMobile={isMobile}
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -353,7 +389,7 @@ const ReportsScreen = ({ isMobile }) => {
             <AssessmentTable 
               data={reportsWithActions}
               columns={columns}
-              onRowClick={(report) => console.log('Row clicked', report.id)}
+              onRowClick={handleRowClick}
               emptyMessage={emptyStateContent}
             />
           )}
