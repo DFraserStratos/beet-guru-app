@@ -1,76 +1,63 @@
-import React, { useState } from 'react';
-import { FormField, FormButton, FormButtonNav } from '../ui/form';
-import { PlusCircle, Trash2, BarChart3, Info } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { FormButtonNav } from '../ui/form';
+import { PlusCircle, BarChart3, Info, Leaf, Circle, Hash, X, ChevronLeft } from 'lucide-react';
 
 /**
- * Sample area component for measurements
+ * Numeric keypad component for measurements data entry
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const SampleArea = ({ area, data, onChange, onRemove, showRemoveButton }) => {
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    onChange(area, name, value);
+const NumericKeypad = ({ onKeyPress, onClose }) => {
+  const keys = [
+    '1', '2', '3',
+    '4', '5', '6',
+    '7', '8', '9',
+    '.', '0', 'del'
+  ];
+
+  const handleKeyPress = (key) => {
+    onKeyPress(key);
   };
-  
+
   return (
-    <div className="rounded-lg border border-gray-200 overflow-hidden">
-      <div className="bg-gray-50 p-3 border-b flex justify-between items-center">
-        <h4 className="font-medium">Area {area}</h4>
-        {showRemoveButton && (
-          <button 
-            className="text-sm text-red-600 hover:text-red-800 flex items-center"
-            onClick={() => onRemove(area)}
-          >
-            <Trash2 size={16} className="mr-1" />
-            Remove
-          </button>
-        )}
+    <div className="fixed inset-0 bg-white z-50 flex flex-col">
+      {/* Keypad Header */}
+      <div className="flex items-center justify-between p-4 bg-green-700 text-white">
+        <button 
+          onClick={onClose}
+          className="flex items-center text-white"
+        >
+          <ChevronLeft size={24} />
+          <span className="ml-1 text-lg">Done</span>
+        </button>
+        <h2 className="text-xl font-medium">Measurements</h2>
+        <button 
+          onClick={onClose}
+          className="text-white text-lg"
+        >
+          Edit
+        </button>
       </div>
-      
-      <div className="p-4 space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <FormField
-            label="Sample Length (m)"
-            name="sampleLength"
-            type="number"
-            value={data.sampleLength || ''}
-            onChange={handleChange}
-            step="0.01"
-            min="0"
-          />
-          
-          <FormField
-            label="Weight (kg)"
-            name="weight"
-            type="number"
-            value={data.weight || ''}
-            onChange={handleChange}
-            step="0.1"
-            min="0"
-          />
-          
-          <FormField
-            label="Dry Matter (%)"
-            name="dryMatter"
-            type="number"
-            value={data.dryMatter || ''}
-            onChange={handleChange}
-            step="0.1"
-            min="0"
-            max="100"
-          />
+
+      {/* Keypad Grid */}
+      <div className="flex-1">
+        <div className="grid grid-cols-3 h-full border-t">
+          {keys.map((key) => (
+            <button
+              key={key}
+              className={`text-3xl font-light border-b border-r flex items-center justify-center ${
+                key === 'del' ? 'text-gray-600' : 'text-gray-900'
+              }`}
+              onClick={() => handleKeyPress(key)}
+            >
+              {key === 'del' ? (
+                <span>del</span>
+              ) : (
+                key
+              )}
+            </button>
+          ))}
         </div>
-        
-        <FormField
-          label="Notes"
-          name="notes"
-          type="textarea"
-          placeholder="Optional notes about this sample"
-          value={data.notes || ''}
-          onChange={handleChange}
-          rows="2"
-        />
       </div>
     </div>
   );
@@ -82,45 +69,87 @@ const SampleArea = ({ area, data, onChange, onRemove, showRemoveButton }) => {
  * @returns {JSX.Element} Rendered component
  */
 const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile }) => {
-  // Initialize sample areas
-  const [sampleAreas, setSampleAreas] = useState(
-    formData.sampleAreas || [
-      { id: 1, sampleLength: '2', weight: '25.4', dryMatter: '14.2', notes: 'Northern edge of field, good plant density' },
-      { id: 2, sampleLength: '', weight: '', dryMatter: '', notes: '' },
-      { id: 3, sampleLength: '', weight: '', dryMatter: '', notes: '' }
+  // Initialize sample measurements
+  const [measurements, setMeasurements] = useState(
+    formData.measurements || [
+      { id: 1, leaf: '1', bulb: '2', plants: '3' },
+      { id: 2, leaf: '0', bulb: '0', plants: '0' }
     ]
   );
-  
-  // Update form data when sample areas change
-  React.useEffect(() => {
-    onChange({ target: { name: 'sampleAreas', value: sampleAreas } });
-  }, [sampleAreas, onChange]);
-  
-  // Add a new sample area
-  const addSampleArea = () => {
-    const newId = Math.max(...sampleAreas.map(area => area.id), 0) + 1;
-    setSampleAreas([...sampleAreas, { id: newId, sampleLength: '', weight: '', dryMatter: '', notes: '' }]);
+
+  // State for active measurement field
+  const [activeField, setActiveField] = useState(null);
+  const [keypadVisible, setKeypadVisible] = useState(false);
+  const [showGraph, setShowGraph] = useState(false);
+
+  // Update form data when measurements change
+  useEffect(() => {
+    onChange({ target: { name: 'measurements', value: measurements } });
+  }, [measurements, onChange]);
+
+  // Add a new measurement row
+  const addMeasurement = () => {
+    const newId = Math.max(...measurements.map(m => m.id), 0) + 1;
+    setMeasurements([...measurements, { id: newId, leaf: '0', bulb: '0', plants: '0' }]);
   };
-  
-  // Remove a sample area
-  const removeSampleArea = (areaId) => {
-    setSampleAreas(sampleAreas.filter(area => area.id !== areaId));
+
+  // Handle measurement field selection
+  const handleFieldSelect = (measurementId, fieldName) => {
+    setActiveField({ measurementId, fieldName });
+    setKeypadVisible(true);
   };
-  
-  // Handle sample area field changes
-  const handleSampleAreaChange = (areaId, name, value) => {
-    setSampleAreas(sampleAreas.map(area => 
-      area.id === areaId ? { ...area, [name]: value } : area
-    ));
+
+  // Handle keypad input
+  const handleKeyPress = (key) => {
+    if (!activeField) return;
+
+    const { measurementId, fieldName } = activeField;
+    
+    setMeasurements(measurements.map(measurement => {
+      if (measurement.id !== measurementId) return measurement;
+
+      let currentValue = measurement[fieldName] || '0';
+      
+      if (key === 'del') {
+        // Handle delete key
+        currentValue = currentValue.slice(0, -1);
+        if (currentValue === '') currentValue = '0';
+      } else if (key === '.') {
+        // Handle decimal point
+        if (!currentValue.includes('.')) {
+          currentValue = currentValue + '.';
+        }
+      } else {
+        // Handle numeric input
+        if (currentValue === '0') {
+          currentValue = key;
+        } else {
+          currentValue = currentValue + key;
+        }
+      }
+
+      return { ...measurement, [fieldName]: currentValue };
+    }));
   };
-  
+
+  // Close keypad
+  const closeKeypad = () => {
+    setKeypadVisible(false);
+    setActiveField(null);
+  };
+
+  // Toggle graph preview
+  const toggleGraphPreview = () => {
+    setShowGraph(!showGraph);
+  };
+
   // Handle Save as Draft
   const handleSaveAsDraft = () => {
     console.log('Saving as draft:', formData);
     // In a real implementation, this would call an API to save the draft
     alert('Assessment saved as draft successfully!');
   };
-  
+
   return (
     <div>
       <h2 className="text-xl font-semibold mb-6">Field Measurements</h2>
@@ -133,67 +162,122 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
             </div>
             <div className="ml-3">
               <p className="text-sm text-blue-700">
-                Take at least 3 representative samples from different areas of your field for accurate results.
+                Record the weight of leaf and bulb samples separately. Plant count is optional.
               </p>
             </div>
           </div>
         </div>
         
+        {/* Measurements Table */}
         <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
-          <div className="p-4 border-b bg-gray-50 flex justify-between items-center">
-            <h3 className="font-medium">Sample Measurements</h3>
-            <button 
-              className="text-sm text-green-600 hover:text-green-800 font-medium flex items-center"
-              onClick={addSampleArea}
-            >
-              <PlusCircle size={16} className="mr-1" />
-              Add Area
-            </button>
-          </div>
-          
-          <div className="p-4">
-            <div className="space-y-6">
-              {sampleAreas.map(area => (
-                <SampleArea
-                  key={area.id}
-                  area={area.id}
-                  data={area}
-                  onChange={handleSampleAreaChange}
-                  onRemove={removeSampleArea}
-                  showRemoveButton={area.id !== 1 && sampleAreas.length > 1}
-                />
-              ))}
+          {/* Table Header */}
+          <div className="grid grid-cols-3 border-b">
+            <div className="p-4 border-r flex flex-col items-center justify-center">
+              <div className="flex items-center justify-center space-x-2">
+                <Leaf className="h-5 w-5 text-green-500" />
+                <span className="font-medium">Leaf</span>
+              </div>
+              <span className="text-xs text-gray-500">(kg/sample)</span>
             </div>
-          </div>
-        </div>
-        
-        {/* Preview Graph */}
-        <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
-          <div className="p-4 border-b bg-gray-50">
-            <h3 className="font-medium">Yield Preview</h3>
-          </div>
-          
-          <div className="p-4 flex justify-center">
-            <div className="h-64 w-full max-w-lg flex items-center justify-center bg-gray-100 rounded">
-              <div className="text-center text-gray-500">
-                <BarChart3 size={40} className="mx-auto mb-2 text-gray-400" />
-                <p>Preview graph will appear here after measurements are calculated</p>
+            <div className="p-4 border-r flex flex-col items-center justify-center">
+              <div className="flex items-center justify-center space-x-2">
+                <Circle className="h-5 w-5 text-green-700 fill-green-700" />
+                <span className="font-medium">Bulb</span>
+              </div>
+              <span className="text-xs text-gray-500">(kg/sample)</span>
+            </div>
+            <div className="p-4 flex flex-col items-center justify-center">
+              <div className="flex items-center justify-center space-x-2">
+                <Hash className="h-5 w-5 text-gray-500" />
+                <span className="font-medium">Plant No.</span>
+              </div>
+              <div className="flex items-center text-xs text-gray-500">
+                (opt) <span className="ml-1 text-gray-400">(?)</span>
               </div>
             </div>
           </div>
+          
+          {/* Measurement Rows */}
+          {measurements.map((measurement) => (
+            <div key={measurement.id} className="grid grid-cols-3 border-b">
+              <div 
+                className="p-5 border-r flex items-center justify-center text-center"
+                onClick={() => handleFieldSelect(measurement.id, 'leaf')}
+              >
+                <span className="text-2xl">{measurement.leaf}</span>
+              </div>
+              <div 
+                className="p-5 border-r flex items-center justify-center text-center"
+                onClick={() => handleFieldSelect(measurement.id, 'bulb')}
+              >
+                <span className="text-2xl">{measurement.bulb}</span>
+              </div>
+              <div 
+                className="p-5 flex items-center justify-center text-center"
+                onClick={() => handleFieldSelect(measurement.id, 'plants')}
+              >
+                <span className="text-2xl">{measurement.plants}</span>
+              </div>
+            </div>
+          ))}
+          
+          {/* Add Row Button */}
+          <div className="p-3 bg-gray-50">
+            <button
+              className="w-full text-sm text-green-600 hover:text-green-800 font-medium flex items-center justify-center"
+              onClick={addMeasurement}
+            >
+              <PlusCircle size={16} className="mr-1" />
+              Add Sample
+            </button>
+          </div>
         </div>
         
-        {/* Button Navigation - Using the new FormButtonNav component */}
+        {/* Preview Graph Button */}
+        <button
+          className="w-full bg-green-700 hover:bg-green-800 text-white py-3 rounded-lg font-medium text-center"
+          onClick={toggleGraphPreview}
+        >
+          PREVIEW GRAPH
+        </button>
+        
+        {/* Graph Preview */}
+        {showGraph && (
+          <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
+            <div className="p-4 border-b bg-gray-50">
+              <h3 className="font-medium">Yield Preview</h3>
+            </div>
+            
+            <div className="p-4 flex justify-center">
+              <div className="h-64 w-full max-w-lg flex items-center justify-center bg-gray-100 rounded">
+                <div className="text-center text-gray-500">
+                  <BarChart3 size={40} className="mx-auto mb-2 text-gray-400" />
+                  <p>Preview graph will appear here with your measurements</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* Button Navigation */}
         <FormButtonNav
           onNext={onNext}
           onBack={onBack}
           onCancel={onCancel}
           onSaveAsDraft={handleSaveAsDraft}
           showBack={true}
-          nextLabel="Review Assessment"
+          nextLabel="Done"
           isMobile={isMobile}
         />
       </div>
+      
+      {/* Numeric Keypad */}
+      {keypadVisible && (
+        <NumericKeypad
+          onKeyPress={handleKeyPress}
+          onClose={closeKeypad}
+        />
+      )}
     </div>
   );
 };
