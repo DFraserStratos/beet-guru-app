@@ -4,6 +4,7 @@ import AssessmentTable from '../ui/AssessmentTable';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
 import { FormButton } from '../ui/form';
+import ReportViewerScreen from './ReportViewerScreen';
 
 /**
  * Screen for displaying and managing reports
@@ -12,6 +13,7 @@ import { FormButton } from '../ui/form';
  */
 const ReportsScreen = ({ isMobile }) => {
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedReportId, setSelectedReportId] = useState(null);
   const [filters, setFilters] = useState({
     dateRange: 'all',
     cultivar: 'all',
@@ -70,6 +72,27 @@ const ReportsScreen = ({ isMobile }) => {
     });
   };
 
+  // Handle viewing a report
+  const handleViewReport = (reportId) => {
+    setSelectedReportId(reportId);
+  };
+
+  // Handle going back from report viewer
+  const handleBackToReports = () => {
+    setSelectedReportId(null);
+  };
+
+  // If a report is selected, show the report viewer
+  if (selectedReportId) {
+    return (
+      <ReportViewerScreen 
+        reportId={selectedReportId} 
+        onBack={handleBackToReports}
+        isMobile={isMobile}
+      />
+    );
+  }
+
   // Define table columns for the reports - with new cultivar and season columns
   const columns = [
     { 
@@ -101,8 +124,16 @@ const ReportsScreen = ({ isMobile }) => {
 
   // Common report actions
   const getReportActions = (report) => [
-    { label: 'View', onClick: () => console.log('View report', report.id), className: 'text-blue-600 hover:text-blue-800' },
-    { label: 'Edit', onClick: () => console.log('Edit report', report.id), className: 'text-gray-600 hover:text-gray-800' },
+    { 
+      label: 'View', 
+      onClick: () => handleViewReport(report.id), 
+      className: 'text-blue-600 hover:text-blue-800' 
+    },
+    { 
+      label: 'Edit', 
+      onClick: () => console.log('Edit report', report.id), 
+      className: 'text-gray-600 hover:text-gray-800' 
+    },
     { 
       label: report.status === 'sent' ? 'Resend' : 'Send', 
       onClick: () => console.log('Send report', report.id),
@@ -353,7 +384,7 @@ const ReportsScreen = ({ isMobile }) => {
             <AssessmentTable 
               data={reportsWithActions}
               columns={columns}
-              onRowClick={(report) => console.log('Row clicked', report.id)}
+              onRowClick={(report) => handleViewReport(report.id)}
               emptyMessage={emptyStateContent}
             />
           )}
