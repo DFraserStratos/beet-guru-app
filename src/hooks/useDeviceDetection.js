@@ -1,22 +1,29 @@
 import { useState, useEffect } from 'react';
 
 /**
- * Hook for detecting device type based on screen width
- * @param {number} mobileBreakpoint - Width threshold to determine mobile devices
- * @returns {boolean} isMobile - Whether the current device is mobile
+ * Custom hook to detect device type based on screen width
+ * @returns {boolean} True if device is mobile
  */
-const useDeviceDetection = (mobileBreakpoint = 768) => {
-  const [isMobile, setIsMobile] = useState(window.innerWidth < mobileBreakpoint);
-  
+const useDeviceDetection = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < mobileBreakpoint);
+    const checkDeviceType = () => {
+      setIsMobile(window.innerWidth < 768);
     };
-    
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [mobileBreakpoint]);
-  
+
+    // Initial check
+    checkDeviceType();
+
+    // Add event listener for window resize
+    window.addEventListener('resize', checkDeviceType);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('resize', checkDeviceType);
+    };
+  }, []);
+
   return isMobile;
 };
 
