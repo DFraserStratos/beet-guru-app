@@ -27,7 +27,7 @@ const WeatherWidget = ({ isMobile = false }) => {
   if (isMobile) {
     // Compact mobile version
     return (
-      <div className="bg-white rounded-xl shadow p-4">
+      <div className="bg-white rounded-lg shadow p-4">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-sm font-medium text-gray-500">{weatherData.location}</h3>
@@ -44,12 +44,12 @@ const WeatherWidget = ({ isMobile = false }) => {
     );
   }
   
-  // Full desktop version
+  // Full desktop version with height filling container
   return (
-    <div className="bg-white rounded-xl shadow p-4">
-      <h3 className="text-lg font-semibold mb-3">{weatherData.location}</h3>
+    <div className="bg-white rounded-lg shadow p-4 h-full flex flex-col">
+      <h3 className="font-medium text-gray-800 mb-4">{weatherData.location}</h3>
       
-      <div className="flex items-center justify-center mb-3">
+      <div className="flex items-center justify-center mb-4 flex-grow">
         <div className="text-center">
           <div className="bg-blue-50 rounded-full p-3 inline-block mb-2">
             {getWeatherIcon(weatherData.condition)}
