@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const SeasonalTimeline = () => {
+const SeasonalTimeline = ({ isSimplified = false }) => {
   // Current month (1-12)
   const currentMonth = new Date().getMonth() + 1;
   
@@ -30,14 +30,27 @@ const SeasonalTimeline = () => {
   
   return (
     <div className="w-full">
-      <div className="mb-2 flex justify-between">
-        {seasons.map(season => (
-          <div key={season.id} className="flex items-center">
-            <div className={`w-3 h-3 rounded-full ${season.color} mr-1`}></div>
-            <span className="text-xs font-medium">{season.name}</span>
-          </div>
-        ))}
-      </div>
+      {!isSimplified && (
+        <div className="mb-2 flex justify-between">
+          {seasons.map(season => (
+            <div key={season.id} className="flex items-center">
+              <div className={`w-3 h-3 rounded-full ${season.color} mr-1`}></div>
+              <span className="text-xs font-medium">{season.name}</span>
+            </div>
+          ))}
+        </div>
+      )}
+      
+      {isSimplified && (
+        <div className="mb-2 flex items-center space-x-4">
+          {seasons.map(season => (
+            <div key={season.id} className="flex items-center">
+              <div className={`w-3 h-3 rounded-full ${season.color} mr-1`}></div>
+              <span className="text-xs font-medium">{season.name}</span>
+            </div>
+          ))}
+        </div>
+      )}
       
       <div className="grid grid-cols-12 gap-1">
         {monthNames.map((month, index) => {
@@ -64,9 +77,11 @@ const SeasonalTimeline = () => {
         })}
       </div>
       
-      <div className="mt-2 text-xs text-gray-500">
-        <p>Typical season for fodder beet in Canterbury, NZ</p>
-      </div>
+      {!isSimplified && (
+        <div className="mt-2 text-xs text-gray-500">
+          <p>Typical season for fodder beet in Canterbury, NZ</p>
+        </div>
+      )}
     </div>
   );
 };
