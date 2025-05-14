@@ -44,11 +44,15 @@ const NewAssessmentScreen = ({
     leafEstimate: '3',
     valueType: 'estimate',
     
-    // Field measurements
+    // Field measurements - new format
+    measurements: [
+      { id: 1, leaf: '1', bulb: '2', plants: '3' },
+      { id: 2, leaf: '0', bulb: '0', plants: '0' }
+    ],
+    
+    // Legacy format for backward compatibility
     sampleAreas: [
-      { id: 1, sampleLength: '2', weight: '25.4', dryMatter: '14.2', notes: 'Northern edge of field, good plant density' },
-      { id: 2, sampleLength: '', weight: '', dryMatter: '', notes: '' },
-      { id: 3, sampleLength: '', weight: '', dryMatter: '', notes: '' }
+      { id: 1, sampleLength: '2', weight: '25.4', dryMatter: '14.2', notes: 'Northern edge of field, good plant density' }
     ]
   });
   
@@ -58,7 +62,12 @@ const NewAssessmentScreen = ({
       // Load draft assessment data
       setFormData({
         ...draftAssessment,
-        locationId: draftAssessment.locationId || (prefillLocation ? prefillLocation.id : '')
+        locationId: draftAssessment.locationId || (prefillLocation ? prefillLocation.id : ''),
+        // Ensure we have the new measurements format
+        measurements: draftAssessment.measurements || [
+          { id: 1, leaf: '1', bulb: '2', plants: '3' },
+          { id: 2, leaf: '0', bulb: '0', plants: '0' }
+        ]
       });
     } else if (prefillLocation) {
       // Just prefill location
