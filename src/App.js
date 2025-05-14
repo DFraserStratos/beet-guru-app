@@ -159,8 +159,8 @@ function App() {
             {activeScreen === 'more' && <MoreScreen onNavigate={handleNavigate} isMobile={isMobile} onLogout={handleLogout} user={user} />}
             {activeScreen === 'locations' && <LocationsScreen isMobile={isMobile} user={user} />}
             {activeScreen === 'settings' && <SettingsScreen isMobile={isMobile} onNavigate={handleNavigate} user={user} />}
-            {activeScreen === 'about-us' && <AboutUsScreen onNavigate={handleNavigate} />}
-            {activeScreen === 'terms' && <TermsScreen onNavigate={handleNavigate} />}
+            {activeScreen === 'about-us' && <AboutUsScreen onNavigate={handleNavigate} isMobile={isMobile} />}
+            {activeScreen === 'terms' && <TermsScreen onNavigate={handleNavigate} isMobile={isMobile} />}
           </ErrorBoundary>
         </div>
         
