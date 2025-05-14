@@ -8,32 +8,30 @@ This branch adds a new magic link authentication flow to the Beet Guru app, repl
 - **Automatic Path Selection**: The system checks if the email exists to determine login vs. registration flow
 - **Magic Link Flow**: Simulated email magic link process for passwordless authentication
 - **Improved User Experience**: Cleaner, more modern authentication approach
-- **Preserved Demo Capabilities**: All screens maintain the ability to demonstrate the flow without actual backend integration
+- **Streamlined Demo Process**: One-click demo buttons for faster testing and demonstration
 
 ## Authentication Flow
 
 ### 1. Email Input Screen
 - User enters their email address
-- Clicking "Continue" fills in demo email address (`john.doe@example.com`)
-- Clicking "Continue with Email" simulates checking if the email exists
+- Single "Demo: Continue with Email" button for immediate flow testing
+- System checks if the email exists
 - Known emails proceed to magic link flow; unknown emails go to registration
 
 ### 2. Magic Link Sent Screen
 - Shows confirmation that a magic link has been sent to the provided email
-- "Demo: Click Magic Link" button simulates receiving and clicking the link
+- "Demo: Click Magic Link" button simulates receiving and clicking the link in a single step
 
 ### 3. Magic Link Verify Screen
 - Simulates successful verification of the magic link
-- For demo purposes, provides two options:
-  - "Demo: Existing User Login" - Simulates returning user login
-  - "Demo: New User Registration" - Redirects to registration form with email pre-filled
+- Provides two direct options:
+  - "Demo: Existing User Login" - Immediately logs in as a returning user
+  - "Demo: New User Registration" - Immediately redirects to registration form with email pre-filled
 
 ### 4. Registration Screen (for new users)
 - Pre-fills the email from the verification step
 - Collects additional user information (name, password, user type)
-- Two-step process as before:
-  - First click fills form with sample data
-  - Second click completes registration
+- Maintains the "Continue" and "Complete Registration" flow for consistency
 
 ## Implementation Details
 
@@ -61,31 +59,26 @@ New mock API methods were added to support the magic link flow:
 
 ### Demo Flow 1: Existing User
 
-1. Enter email or click "Continue" to fill in sample email
-2. Click "Continue with Email" to proceed to the magic link sent screen
-3. Click "Demo: Click Magic Link" to simulate receiving the email
-4. Click "Verify Magic Link" after the button changes
-5. On the verification screen, click "Demo: Existing User Login"
-6. You'll be logged in as John Doe
+1. On the email screen, click "Demo: Continue with Email"
+2. On the magic link sent screen, click "Demo: Click Magic Link"
+3. On the verification screen, click "Demo: Existing User Login"
+4. You'll be logged in as John Doe
 
 ### Demo Flow 2: New User Registration
 
-1. Enter email or click "Continue" to fill in sample email
-2. Click "Continue with Email" to proceed to the magic link sent screen
-3. Click "Demo: Click Magic Link" to simulate receiving the email
-4. Click "Verify Magic Link" after the button changes
-5. On the verification screen, click "Demo: New User Registration"
-6. Complete the registration form (click "Continue" to fill with sample data)
-7. Click "Complete Registration" to finish and log in
+1. On the email screen, click "Demo: Continue with Email" 
+2. On the magic link sent screen, click "Demo: Click Magic Link"
+3. On the verification screen, click "Demo: New User Registration"
+4. Complete the registration form (click "Continue" to fill with sample data)
+5. Click "Complete Registration" to finish and log in
 
 ## Technical Notes
 
 - The app still retains existing login/register screens for backward compatibility
 - Token management is simulated with an in-memory array in the API service
 - Email confirmation is simulated with demo buttons
-- All authentication paths maintain the two-step demo process
-  - First click fills forms with sample data
-  - Second click submits/continues the flow
+- Demo flows are now streamlined for easier testing and demonstration
+- Registration screen maintains the two-step process for consistency
 
 ## Future Improvements
 
