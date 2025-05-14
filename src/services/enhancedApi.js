@@ -3,8 +3,8 @@
  * This extends the mock API with more detailed report data
  */
 
-// Import the original API
-import api from '../../services/api';
+// Import the original API - fixed import path
+import api from '../services/api';
 
 // Add more detailed report data functionality
 const enhancedReportsAPI = {
