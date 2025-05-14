@@ -164,8 +164,7 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
             </div>
             <div className="ml-3">
               <p className="text-sm text-blue-700">
-                Take multiple samples from different areas of your field for accurate results. 
-                Record the leaf weight, bulb weight, and plant count for each sample.
+                Take multiple samples from different areas of your field for accurate results.
               </p>
             </div>
           </div>
