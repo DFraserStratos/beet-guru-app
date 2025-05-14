@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Calendar, MapPin, Droplets, Seedling, Scale, FileText, Share2 } from 'lucide-react';
+import { ArrowLeft, Calendar, MapPin, Droplets, Leaf, Scale, FileText, Share2 } from 'lucide-react';
 import { FormButton } from '../ui/form';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
@@ -156,7 +156,7 @@ const ReportViewerScreen = ({ reportId, onBack, isMobile }) => {
               <span>Location: {location?.name || assessment.location}</span>
             </div>
             <div className="flex items-center text-gray-600">
-              <Seedling size={16} className="mr-1" />
+              <Leaf size={16} className="mr-1" />
               <span>Cultivar: {report.cultivar || assessment.cultivar}</span>
             </div>
             <div className="flex items-center text-gray-600">
