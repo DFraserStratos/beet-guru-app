@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 /**
- * Hook for form handling with validation
+ * Custom hook for managing form state with validation
  * @param {Object} initialValues - Initial form values
- * @param {Function} validate - Validation function
- * @param {Function} onSubmit - Submit callback
+ * @param {Function} validate - Validation function (optional)
+ * @param {Function} onSubmit - Submit handler function
  * @returns {Object} Form state and handlers
  */
 const useForm = (initialValues = {}, validate = () => ({}), onSubmit = () => {}) => {
@@ -12,7 +12,24 @@ const useForm = (initialValues = {}, validate = () => ({}), onSubmit = () => {})
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
+  // Run validation whenever values or touched fields change
+  useEffect(() => {
+    if (isSubmitting) {
+      const validationErrors = validate(values);
+      setErrors(validationErrors);
+      
+      // If no errors, call onSubmit
+      if (Object.keys(validationErrors).length === 0) {
+        onSubmit(values);
+        setIsSubmitting(false);
+      } else {
+        setIsSubmitting(false);
+      }
+    }
+  }, [isSubmitting, values, validate, onSubmit]);
+
+  // Handle field change
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const fieldValue = type === 'checkbox' ? checked : value;
@@ -21,14 +38,9 @@ const useForm = (initialValues = {}, validate = () => ({}), onSubmit = () => {})
       ...values,
       [name]: fieldValue
     });
-    
-    // Validate field if it's been touched
-    if (touched[name]) {
-      const validationErrors = validate({ ...values, [name]: fieldValue });
-      setErrors(validationErrors);
-    }
   };
-  
+
+  // Handle field blur
   const handleBlur = (e) => {
     const { name } = e.target;
     
@@ -37,39 +49,38 @@ const useForm = (initialValues = {}, validate = () => ({}), onSubmit = () => {})
       [name]: true
     });
     
-    // Validate on blur
-    const validationErrors = validate(values);
-    setErrors(validationErrors);
+    // Validate the field
+    const fieldErrors = validate(values);
+    setErrors(fieldErrors);
   };
-  
+
+  // Handle form submission
   const handleSubmit = (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     
     // Mark all fields as touched
-    const touchedFields = {};
-    Object.keys(values).forEach(key => {
-      touchedFields[key] = true;
-    });
-    setTouched(touchedFields);
+    const allTouched = Object.keys(values).reduce((acc, key) => {
+      acc[key] = true;
+      return acc;
+    }, {});
     
-    // Validate all fields
-    const validationErrors = validate(values);
-    setErrors(validationErrors);
-    
-    // If no errors, submit
-    if (Object.keys(validationErrors).length === 0) {
-      setIsSubmitting(true);
-      onSubmit(values, () => setIsSubmitting(false));
-    }
+    setTouched(allTouched);
+    setIsSubmitting(true);
   };
-  
+
+  // Reset form
   const resetForm = () => {
     setValues(initialValues);
     setErrors({});
     setTouched({});
     setIsSubmitting(false);
   };
-  
+
+  // Set form values programmatically
+  const setFormValues = (newValues) => {
+    setValues(newValues);
+  };
+
   return {
     values,
     errors,
@@ -79,7 +90,7 @@ const useForm = (initialValues = {}, validate = () => ({}), onSubmit = () => {})
     handleBlur,
     handleSubmit,
     resetForm,
-    setValues
+    setFormValues
   };
 };
 
