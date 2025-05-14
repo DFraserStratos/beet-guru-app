@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FormButtonNav, FormButton } from '../ui/form';
-import { PlusCircle, BarChart3, Info, Leaf, Circle, Hash, X, Calculator, ArrowLeft } from 'lucide-react';
+import { PlusCircle, BarChart3, Info, Leaf, Circle, Hash, X, Calculator, ArrowLeft, Trash2 } from 'lucide-react';
 
 /**
  * Numeric keypad component for measurements data entry
@@ -79,6 +79,85 @@ const NumericKeypad = ({ onKeyPress, onClose, activeField }) => {
 };
 
 /**
+ * Sample measurement card component
+ * @param {Object} props - Component props
+ * @returns {JSX.Element} Rendered component
+ */
+const MeasurementCard = ({ measurement, onFieldSelect, onRemove, showRemoveButton }) => {
+  return (
+    <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
+      <div className="p-3 bg-gray-50 border-b flex justify-between items-center">
+        <h4 className="font-medium text-gray-700">Sample {measurement.id}</h4>
+        {showRemoveButton && (
+          <button 
+            className="text-sm text-red-600 hover:text-red-800 flex items-center"
+            onClick={() => onRemove(measurement.id)}
+          >
+            <Trash2 size={16} className="mr-1" />
+            Remove
+          </button>
+        )}
+      </div>
+      
+      <div className="p-4">
+        <div className="grid grid-cols-1 gap-4">
+          {/* Leaf Measurement */}
+          <div 
+            className="flex items-center justify-between p-3 border rounded-lg cursor-pointer hover:bg-gray-50"
+            onClick={() => onFieldSelect(measurement.id, 'leaf')}
+          >
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                <Leaf className="h-5 w-5 text-green-600" />
+              </div>
+              <div>
+                <div className="font-medium text-gray-800">Leaf Weight</div>
+                <div className="text-xs text-gray-500">kg per sample</div>
+              </div>
+            </div>
+            <div className="text-2xl font-medium text-gray-800">{measurement.leaf}</div>
+          </div>
+          
+          {/* Bulb Measurement */}
+          <div 
+            className="flex items-center justify-between p-3 border rounded-lg cursor-pointer hover:bg-gray-50"
+            onClick={() => onFieldSelect(measurement.id, 'bulb')}
+          >
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-green-800 bg-opacity-10 rounded-full flex items-center justify-center mr-3">
+                <Circle className="h-5 w-5 text-green-700" />
+              </div>
+              <div>
+                <div className="font-medium text-gray-800">Bulb Weight</div>
+                <div className="text-xs text-gray-500">kg per sample</div>
+              </div>
+            </div>
+            <div className="text-2xl font-medium text-gray-800">{measurement.bulb}</div>
+          </div>
+          
+          {/* Plant Count Measurement */}
+          <div 
+            className="flex items-center justify-between p-3 border rounded-lg cursor-pointer hover:bg-gray-50"
+            onClick={() => onFieldSelect(measurement.id, 'plants')}
+          >
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mr-3">
+                <Hash className="h-5 w-5 text-gray-600" />
+              </div>
+              <div>
+                <div className="font-medium text-gray-800">Plant Count</div>
+                <div className="text-xs text-gray-500">optional</div>
+              </div>
+            </div>
+            <div className="text-2xl font-medium text-gray-800">{measurement.plants}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/**
  * Third step of assessment creation - field measurements
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
@@ -102,10 +181,15 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
     onChange({ target: { name: 'measurements', value: measurements } });
   }, [measurements, onChange]);
 
-  // Add a new measurement row
+  // Add a new measurement sample
   const addMeasurement = () => {
     const newId = Math.max(...measurements.map(m => m.id), 0) + 1;
     setMeasurements([...measurements, { id: newId, leaf: '0', bulb: '0', plants: '0' }]);
+  };
+
+  // Remove a measurement sample
+  const removeMeasurement = (measurementId) => {
+    setMeasurements(measurements.filter(m => m.id !== measurementId));
   };
 
   // Handle measurement field selection
@@ -183,10 +267,10 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
           </div>
         </div>
         
-        {/* Measurements Card */}
-        <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
-          <div className="p-4 border-b bg-gray-50 flex justify-between items-center">
-            <h3 className="font-medium text-gray-800">Sample Measurements</h3>
+        {/* Measurement Cards Container */}
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-medium text-gray-800">Sample Measurements</h3>
             <button 
               className="text-sm text-green-600 hover:text-green-800 font-medium flex items-center"
               onClick={addMeasurement}
@@ -196,60 +280,17 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
             </button>
           </div>
           
-          {/* Measurement Table */}
-          <div className="p-4">
-            <div className="border rounded-lg overflow-hidden">
-              {/* Table Header */}
-              <div className="grid grid-cols-3 bg-gray-50 border-b">
-                <div className="p-3 border-r flex flex-col items-center justify-center">
-                  <div className="flex items-center justify-center space-x-2">
-                    <Leaf className="h-5 w-5 text-green-500" />
-                    <span className="font-medium text-gray-700">Leaf</span>
-                  </div>
-                  <span className="text-xs text-gray-500">(kg/sample)</span>
-                </div>
-                <div className="p-3 border-r flex flex-col items-center justify-center">
-                  <div className="flex items-center justify-center space-x-2">
-                    <Circle className="h-5 w-5 text-green-700" />
-                    <span className="font-medium text-gray-700">Bulb</span>
-                  </div>
-                  <span className="text-xs text-gray-500">(kg/sample)</span>
-                </div>
-                <div className="p-3 flex flex-col items-center justify-center">
-                  <div className="flex items-center justify-center space-x-2">
-                    <Hash className="h-5 w-5 text-gray-500" />
-                    <span className="font-medium text-gray-700">Plant No.</span>
-                  </div>
-                  <div className="flex items-center text-xs text-gray-500">
-                    (optional)
-                  </div>
-                </div>
-              </div>
-              
-              {/* Measurement Rows */}
-              {measurements.map((measurement) => (
-                <div key={measurement.id} className="grid grid-cols-3 border-b last:border-b-0">
-                  <div 
-                    className="p-4 border-r flex items-center justify-center cursor-pointer hover:bg-gray-50"
-                    onClick={() => handleFieldSelect(measurement.id, 'leaf')}
-                  >
-                    <span className="text-xl font-medium text-gray-800">{measurement.leaf}</span>
-                  </div>
-                  <div 
-                    className="p-4 border-r flex items-center justify-center cursor-pointer hover:bg-gray-50"
-                    onClick={() => handleFieldSelect(measurement.id, 'bulb')}
-                  >
-                    <span className="text-xl font-medium text-gray-800">{measurement.bulb}</span>
-                  </div>
-                  <div 
-                    className="p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50"
-                    onClick={() => handleFieldSelect(measurement.id, 'plants')}
-                  >
-                    <span className="text-xl font-medium text-gray-800">{measurement.plants}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+          {/* Measurement Cards */}
+          <div className="space-y-4">
+            {measurements.map((measurement) => (
+              <MeasurementCard
+                key={measurement.id}
+                measurement={measurement}
+                onFieldSelect={handleFieldSelect}
+                onRemove={removeMeasurement}
+                showRemoveButton={measurement.id !== 1 || measurements.length > 1}
+              />
+            ))}
           </div>
         </div>
         
