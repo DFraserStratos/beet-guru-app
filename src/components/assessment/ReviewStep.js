@@ -9,7 +9,8 @@ import { useApi } from '../../hooks';
  * @returns {JSX.Element} Rendered component
  */
 const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
-  const [reportType, setReportType] = React.useState('basic');
+  // Default to basic report type without showing options
+  const reportType = 'basic';
   
   // Format data for display
   const formatDate = (dateString) => {
@@ -240,35 +241,7 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
           </div>
         </div>
         
-        <div className="bg-white rounded-lg shadow-sm p-4 border">
-          <h4 className="font-medium text-gray-900 mb-3">Report Options</h4>
-          <div className="flex items-center space-x-4">
-            <label className="inline-flex items-center">
-              <input
-                type="radio"
-                name="report-type"
-                value="basic"
-                checked={reportType === 'basic'}
-                onChange={() => setReportType('basic')}
-                className="h-4 w-4 text-green-600 border-gray-300 focus:ring-green-500"
-              />
-              <span className="ml-2 text-gray-700">Basic Report</span>
-            </label>
-            <label className="inline-flex items-center">
-              <input
-                type="radio"
-                name="report-type"
-                value="advanced"
-                checked={reportType === 'advanced'}
-                onChange={() => setReportType('advanced')}
-                className="h-4 w-4 text-green-600 border-gray-300 focus:ring-green-500"
-              />
-              <span className="ml-2 text-gray-700">Advanced Report</span>
-            </label>
-          </div>
-        </div>
-        
-        {/* Button Navigation - Using the new FormButtonNav component */}
+        {/* Button Navigation - Using the FormButtonNav component */}
         <FormButtonNav
           onNext={handleSaveAndGenerateReport}
           onBack={onBack}
