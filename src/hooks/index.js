@@ -1,4 +1,11 @@
-export { default as useDeviceDetection } from './useDeviceDetection';
-export { default as useForm } from './useForm';
-export { default as useLocalStorage } from './useLocalStorage';
-export { default as useApi } from './useApi';
+import useApi from './useApi';
+import useDeviceDetection from './useDeviceDetection';
+import useForm from './useForm';
+import useLocalStorage from './useLocalStorage';
+
+export {
+  useApi,
+  useDeviceDetection,
+  useForm,
+  useLocalStorage
+};
