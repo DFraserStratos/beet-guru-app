@@ -8,7 +8,7 @@ import { useApi } from '../../hooks';
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
+const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile, onGenerateReport }) => {
   // Default to basic report type without showing options
   const reportType = 'basic';
   
@@ -114,14 +114,22 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
       });
       
       // Generate report
+      let reportId = null;
       if (assessment) {
-        await generateReportApi.execute(assessment.id, reportType);
+        const report = await generateReportApi.execute(assessment.id, reportType);
+        reportId = report?.id;
       }
       
-      // Complete the process
-      onComplete(assessment);
+      // Navigate to the report viewer if we have a report ID, otherwise complete normally
+      if (reportId && onGenerateReport) {
+        onGenerateReport(reportId);
+      } else {
+        onComplete(assessment);
+      }
     } catch (error) {
       console.error('Error saving assessment:', error);
+      // Complete normally in case of error
+      onComplete();
     }
   };
   
@@ -155,7 +163,7 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
                 <h4 className="font-medium text-gray-900 mb-3">Crop Details</h4>
                 <div className="grid grid-cols-2 gap-y-3 text-sm">
                   <div className="text-gray-500">Location:</div>
-                  <div className="text-gray-900">North Field</div>
+                  <div className="text-gray-900">North Paddock</div>
                   
                   <div className="text-gray-500">Stock Type:</div>
                   <div className="text-gray-900">{getStockTypeDisplay()}</div>
