@@ -39,7 +39,6 @@ const SampleArea = ({ area, data, onChange, onRemove, showRemoveButton }) => {
             step="0.1"
             min="0"
             placeholder="0.0"
-            hint="Weight of leaves in the sample"
           />
           
           <FormField
@@ -51,7 +50,6 @@ const SampleArea = ({ area, data, onChange, onRemove, showRemoveButton }) => {
             step="0.1"
             min="0"
             placeholder="0.0"
-            hint="Weight of bulbs in the sample"
           />
           
           <FormField
@@ -63,19 +61,8 @@ const SampleArea = ({ area, data, onChange, onRemove, showRemoveButton }) => {
             step="1"
             min="0"
             placeholder="0"
-            hint="Number of plants in the sample"
           />
         </div>
-        
-        <FormField
-          label="Notes"
-          name="notes"
-          type="textarea"
-          placeholder="Optional notes about this sample"
-          value={data.notes || ''}
-          onChange={handleChange}
-          rows="2"
-        />
       </div>
     </div>
   );
@@ -87,22 +74,14 @@ const SampleArea = ({ area, data, onChange, onRemove, showRemoveButton }) => {
  * @returns {JSX.Element} Rendered component
  */
 const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile }) => {
-  // Initialize sample areas
+  // Initialize sample areas with just one sample
   const [sampleAreas, setSampleAreas] = useState(
     formData.sampleAreas || [
       { 
         id: 1, 
         leafWeight: '3.2', 
         bulbWeight: '22.5', 
-        plantCount: '24', 
-        notes: 'Northern edge of field, good plant density' 
-      },
-      { 
-        id: 2, 
-        leafWeight: '', 
-        bulbWeight: '', 
-        plantCount: '', 
-        notes: '' 
+        plantCount: '24'
       }
     ]
   );
@@ -119,8 +98,7 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
       id: newId, 
       leafWeight: '', 
       bulbWeight: '', 
-      plantCount: '', 
-      notes: '' 
+      plantCount: ''
     }]);
   };
   
@@ -136,22 +114,19 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
     ));
   };
   
-  // Calculate total weights and average plant count
+  // Calculate total weights and plant counts for the graph
   const getTotals = () => {
     let totalLeafWeight = 0;
     let totalBulbWeight = 0;
-    let totalPlantCount = 0;
     let validSamples = 0;
     
     sampleAreas.forEach(area => {
       const leafWeight = parseFloat(area.leafWeight) || 0;
       const bulbWeight = parseFloat(area.bulbWeight) || 0;
-      const plantCount = parseInt(area.plantCount) || 0;
       
-      if (leafWeight > 0 || bulbWeight > 0 || plantCount > 0) {
+      if (leafWeight > 0 || bulbWeight > 0) {
         totalLeafWeight += leafWeight;
         totalBulbWeight += bulbWeight;
-        totalPlantCount += plantCount;
         validSamples++;
       }
     });
@@ -160,7 +135,6 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
       totalLeafWeight,
       totalBulbWeight,
       totalWeight: totalLeafWeight + totalBulbWeight,
-      averagePlantCount: validSamples > 0 ? (totalPlantCount / validSamples).toFixed(1) : 0,
       validSamples
     };
   };
@@ -217,37 +191,6 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
                   showRemoveButton={area.id !== 1 && sampleAreas.length > 1}
                 />
               ))}
-            </div>
-          </div>
-        </div>
-        
-        {/* Measurement Summary */}
-        <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
-          <div className="p-4 border-b bg-gray-50">
-            <h3 className="font-medium">Measurement Summary</h3>
-          </div>
-          
-          <div className="p-4">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="bg-green-50 p-3 rounded-lg">
-                <p className="text-sm font-medium text-green-700">Total Leaf Weight</p>
-                <p className="text-2xl font-bold text-green-800">{totals.totalLeafWeight.toFixed(1)} kg</p>
-              </div>
-              
-              <div className="bg-green-50 p-3 rounded-lg">
-                <p className="text-sm font-medium text-green-700">Total Bulb Weight</p>
-                <p className="text-2xl font-bold text-green-800">{totals.totalBulbWeight.toFixed(1)} kg</p>
-              </div>
-              
-              <div className="bg-green-50 p-3 rounded-lg">
-                <p className="text-sm font-medium text-green-700">Total Weight</p>
-                <p className="text-2xl font-bold text-green-800">{totals.totalWeight.toFixed(1)} kg</p>
-              </div>
-              
-              <div className="bg-green-50 p-3 rounded-lg">
-                <p className="text-sm font-medium text-green-700">Avg Plants per Sample</p>
-                <p className="text-2xl font-bold text-green-800">{totals.averagePlantCount}</p>
-              </div>
             </div>
           </div>
         </div>
