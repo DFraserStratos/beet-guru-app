@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FormButtonNav } from '../ui/form';
-import { PlusCircle, BarChart3, Info, Leaf, Circle, Hash, X, ChevronLeft } from 'lucide-react';
+import { FormButtonNav, FormButton } from '../ui/form';
+import { PlusCircle, BarChart3, Info, Leaf, Circle, Hash, X, Calculator, ArrowLeft } from 'lucide-react';
 
 /**
  * Numeric keypad component for measurements data entry
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const NumericKeypad = ({ onKeyPress, onClose }) => {
+const NumericKeypad = ({ onKeyPress, onClose, activeField }) => {
   const keys = [
     '1', '2', '3',
     '4', '5', '6',
@@ -19,44 +19,59 @@ const NumericKeypad = ({ onKeyPress, onClose }) => {
     onKeyPress(key);
   };
 
+  // Get field name for display
+  const getFieldName = () => {
+    if (!activeField) return '';
+    
+    switch (activeField.fieldName) {
+      case 'leaf':
+        return 'Leaf Weight';
+      case 'bulb':
+        return 'Bulb Weight';
+      case 'plants':
+        return 'Plant Count';
+      default:
+        return '';
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-white z-50 flex flex-col">
       {/* Keypad Header */}
-      <div className="flex items-center justify-between p-4 bg-green-700 text-white">
+      <div className="p-4 bg-white border-b flex items-center justify-between">
         <button 
           onClick={onClose}
-          className="flex items-center text-white"
+          className="flex items-center text-gray-600 hover:text-gray-800"
         >
-          <ChevronLeft size={24} />
-          <span className="ml-1 text-lg">Done</span>
+          <ArrowLeft size={16} className="mr-1" />
+          <span>Back</span>
         </button>
-        <h2 className="text-xl font-medium">Measurements</h2>
-        <button 
-          onClick={onClose}
-          className="text-white text-lg"
-        >
-          Edit
-        </button>
+        <h2 className="text-lg font-medium text-gray-800">{getFieldName()}</h2>
+        <div className="w-16"></div> {/* Spacer for balance */}
       </div>
 
       {/* Keypad Grid */}
-      <div className="flex-1">
-        <div className="grid grid-cols-3 h-full border-t">
-          {keys.map((key) => (
-            <button
-              key={key}
-              className={`text-3xl font-light border-b border-r flex items-center justify-center ${
-                key === 'del' ? 'text-gray-600' : 'text-gray-900'
-              }`}
-              onClick={() => handleKeyPress(key)}
-            >
-              {key === 'del' ? (
-                <span>del</span>
-              ) : (
-                key
-              )}
-            </button>
-          ))}
+      <div className="flex-1 bg-gray-50 p-4">
+        <div className="max-w-md mx-auto h-full">
+          <div className="grid grid-cols-3 gap-3 h-full">
+            {keys.map((key) => (
+              <button
+                key={key}
+                className={`text-2xl font-medium rounded-lg flex items-center justify-center shadow-sm ${
+                  key === 'del' 
+                    ? 'bg-gray-200 text-gray-700 hover:bg-gray-300' 
+                    : 'bg-white text-gray-800 hover:bg-gray-100'
+                } transition-colors`}
+                onClick={() => handleKeyPress(key)}
+              >
+                {key === 'del' ? (
+                  <X size={20} className="text-gray-600" />
+                ) : (
+                  key
+                )}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -155,104 +170,115 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
       <h2 className="text-xl font-semibold mb-6">Field Measurements</h2>
       
       <div className="space-y-6">
-        <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+        <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6 rounded-r-lg">
           <div className="flex">
             <div className="flex-shrink-0">
               <Info className="h-5 w-5 text-blue-400" />
             </div>
             <div className="ml-3">
               <p className="text-sm text-blue-700">
-                Record the weight of leaf and bulb samples separately. Plant count is optional.
+                Record the weight of leaf and bulb samples separately. Plant count is optional but helps with yield calculations.
               </p>
             </div>
           </div>
         </div>
         
-        {/* Measurements Table */}
+        {/* Measurements Card */}
         <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
-          {/* Table Header */}
-          <div className="grid grid-cols-3 border-b">
-            <div className="p-4 border-r flex flex-col items-center justify-center">
-              <div className="flex items-center justify-center space-x-2">
-                <Leaf className="h-5 w-5 text-green-500" />
-                <span className="font-medium">Leaf</span>
-              </div>
-              <span className="text-xs text-gray-500">(kg/sample)</span>
-            </div>
-            <div className="p-4 border-r flex flex-col items-center justify-center">
-              <div className="flex items-center justify-center space-x-2">
-                <Circle className="h-5 w-5 text-green-700 fill-green-700" />
-                <span className="font-medium">Bulb</span>
-              </div>
-              <span className="text-xs text-gray-500">(kg/sample)</span>
-            </div>
-            <div className="p-4 flex flex-col items-center justify-center">
-              <div className="flex items-center justify-center space-x-2">
-                <Hash className="h-5 w-5 text-gray-500" />
-                <span className="font-medium">Plant No.</span>
-              </div>
-              <div className="flex items-center text-xs text-gray-500">
-                (opt) <span className="ml-1 text-gray-400">(?)</span>
-              </div>
-            </div>
-          </div>
-          
-          {/* Measurement Rows */}
-          {measurements.map((measurement) => (
-            <div key={measurement.id} className="grid grid-cols-3 border-b">
-              <div 
-                className="p-5 border-r flex items-center justify-center text-center"
-                onClick={() => handleFieldSelect(measurement.id, 'leaf')}
-              >
-                <span className="text-2xl">{measurement.leaf}</span>
-              </div>
-              <div 
-                className="p-5 border-r flex items-center justify-center text-center"
-                onClick={() => handleFieldSelect(measurement.id, 'bulb')}
-              >
-                <span className="text-2xl">{measurement.bulb}</span>
-              </div>
-              <div 
-                className="p-5 flex items-center justify-center text-center"
-                onClick={() => handleFieldSelect(measurement.id, 'plants')}
-              >
-                <span className="text-2xl">{measurement.plants}</span>
-              </div>
-            </div>
-          ))}
-          
-          {/* Add Row Button */}
-          <div className="p-3 bg-gray-50">
-            <button
-              className="w-full text-sm text-green-600 hover:text-green-800 font-medium flex items-center justify-center"
+          <div className="p-4 border-b bg-gray-50 flex justify-between items-center">
+            <h3 className="font-medium text-gray-800">Sample Measurements</h3>
+            <button 
+              className="text-sm text-green-600 hover:text-green-800 font-medium flex items-center"
               onClick={addMeasurement}
             >
               <PlusCircle size={16} className="mr-1" />
               Add Sample
             </button>
           </div>
+          
+          {/* Measurement Table */}
+          <div className="p-4">
+            <div className="border rounded-lg overflow-hidden">
+              {/* Table Header */}
+              <div className="grid grid-cols-3 bg-gray-50 border-b">
+                <div className="p-3 border-r flex flex-col items-center justify-center">
+                  <div className="flex items-center justify-center space-x-2">
+                    <Leaf className="h-5 w-5 text-green-500" />
+                    <span className="font-medium text-gray-700">Leaf</span>
+                  </div>
+                  <span className="text-xs text-gray-500">(kg/sample)</span>
+                </div>
+                <div className="p-3 border-r flex flex-col items-center justify-center">
+                  <div className="flex items-center justify-center space-x-2">
+                    <Circle className="h-5 w-5 text-green-700" />
+                    <span className="font-medium text-gray-700">Bulb</span>
+                  </div>
+                  <span className="text-xs text-gray-500">(kg/sample)</span>
+                </div>
+                <div className="p-3 flex flex-col items-center justify-center">
+                  <div className="flex items-center justify-center space-x-2">
+                    <Hash className="h-5 w-5 text-gray-500" />
+                    <span className="font-medium text-gray-700">Plant No.</span>
+                  </div>
+                  <div className="flex items-center text-xs text-gray-500">
+                    (optional)
+                  </div>
+                </div>
+              </div>
+              
+              {/* Measurement Rows */}
+              {measurements.map((measurement) => (
+                <div key={measurement.id} className="grid grid-cols-3 border-b last:border-b-0">
+                  <div 
+                    className="p-4 border-r flex items-center justify-center cursor-pointer hover:bg-gray-50"
+                    onClick={() => handleFieldSelect(measurement.id, 'leaf')}
+                  >
+                    <span className="text-xl font-medium text-gray-800">{measurement.leaf}</span>
+                  </div>
+                  <div 
+                    className="p-4 border-r flex items-center justify-center cursor-pointer hover:bg-gray-50"
+                    onClick={() => handleFieldSelect(measurement.id, 'bulb')}
+                  >
+                    <span className="text-xl font-medium text-gray-800">{measurement.bulb}</span>
+                  </div>
+                  <div 
+                    className="p-4 flex items-center justify-center cursor-pointer hover:bg-gray-50"
+                    onClick={() => handleFieldSelect(measurement.id, 'plants')}
+                  >
+                    <span className="text-xl font-medium text-gray-800">{measurement.plants}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
         
         {/* Preview Graph Button */}
-        <button
-          className="w-full bg-green-700 hover:bg-green-800 text-white py-3 rounded-lg font-medium text-center"
+        <FormButton
+          variant="primary"
+          fullWidth
           onClick={toggleGraphPreview}
+          icon={<BarChart3 size={18} />}
         >
           PREVIEW GRAPH
-        </button>
+        </FormButton>
         
-        {/* Graph Preview */}
+        {/* Graph Preview Card */}
         {showGraph && (
           <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
-            <div className="p-4 border-b bg-gray-50">
-              <h3 className="font-medium">Yield Preview</h3>
+            <div className="p-4 border-b bg-gray-50 flex items-center">
+              <BarChart3 size={18} className="text-gray-500 mr-2" />
+              <h3 className="font-medium text-gray-800">Yield Preview</h3>
             </div>
             
-            <div className="p-4 flex justify-center">
-              <div className="h-64 w-full max-w-lg flex items-center justify-center bg-gray-100 rounded">
-                <div className="text-center text-gray-500">
-                  <BarChart3 size={40} className="mx-auto mb-2 text-gray-400" />
-                  <p>Preview graph will appear here with your measurements</p>
+            <div className="p-6">
+              <div className="h-64 w-full bg-gray-50 rounded-lg border border-gray-100 flex items-center justify-center">
+                <div className="text-center text-gray-500 max-w-xs mx-auto p-4">
+                  <Calculator size={32} className="mx-auto mb-3 text-green-500" />
+                  <p className="font-medium text-gray-600 mb-1">Calculating Yield</p>
+                  <p className="text-sm text-gray-500">
+                    Your measurements are being processed to generate a yield estimate for your beet crop.
+                  </p>
                 </div>
               </div>
             </div>
@@ -266,7 +292,7 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
           onCancel={onCancel}
           onSaveAsDraft={handleSaveAsDraft}
           showBack={true}
-          nextLabel="Done"
+          nextLabel="Review Assessment"
           isMobile={isMobile}
         />
       </div>
@@ -276,6 +302,7 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
         <NumericKeypad
           onKeyPress={handleKeyPress}
           onClose={closeKeypad}
+          activeField={activeField}
         />
       )}
     </div>
