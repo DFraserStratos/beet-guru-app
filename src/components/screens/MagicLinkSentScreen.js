@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, ArrowLeft, Check } from 'lucide-react';
+import { Mail, ArrowLeft } from 'lucide-react';
 import { FormButton } from '../ui/form';
 import ErrorBoundary from '../utility/ErrorBoundary';
 import beetGuruWideLogo from '../../BeetGuruWide.png';
@@ -10,19 +10,9 @@ import beetGuruWideLogo from '../../BeetGuruWide.png';
  * @returns {JSX.Element} Rendered component
  */
 const MagicLinkSentScreen = ({ email, onBack, onVerify }) => {
-  const [formFilled, setFormFilled] = useState(false);
-  
-  // Handle demo magic link click
+  // Handle demo magic link click - immediately verify
   const handleDemoMagicLink = (e) => {
     e.preventDefault();
-    
-    // First click: Simulate processing
-    if (!formFilled) {
-      setFormFilled(true);
-      return;
-    }
-    
-    // Second click: Actually verify
     onVerify();
   };
   
@@ -75,15 +65,14 @@ const MagicLinkSentScreen = ({ email, onBack, onVerify }) => {
                   <span className="font-medium">Didn't receive the email?</span> Check your spam folder or try again.
                 </p>
                 
-                {/* For demo purposes, add a button to simulate magic link click */}
+                {/* Demo button - no two-step process */}
                 <FormButton
                   type="button"
                   onClick={handleDemoMagicLink}
-                  variant={formFilled ? "primary" : "secondary"}
+                  variant="primary"
                   fullWidth
-                  icon={formFilled ? <Check size={16} /> : null}
                 >
-                  {formFilled ? 'Verify Magic Link' : 'Demo: Click Magic Link'}
+                  Demo: Click Magic Link
                 </FormButton>
               </div>
             </div>
