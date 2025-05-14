@@ -47,48 +47,122 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
   
   // Calculate results based on sample measurements
   const calculateResults = () => {
-    // Simplified calculation for demonstration
-    const validSamples = formData.sampleAreas?.filter(
-      area => area.sampleLength && area.weight && area.dryMatter
-    ) || [];
-    
-    if (validSamples.length === 0) {
-      return { 
-        yield: 'N/A', 
-        totalYield: 'N/A', 
-        feedingDays: 'N/A' 
+    // Handle the new measurements format
+    if (formData.measurements && formData.measurements.length > 0) {
+      // Calculate average leaf and bulb weights from the new format
+      const validMeasurements = formData.measurements.filter(
+        m => parseFloat(m.leaf) > 0 || parseFloat(m.bulb) > 0
+      );
+      
+      if (validMeasurements.length === 0) {
+        return { 
+          yield: 'N/A', 
+          totalYield: 'N/A', 
+          feedingDays: 'N/A' 
+        };
+      }
+      
+      // Calculate average weights
+      const avgLeafWeight = validMeasurements.reduce(
+        (sum, m) => sum + parseFloat(m.leaf || 0), 0
+      ) / validMeasurements.length;
+      
+      const avgBulbWeight = validMeasurements.reduce(
+        (sum, m) => sum + parseFloat(m.bulb || 0), 0
+      ) / validMeasurements.length;
+      
+      // Calculate total weight and apply dry matter percentages
+      const totalWeight = avgLeafWeight + avgBulbWeight;
+      const leafDm = parseFloat(formData.leafEstimate || 3) / 100;
+      const bulbDm = parseFloat(formData.bulbEstimate || 2) / 100;
+      
+      // Weighted DM calculation
+      const weightedDm = (avgLeafWeight * leafDm + avgBulbWeight * bulbDm) / totalWeight;
+      
+      // Calculate yield based on row spacing and measurement length
+      const rowSpacing = parseFloat(formData.rowSpacing) || 0.5;
+      const measurementLength = parseFloat(formData.measurementLength) || 4;
+      const areaPerSample = rowSpacing * measurementLength;
+      
+      // Calculate yield per hectare
+      const totalDmWeight = totalWeight * weightedDm;
+      const yieldPerHa = (totalDmWeight / areaPerSample) * 10000; // kg/ha
+      const yieldTonnesPerHa = yieldPerHa / 1000; // tonnes/ha
+      
+      // Calculate total yield (assuming 3.5 ha as default)
+      const assumedFieldArea = 3.5;
+      const totalYield = yieldTonnesPerHa * assumedFieldArea;
+      
+      // Calculate feeding days (50 cows as default)
+      const cowCount = 50;
+      const kgPerCowPerDay = 8;
+      const feedingDays = Math.floor(totalYield * 1000 / (cowCount * kgPerCowPerDay));
+      
+      return {
+        yield: yieldTonnesPerHa.toFixed(1) + ' t/ha',
+        totalYield: totalYield.toFixed(1) + ' tonnes',
+        feedingDays: feedingDays + ' days',
+        cowCount,
+        fieldArea: assumedFieldArea + ' ha',
+        avgLeafWeight: avgLeafWeight.toFixed(1) + ' kg',
+        avgBulbWeight: avgBulbWeight.toFixed(1) + ' kg',
+        totalSampleWeight: totalWeight.toFixed(1) + ' kg',
+        dryMatterPercentage: (weightedDm * 100).toFixed(1) + '%'
+      };
+    }
+    // Fallback to the old calculation method if new format isn't available
+    else if (formData.sampleAreas && formData.sampleAreas.length > 0) {
+      // Simplified calculation for demonstration
+      const validSamples = formData.sampleAreas.filter(
+        area => area.sampleLength && area.weight && area.dryMatter
+      );
+      
+      if (validSamples.length === 0) {
+        return { 
+          yield: 'N/A', 
+          totalYield: 'N/A', 
+          feedingDays: 'N/A' 
+        };
+      }
+      
+      // Average dry matter percentage
+      const avgDryMatter = validSamples.reduce(
+        (sum, area) => sum + Number(area.dryMatter), 0
+      ) / validSamples.length;
+      
+      // Average weight per sample length
+      const avgWeightPerMeter = validSamples.reduce(
+        (sum, area) => sum + (Number(area.weight) / Number(area.sampleLength)), 0
+      ) / validSamples.length;
+      
+      // Estimate yield based on row spacing and calculated weight
+      const rowSpacing = Number(formData.rowSpacing) || 0.5;
+      const yieldPerHa = avgWeightPerMeter * (10000 / (rowSpacing * 100)) * (avgDryMatter / 100);
+      
+      // Calculate total yield (assuming 3.5 ha as default)
+      const assumedFieldArea = 3.5;
+      const totalYield = yieldPerHa * assumedFieldArea;
+      
+      // Calculate feeding days (50 cows as default)
+      const cowCount = 50;
+      const kgPerCowPerDay = 8;
+      const feedingDays = Math.floor(totalYield * 1000 / (cowCount * kgPerCowPerDay));
+      
+      return {
+        yield: yieldPerHa.toFixed(1) + ' t/ha',
+        totalYield: totalYield.toFixed(1) + ' tonnes',
+        feedingDays: feedingDays + ' days',
+        cowCount,
+        fieldArea: assumedFieldArea + ' ha',
+        dryMatterPercentage: avgDryMatter.toFixed(1) + '%'
       };
     }
     
-    // Average dry matter percentage
-    const avgDryMatter = validSamples.reduce(
-      (sum, area) => sum + Number(area.dryMatter), 0
-    ) / validSamples.length;
-    
-    // Average weight per sample length
-    const avgWeightPerMeter = validSamples.reduce(
-      (sum, area) => sum + (Number(area.weight) / Number(area.sampleLength)), 0
-    ) / validSamples.length;
-    
-    // Estimate yield based on row spacing and calculated weight
-    const rowSpacing = Number(formData.rowSpacing) || 0.5;
-    const yieldPerHa = avgWeightPerMeter * (10000 / (rowSpacing * 100)) * (avgDryMatter / 100);
-    
-    // Calculate total yield (assuming 3.5 ha as default)
-    const assumedFieldArea = 3.5;
-    const totalYield = yieldPerHa * assumedFieldArea;
-    
-    // Calculate feeding days (50 cows as default)
-    const cowCount = 50;
-    const kgPerCowPerDay = 8;
-    const feedingDays = Math.floor(totalYield * 1000 / (cowCount * kgPerCowPerDay));
-    
-    return {
-      yield: yieldPerHa.toFixed(1) + ' t/ha',
-      totalYield: totalYield.toFixed(1) + ' tonnes',
-      feedingDays: feedingDays + ' days',
-      cowCount,
-      fieldArea: assumedFieldArea + ' ha'
+    // Default empty results
+    return { 
+      yield: 'N/A', 
+      totalYield: 'N/A', 
+      feedingDays: 'N/A' 
     };
   };
   
@@ -101,11 +175,21 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
   // Handle save and generate report
   const handleSaveAndGenerateReport = async () => {
     try {
+      // Calculate dry matter from either new or old format
+      let dryMatter;
+      if (formData.measurements && formData.measurements.length > 0) {
+        // Use weighted average from the results
+        dryMatter = results.dryMatterPercentage ? parseFloat(results.dryMatterPercentage) : null;
+      } else {
+        // Fall back to old format or estimates
+        dryMatter = formData.sampleAreas?.[0]?.dryMatter || formData.bulbEstimate;
+      }
+      
       // Save assessment
       const assessment = await saveAssessmentApi.execute({
         ...formData,
         status: 'completed',
-        dryMatter: formData.sampleAreas?.[0]?.dryMatter || formData.bulbEstimate,
+        dryMatter: dryMatter,
         estimatedYield: results.yield,
         totalYield: results.totalYield,
         feedingCapacity: results.feedingDays,
@@ -200,14 +284,22 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
                   <div className="text-gray-900">{formData.valueType === 'estimate' ? 'Estimate' : 'Actual'}</div>
                   
                   <div className="text-gray-500">Samples:</div>
-                  <div className="text-gray-900">{formData.sampleAreas?.length || '0'} areas</div>
-                  
-                  <div className="text-gray-500">Average Weight:</div>
                   <div className="text-gray-900">
-                    {formData.sampleAreas?.length > 0 
-                      ? (formData.sampleAreas.reduce((sum, area) => sum + Number(area.weight || 0), 0) / formData.sampleAreas.length).toFixed(1) 
-                      : '0'} kg
+                    {formData.measurements?.length || formData.sampleAreas?.length || '0'} samples
                   </div>
+                  
+                  {formData.measurements && (
+                    <>
+                      <div className="text-gray-500">Average Leaf Weight:</div>
+                      <div className="text-gray-900">{results.avgLeafWeight || 'N/A'}</div>
+                      
+                      <div className="text-gray-500">Average Bulb Weight:</div>
+                      <div className="text-gray-900">{results.avgBulbWeight || 'N/A'}</div>
+                    </>
+                  )}
+                  
+                  <div className="text-gray-500">Dry Matter:</div>
+                  <div className="text-gray-900">{results.dryMatterPercentage || 'N/A'}</div>
                 </div>
               </div>
             </div>
