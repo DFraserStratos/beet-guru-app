@@ -30,6 +30,7 @@ To understand the application fully, it's important to know these key concepts:
 - Seasonal timeline visualization
 - Weather information display
 - Reminder system for farm tasks
+- Detailed Report Viewer
 
 ## Technical Implementation
 
@@ -72,6 +73,7 @@ src/
 - **AssessmentsScreen.js**: List of locations with status indicators
 - **NewAssessmentScreen.js**: Multi-step form for creating new crop assessments
 - **ReportsScreen.js**: View and management of generated reports
+- **ReportViewerScreen.js**: Detailed view of individual reports
 - **StockFeedScreen.js**: Feed calculator and forecasting tools
 - **MoreScreen.js**: Additional options, user profile, settings, etc.
 
@@ -144,16 +146,16 @@ The app uses different navigation patterns for desktop and mobile:
 The home screen provides a dashboard view with important information for farmers:
 
 ### Key Components
-- Welcome Section with user greeting and app introduction
+- Detailed welcome message explaining Beet Guru's purpose and benefits
 - Prominent "New Assessment" button for quick access
-- ReminderWidget for notifications and action items
+- Notification alerts with action buttons (Complete now, Schedule, Learn more)
+- Growing Season timeline with color-coded monthly indicators
 - WeatherWidget showing conditions for Oxford, Canterbury
-- SeasonalTimeline displaying growing seasons visually
 - CultivarInfoWidget with reference information about beet varieties
 
 ### Layout Design
 - Mobile view: Single-column stacked layout
-- Desktop view: Two-column grid (2/3 and 1/3 width columns)
+- Desktop view: Two-column grid layout with Growing Season on the left, Weather and Cultivar Info on the right
 - Responsive design that adapts to different screen sizes
 
 ### Home Screen Component Hierarchy
@@ -161,9 +163,9 @@ The home screen provides a dashboard view with important information for farmers
 HomeScreen
 ├── Welcome Section
 ├── New Assessment Button
-├── ReminderWidget
+├── Notification Alerts
+├── Growing Season Timeline
 ├── WeatherWidget
-├── SeasonalTimeline
 └── CultivarInfoWidget
 ```
 
@@ -212,6 +214,28 @@ The Measurements step allows farmers to record detailed sample data:
 - Starts with a single sample by default for simplicity
 - See [README-MEASUREMENTS-FORM.md](./README-MEASUREMENTS-FORM.md) for details
 
+## Report System
+
+The reports system allows farmers to view and manage their completed assessments:
+
+### Report List Features
+- View all completed reports in either table (desktop) or card (mobile) format
+- Filter reports by date range, cultivar, and season
+- Sort reports by different criteria (date, location, cultivar)
+- Click on reports to view detailed information
+- Send/resend reports to recipients via email
+
+### Report Viewer
+The Report Viewer provides a detailed view of individual reports:
+- Clean, structured layout with information organized into sections
+- Executive summary with key findings
+- Crop information section showing details from the assessment
+- Field measurements section with technical data
+- Results section with yield estimate and feeding capacity
+- Recommendations section with actionable insights
+- Notes section with additional context
+- See [README-SAMPLE-REPORT.md](./README-SAMPLE-REPORT.md) for details
+
 ## Stock Feed Calculator
 
 The Stock Feed Calculator helps farmers plan feeding schedules:
@@ -251,22 +275,6 @@ The app includes a demonstration login and registration flow:
 - `user` object contains user details (name, email, role, initials)
 - `authScreen` state toggles between login and registration screens
 - Functions for handling login, logout, and registration
-
-## Report Generation
-
-The reporting system provides farmers with actionable data:
-
-### Report Features
-- Yield estimates based on field measurements
-- Feeding duration calculations
-- Stock feed requirements
-- Visual graphs and charts
-- Exportable to email
-
-### Report Display
-- Desktop: Table view with columns for Date, Report Title, Location, and Actions
-- Mobile: Card view with vertically stacked information for better readability
-- Historical reports included for better data analysis over time
 
 ## Responsive Design
 
@@ -308,12 +316,17 @@ The app includes a service layer for API calls:
 - npm or yarn
 - React 18.2.0
 - Tailwind CSS 3.3.3
+- Lucide React 0.294.0
 
 ### Setup Instructions
 1. Clone the repository
 2. Install dependencies with `npm install` or `yarn`
-3. Start development server with `npm start` or `yarn start`
-4. Access the app at localhost:3000
+3. Make sure to install the required packages:
+   ```
+   npm install react react-dom lucide-react
+   ```
+4. Start development server with `npm start` or `yarn start`
+5. Access the app at localhost:3000
 
 ### Build Process
 - Create production build with `npm run build` or `yarn build`
@@ -339,6 +352,7 @@ The app includes a service layer for API calls:
 - In Assessments, view locations and their status (Draft/Not Started)
 - Continue draft assessments or start new ones for specific locations
 - View historical reports in the Reports section
+- Click on any report to see detailed information in the Report Viewer
 - Use the Stock Feed Calculator
 - Log out via the sidebar or "More" tab
 
@@ -351,6 +365,22 @@ The app includes a service layer for API calls:
 - Responsive design that works well on both mobile and desktop
 
 ## Recent Updates History
+
+### Sample Report Feature (May 2025)
+- Added a detailed Report Viewer component for viewing assessment reports
+- Implemented interactive navigation between Reports list and Report Viewer
+- Created structured report layout with executive summary, crop details, measurements, and results
+- Added recommendations and notes sections for actionable insights
+- Ensured mobile and desktop compatibility with responsive design
+- See [README-SAMPLE-REPORT.md](./README-SAMPLE-REPORT.md) for details
+
+### Home Screen Update (May 2025)
+- Expanded welcome message with detailed description of Beet Guru's purpose
+- Enhanced notification alerts with color-coded borders and action buttons
+- Updated Growing Season timeline with color indicators for planting, growing, and harvesting
+- Reorganized desktop layout with two-column grid structure
+- Made the WeatherWidget and CultivarInfoWidget more flexible with simplified modes
+- See [README-HOME-SCREEN-UPDATE.md](./README-HOME-SCREEN-UPDATE.md) for details
 
 ### Measurements Form Updates (May 2025)
 - Redesigned the measurements step to capture leaf weight, bulb weight, and plant count
@@ -402,17 +432,6 @@ The app includes a service layer for API calls:
 - Added comprehensive documentation
 - See [README-REFACTORING.md](./README-REFACTORING.md) for details
 
-### Home Screen Update (May 2025)
-- Renamed "Dashboard" to "Home" for more intuitive navigation
-- Added prominent "New Assessment" button
-- Redesigned layout for both mobile and desktop views
-- Removed Recent Assessments widget to simplify the interface
-- Relocated Feed Forecast widget to the dedicated Stock Feed screen
-- Added non-expandable Cultivar Information widget
-- Added Seasonal Timeline and Weather Widgets
-- Added Reminder Widget for notifications
-- See [README-HOME-SCREEN-UPDATE.md](./README-HOME-SCREEN-UPDATE.md) for details
-
 ### Navigation Fixes (April 2025)
 - Removed header on desktop view
 - Repositioned user profile card in sidebar
@@ -421,6 +440,28 @@ The app includes a service layer for API calls:
 - Fixed z-index issues with overlapping elements
 - Improved responsive breakpoints behavior
 - See [README-NAVIGATION-FIXES.md](./README-NAVIGATION-FIXES.md) for details
+
+## Troubleshooting
+
+If you encounter errors when running the application:
+
+1. Make sure all required packages are installed:
+   ```
+   npm install react react-dom lucide-react
+   ```
+
+2. Ensure all hooks are properly implemented:
+   - src/hooks/useApi.js
+   - src/hooks/useDeviceDetection.js
+   - src/hooks/useForm.js
+   - src/hooks/useLocalStorage.js
+   - src/hooks/index.js
+
+3. Check that all required components exist:
+   - src/components/utility/ErrorBoundary.js
+   - src/components/screens/* (all screen components)
+
+4. If you still experience issues, refer to [README-SAMPLE-REPORT.md](./README-SAMPLE-REPORT.md) for detailed troubleshooting tips.
 
 ## Future Improvements Roadmap
 
