@@ -7,6 +7,7 @@ import {
   MeasurementsStep, 
   ReviewStep 
 } from '../assessment';
+import ReportViewerScreen from './ReportViewerScreen';
 
 /**
  * Screen for creating a new assessment with multi-step wizard
@@ -24,6 +25,9 @@ const NewAssessmentScreen = ({
   
   // State for current step in the wizard
   const [currentStep, setCurrentStep] = useState(1);
+  
+  // State for viewing a generated report
+  const [viewingReportId, setViewingReportId] = useState(null);
   
   // State for form data across all steps
   const [formData, setFormData] = useState({
@@ -46,9 +50,7 @@ const NewAssessmentScreen = ({
     
     // Field measurements
     sampleAreas: [
-      { id: 1, sampleLength: '2', weight: '25.4', dryMatter: '14.2', notes: 'Northern edge of field, good plant density' },
-      { id: 2, sampleLength: '', weight: '', dryMatter: '', notes: '' },
-      { id: 3, sampleLength: '', weight: '', dryMatter: '', notes: '' }
+      { id: 1, leafWeight: '8.2', bulbWeight: '16.9', plantCount: '24' }
     ]
   });
   
@@ -92,6 +94,21 @@ const NewAssessmentScreen = ({
     setFormData(prevData => ({ ...prevData, [name]: value }));
   };
   
+  // Handle viewing a generated report
+  const handleViewReport = (reportId) => {
+    // Set the report ID to view
+    setViewingReportId(reportId);
+    // Scroll to top
+    window.scrollTo(0, 0);
+  };
+  
+  // Handle back from report viewer
+  const handleBackFromReport = () => {
+    setViewingReportId(null);
+    // Return to the assessments screen
+    onNavigate('assessments');
+  };
+  
   // Handle assessment completion
   const handleComplete = (assessment) => {
     // Reset form and return to assessments screen
@@ -109,6 +126,17 @@ const NewAssessmentScreen = ({
       onNavigate('assessments');
     }
   };
+  
+  // If viewing a report, show the report viewer
+  if (viewingReportId) {
+    return (
+      <ReportViewerScreen 
+        reportId={viewingReportId} 
+        onBack={handleBackFromReport}
+        isMobile={isMobile}
+      />
+    );
+  }
   
   return (
     <div className="max-w-4xl mx-auto">
@@ -158,6 +186,7 @@ const NewAssessmentScreen = ({
                 onBack={prevStep}
                 onComplete={handleComplete}
                 onCancel={handleCancel}
+                onGenerateReport={handleViewReport}
                 isMobile={isMobile}
               />
             )}
