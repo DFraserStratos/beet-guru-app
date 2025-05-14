@@ -54,6 +54,11 @@ const NewAssessmentScreen = ({
     ]
   });
   
+  // Debug log when viewingReportId changes
+  useEffect(() => {
+    console.log('NewAssessmentScreen viewingReportId changed to:', viewingReportId);
+  }, [viewingReportId]);
+  
   // Handle prefilled location and draft assessment
   useEffect(() => {
     if (draftAssessment) {
@@ -96,6 +101,7 @@ const NewAssessmentScreen = ({
   
   // Handle viewing a generated report
   const handleViewReport = (reportId) => {
+    console.log('handleViewReport called with reportId:', reportId);
     // Set the report ID to view
     setViewingReportId(reportId);
     // Scroll to top
@@ -129,6 +135,7 @@ const NewAssessmentScreen = ({
   
   // If viewing a report, show the report viewer
   if (viewingReportId) {
+    console.log('Rendering ReportViewerScreen with reportId:', viewingReportId);
     return (
       <ReportViewerScreen 
         reportId={viewingReportId} 
