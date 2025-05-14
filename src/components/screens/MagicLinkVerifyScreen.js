@@ -10,15 +10,8 @@ import beetGuruWideLogo from '../../BeetGuruWide.png';
  * @returns {JSX.Element} Rendered component
  */
 const MagicLinkVerifyScreen = ({ email, onBack, onLogin, onRegister }) => {
-  const [formFilled, setFormFilled] = useState(false);
-  
-  // For demo purposes, provide options for both login and registration paths
+  // Handle login demo - immediately login
   const handleLoginDemo = () => {
-    if (!formFilled) {
-      setFormFilled(true);
-      return;
-    }
-    
     // Simulate existing user login with John Doe data
     onLogin({ 
       id: '1',
@@ -29,12 +22,8 @@ const MagicLinkVerifyScreen = ({ email, onBack, onLogin, onRegister }) => {
     });
   };
   
+  // Handle registration demo - immediately go to registration
   const handleRegisterDemo = () => {
-    if (!formFilled) {
-      setFormFilled(true);
-      return;
-    }
-    
     // Redirect to registration form with email pre-filled
     onRegister(email || 'john.doe@example.com');
   };
@@ -80,7 +69,7 @@ const MagicLinkVerifyScreen = ({ email, onBack, onLogin, onRegister }) => {
                   <FormButton
                     type="button"
                     onClick={handleLoginDemo}
-                    variant={formFilled ? "primary" : "secondary"}
+                    variant="primary"
                     fullWidth
                     icon={<User size={16} />}
                   >
