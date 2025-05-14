@@ -88,7 +88,7 @@ src/
 - **StepProgress.js**: Wizard progress indicator for multi-step forms
 - **CropDetailsStep.js**: Step 1 of assessment creation
 - **FieldSetupStep.js**: Step 2 of assessment creation - field measurements and dry matter estimates
-- **MeasurementsStep.js**: Step 3 of assessment creation
+- **MeasurementsStep.js**: Step 3 of assessment creation - capturing leaf weight, bulb weight, and plant count
 - **ReviewStep.js**: Step 4 of assessment creation
 
 #### Custom Hooks
@@ -183,8 +183,8 @@ The assessment system allows farmers to record and track beet crop measurements:
 - **NewAssessmentScreen.js**: Multi-step form for creating assessments
 - **LocationCard.js**: Card component for displaying location with status
 - Field measurement input forms with validation
-- Dry matter and row spacing calculators
-- Preview graphs for visualization
+- Preview graphs for data visualization
+- Sample measurement entry forms
 
 ### Progress Indicator
 The assessment wizard uses a custom StepProgress component that:
@@ -202,6 +202,15 @@ The Field Setup step provides important tools for measuring crop samples:
 - Input fields for bulb and leaf dry matter estimates
 - Toggle between estimate and actual value types
 - See [README-FIELD-SETUP-FORM.md](./README-FIELD-SETUP-FORM.md) for details
+
+### Sample Measurements Form
+The Measurements step allows farmers to record detailed sample data:
+- Streamlined interface focusing on essential measurements
+- Captures leaf weight, bulb weight, and plant count for each sample
+- Allows adding multiple samples from different field areas
+- Displays a visual yield preview graph showing leaf, bulb, and total weights
+- Starts with a single sample by default for simplicity
+- See [README-MEASUREMENTS-FORM.md](./README-MEASUREMENTS-FORM.md) for details
 
 ## Stock Feed Calculator
 
@@ -342,6 +351,14 @@ The app includes a service layer for API calls:
 - Responsive design that works well on both mobile and desktop
 
 ## Recent Updates History
+
+### Measurements Form Updates (May 2025)
+- Redesigned the measurements step to capture leaf weight, bulb weight, and plant count
+- Simplified the form by showing only one sample by default
+- Added ability to add multiple samples for better field coverage
+- Implemented a yield preview graph showing leaf, bulb, and total weights
+- Streamlined the interface by removing unnecessary fields and helper text
+- See [README-MEASUREMENTS-FORM.md](./README-MEASUREMENTS-FORM.md) for details
 
 ### Field Setup Form Updates (May 2025)
 - Reorganized the form into distinct sections for Field Measurements and Dry Matter Estimates
