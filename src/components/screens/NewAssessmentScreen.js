@@ -16,6 +16,7 @@ import {
 const NewAssessmentScreen = ({ 
   isMobile = false, 
   onNavigate = () => {},
+  onViewReport = () => {},
   prefillLocation = null,
   draftAssessment = null 
 }) => {
@@ -94,10 +95,15 @@ const NewAssessmentScreen = ({
   
   // Handle assessment completion
   const handleComplete = (assessment) => {
-    // Reset form and return to assessments screen
-    setFormData({});
-    setCurrentStep(1);
-    onNavigate('assessments');
+    // If there's a report ID, navigate to the report viewer
+    if (assessment && assessment.reportId) {
+      onViewReport(assessment.reportId);
+    } else {
+      // Otherwise, reset form and return to assessments screen
+      setFormData({});
+      setCurrentStep(1);
+      onNavigate('assessments');
+    }
   };
   
   // Handle cancel
