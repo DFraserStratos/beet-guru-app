@@ -4,16 +4,14 @@ import AssessmentTable from '../ui/AssessmentTable';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
 import { FormButton } from '../ui/form';
-import ReportViewerScreen from './ReportViewerScreen';
 
 /**
  * Screen for displaying and managing reports
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const ReportsScreen = ({ isMobile }) => {
+const ReportsScreen = ({ isMobile, onViewReport = () => {} }) => {
   const [showFilters, setShowFilters] = useState(false);
-  const [selectedReportId, setSelectedReportId] = useState(null);
   const [filters, setFilters] = useState({
     dateRange: 'all',
     cultivar: 'all',
@@ -103,17 +101,12 @@ const ReportsScreen = ({ isMobile }) => {
 
   // Handle row clicks for viewing reports
   const handleRowClick = (report) => {
-    setSelectedReportId(report.id);
+    onViewReport(report.id);
   };
 
   // Handle report view action
   const handleViewReport = (reportId) => {
-    setSelectedReportId(reportId);
-  };
-
-  // Handle back from report viewer
-  const handleBackToReports = () => {
-    setSelectedReportId(null);
+    onViewReport(reportId);
   };
 
   // Common report actions
@@ -164,17 +157,6 @@ const ReportsScreen = ({ isMobile }) => {
   // Get unique cultivars and seasons for filter options
   const cultivars = ['All Cultivars', 'Brigadier', 'Kyros', 'Feldherr', 'Blizzard', 'Blaze'];
   const seasons = ['All Seasons', '2024/2025', '2023/2024', '2022/2023'];
-
-  // If a report is selected, show the report viewer
-  if (selectedReportId) {
-    return (
-      <ReportViewerScreen 
-        reportId={selectedReportId} 
-        onBack={handleBackToReports}
-        isMobile={isMobile}
-      />
-    );
-  }
 
   return (
     <div className="space-y-6">
