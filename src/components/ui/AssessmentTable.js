@@ -48,7 +48,7 @@ const AssessmentTable = ({
           {data.map((item, index) => (
             <tr 
               key={item.id || index} 
-              className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
+              className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-100 cursor-pointer`}
               onClick={() => onRowClick(item)}
             >
               {columns.map((column) => (
