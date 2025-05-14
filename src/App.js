@@ -9,6 +9,9 @@ import NewAssessmentScreen from './components/screens/NewAssessmentScreen';
 import MoreScreen from './components/screens/MoreScreen';
 import LoginScreen from './components/screens/LoginScreen';
 import RegisterScreen from './components/screens/RegisterScreen';
+import EmailScreen from './components/screens/EmailScreen';
+import MagicLinkSentScreen from './components/screens/MagicLinkSentScreen';
+import MagicLinkVerifyScreen from './components/screens/MagicLinkVerifyScreen';
 import StockFeedScreen from './components/screens/StockFeedScreen';
 import LocationsScreen from './components/screens/LocationsScreen';
 import SettingsScreen from './components/screens/SettingsScreen';
@@ -25,8 +28,11 @@ function App() {
   
   // App state
   const [activeScreen, setActiveScreen] = useState('home');
-  const [authScreen, setAuthScreen] = useState('login'); // 'login' or 'register'
+  const [authScreen, setAuthScreen] = useState('email'); // 'email', 'magic-link-sent', 'magic-link-verify', 'register'
   const isAuthenticated = Boolean(user);
+  
+  // Magic link authentication data
+  const [currentEmail, setCurrentEmail] = useState('');
   
   // Add state for selected location or draft assessment
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -73,31 +79,100 @@ function App() {
   
   const handleLogout = () => {
     setUser(null);
-    setAuthScreen('login');
+    setAuthScreen('email');
+    setCurrentEmail('');
   };
   
-  const handleRegisterClick = () => {
+  // Magic link authentication handlers
+  const handleEmailSubmit = (email) => {
+    setCurrentEmail(email);
+  };
+  
+  const handleEmailContinue = () => {
+    setAuthScreen('magic-link-sent');
+  };
+  
+  const handleBackToEmail = () => {
+    setAuthScreen('email');
+  };
+  
+  const handleVerifyMagicLink = () => {
+    setAuthScreen('magic-link-verify');
+  };
+  
+  const handleRegisterClick = (email = '') => {
+    if (email) {
+      setCurrentEmail(email);
+    }
     setAuthScreen('register');
   };
   
-  const handleBackToLogin = () => {
-    setAuthScreen('login');
-  };
-
   // If not authenticated, show auth screens
   if (!isAuthenticated) {
-    if (authScreen === 'login') {
-      return (
-        <ErrorBoundary>
-          <LoginScreen onLogin={handleLogin} onRegister={handleRegisterClick} />
-        </ErrorBoundary>
-      );
-    } else {
-      return (
-        <ErrorBoundary>
-          <RegisterScreen onBack={handleBackToLogin} onComplete={handleLogin} />
-        </ErrorBoundary>
-      );
+    switch (authScreen) {
+      case 'email':
+        return (
+          <ErrorBoundary>
+            <EmailScreen 
+              onEmailSubmit={handleEmailSubmit} 
+              onKnownUser={handleEmailContinue}
+              onNewUser={handleRegisterClick}
+            />
+          </ErrorBoundary>
+        );
+      
+      case 'magic-link-sent':
+        return (
+          <ErrorBoundary>
+            <MagicLinkSentScreen 
+              email={currentEmail}
+              onBack={handleBackToEmail}
+              onVerify={handleVerifyMagicLink}
+            />
+          </ErrorBoundary>
+        );
+      
+      case 'magic-link-verify':
+        return (
+          <ErrorBoundary>
+            <MagicLinkVerifyScreen 
+              email={currentEmail}
+              onBack={handleBackToEmail}
+              onLogin={handleLogin}
+              onRegister={handleRegisterClick}
+            />
+          </ErrorBoundary>
+        );
+      
+      case 'register':
+        return (
+          <ErrorBoundary>
+            <RegisterScreen 
+              onBack={handleBackToEmail} 
+              onComplete={handleLogin}
+              prefillEmail={currentEmail}
+            />
+          </ErrorBoundary>
+        );
+      
+      // Legacy paths - kept for backward compatibility
+      case 'login':
+        return (
+          <ErrorBoundary>
+            <LoginScreen onLogin={handleLogin} onRegister={() => setAuthScreen('register')} />
+          </ErrorBoundary>
+        );
+      
+      default:
+        return (
+          <ErrorBoundary>
+            <EmailScreen 
+              onEmailSubmit={handleEmailSubmit} 
+              onKnownUser={handleEmailContinue}
+              onNewUser={handleRegisterClick}
+            />
+          </ErrorBoundary>
+        );
     }
   }
 
