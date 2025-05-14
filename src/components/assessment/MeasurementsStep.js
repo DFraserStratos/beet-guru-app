@@ -16,7 +16,7 @@ const SampleArea = ({ area, data, onChange, onRemove, showRemoveButton }) => {
   return (
     <div className="rounded-lg border border-gray-200 overflow-hidden">
       <div className="bg-gray-50 p-3 border-b flex justify-between items-center">
-        <h4 className="font-medium">Area {area}</h4>
+        <h4 className="font-medium">Sample {area}</h4>
         {showRemoveButton && (
           <button 
             className="text-sm text-red-600 hover:text-red-800 flex items-center"
@@ -31,34 +31,39 @@ const SampleArea = ({ area, data, onChange, onRemove, showRemoveButton }) => {
       <div className="p-4 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <FormField
-            label="Sample Length (m)"
-            name="sampleLength"
+            label="Leaf Weight (kg)"
+            name="leafWeight"
             type="number"
-            value={data.sampleLength || ''}
-            onChange={handleChange}
-            step="0.01"
-            min="0"
-          />
-          
-          <FormField
-            label="Weight (kg)"
-            name="weight"
-            type="number"
-            value={data.weight || ''}
+            value={data.leafWeight || ''}
             onChange={handleChange}
             step="0.1"
             min="0"
+            placeholder="0.0"
+            hint="Weight of leaves in the sample"
           />
           
           <FormField
-            label="Dry Matter (%)"
-            name="dryMatter"
+            label="Bulb Weight (kg)"
+            name="bulbWeight"
             type="number"
-            value={data.dryMatter || ''}
+            value={data.bulbWeight || ''}
             onChange={handleChange}
             step="0.1"
             min="0"
-            max="100"
+            placeholder="0.0"
+            hint="Weight of bulbs in the sample"
+          />
+          
+          <FormField
+            label="Plant Count"
+            name="plantCount"
+            type="number"
+            value={data.plantCount || ''}
+            onChange={handleChange}
+            step="1"
+            min="0"
+            placeholder="0"
+            hint="Number of plants in the sample"
           />
         </div>
         
@@ -85,9 +90,20 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
   // Initialize sample areas
   const [sampleAreas, setSampleAreas] = useState(
     formData.sampleAreas || [
-      { id: 1, sampleLength: '2', weight: '25.4', dryMatter: '14.2', notes: 'Northern edge of field, good plant density' },
-      { id: 2, sampleLength: '', weight: '', dryMatter: '', notes: '' },
-      { id: 3, sampleLength: '', weight: '', dryMatter: '', notes: '' }
+      { 
+        id: 1, 
+        leafWeight: '3.2', 
+        bulbWeight: '22.5', 
+        plantCount: '24', 
+        notes: 'Northern edge of field, good plant density' 
+      },
+      { 
+        id: 2, 
+        leafWeight: '', 
+        bulbWeight: '', 
+        plantCount: '', 
+        notes: '' 
+      }
     ]
   );
   
@@ -99,7 +115,13 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
   // Add a new sample area
   const addSampleArea = () => {
     const newId = Math.max(...sampleAreas.map(area => area.id), 0) + 1;
-    setSampleAreas([...sampleAreas, { id: newId, sampleLength: '', weight: '', dryMatter: '', notes: '' }]);
+    setSampleAreas([...sampleAreas, { 
+      id: newId, 
+      leafWeight: '', 
+      bulbWeight: '', 
+      plantCount: '', 
+      notes: '' 
+    }]);
   };
   
   // Remove a sample area
@@ -114,6 +136,37 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
     ));
   };
   
+  // Calculate total weights and average plant count
+  const getTotals = () => {
+    let totalLeafWeight = 0;
+    let totalBulbWeight = 0;
+    let totalPlantCount = 0;
+    let validSamples = 0;
+    
+    sampleAreas.forEach(area => {
+      const leafWeight = parseFloat(area.leafWeight) || 0;
+      const bulbWeight = parseFloat(area.bulbWeight) || 0;
+      const plantCount = parseInt(area.plantCount) || 0;
+      
+      if (leafWeight > 0 || bulbWeight > 0 || plantCount > 0) {
+        totalLeafWeight += leafWeight;
+        totalBulbWeight += bulbWeight;
+        totalPlantCount += plantCount;
+        validSamples++;
+      }
+    });
+    
+    return {
+      totalLeafWeight,
+      totalBulbWeight,
+      totalWeight: totalLeafWeight + totalBulbWeight,
+      averagePlantCount: validSamples > 0 ? (totalPlantCount / validSamples).toFixed(1) : 0,
+      validSamples
+    };
+  };
+  
+  const totals = getTotals();
+  
   // Handle Save as Draft
   const handleSaveAsDraft = () => {
     console.log('Saving as draft:', formData);
@@ -123,7 +176,7 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
   
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-6">Field Measurements</h2>
+      <h2 className="text-xl font-semibold mb-6">Sample Measurements</h2>
       
       <div className="space-y-6">
         <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
@@ -133,7 +186,8 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
             </div>
             <div className="ml-3">
               <p className="text-sm text-blue-700">
-                Take at least 3 representative samples from different areas of your field for accurate results.
+                Take multiple samples from different areas of your field for accurate results. 
+                Record the leaf weight, bulb weight, and plant count for each sample.
               </p>
             </div>
           </div>
@@ -147,7 +201,7 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
               onClick={addSampleArea}
             >
               <PlusCircle size={16} className="mr-1" />
-              Add Area
+              Add Sample
             </button>
           </div>
           
@@ -167,6 +221,37 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
           </div>
         </div>
         
+        {/* Measurement Summary */}
+        <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
+          <div className="p-4 border-b bg-gray-50">
+            <h3 className="font-medium">Measurement Summary</h3>
+          </div>
+          
+          <div className="p-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="bg-green-50 p-3 rounded-lg">
+                <p className="text-sm font-medium text-green-700">Total Leaf Weight</p>
+                <p className="text-2xl font-bold text-green-800">{totals.totalLeafWeight.toFixed(1)} kg</p>
+              </div>
+              
+              <div className="bg-green-50 p-3 rounded-lg">
+                <p className="text-sm font-medium text-green-700">Total Bulb Weight</p>
+                <p className="text-2xl font-bold text-green-800">{totals.totalBulbWeight.toFixed(1)} kg</p>
+              </div>
+              
+              <div className="bg-green-50 p-3 rounded-lg">
+                <p className="text-sm font-medium text-green-700">Total Weight</p>
+                <p className="text-2xl font-bold text-green-800">{totals.totalWeight.toFixed(1)} kg</p>
+              </div>
+              
+              <div className="bg-green-50 p-3 rounded-lg">
+                <p className="text-sm font-medium text-green-700">Avg Plants per Sample</p>
+                <p className="text-2xl font-bold text-green-800">{totals.averagePlantCount}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
         {/* Preview Graph */}
         <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
           <div className="p-4 border-b bg-gray-50">
@@ -175,15 +260,34 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
           
           <div className="p-4 flex justify-center">
             <div className="h-64 w-full max-w-lg flex items-center justify-center bg-gray-100 rounded">
-              <div className="text-center text-gray-500">
-                <BarChart3 size={40} className="mx-auto mb-2 text-gray-400" />
-                <p>Preview graph will appear here after measurements are calculated</p>
-              </div>
+              {totals.validSamples > 0 ? (
+                <div className="w-full h-full flex justify-center items-center p-4">
+                  <div className="flex space-x-12 items-end h-full w-full max-w-md">
+                    <div className="flex flex-col items-center">
+                      <div className="bg-green-200 w-20 rounded-t" style={{ height: `${Math.min(totals.totalLeafWeight * 2, 80)}%` }}></div>
+                      <p className="mt-2 text-sm font-medium">Leaf</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <div className="bg-green-500 w-20 rounded-t" style={{ height: `${Math.min(totals.totalBulbWeight, 80)}%` }}></div>
+                      <p className="mt-2 text-sm font-medium">Bulb</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <div className="bg-green-700 w-20 rounded-t" style={{ height: `${Math.min(totals.totalWeight / 2, 80)}%` }}></div>
+                      <p className="mt-2 text-sm font-medium">Total</p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center text-gray-500">
+                  <BarChart3 size={40} className="mx-auto mb-2 text-gray-400" />
+                  <p>Enter sample measurements to see the yield preview</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
         
-        {/* Button Navigation - Using the new FormButtonNav component */}
+        {/* Button Navigation - Using the FormButtonNav component */}
         <FormButtonNav
           onNext={onNext}
           onBack={onBack}
