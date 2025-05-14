@@ -2,89 +2,149 @@
 
 ## Overview
 
-This feature enhances the Beet Guru application with a detailed Report Viewer that allows farmers to view comprehensive information about their completed crop assessments. The Report Viewer is integrated with the existing Reports screen, providing a seamless experience for users to access detailed report information.
+This feature enhances the Beet Guru application with a detailed Report Viewer that allows farmers to review comprehensive information about their completed crop assessments. The implementation follows a document-like design approach, presenting all report data in a single cohesive card with clearly defined sections.
 
 ## Key Components
 
-### 1. ReportViewerScreen
+### ReportViewerScreen
 
-A new screen component that displays a detailed view of a single report, including:
+The main component that displays a detailed view of a selected report with the following sections:
 
-- **Navigation Header**: With "Back to Reports" button and "Share Report" action
-- **Report Header**: Showing report title, date, location, cultivar, and season with appropriate icons
-- **Executive Summary**: Brief overview of the assessment findings
-- **Two-Column Layout**: For crop information and field measurements
-- **Results Section**:
-  - Yield Estimate card with total field yield
-  - Feeding Capacity card for a specified number of animals
-  - Yield visualization showing leaf, bulb, and total yields with graphical representation
-- **Recommendations**: Actionable items for farmers based on the assessment
-- **Notes**: Additional context and observations
+1. **Navigation Header**
+   - Standalone "Back to Reports" button with left arrow icon
+   - "Share Report" button with share icon
+   - Both using the FormButton component with outline variant for consistent UI
 
-### 2. Updated ReportsScreen
+2. **Report Document**
+   - Single card design with white background and subtle shadow
+   - Sections separated with light borders for clear organization
+   - Document-like layout that flows logically from summary to details
 
-Enhanced the existing ReportsScreen to:
+3. **Document Sections**
+   - **Report Header**: Title and metadata (date, location, cultivar, season)
+   - **Executive Summary**: Brief overview of key findings
+   - **Crop Information**: Details about crop type, cultivar, dates, and water type
+   - **Field Measurements**: Technical details about row spacing, area, and dry matter
+   - **Results**: Highlighted yield estimate and feeding capacity with visual breakdown
+   - **Recommendations**: Actionable advice with checkmark bullets
+   - **Notes**: Additional context and disclaimers
 
-- Handle report selection through row clicks or explicit view actions
-- Navigate between the reports list and detailed report view
-- Maintain filter and sorting capabilities
+### Integration with ReportsScreen
 
-### 3. Enhanced API Service
+- Enhanced ReportsScreen to handle report selection
+- Added navigation between reports list and detailed view
+- Preserved filtering and sorting capabilities
 
-Created an enhanced API service that extends the mock data with more detailed information:
+### Enhanced API Service
 
-- Additional report details including executive summary, recommendations, and notes
-- Yield breakdown data for visualization (leaf, bulb, and total components)
+- Extended the mock API with detailed report information
+- Added executive summary, recommendations, and notes
+- Provided yield breakdown data for visualization
 
-## Implementation Details
+## Design Details
 
-1. **Navigation Flow**:
-   - User clicks on a report in the list view (table on desktop, cards on mobile)
-   - The selected report ID is stored in component state
-   - The ReportViewerScreen is rendered with the report data
-   - User can navigate back to the reports list
+### Visual Design
 
-2. **Data Flow**:
-   - ReportViewerScreen fetches both report and assessment data
-   - Data is combined to provide a comprehensive view
-   - Enhanced API service provides additional details not available in the original API
+- **Document Approach**: All content is contained within a single card for a cohesive experience
+- **Section Hierarchy**: Clear visual separation between sections with subtle borders
+- **Color Usage**: 
+  - White background for main content
+  - Pale green background for the Results section to make it stand out
+  - Green accents for important data points and icons
+- **Typography**: 
+  - Consistent text sizes and weights for headers and content
+  - Clear distinction between labels and values
+- **Icons**: Strategic use of icons to provide visual context for different data types
 
-3. **Visual Design**:
-   - Consistent with Beet Guru's design system
-   - Card-based layout with subtle shadows
-   - Green primary color for key numbers and icons
-   - Responsive design for both desktop and mobile
+### Desktop Layout
 
-4. **User Experience**:
-   - Appropriate loading and error states
-   - Back navigation for easy return to reports list
-   - Share action for sending reports
+- Two-column layout for Crop Information and Field Measurements sections
+- Side-by-side cards for Yield Estimate and Feeding Capacity
+- Generous spacing for optimal readability
+- Centered yield visualization with clear labels
 
-## Technical Implementation
+### Mobile Layout
 
-- Uses React hooks for state management and API calls
-- Leverages existing UI components (FormButton, icons)
-- Implements responsive design using Tailwind CSS
-- Extends the existing API service without modifying it
+- Stack columns and cards vertically
+- Maintain the same section ordering
+- Adjust spacing for touch-friendly interaction
+- Preserve all content with appropriate sizing
+
+## Implementation Notes
+
+### Data Flow
+
+1. User clicks on a report in the ReportsScreen
+2. Selected report ID is stored and used to render the ReportViewerScreen
+3. ReportViewerScreen fetches both report and assessment data
+4. Data is combined and formatted for display
+5. User can navigate back to the reports list via the back button
+
+### Technical Implementation
+
+- **React Hooks**: Used for state management and API calls
+- **Conditional Rendering**: Appropriate handling of loading and error states
+- **API Integration**: Enhanced API service for more detailed report data
+- **Responsive Design**: Layout adapts to different screen sizes
+- **Component Reuse**: Leverages existing UI components for consistency
+
+## Key Features
+
+1. **Comprehensive Information Display**
+   - All relevant assessment data in one view
+   - Clear organization of information by category
+
+2. **Highlighted Results**
+   - Prominent display of key metrics (yield and feeding capacity)
+   - Visual breakdown of yield components (leaf, bulb, total)
+   - Supporting context for the calculations
+
+3. **Actionable Recommendations**
+   - Visually emphasized with checkmark bullets
+   - Clear, concise advice for farmers
+   - Practical next steps based on assessment results
+
+4. **Document-Like Experience**
+   - Feels like a professional report rather than a web interface
+   - Logical flow of information from summary to details
+   - Consistent styling throughout
+
+5. **Seamless Navigation**
+   - Easy return to reports list
+   - Share functionality for distribution
+
+## Usage
+
+1. Navigate to the Reports screen
+2. Click on any report in the list (table row on desktop, card on mobile)
+3. View the detailed report with all sections
+4. Click "Back to Reports" to return to the reports list
+5. Use "Share Report" to send the report (currently shows an alert)
 
 ## Future Enhancements
 
 1. **PDF Export**: Add functionality to export reports as PDF documents
 2. **Email Integration**: Implement actual email sending for the "Share Report" action
 3. **Comparison View**: Allow comparing multiple reports side by side
-4. **Interactive Charts**: Replace static visualizations with interactive charts
-5. **Historical Data**: Show trends across multiple assessments for the same location
+4. **Interactive Charts**: Add more sophisticated data visualizations
+5. **Historical Trends**: Show changes over time for the same location
+6. **Custom Recommendations**: Generate tailored advice based on specific assessment data
 
-## Dependencies
+## Screenshots
 
-- Tailwind CSS for styling
-- Lucide React for icons
-- Custom hooks for API calls and device detection
+The Report Viewer implementation closely matches the provided design mockup, featuring:
 
-## How to Test
+- Clean, document-like presentation
+- Well-organized sections with clear headings
+- Highlighted key metrics with supporting details
+- Consistent use of iconography and color
+- Proper spacing and typography hierarchy
 
-1. Navigate to the Reports screen
-2. Click on any report in the list
-3. View the detailed report and verify all sections are displayed correctly
-4. Click "Back to Reports" to return to the reports list
-5. Test on both desktop and mobile viewports
+(Screenshots would be included here in a real README)
+
+## Technical Requirements
+
+- React 18.2.0
+- Tailwind CSS 3.3.3
+- Lucide React 0.294.0
+- Modern browser with CSS Grid support
