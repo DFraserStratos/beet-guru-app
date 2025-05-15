@@ -4,6 +4,7 @@ import WeatherWidget from '../ui/WeatherWidget';
 import CultivarInfoWidget from '../ui/CultivarInfoWidget';
 import SeasonalTimeline from '../ui/SeasonalTimeline';
 import { FormButton } from '../ui/form';
+import { PageHeaderCard, BaseCard, HeaderCard, ActionCard, IconCard } from '../ui/card';
 
 /**
  * Home screen component with dashboard widgets
@@ -29,37 +30,34 @@ const HomeScreen = ({ onNavigate, isMobile = false, user = { name: 'John Doe' } 
     console.log('Learn more about harvesting');
   };
 
+  // Action button for the header card
+  const actionButton = (
+    <FormButton 
+      variant="primary" 
+      icon={<PlusCircle size={16} />}
+      onClick={handleNewAssessment}
+    >
+      {isMobile ? 'New' : 'New Assessment'}
+    </FormButton>
+  );
+
   return (
     <div className="space-y-6">
-      {/* Header Card */}
-      <div className="bg-white rounded-xl shadow p-6">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800 mb-1">
-              Welcome, {user.name}
-            </h1>
-            <p className="text-gray-600 mb-2">
-              Beet Guru simplifies estimating beet dry matter yield by calculating an accurate average from fresh weight samples. It provides a clear, reliable yield range, making your farm planning more effective and data-driven.
-            </p>
-            <p className="text-gray-600">
-              Easy-to-use and intuitive, Beet Guru securely stores your grower and paddock details directly within each assessment. At the end of the process, you'll receive a comprehensive and easy-to-read report via email, streamlining your record-keeping and decision-making.
-            </p>
-          </div>
-          <FormButton 
-            variant="primary" 
-            icon={<PlusCircle size={16} />}
-            onClick={handleNewAssessment}
-          >
-            {isMobile ? 'New' : 'New Assessment'}
-          </FormButton>
-        </div>
-      </div>
+      {/* Header Card - now using PageHeaderCard */}
+      <PageHeaderCard
+        title={`Welcome, ${user.name}`}
+        description="Beet Guru simplifies estimating beet dry matter yield by calculating an accurate average from fresh weight samples. It provides a clear, reliable yield range, making your farm planning more effective and data-driven."
+        actions={actionButton}
+      >
+        <p className="text-gray-600">
+          Easy-to-use and intuitive, Beet Guru securely stores your grower and paddock details directly within each assessment. At the end of the process, you'll receive a comprehensive and easy-to-read report via email, streamlining your record-keeping and decision-making.
+        </p>
+      </PageHeaderCard>
 
       {/* Mobile Layout (stacked) */}
       <div className="grid grid-cols-1 md:hidden gap-6">
         {/* Action Items Card */}
-        <div className="bg-white rounded-lg shadow p-4">
-          <h3 className="font-medium text-gray-800 mb-4">Action Items</h3>
+        <HeaderCard title="Action Items">
           <div className="space-y-3">
             <div className="flex items-center p-4 border-l-4 border-yellow-400 bg-yellow-50 rounded-r-lg">
               <AlertCircle size={20} className="text-yellow-400 mr-3 flex-shrink-0" />
@@ -100,17 +98,16 @@ const HomeScreen = ({ onNavigate, isMobile = false, user = { name: 'John Doe' } 
               </div>
             </div>
           </div>
-        </div>
+        </HeaderCard>
 
         {/* Weather Widget - Mobile Version */}
         <WeatherWidget isMobile={true} />
 
         {/* Growing Season Card - Simple Mobile Version */}
-        <div className="bg-white rounded-lg shadow p-4">
-          <h3 className="font-medium text-gray-800 mb-4">Growing Season</h3>
+        <HeaderCard title="Growing Season">
           <SeasonalTimeline isSimplified={true} />
           <p className="text-sm text-gray-500 mt-2">Typical season for fodder beet in Canterbury, NZ</p>
-        </div>
+        </HeaderCard>
 
         {/* Cultivar Info - Mobile Version */}
         <CultivarInfoWidget isSimplified={true} />
@@ -122,8 +119,7 @@ const HomeScreen = ({ onNavigate, isMobile = false, user = { name: 'John Doe' } 
           {/* Top Row */}
           <div className="col-span-8">
             {/* Action Items */}
-            <div className="bg-white rounded-lg shadow p-4 h-full">
-              <h3 className="font-medium text-gray-800 mb-4">Action Items</h3>
+            <HeaderCard title="Action Items" className="h-full">
               <div className="space-y-3">
                 <div className="flex items-center p-4 border-l-4 border-yellow-400 bg-yellow-50 rounded-r-lg">
                   <AlertCircle size={20} className="text-yellow-400 mr-3 flex-shrink-0" />
@@ -164,7 +160,7 @@ const HomeScreen = ({ onNavigate, isMobile = false, user = { name: 'John Doe' } 
                   </div>
                 </div>
               </div>
-            </div>
+            </HeaderCard>
           </div>
           <div className="col-span-4">
             {/* Weather Widget */}
@@ -178,9 +174,7 @@ const HomeScreen = ({ onNavigate, isMobile = false, user = { name: 'John Doe' } 
           {/* Bottom Row */}
           <div className="col-span-8">
             {/* Growing Season */}
-            <div className="bg-white rounded-lg shadow p-4 h-full">
-              <h3 className="font-medium text-gray-800 mb-4">Growing Season</h3>
-              
+            <HeaderCard title="Growing Season" className="h-full">
               {/* Seasonal timeline */}
               <div>
                 <SeasonalTimeline isSimplified={true} />
@@ -206,7 +200,7 @@ const HomeScreen = ({ onNavigate, isMobile = false, user = { name: 'John Doe' } 
                   </li>
                 </ul>
               </div>
-            </div>
+            </HeaderCard>
           </div>
           <div className="col-span-4">
             {/* Cultivar Info */}
