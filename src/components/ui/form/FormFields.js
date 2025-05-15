@@ -1,5 +1,4 @@
 import React from 'react';
-import { useFormContext } from './FormContext';
 import FormField from './FormField';
 
 /**
@@ -42,26 +41,20 @@ export const FormInput = ({
   name, 
   onChange, 
   onBlur, 
-  value, 
+  value = '',
+  error,
+  touched = false,
   ...rest 
 }) => {
-  // Get form context values and handlers
-  const { 
-    values, 
-    errors, 
-    touched, 
-    handleChange, 
-    handleBlur 
-  } = useFormContext();
-
+  // Simplified version for initial testing
   return (
     <FormField
       name={name}
-      value={value !== undefined ? value : values[name] || ''}
-      onChange={onChange || handleChange}
-      onBlur={onBlur || handleBlur}
-      error={errors[name]}
-      touched={Boolean(touched[name])}
+      value={value}
+      onChange={onChange}
+      onBlur={onBlur}
+      error={error}
+      touched={touched}
       {...rest}
     />
   );
@@ -78,31 +71,14 @@ export const NumberField = ({
   max,
   step = 'any',
   precision = 2,
+  value = '',
+  onChange,
+  onBlur,
+  error,
+  touched = false,
   ...rest 
 }) => {
-  const { 
-    values, 
-    errors, 
-    touched, 
-    handleChange, 
-    handleBlur,
-    setFieldValue
-  } = useFormContext();
-
-  // Format value to specified precision when blurring the field
-  const handleNumberBlur = (e) => {
-    const { name, value } = e.target;
-
-    if (value && !isNaN(parseFloat(value))) {
-      // Format to specified precision
-      const formattedValue = parseFloat(value).toFixed(precision);
-      setFieldValue(name, formattedValue);
-    }
-    
-    // Call regular blur handler
-    handleBlur(e);
-  };
-
+  // Simplified version for initial testing
   return (
     <div className="relative">
       {unitPosition === 'left' && unit && (
@@ -117,11 +93,11 @@ export const NumberField = ({
         min={min}
         max={max}
         step={step}
-        value={values[name] || ''}
-        onChange={handleChange}
-        onBlur={handleNumberBlur}
-        error={errors[name]}
-        touched={Boolean(touched[name])}
+        value={value}
+        onChange={onChange}
+        onBlur={onBlur}
+        error={error}
+        touched={touched}
         className={unitPosition === 'left' ? 'pl-10' : ''}
         {...rest}
       />
@@ -141,18 +117,25 @@ export const NumberField = ({
 export const ToggleField = ({
   name,
   label,
+  value = false,
+  onChange,
+  onBlur,
+  error,
+  touched = false,
   ...rest
 }) => {
-  const { 
-    values, 
-    errors, 
-    touched, 
-    setFieldValue,
-    handleBlur 
-  } = useFormContext();
-
+  // Simplified version for initial testing
   const handleToggle = () => {
-    setFieldValue(name, !values[name]);
+    if (onChange) {
+      onChange({
+        target: {
+          name,
+          value: !value,
+          type: 'checkbox',
+          checked: !value
+        }
+      });
+    }
   };
 
   return (
@@ -161,31 +144,31 @@ export const ToggleField = ({
         <button
           type="button"
           className={`relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 ${
-            values[name] ? 'bg-green-600' : 'bg-gray-200'
+            value ? 'bg-green-600' : 'bg-gray-200'
           }`}
           role="switch"
-          aria-checked={values[name] || false}
+          aria-checked={value || false}
           onClick={handleToggle}
-          onBlur={() => handleBlur({ target: { name } })}
+          onBlur={() => onBlur && onBlur({ target: { name } })}
           {...rest}
         >
           <span
             className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200 ${
-              values[name] ? 'translate-x-5' : 'translate-x-0'
+              value ? 'translate-x-5' : 'translate-x-0'
             }`}
           />
         </button>
         {label && (
           <span className="ml-3 text-sm" onClick={handleToggle}>
-            <span className={`font-medium ${values[name] ? 'text-gray-900' : 'text-gray-500'}`}>
+            <span className={`font-medium ${value ? 'text-gray-900' : 'text-gray-500'}`}>
               {label}
             </span>
           </span>
         )}
       </div>
       
-      {touched[name] && errors[name] && (
-        <p className="mt-1 text-xs text-red-600">{errors[name]}</p>
+      {touched && error && (
+        <p className="mt-1 text-xs text-red-600">{error}</p>
       )}
     </div>
   );
@@ -197,26 +180,24 @@ export const ToggleField = ({
 export const DateField = ({
   name,
   label,
+  value = '',
+  onChange,
+  onBlur,
+  error,
+  touched = false,
   ...rest
 }) => {
-  const { 
-    values, 
-    errors, 
-    touched, 
-    handleChange,
-    handleBlur 
-  } = useFormContext();
-
+  // Simplified version for initial testing
   return (
     <FormField
       type="date"
       name={name}
       label={label}
-      value={values[name] || ''}
-      onChange={handleChange}
-      onBlur={handleBlur}
-      error={errors[name]}
-      touched={Boolean(touched[name])}
+      value={value}
+      onChange={onChange}
+      onBlur={onBlur}
+      error={error}
+      touched={touched}
       {...rest}
     />
   );
@@ -229,16 +210,25 @@ export const ToggleTypeField = ({
   name,
   label,
   options = [{ value: 'estimate', label: 'Estimate' }, { value: 'actual', label: 'Actual' }],
+  value = '',
+  onChange,
+  error,
+  touched = false,
   ...rest
 }) => {
-  const { 
-    values, 
-    errors, 
-    touched, 
-    setFieldValue 
-  } = useFormContext();
-
-  const value = values[name] || options[0].value;
+  // Simplified version for initial testing
+  const currentValue = value || options[0].value;
+  
+  const handleClick = (optionValue) => {
+    if (onChange) {
+      onChange({
+        target: {
+          name,
+          value: optionValue
+        }
+      });
+    }
+  };
 
   return (
     <div className="mb-4">
@@ -257,21 +247,21 @@ export const ToggleTypeField = ({
               py-2 px-4 text-sm font-medium 
               ${index === 0 ? 'rounded-l-md' : ''} 
               ${index === options.length - 1 ? 'rounded-r-md' : ''}
-              ${value === option.value 
+              ${currentValue === option.value 
                 ? 'bg-green-600 text-white' 
                 : 'bg-white text-gray-700 hover:bg-gray-50'}
               border border-gray-300
               focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500
             `}
-            onClick={() => setFieldValue(name, option.value)}
+            onClick={() => handleClick(option.value)}
           >
             {option.label}
           </button>
         ))}
       </div>
       
-      {touched[name] && errors[name] && (
-        <p className="mt-1 text-xs text-red-600">{errors[name]}</p>
+      {touched && error && (
+        <p className="mt-1 text-xs text-red-600">{error}</p>
       )}
     </div>
   );
