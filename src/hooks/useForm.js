@@ -1,15 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useFormContext } from '../components/ui/form/FormContext';
 import { validateForm } from '../components/ui/form/FormValidation';
 
 /**
  * Enhanced hook for form handling with validation.
- * Can work both standalone or with FormProvider context
  * 
  * @param {Object} initialValues - Initial form values
  * @param {Function|Object} validation - Validation function or schema
  * @param {Function} onSubmit - Submit callback
- * @param {Boolean} useContext - Whether to use FormContext (if available)
+ * @param {Boolean} useContextFlag - Whether to use FormContext (currently disabled for initial testing)
  * @returns {Object} Form state and handlers
  */
 const useForm = (
@@ -24,27 +22,10 @@ const useForm = (
   const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // Try to use FormContext if useContextFlag is true
-  let formContext = null;
-  if (useContextFlag) {
-    try {
-      formContext = useFormContext();
-    } catch (error) {
-      // Context not available, will fall back to standalone implementation
-    }
-  }
-  
   // Update values if initialValues change (for standalone mode)
   useEffect(() => {
-    if (!formContext) {
-      setValues(initialValues);
-    }
-  }, [JSON.stringify(initialValues), formContext]);
-  
-  // If we have form context and useContextFlag is true, use it
-  if (formContext && useContextFlag) {
-    return formContext;
-  }
+    setValues(initialValues);
+  }, [JSON.stringify(initialValues)]);
   
   // Determine if validation is a function or schema
   const isValidationSchema = typeof validation === 'object';
@@ -167,6 +148,27 @@ const useForm = (
       setErrors(validationErrors);
       return Object.keys(validationErrors).length === 0;
     }
+  };
+};
+
+// For context integration (to be implemented later)
+const useFormWithContext = () => {
+  // This function will be implemented later when we integrate with FormContext
+  console.warn('FormContext integration not yet implemented');
+  
+  // Return empty form state for now
+  return {
+    values: {},
+    errors: {},
+    touched: {},
+    isSubmitting: false,
+    handleChange: () => {},
+    handleBlur: () => {},
+    handleSubmit: () => {},
+    resetForm: () => {},
+    setValues: () => {},
+    setFieldValue: () => {},
+    validateForm: () => true
   };
 };
 
