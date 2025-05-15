@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { Mail, ArrowRight } from 'lucide-react';
 import { FormField, FormButton } from '../ui/form';
 import { useForm } from '../../hooks';
-import ErrorBoundary from '../utility/ErrorBoundary';
-import beetGuruWideLogo from '../../BeetGuruWide.png';
+import { AuthLayout } from '../auth';
 import api from '../../services/api';
 
 /**
@@ -101,55 +100,35 @@ const EmailScreen = ({ onEmailSubmit, onRegister, onKnownUser, onNewUser }) => {
   };
   
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <ErrorBoundary>
-        <div className="flex justify-center">
-          <img 
-            src={beetGuruWideLogo} 
-            alt="Beet Guru Logo" 
-            className="h-28 w-auto" 
-          />
-        </div>
+    <AuthLayout title="Sign in with Email">
+      <form className="space-y-6" onSubmit={handleSubmit} noValidate>
+        <FormField
+          label="Email address"
+          name="email"
+          type="email"
+          placeholder="you@example.com"
+          value={values.email}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          error={errors.email}
+          touched={true}
+          icon={<Mail size={18} className="text-gray-400" />}
+        />
         
-        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-            <h2 className="text-center text-2xl font-semibold text-gray-800 mb-6">Sign in with Email</h2>
-            
-            <form className="space-y-6" onSubmit={handleSubmit} noValidate>
-              <FormField
-                label="Email address"
-                name="email"
-                type="email"
-                placeholder="you@example.com"
-                value={values.email}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.email}
-                touched={true}
-                icon={<Mail size={18} className="text-gray-400" />}
-              />
-              
-              <div className="pt-2">
-                <FormButton
-                  type="button"
-                  onClick={handleContinueClick}
-                  variant="primary"
-                  fullWidth
-                  isLoading={isProcessing}
-                  icon={formFilled ? <ArrowRight size={16} /> : null}
-                >
-                  {formFilled ? 'Continue with Email' : 'Continue'}
-                </FormButton>
-              </div>
-            </form>
-          </div>
+        <div className="pt-2">
+          <FormButton
+            type="button"
+            onClick={handleContinueClick}
+            variant="primary"
+            fullWidth
+            isLoading={isProcessing}
+            icon={formFilled ? <ArrowRight size={16} /> : null}
+          >
+            {formFilled ? 'Continue with Email' : 'Continue'}
+          </FormButton>
         </div>
-        
-        <div className="mt-8 text-center text-sm text-gray-500">
-          <p>Beet Guru v1.1.0 • © 2025 Beet Guru Ltd.</p>
-        </div>
-      </ErrorBoundary>
-    </div>
+      </form>
+    </AuthLayout>
   );
 };
 
