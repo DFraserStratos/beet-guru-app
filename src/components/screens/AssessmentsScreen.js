@@ -4,6 +4,7 @@ import LocationCard from '../ui/LocationCard';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
 import { FormButton } from '../ui/form';
+import { PageHeaderCard, BaseCard, HeaderCard } from '../ui/card';
 
 /**
  * Screen for displaying and managing assessments
@@ -47,46 +48,43 @@ const AssessmentsScreen = ({
     onNavigate('new-assessment');
   };
 
+  // Action button for the header card
+  const actionButton = (
+    <FormButton 
+      variant="primary" 
+      icon={<PlusCircle size={16} />}
+      onClick={handleNewAssessment}
+    >
+      {isMobile ? 'New' : 'New Assessment'}
+    </FormButton>
+  );
+
   return (
     <div className="space-y-6">
-      {/* Header Section */}
-      <div className="bg-white rounded-xl shadow p-6">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800 mb-1">
-              Assessments
-            </h1>
-            <p className="text-gray-600">
-              Manage crop assessments for your locations
-            </p>
-          </div>
-          <FormButton 
-            variant="primary" 
-            icon={<PlusCircle size={16} />}
-            onClick={handleNewAssessment}
-          >
-            {isMobile ? 'New' : 'New Assessment'}
-          </FormButton>
-        </div>
-      </div>
+      {/* Header Card - now using PageHeaderCard */}
+      <PageHeaderCard
+        title="Assessments"
+        description="Manage crop assessments for your locations"
+        actions={actionButton}
+      />
       
       {/* Loading State */}
       {loading && (
-        <div className="bg-white rounded-xl shadow p-6 text-center">
+        <BaseCard className="p-6 text-center">
           <p className="text-gray-500">Loading locations...</p>
-        </div>
+        </BaseCard>
       )}
       
       {/* Error State */}
       {error && (
-        <div className="bg-white rounded-xl shadow p-6 text-center">
+        <BaseCard className="p-6 text-center">
           <p className="text-red-500">Error loading locations: {error.message}</p>
-        </div>
+        </BaseCard>
       )}
       
       {/* Locations List */}
       {!loading && !error && locations && (
-        <div className="bg-white rounded-xl shadow overflow-hidden">
+        <BaseCard className="overflow-hidden p-0">
           {locations.length === 0 ? (
             <div className="p-8 text-center">
               <Calendar size={48} className="text-gray-300 mx-auto mb-4" />
@@ -117,7 +115,7 @@ const AssessmentsScreen = ({
               ))}
             </ul>
           )}
-        </div>
+        </BaseCard>
       )}
     </div>
   );
