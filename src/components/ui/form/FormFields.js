@@ -158,7 +158,7 @@ export const ToggleField = ({
             }`}
           />
         </button>
-        {label && (
+        {label && ( 
           <span className="ml-3 text-sm" onClick={handleToggle}>
             <span className={`font-medium ${value ? 'text-gray-900' : 'text-gray-500'}`}>
               {label}
@@ -268,7 +268,7 @@ export const ToggleTypeField = ({
 };
 
 // Export all components
-export default {
+export {
   FormSection,
   FormInput,
   NumberField,
