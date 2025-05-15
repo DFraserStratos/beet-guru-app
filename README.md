@@ -41,7 +41,7 @@ To understand the application fully, it's important to know these key concepts:
 - Custom hooks for common functionality
 - API service layer with mock data
 - Error boundaries for improved error handling
-- Reusable form components
+- Reusable component systems (forms, cards)
 
 ## Project Structure
 
@@ -52,6 +52,8 @@ src/
 │   ├── layout/        # Layout components (Sidebar, Header, BottomNav)
 │   ├── screens/       # Main screen components 
 │   ├── ui/            # UI elements (cards, buttons, widgets, forms)
+│   │   ├── card/      # Card component system
+│   │   └── form/      # Form component system
 │   └── utility/       # Utility components (ErrorBoundary, etc.)
 ├── hooks/             # Custom React hooks
 ├── services/          # API services
@@ -82,7 +84,20 @@ src/
 - **ReminderWidget.js**: Action items and notifications for users
 - **LocationCard.js**: Displays location with status (Draft/Not Started)
 - **AssessmentTable.js**: Reusable table component for displaying data
-- Form components (FormField, FormButton) for consistent styling
+
+#### Card Component System
+- **BaseCard.js**: Foundation card with basic styling and options
+- **HeaderCard.js**: Card with title and description
+- **ActionCard.js**: Card with actions/buttons
+- **StatusCard.js**: Card with status indicators
+- **IconCard.js**: Card with icon and content
+- **PageHeaderCard.js**: Specialized card for page headers
+- See [README-CARD-COMPONENTS.md](./README-CARD-COMPONENTS.md) for details
+
+#### Form Component System
+- **FormField.js**: Reusable form field with validation
+- **FormButton.js**: Button component with variants
+- **FormButtonNav.js**: Mobile-optimized button navigation
 
 #### Assessment Components
 - **StepProgress.js**: Wizard progress indicator for multi-step forms
@@ -353,6 +368,14 @@ The app includes a service layer for API calls:
 - Responsive design that works well on both mobile and desktop
 
 ## Recent Updates History
+
+### Card Component System (May 2025)
+- Created a reusable card component system for consistent UI
+- Implemented BaseCard, HeaderCard, ActionCard, StatusCard, IconCard, and PageHeaderCard components
+- Refactored HomeScreen and AssessmentsScreen to use the new components
+- Refactored LocationCard to use the StatusCard and IconCard components
+- Added comprehensive documentation for the card system
+- See [README-CARD-COMPONENTS.md](./README-CARD-COMPONENTS.md) for details
 
 ### Home Screen Update V3 (May 2025)
 - Completely redesigned layout with optimized 2×2 grid for desktop
