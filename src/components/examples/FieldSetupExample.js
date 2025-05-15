@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Form, 
   FormSection, 
@@ -9,39 +9,13 @@ import {
   FormButton
 } from '../ui/form';
 import { rules, createValidationSchema } from '../ui/form/FormValidation';
+import { useForm } from '../../hooks';
 
 /**
  * Example component using the new form system
  * This demonstrates how the Field Setup screen could be implemented with the new form components
  */
 const FieldSetupExample = () => {
-  // Create validation schema
-  const validationSchema = createValidationSchema({
-    rowSpacing: [
-      rules.required('Row spacing is required'),
-      rules.numeric('Must be a valid number'),
-      rules.min(0.1, 'Must be at least 0.1m')
-    ],
-    measurementLength: [
-      rules.required('Measurement length is required'),
-      rules.numeric('Must be a valid number'),
-      rules.min(1, 'Must be at least 1m')
-    ],
-    bulbDryMatter: [
-      rules.required('Bulb dry matter is required'),
-      rules.numeric('Must be a valid number'),
-      rules.min(1, 'Must be at least 1%'),
-      rules.max(30, 'Must not exceed 30%')
-    ],
-    leafDryMatter: [
-      rules.required('Leaf dry matter is required'),
-      rules.numeric('Must be a valid number'),
-      rules.min(1, 'Must be at least 1%'),
-      rules.max(30, 'Must not exceed 30%')
-    ],
-    valueType: []
-  });
-
   // Initial values
   const initialValues = {
     rowSpacing: '0.5',
@@ -51,23 +25,51 @@ const FieldSetupExample = () => {
     valueType: 'estimate'
   };
 
+  // Use the standalone form hook for initial testing
+  const { 
+    values, 
+    errors, 
+    touched, 
+    handleChange, 
+    handleBlur,
+    handleSubmit 
+  } = useForm(
+    initialValues,
+    (formValues) => {
+      // Validation function (simplified for testing)
+      const errors = {};
+      
+      if (!formValues.rowSpacing) {
+        errors.rowSpacing = 'Row spacing is required';
+      } else if (isNaN(parseFloat(formValues.rowSpacing))) {
+        errors.rowSpacing = 'Must be a valid number';
+      } else if (parseFloat(formValues.rowSpacing) < 0.1) {
+        errors.rowSpacing = 'Must be at least 0.1m';
+      }
+      
+      return errors;
+    },
+    (formValues) => {
+      console.log('Field setup data:', formValues);
+      // Process form data...
+    }
+  );
+
   // Form submission handler
-  const handleSubmit = (values) => {
-    console.log('Field setup data:', values);
-    // Process form data...
+  const onSubmit = (e) => {
+    e.preventDefault();
+    handleSubmit(e);
   };
+
+  // Calculate area
+  const area = parseFloat(values.rowSpacing || 0) * parseFloat(values.measurementLength || 0);
 
   return (
     <div className="max-w-3xl mx-auto">
       <div className="bg-white p-6 rounded-lg shadow">
         <h2 className="text-2xl font-semibold text-gray-800 mb-6">Field Setup</h2>
         
-        <Form
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-          className="space-y-6"
-        >
+        <form onSubmit={onSubmit} className="space-y-6">
           {/* Information alert */}
           <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
             <div className="flex">
@@ -97,6 +99,11 @@ const FieldSetupExample = () => {
                 precision={1}
                 required
                 hint="Distance between rows"
+                value={values.rowSpacing}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.rowSpacing}
+                touched={touched.rowSpacing}
               />
               
               <NumberField
@@ -109,6 +116,11 @@ const FieldSetupExample = () => {
                 precision={0}
                 required
                 hint="Length of the measurement area"
+                value={values.measurementLength}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.measurementLength}
+                touched={touched.measurementLength}
               />
             </div>
             
@@ -122,7 +134,7 @@ const FieldSetupExample = () => {
               </div>
               <div className="mt-2">
                 <p className="text-2xl font-bold text-green-700">
-                  2.00 m²
+                  {area.toFixed(2)} m²
                 </p>
                 <p className="text-xs text-green-600 mt-1">
                   This is the area of a single row sample based on your measurements
@@ -136,6 +148,10 @@ const FieldSetupExample = () => {
             <div className="mb-4">
               <ToggleTypeField
                 name="valueType"
+                value={values.valueType}
+                onChange={handleChange}
+                error={errors.valueType}
+                touched={touched.valueType}
               />
             </div>
             
@@ -150,6 +166,11 @@ const FieldSetupExample = () => {
                 precision={0}
                 required
                 hint="Estimated dry matter percentage for bulbs"
+                value={values.bulbDryMatter}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.bulbDryMatter}
+                touched={touched.bulbDryMatter}
               />
               
               <NumberField
@@ -162,6 +183,11 @@ const FieldSetupExample = () => {
                 precision={0}
                 required
                 hint="Estimated dry matter percentage for leaves"
+                value={values.leafDryMatter}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={errors.leafDryMatter}
+                touched={touched.leafDryMatter}
               />
             </div>
           </FormSection>
@@ -181,7 +207,7 @@ const FieldSetupExample = () => {
               </FormButton>
             </div>
           </div>
-        </Form>
+        </form>
       </div>
     </div>
   );
