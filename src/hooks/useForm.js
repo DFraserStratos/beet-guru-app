@@ -16,26 +16,35 @@ const useForm = (
   initialValues = {}, 
   validation = () => ({}), 
   onSubmit = () => {},
-  useContext = false
+  useContextFlag = false
 ) => {
-  // Try to use FormContext if useContext is true
-  let formContext;
-  try {
-    formContext = useContext ? useFormContext() : null;
-  } catch (error) {
-    formContext = null;
-  }
-  
-  // If we have form context and useContext is true, use it
-  if (formContext && useContext) {
-    return formContext;
-  }
-  
-  // Otherwise fall back to standalone implementation (backward compatibility)
+  // Always define the standalone implementation variables
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Try to use FormContext if useContextFlag is true
+  let formContext = null;
+  if (useContextFlag) {
+    try {
+      formContext = useFormContext();
+    } catch (error) {
+      // Context not available, will fall back to standalone implementation
+    }
+  }
+  
+  // Update values if initialValues change (for standalone mode)
+  useEffect(() => {
+    if (!formContext) {
+      setValues(initialValues);
+    }
+  }, [JSON.stringify(initialValues), formContext]);
+  
+  // If we have form context and useContextFlag is true, use it
+  if (formContext && useContextFlag) {
+    return formContext;
+  }
   
   // Determine if validation is a function or schema
   const isValidationSchema = typeof validation === 'object';
@@ -44,11 +53,6 @@ const useForm = (
   const validate = isValidationSchema 
     ? (formValues) => validateForm(formValues, validation)
     : validation;
-  
-  // Update values if initialValues change
-  useEffect(() => {
-    setValues(initialValues);
-  }, [JSON.stringify(initialValues)]);
   
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
