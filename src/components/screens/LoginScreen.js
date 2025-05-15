@@ -2,9 +2,8 @@ import { useState } from 'react';
 import { User, Lock, ArrowRight } from 'lucide-react';
 import { FormField, FormButton } from '../ui/form';
 import { useForm } from '../../hooks';
+import { AuthLayout } from '../auth';
 import api from '../../services/api';
-import ErrorBoundary from '../utility/ErrorBoundary';
-import beetGuruWideLogo from '../../BeetGuruWide.png';
 
 /**
  * Login screen component
@@ -85,103 +84,83 @@ const LoginScreen = ({ onLogin, onRegister }) => {
   };
   
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <ErrorBoundary>
-        <div className="flex justify-center">
-          <img 
-            src={beetGuruWideLogo} 
-            alt="Beet Guru Logo" 
-            className="h-28 w-auto" 
-          />
-        </div>
+    <AuthLayout title="Log in to your account">
+      <form className="space-y-6" onSubmit={handleSubmit} noValidate>
+        <FormField
+          label="Email address"
+          name="email"
+          type="email"
+          placeholder="you@example.com"
+          value={values.email}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          error={errors.email}
+          touched={true}
+          icon={<User size={18} className="text-gray-400" />}
+        />
         
-        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-            <h2 className="text-center text-2xl font-semibold text-gray-800 mb-6">Log in to your account</h2>
-            
-            <form className="space-y-6" onSubmit={handleSubmit} noValidate>
-              <FormField
-                label="Email address"
-                name="email"
-                type="email"
-                placeholder="you@example.com"
-                value={values.email}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.email}
-                touched={true}
-                icon={<User size={18} className="text-gray-400" />}
-              />
-              
-              <FormField
-                label="Password"
-                name="password"
-                type="password"
-                placeholder="••••••••"
-                value={values.password}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.password}
-                touched={true}
-                icon={<Lock size={18} className="text-gray-400" />}
-              />
-              
-              <div className="flex items-center justify-between">
-                <FormField
-                  name="rememberMe"
-                  type="checkbox"
-                  value={values.rememberMe}
-                  onChange={handleChange}
-                >
-                  Remember me
-                </FormField>
-                
-                <div className="text-sm">
-                  <a href="#" className="font-medium text-green-600 hover:text-green-500">
-                    Forgot your password?
-                  </a>
-                </div>
-              </div>
-              
-              <FormButton
-                type="button"
-                onClick={handleContinueClick}
-                variant="primary"
-                fullWidth
-                icon={formFilled ? <ArrowRight size={16} /> : null}
-              >
-                {formFilled ? 'Sign in' : 'Continue'}
-              </FormButton>
-            </form>
-            
-            <div className="mt-6">
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-300"></div>
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">Or</span>
-                </div>
-              </div>
-              
-              <div className="mt-6">
-                <FormButton
-                  onClick={onRegister}
-                  variant="outline"
-                  fullWidth
-                >
-                  Create new account
-                </FormButton>
-              </div>
-            </div>
+        <FormField
+          label="Password"
+          name="password"
+          type="password"
+          placeholder="••••••••"
+          value={values.password}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          error={errors.password}
+          touched={true}
+          icon={<Lock size={18} className="text-gray-400" />}
+        />
+        
+        <div className="flex items-center justify-between">
+          <FormField
+            name="rememberMe"
+            type="checkbox"
+            value={values.rememberMe}
+            onChange={handleChange}
+          >
+            Remember me
+          </FormField>
+          
+          <div className="text-sm">
+            <a href="#" className="font-medium text-green-600 hover:text-green-500">
+              Forgot your password?
+            </a>
           </div>
         </div>
         
-        <div className="mt-8 text-center text-sm text-gray-500">
-          <p>Beet Guru v1.0.0 • © 2025 Beet Guru Ltd.</p>
+        <FormButton
+          type="button"
+          onClick={handleContinueClick}
+          variant="primary"
+          fullWidth
+          icon={formFilled ? <ArrowRight size={16} /> : null}
+        >
+          {formFilled ? 'Sign in' : 'Continue'}
+        </FormButton>
+      </form>
+      
+      <div className="mt-6">
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-300"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-white text-gray-500">Or</span>
+          </div>
         </div>
-      </ErrorBoundary>
-    </div>
+        
+        <div className="mt-6">
+          <FormButton
+            onClick={onRegister}
+            variant="outline"
+            fullWidth
+          >
+            Create new account
+          </FormButton>
+        </div>
+      </div>
+    </AuthLayout>
   );
 };
 
