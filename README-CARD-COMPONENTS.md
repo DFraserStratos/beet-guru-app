@@ -96,6 +96,8 @@ import { StatusCard } from '../ui/card';
 - `statusConfig`: Configuration for status colors and labels
 - `statusPosition`: Position of status badge ('top-right', 'title-right', 'bottom-right')
 
+> **Note**: When using the StatusCard for location items, consider directly using BaseCard with custom status styling to ensure visual consistency with the existing design.
+
 ### IconCard
 
 Card with icon and content.
@@ -153,6 +155,14 @@ import { Button } from '../ui/Button';
 - Use **IconCard** when you want to include an icon with your card content
 - Use **PageHeaderCard** for the main header at the top of each screen
 
+## Component Customization
+
+For specialized components like LocationCard that require specific styling to match existing designs, consider:
+
+1. Using BaseCard directly and implementing custom styling 
+2. Creating a component-specific implementation that preserves the exact visual details
+3. Combining multiple card components as needed
+
 ## Examples
 
 ### Page Header
@@ -165,16 +175,32 @@ import { Button } from '../ui/Button';
 />
 ```
 
-### Status Card for Location
+### Custom Location Card
 
 ```jsx
-<StatusCard
-  title="North Paddock"
-  description="3.5 hectares"
-  status="draft"
-  statusPosition="title-right"
-  onClick={handleClick}
-/>
+<BaseCard className="p-0 shadow-none">
+  <div className="p-4">
+    <div className="flex items-center justify-between">
+      <div className="flex items-start">
+        <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center mr-3">
+          <MapPin size={20} className="text-green-600" />
+        </div>
+        <div>
+          <div className="flex items-center">
+            <h3 className="text-base font-medium text-gray-800">North Paddock</h3>
+            <span className="ml-2 px-2 py-0.5 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+              Draft
+            </span>
+          </div>
+          <p className="text-sm text-gray-500">3.5 hectares</p>
+        </div>
+      </div>
+      <button className="p-2 rounded-full text-green-600 hover:bg-green-50">
+        <ChevronRight size={20} />
+      </button>
+    </div>
+  </div>
+</BaseCard>
 ```
 
 ### Icon Card for Weather
@@ -197,3 +223,9 @@ import { Button } from '../ui/Button';
 - **Reusability**: Reduces duplicate code and styling
 - **Maintainability**: Makes global style changes easier
 - **Flexibility**: Provides options for different card types while maintaining a consistent look
+
+## Implementation Notes
+
+- Complex UI components with very specific styling requirements (like LocationCard) may need direct implementation rather than composition, to maintain exact visual fidelity
+- Always prioritize visual consistency with existing designs over component abstraction
+- Use the most appropriate card component for each use case, but don't hesitate to go back to basics when needed
