@@ -1,17 +1,54 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useFormContext } from '../components/ui/form/FormContext';
+import { validateForm } from '../components/ui/form/FormValidation';
 
 /**
- * Hook for form handling with validation
+ * Enhanced hook for form handling with validation.
+ * Can work both standalone or with FormProvider context
+ * 
  * @param {Object} initialValues - Initial form values
- * @param {Function} validate - Validation function
+ * @param {Function|Object} validation - Validation function or schema
  * @param {Function} onSubmit - Submit callback
+ * @param {Boolean} useContext - Whether to use FormContext (if available)
  * @returns {Object} Form state and handlers
  */
-const useForm = (initialValues = {}, validate = () => ({}), onSubmit = () => {}) => {
+const useForm = (
+  initialValues = {}, 
+  validation = () => ({}), 
+  onSubmit = () => {},
+  useContext = false
+) => {
+  // Try to use FormContext if useContext is true
+  let formContext;
+  try {
+    formContext = useContext ? useFormContext() : null;
+  } catch (error) {
+    formContext = null;
+  }
+  
+  // If we have form context and useContext is true, use it
+  if (formContext && useContext) {
+    return formContext;
+  }
+  
+  // Otherwise fall back to standalone implementation (backward compatibility)
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Determine if validation is a function or schema
+  const isValidationSchema = typeof validation === 'object';
+  
+  // Convert validation schema to function if needed
+  const validate = isValidationSchema 
+    ? (formValues) => validateForm(formValues, validation)
+    : validation;
+  
+  // Update values if initialValues change
+  useEffect(() => {
+    setValues(initialValues);
+  }, [JSON.stringify(initialValues)]);
   
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -24,7 +61,27 @@ const useForm = (initialValues = {}, validate = () => ({}), onSubmit = () => {})
     
     // Validate field if it's been touched
     if (touched[name]) {
-      const validationErrors = validate({ ...values, [name]: fieldValue });
+      const validationErrors = validate({
+        ...values,
+        [name]: fieldValue
+      });
+      setErrors(validationErrors);
+    }
+  };
+  
+  // Helper method to directly set a field value
+  const setFieldValue = (field, value) => {
+    setValues({
+      ...values,
+      [field]: value
+    });
+    
+    // Validate field if it's been touched
+    if (touched[field]) {
+      const validationErrors = validate({
+        ...values,
+        [field]: value
+      });
       setErrors(validationErrors);
     }
   };
@@ -43,7 +100,7 @@ const useForm = (initialValues = {}, validate = () => ({}), onSubmit = () => {})
   };
   
   const handleSubmit = (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     
     // Mark all fields as touched
     const touchedFields = {};
@@ -59,7 +116,26 @@ const useForm = (initialValues = {}, validate = () => ({}), onSubmit = () => {})
     // If no errors, submit
     if (Object.keys(validationErrors).length === 0) {
       setIsSubmitting(true);
-      onSubmit(values, () => setIsSubmitting(false));
+      
+      try {
+        // Support both promise and callback patterns
+        const result = onSubmit(values);
+        
+        if (result instanceof Promise) {
+          result.finally(() => setIsSubmitting(false));
+        } else {
+          // For backward compatibility with callback pattern
+          const resetSubmitting = () => setIsSubmitting(false);
+          if (typeof result === 'function') {
+            result(resetSubmitting);
+          } else {
+            resetSubmitting();
+          }
+        }
+      } catch (error) {
+        console.error('Form submission error:', error);
+        setIsSubmitting(false);
+      }
     }
   };
   
@@ -70,6 +146,7 @@ const useForm = (initialValues = {}, validate = () => ({}), onSubmit = () => {})
     setIsSubmitting(false);
   };
   
+  // Enhanced interface with extra methods
   return {
     values,
     errors,
@@ -79,7 +156,13 @@ const useForm = (initialValues = {}, validate = () => ({}), onSubmit = () => {})
     handleBlur,
     handleSubmit,
     resetForm,
-    setValues
+    setValues,
+    setFieldValue,
+    validateForm: () => {
+      const validationErrors = validate(values);
+      setErrors(validationErrors);
+      return Object.keys(validationErrors).length === 0;
+    }
   };
 };
 
