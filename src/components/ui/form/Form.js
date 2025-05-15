@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormProvider } from './FormContext';
+import { useFormContext } from './FormContext';
 
 /**
  * Form component that manages state and validation through FormProvider
@@ -18,27 +18,22 @@ const Form = ({
   ...rest
 }) => {
   return (
-    <FormProvider
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={onSubmit}
+    <form
+      id={id}
+      className={className}
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit(initialValues);
+      }}
+      method={method}
+      noValidate={noValidate}
+      {...rest}
     >
-      {({ handleSubmit }) => (
-        <form
-          id={id}
-          className={className}
-          onSubmit={handleSubmit}
-          method={method}
-          noValidate={noValidate}
-          {...rest}
-        >
-          {typeof children === 'function' 
-            ? children({ handleSubmit })
-            : children
-          }
-        </form>
-      )}
-    </FormProvider>
+      {typeof children === 'function' 
+        ? children({ handleSubmit: onSubmit })
+        : children
+      }
+    </form>
   );
 };
 
