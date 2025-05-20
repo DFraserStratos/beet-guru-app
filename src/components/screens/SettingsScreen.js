@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Save, User, MapPin, Lock, ChevronLeft, Building } from 'lucide-react';
+import { logger } from '../../utils/logger';
 import { FormButton, FormField } from '../ui/form';
 import { useForm } from '../../hooks';
 
@@ -42,7 +43,7 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // In a real app, this would save the settings to the backend
-    console.log('Saving settings:', values);
+    logger.info('Saving settings:', values);
     
     // Show success message
     alert('Settings saved successfully!');

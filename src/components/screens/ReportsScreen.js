@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ChevronDown, Filter, X, FileText, Calendar, Leaf, ArrowDownUp, Download } from 'lucide-react';
+import { logger } from '../../utils/logger';
 import AssessmentTable from '../ui/AssessmentTable';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
@@ -54,7 +55,7 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {} }) => {
 
   const applyFilters = () => {
     // In a real app, this would filter the data
-    console.log('Applying filters:', filters);
+    logger.info('Applying filters:', filters);
     // Close the filters panel on mobile
     if (isMobile) {
       setShowFilters(false);
@@ -72,7 +73,7 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {} }) => {
   
   // Handle export action
   const handleExport = () => {
-    console.log('Exporting reports...');
+    logger.info('Exporting reports...');
     // This would trigger the export functionality in a real app
   };
 
@@ -123,13 +124,13 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {} }) => {
       className: 'text-blue-600 hover:text-blue-800' 
     },
     { 
-      label: 'Edit', 
-      onClick: () => console.log('Edit report', report.id), 
+      label: 'Edit',
+      onClick: () => logger.info('Edit report', report.id),
       className: 'text-gray-600 hover:text-gray-800' 
     },
     { 
-      label: report.status === 'sent' ? 'Resend' : 'Send', 
-      onClick: () => console.log('Send report', report.id),
+      label: report.status === 'sent' ? 'Resend' : 'Send',
+      onClick: () => logger.info('Send report', report.id),
       className: 'text-green-600 hover:text-green-800'
     }
   ];
