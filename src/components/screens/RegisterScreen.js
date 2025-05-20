@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { User, Mail, Lock, ArrowLeft, Check } from 'lucide-react';
 import beetGuruWideLogo from '../../BeetGuruWide.png';
 import { FormField, FormButton } from '../ui/form';
+import PageContainer from '../layout/PageContainer';
 
 const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
   const [formData, setFormData] = useState({
@@ -106,7 +107,7 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
   };
   
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <PageContainer className="min-h-screen bg-gray-50 flex flex-col justify-center py-12">
       <div className="flex justify-center">
         <img 
           src={beetGuruWideLogo} 
@@ -251,7 +252,7 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
       <div className="mt-8 text-center text-sm text-gray-500">
         <p>Beet Guru v1.1.0 • © 2025 Beet Guru Ltd.</p>
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

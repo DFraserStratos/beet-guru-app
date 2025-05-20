@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ErrorBoundary from '../utility/ErrorBoundary';
+import PageContainer from '../layout/PageContainer';
 import { 
   StepProgress, 
   CropDetailsStep, 
@@ -124,7 +125,7 @@ const NewAssessmentScreen = ({
   };
   
   return (
-    <div className="max-w-4xl mx-auto">
+    <PageContainer className="max-w-4xl">
       <ErrorBoundary>
         {/* Progress Steps */}
         <StepProgress currentStep={currentStep} />
@@ -177,7 +178,7 @@ const NewAssessmentScreen = ({
           </ErrorBoundary>
         </div>
       </ErrorBoundary>
-    </div>
+    </PageContainer>
   );
 };
 
