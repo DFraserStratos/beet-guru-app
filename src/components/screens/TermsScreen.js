@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { FormButton } from '../ui/form';
+import PageContainer from '../layout/PageContainer';
 
 /**
  * Screen for displaying the Terms & Conditions
@@ -9,7 +10,7 @@ import { FormButton } from '../ui/form';
  */
 const TermsScreen = ({ onNavigate, isMobile = false }) => {
   return (
-    <div className="space-y-6">
+    <PageContainer>
       {/* Header with back button - only shown on mobile */}
       {isMobile && (
         <div className="flex items-center mb-4">
@@ -124,7 +125,7 @@ const TermsScreen = ({ onNavigate, isMobile = false }) => {
           </section>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

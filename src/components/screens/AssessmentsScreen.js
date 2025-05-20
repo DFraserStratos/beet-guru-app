@@ -4,6 +4,7 @@ import LocationCard from '../ui/LocationCard';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
 import { FormButton } from '../ui/form';
+import PageContainer from '../layout/PageContainer';
 
 /**
  * Screen for displaying and managing assessments
@@ -48,7 +49,7 @@ const AssessmentsScreen = ({
   };
 
   return (
-    <div className="space-y-6">
+    <PageContainer>
       {/* Header Section */}
       <div className="bg-white rounded-xl shadow p-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -119,7 +120,7 @@ const AssessmentsScreen = ({
           )}
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 };
 

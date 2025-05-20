@@ -5,6 +5,7 @@ import WeatherWidget from '../ui/WeatherWidget';
 import CultivarInfoWidget from '../ui/CultivarInfoWidget';
 import SeasonalTimeline from '../ui/SeasonalTimeline';
 import { FormButton } from '../ui/form';
+import PageContainer from '../layout/PageContainer';
 
 /**
  * Home screen component with dashboard widgets
@@ -31,7 +32,7 @@ const HomeScreen = ({ onNavigate, isMobile = false, user = { name: 'John Doe' } 
   };
 
   return (
-    <div className="space-y-6">
+    <PageContainer>
       {/* Header Card */}
       <div className="bg-white rounded-xl shadow p-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -217,7 +218,7 @@ const HomeScreen = ({ onNavigate, isMobile = false, user = { name: 'John Doe' } 
           </div>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 };
 
