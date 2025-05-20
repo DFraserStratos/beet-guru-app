@@ -1,4 +1,5 @@
 import { Cloud, CloudRain, Sun, Wind } from 'lucide-react';
+import Card from './Card';
 
 const WeatherWidget = ({ isMobile = false }) => {
   // Static weather data for Oxford, Canterbury
@@ -27,7 +28,7 @@ const WeatherWidget = ({ isMobile = false }) => {
   if (isMobile) {
     // Compact mobile version
     return (
-      <div className="bg-white rounded-lg shadow p-4">
+      <Card>
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-sm font-medium text-gray-500">{weatherData.location}</h3>
@@ -40,13 +41,13 @@ const WeatherWidget = ({ isMobile = false }) => {
             {getWeatherIcon(weatherData.condition)}
           </div>
         </div>
-      </div>
+      </Card>
     );
   }
   
   // Full desktop version with height filling container
   return (
-    <div className="bg-white rounded-lg shadow p-4 h-full flex flex-col">
+    <Card className="h-full flex flex-col">
       <h3 className="font-medium text-gray-800 mb-4">{weatherData.location}</h3>
       
       <div className="flex items-center justify-center mb-4 flex-grow">
@@ -73,7 +74,7 @@ const WeatherWidget = ({ isMobile = false }) => {
           <div>{weatherData.wind}</div>
         </div>
       </div>
-    </div>
+    </Card>
   );
 };
 

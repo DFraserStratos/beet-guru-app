@@ -11,7 +11,7 @@ import { useNavigation } from '../../context/NavigationContext';
 const AboutUsScreen = ({ isMobile = false }) => {
   const { navigate } = useNavigation();
   return (
-    <div className="space-y-6">
+    <PageContainer>
       {/* Header with back button - only shown on mobile */}
       {isMobile && (
         <div className="flex items-center mb-4">
@@ -84,7 +84,7 @@ const AboutUsScreen = ({ isMobile = false }) => {
         <p className="text-gray-500 text-sm">Beet Guru v1.0.0</p>
         <p className="text-xs text-gray-400 mt-1">© 2025 Agricom New Zealand</p>
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

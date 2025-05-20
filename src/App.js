@@ -196,7 +196,7 @@ function App() {
           </ErrorBoundary>
         )}
         
-        <div className="flex-1 overflow-y-auto p-4 pb-16 md:pb-4">
+        <div id="main-content" className="flex-1 overflow-y-auto p-4 pb-16 md:pb-4">
           <ErrorBoundary>
             {activeScreen === 'home' && <HomeScreen isMobile={isMobile} />}
             {activeScreen === 'assessments' && (

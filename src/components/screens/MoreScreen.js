@@ -1,12 +1,13 @@
 import { MapPin, Settings, LogOut, ChevronRight, Calculator, HelpCircle, FileText } from 'lucide-react';
 import { useNavigation } from '../../context/NavigationContext';
 import { useUser } from '../../context/UserContext';
+import PageContainer from '../layout/PageContainer';
 
 const MoreScreen = ({ onLogout }) => {
   const { navigate } = useNavigation();
   const { user } = useUser();
   return (
-    <div className="space-y-4">
+    <PageContainer className="space-y-4">
       {/* User Profile Section */}
       <div className="bg-white rounded-xl shadow p-4">
         <div className="flex items-center mb-4">
@@ -63,7 +64,7 @@ const MoreScreen = ({ onLogout }) => {
         <p className="text-gray-500 text-sm">Beet Guru v1.0.0</p>
         <p className="text-xs text-gray-400 mt-1">© 2025 Beet Guru Ltd.</p>
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

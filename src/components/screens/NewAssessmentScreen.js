@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ErrorBoundary from '../utility/ErrorBoundary';
+import PageContainer from '../layout/PageContainer';
 import { 
   StepProgress, 
   CropDetailsStep, 
@@ -72,21 +73,28 @@ const NewAssessmentScreen = ({
       }));
     }
   }, [prefillLocation, draftAssessment]);
-  
+
+  const scrollToTop = () => {
+    const mainContent = document.getElementById('main-content');
+    if (mainContent) {
+      mainContent.scrollTo({ top: 0 });
+      return;
+    }
+    window.scrollTo({ top: 0 });
+  };
+
   // Navigation between steps
-  const nextStep = () => {
+  const handleNextStep = () => {
     if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
-      // Scroll to top when changing steps
-      window.scrollTo(0, 0);
+      scrollToTop();
     }
   };
-  
-  const prevStep = () => {
+
+  const handlePrevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
-      // Scroll to top when changing steps
-      window.scrollTo(0, 0);
+      scrollToTop();
     }
   };
   
@@ -120,7 +128,7 @@ const NewAssessmentScreen = ({
   };
   
   return (
-    <div className="max-w-4xl mx-auto">
+    <PageContainer className="max-w-4xl">
       <ErrorBoundary>
         {/* Progress Steps */}
         <StepProgress currentStep={currentStep} />
@@ -132,7 +140,7 @@ const NewAssessmentScreen = ({
               <CropDetailsStep
                 formData={formData}
                 onChange={handleFieldChange}
-                onNext={nextStep}
+                onNext={handleNextStep}
                 onCancel={handleCancel}
                 prefillLocation={prefillLocation}
                 isMobile={isMobile}
@@ -143,8 +151,8 @@ const NewAssessmentScreen = ({
               <FieldSetupStep
                 formData={formData}
                 onChange={handleFieldChange}
-                onNext={nextStep}
-                onBack={prevStep}
+                onNext={handleNextStep}
+                onBack={handlePrevStep}
                 onCancel={handleCancel}
                 isMobile={isMobile}
               />
@@ -154,8 +162,8 @@ const NewAssessmentScreen = ({
               <MeasurementsStep
                 formData={formData}
                 onChange={handleFieldChange}
-                onNext={nextStep}
-                onBack={prevStep}
+                onNext={handleNextStep}
+                onBack={handlePrevStep}
                 onCancel={handleCancel}
                 isMobile={isMobile}
               />
@@ -164,7 +172,7 @@ const NewAssessmentScreen = ({
             {currentStep === 4 && (
               <ReviewStep
                 formData={formData}
-                onBack={prevStep}
+                onBack={handlePrevStep}
                 onComplete={handleComplete}
                 onCancel={handleCancel}
                 isMobile={isMobile}
@@ -173,7 +181,7 @@ const NewAssessmentScreen = ({
           </ErrorBoundary>
         </div>
       </ErrorBoundary>
-    </div>
+    </PageContainer>
   );
 };
 

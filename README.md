@@ -81,7 +81,7 @@ src/
 - **SeasonalTimeline.js**: Visual calendar of growing seasons
 - **ReminderWidget.js**: Action items and notifications for users
 - **LocationCard.js**: Displays location with status (Draft/Not Started)
-- **AssessmentTable.js**: Reusable table component for displaying data
+ - **DataTable.js**: Generic table component with optional mobile card layout
 - Form components (FormField, FormButton) for consistent styling
 
 #### Assessment Components
@@ -397,7 +397,7 @@ The app includes a service layer for API calls:
 - Added draft assessment continuation functionality
 - Optimized Reports screen for mobile with card-based layout
 - Added historical reports spanning multiple years
-- Created reusable UI components (LocationCard, AssessmentTable)
+ - Created reusable UI components (LocationCard, DataTable)
 - See [README-ASSESSMENTS-UPDATE.md](./README-ASSESSMENTS-UPDATE.md) for details
 
 ### Logo Implementation (May 2025)
