@@ -6,6 +6,7 @@ import CultivarInfoWidget from '../ui/CultivarInfoWidget';
 import SeasonalTimeline from '../ui/SeasonalTimeline';
 import { FormButton } from '../ui/form';
 import PageHeader from '../ui/PageHeader';
+import Card from '../ui/Card';
 
 /**
  * Home screen component with dashboard widgets
@@ -49,11 +50,8 @@ const HomeScreen = ({ onNavigate, isMobile = false, user = { name: 'John Doe' } 
         title={`Welcome, ${user.name}`}
         subtitle={headerSubtitle}
         actions={(
-          <FormButton
-            variant="primary"
-            icon={<PlusCircle size={16} />}
-            onClick={handleNewAssessment}
-          >
+          <FormButton variant="primary" icon={<PlusCircle size={16} />} onClick={handleNewAssessment}>
+
             {isMobile ? 'New' : 'New Assessment'}
           </FormButton>
         )}
@@ -62,7 +60,7 @@ const HomeScreen = ({ onNavigate, isMobile = false, user = { name: 'John Doe' } 
       {/* Mobile Layout (stacked) */}
       <div className="grid grid-cols-1 md:hidden gap-6">
         {/* Action Items Card */}
-        <div className="bg-white rounded-lg shadow p-4">
+        <Card>
           <h3 className="font-medium text-gray-800 mb-4">Action Items</h3>
           <div className="space-y-3">
             <div className="flex items-center p-4 border-l-4 border-yellow-400 bg-yellow-50 rounded-r-lg">
@@ -104,17 +102,17 @@ const HomeScreen = ({ onNavigate, isMobile = false, user = { name: 'John Doe' } 
               </div>
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Weather Widget - Mobile Version */}
         <WeatherWidget isMobile={true} />
 
         {/* Growing Season Card - Simple Mobile Version */}
-        <div className="bg-white rounded-lg shadow p-4">
+        <Card>
           <h3 className="font-medium text-gray-800 mb-4">Growing Season</h3>
           <SeasonalTimeline isSimplified={true} />
           <p className="text-sm text-gray-500 mt-2">Typical season for fodder beet in Canterbury, NZ</p>
-        </div>
+        </Card>
 
         {/* Cultivar Info - Mobile Version */}
         <CultivarInfoWidget isSimplified={true} />
@@ -126,7 +124,7 @@ const HomeScreen = ({ onNavigate, isMobile = false, user = { name: 'John Doe' } 
           {/* Top Row */}
           <div className="col-span-8">
             {/* Action Items */}
-            <div className="bg-white rounded-lg shadow p-4 h-full">
+            <Card className="h-full">
               <h3 className="font-medium text-gray-800 mb-4">Action Items</h3>
               <div className="space-y-3">
                 <div className="flex items-center p-4 border-l-4 border-yellow-400 bg-yellow-50 rounded-r-lg">
@@ -168,7 +166,7 @@ const HomeScreen = ({ onNavigate, isMobile = false, user = { name: 'John Doe' } 
                   </div>
                 </div>
               </div>
-            </div>
+            </Card>
           </div>
           <div className="col-span-4">
             {/* Weather Widget */}
@@ -182,7 +180,7 @@ const HomeScreen = ({ onNavigate, isMobile = false, user = { name: 'John Doe' } 
           {/* Bottom Row */}
           <div className="col-span-8">
             {/* Growing Season */}
-            <div className="bg-white rounded-lg shadow p-4 h-full">
+            <Card className="h-full">
               <h3 className="font-medium text-gray-800 mb-4">Growing Season</h3>
               
               {/* Seasonal timeline */}
@@ -210,7 +208,7 @@ const HomeScreen = ({ onNavigate, isMobile = false, user = { name: 'John Doe' } 
                   </li>
                 </ul>
               </div>
-            </div>
+            </Card>
           </div>
           <div className="col-span-4">
             {/* Cultivar Info */}
