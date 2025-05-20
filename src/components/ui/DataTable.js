@@ -1,0 +1,143 @@
+import React from 'react';
+
+/**
+ * Generic table component with optional mobile card layout
+ * @param {Object} props - Component props
+ * @param {Array} props.data - Array of row objects
+ * @param {Array} props.columns - Column definitions { key, label, render? }
+ * @param {Function} props.onRowClick - Row click handler
+ * @param {JSX.Element|string} props.emptyMessage - Message or element when no data
+ * @param {boolean} props.mobileCardLayout - Render mobile card layout instead of table
+ * @param {Function} props.renderMobileCard - Custom renderer for mobile card layout
+ * @returns {JSX.Element}
+ */
+const DataTable = ({
+  data = [],
+  columns = [],
+  onRowClick = () => {},
+  emptyMessage = 'No data available',
+  mobileCardLayout = false,
+  renderMobileCard = null
+}) => {
+  if (!data || data.length === 0) {
+    return (
+      <div className="bg-white rounded-xl shadow overflow-hidden">
+        {typeof emptyMessage === 'string' ? (
+          <div className="p-6 text-center text-gray-500">{emptyMessage}</div>
+        ) : (
+          emptyMessage
+        )}
+      </div>
+    );
+  }
+
+  if (mobileCardLayout) {
+    return (
+      <div className="bg-white rounded-xl shadow overflow-hidden">
+        <ul className="divide-y divide-gray-200">
+          {data.map((item, index) => (
+            <li
+              key={item.id || index}
+              className="hover:bg-gray-50"
+              onClick={() => onRowClick(item)}
+            >
+              <div className="p-4">
+                {renderMobileCard ? (
+                  renderMobileCard(item)
+                ) : (
+                  <>
+                    <h3 className="font-medium text-base text-gray-900 line-clamp-1 mb-1">
+                      {item.title || `Item ${index + 1}`}
+                    </h3>
+                    <div className="text-sm text-gray-600 space-y-1 mb-3">
+                      {columns.map((column) => (
+                        <p key={column.key}>
+                          {column.label}: {column.render ? column.render(item) : item[column.key]}
+                        </p>
+                      ))}
+                    </div>
+                    {item.actions?.length > 0 && (
+                      <div className="flex justify-between mt-2">
+                        {item.actions.map((action, idx) => (
+                          <button
+                            key={idx}
+                            className={`text-sm font-medium ${action.className || 'text-blue-600 hover:text-blue-800'}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              action.onClick(item);
+                            }}
+                          >
+                            {action.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
+  const hasActions = data.some((d) => d.actions?.length);
+
+  return (
+    <div className="bg-white rounded-xl shadow overflow-hidden">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+          <tr>
+            {columns.map((column) => (
+              <th
+                key={column.key}
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                {column.label}
+              </th>
+            ))}
+            {hasActions && (
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Actions
+              </th>
+            )}
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {data.map((item, index) => (
+            <tr
+              key={item.id || index}
+              className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
+              onClick={() => onRowClick(item)}
+            >
+              {columns.map((column) => (
+                <td key={`${item.id}-${column.key}`} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {column.render ? column.render(item) : item[column.key]}
+                </td>
+              ))}
+              {hasActions && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex gap-2">
+                  {item.actions?.map((action, actionIndex) => (
+                    <button
+                      key={actionIndex}
+                      className={`text-sm ${action.className || 'text-blue-600 hover:text-blue-800'}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        action.onClick(item);
+                      }}
+                    >
+                      {action.label}
+                    </button>
+                  ))}
+                </td>
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+export default DataTable;
