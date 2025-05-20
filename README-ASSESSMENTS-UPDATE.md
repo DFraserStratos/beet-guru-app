@@ -83,7 +83,7 @@ We've implemented a comprehensive redesign of the assessment form to improve usa
 ### Code Improvements
 - **Created New Components**:
   - `LocationCard.js`: Reusable component for displaying location with status
-  - `AssessmentTable.js`: Reusable table component for displaying tabular data
+  - `DataTable.js`: Generic table component with optional mobile card layout
 - **Updated API**: 
   - Added location status and draft assessment references
   - Added methods to fetch locations with their status
