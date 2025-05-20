@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FormField, FormButton, FormButtonNav } from '../ui/form';
 import { PlusCircle, Trash2, BarChart3, Info } from 'lucide-react';
+import { logger } from '../../utils/logger';
 
 /**
  * Sample area component for measurements
@@ -147,7 +148,7 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
   
   // Handle Save as Draft
   const handleSaveAsDraft = () => {
-    console.log('Saving as draft:', formData);
+    logger.info('Saving as draft:', formData);
     // In a real implementation, this would call an API to save the draft
     alert('Assessment saved as draft successfully!');
   };

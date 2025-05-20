@@ -1,4 +1,5 @@
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
+import { logger } from '../../utils/logger';
 
 const ReminderWidget = ({ onNavigate }) => {
   // Mock reminders data
@@ -25,7 +26,7 @@ const ReminderWidget = ({ onNavigate }) => {
       message: 'Beet harvesting season is approaching',
       action: 'Learn more',
       urgent: false,
-      onActionClick: () => console.log('Open harvesting guide')
+      onActionClick: () => logger.info('Open harvesting guide')
     }
   ];
   

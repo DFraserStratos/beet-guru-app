@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FormField, FormButtonNav } from '../ui/form';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
+import { logger } from '../../utils/logger';
 
 /**
  * First step of assessment creation - crop details
@@ -91,7 +92,7 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel, isMobile }) => 
   
   // Handle Save as Draft
   const handleSaveAsDraft = () => {
-    console.log('Saving as draft:', formData);
+    logger.info('Saving as draft:', formData);
     // In a real implementation, this would call an API to save the draft
     alert('Assessment saved as draft successfully!');
   };

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FormField, FormButtonNav } from '../ui/form';
 import { AlertTriangle, Calculator } from 'lucide-react';
+import { logger } from '../../utils/logger';
 
 /**
  * Second step of assessment creation - field setup
@@ -51,7 +52,7 @@ const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile
   
   // Handle Save as Draft
   const handleSaveAsDraft = () => {
-    console.log('Saving as draft:', formData);
+    logger.info('Saving as draft:', formData);
     // In a real implementation, this would call an API to save the draft
     alert('Assessment saved as draft successfully!');
   };

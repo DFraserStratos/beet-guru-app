@@ -1,5 +1,6 @@
 import React from 'react';
 import { PlusCircle, Info, Clock, AlertCircle } from 'lucide-react';
+import { logger } from '../../utils/logger';
 import WeatherWidget from '../ui/WeatherWidget';
 import CultivarInfoWidget from '../ui/CultivarInfoWidget';
 import SeasonalTimeline from '../ui/SeasonalTimeline';
@@ -21,12 +22,12 @@ const HomeScreen = ({ onNavigate, isMobile = false, user = { name: 'John Doe' } 
 
   const handleSchedule = () => {
     // Logic to schedule a reassessment
-    console.log('Schedule reassessment');
+    logger.info('Schedule reassessment');
   };
 
   const handleLearnMore = () => {
     // Logic to learn more about beet harvesting
-    console.log('Learn more about harvesting');
+    logger.info('Learn more about harvesting');
   };
 
   return (
