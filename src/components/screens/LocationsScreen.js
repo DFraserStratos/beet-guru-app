@@ -91,7 +91,7 @@ const LocationsScreen = ({ isMobile, user }) => {
   };
   
   // Confirm location deletion
-  const confirmDelete = async () => {
+  const handleConfirmDelete = async () => {
     try {
       const result = await deleteLocationApi.execute(locationToDelete?.id);
       if (result && result.success) {
@@ -238,9 +238,9 @@ const LocationsScreen = ({ isMobile, user }) => {
               >
                 Cancel
               </FormButton>
-              <FormButton 
-                variant="danger" 
-                onClick={confirmDelete}
+              <FormButton
+                variant="danger"
+                onClick={handleConfirmDelete}
                 isLoading={deleteLocationApi.loading}
               >
                 Delete

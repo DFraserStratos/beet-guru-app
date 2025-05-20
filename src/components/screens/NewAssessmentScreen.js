@@ -81,14 +81,14 @@ const NewAssessmentScreen = ({
   };
 
   // Navigation between steps
-  const nextStep = () => {
+  const handleNextStep = () => {
     if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
       scrollToTop();
     }
   };
 
-  const prevStep = () => {
+  const handlePrevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
       scrollToTop();
@@ -137,7 +137,7 @@ const NewAssessmentScreen = ({
               <CropDetailsStep
                 formData={formData}
                 onChange={handleFieldChange}
-                onNext={nextStep}
+                onNext={handleNextStep}
                 onCancel={handleCancel}
                 prefillLocation={prefillLocation}
                 isMobile={isMobile}
@@ -148,8 +148,8 @@ const NewAssessmentScreen = ({
               <FieldSetupStep
                 formData={formData}
                 onChange={handleFieldChange}
-                onNext={nextStep}
-                onBack={prevStep}
+                onNext={handleNextStep}
+                onBack={handlePrevStep}
                 onCancel={handleCancel}
                 isMobile={isMobile}
               />
@@ -159,8 +159,8 @@ const NewAssessmentScreen = ({
               <MeasurementsStep
                 formData={formData}
                 onChange={handleFieldChange}
-                onNext={nextStep}
-                onBack={prevStep}
+                onNext={handleNextStep}
+                onBack={handlePrevStep}
                 onCancel={handleCancel}
                 isMobile={isMobile}
               />
@@ -169,7 +169,7 @@ const NewAssessmentScreen = ({
             {currentStep === 4 && (
               <ReviewStep
                 formData={formData}
-                onBack={prevStep}
+                onBack={handlePrevStep}
                 onComplete={handleComplete}
                 onCancel={handleCancel}
                 isMobile={isMobile}
