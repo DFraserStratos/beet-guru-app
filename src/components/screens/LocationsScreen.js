@@ -5,6 +5,7 @@ import { referencesAPI } from '../../services/api';
 import { FormButton } from '../ui/form';
 import LocationForm from './LocationForm';
 import ErrorBoundary from '../utility/ErrorBoundary';
+import { useUser } from '../../context/UserContext';
 
 /**
  * Locations Screen Component
@@ -14,10 +15,10 @@ import ErrorBoundary from '../utility/ErrorBoundary';
  * 
  * @param {Object} props
  * @param {boolean} props.isMobile - Whether the screen is in mobile view
- * @param {Object} props.user - Current user information
  * @returns {JSX.Element}
  */
-const LocationsScreen = ({ isMobile, user }) => {
+const LocationsScreen = ({ isMobile }) => {
+  const { user } = useUser();
   // State for location data
   const [locations, setLocations] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);

@@ -4,18 +4,19 @@ import LocationCard from '../ui/LocationCard';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
 import { FormButton } from '../ui/form';
+import { useNavigation } from '../../context/NavigationContext';
 
 /**
  * Screen for displaying and managing assessments
  * @param {Object} props - Component props 
  * @returns {JSX.Element} Rendered component
  */
-const AssessmentsScreen = ({ 
-  onNavigate, 
+const AssessmentsScreen = ({
   isMobile,
   onStartAssessment = () => {},
   onContinueDraft = () => {}
 }) => {
+  const { navigate } = useNavigation();
   // Use the API hook to fetch locations with their status
   const { 
     data: locations, 
@@ -31,20 +32,20 @@ const AssessmentsScreen = ({
   // Handle starting a new assessment for a location
   const handleStartAssessment = (location) => {
     onStartAssessment(location);
-    onNavigate('new-assessment');
+    navigate('new-assessment');
   };
 
   // Handle continuing a draft assessment
   const handleContinueDraft = (location) => {
     const draftAssessment = location.draftAssessment || null;
     onContinueDraft(location, draftAssessment);
-    onNavigate('new-assessment');
+    navigate('new-assessment');
   };
 
   // Handle clicking the New Assessment button (no pre-selected location)
   const handleNewAssessment = () => {
     onStartAssessment(null);
-    onNavigate('new-assessment');
+    navigate('new-assessment');
   };
 
   return (

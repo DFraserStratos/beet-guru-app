@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useUser } from './context/UserContext';
+import { useNavigation } from './context/NavigationContext';
 import Sidebar from './components/layout/Sidebar';
 import Header from './components/layout/Header';
 import BottomNav from './components/layout/BottomNav';
@@ -19,15 +21,14 @@ import ReportViewerScreen from './components/screens/ReportViewerScreen';
 import AboutUsScreen from './components/screens/AboutUsScreen';
 import TermsScreen from './components/screens/TermsScreen';
 import ErrorBoundary from './components/utility/ErrorBoundary';
-import { useDeviceDetection, useLocalStorage } from './hooks';
+import { useDeviceDetection } from './hooks';
 
 function App() {
   // Use custom hooks for device detection and persisting user session
   const isMobile = useDeviceDetection(768);
-  const [user, setUser] = useLocalStorage('beet-guru-user', null);
-  
-  // App state
-  const [activeScreen, setActiveScreen] = useState('home');
+  const { user, setUser } = useUser();
+  const { activeScreen, navigate } = useNavigation();
+
   const [authScreen, setAuthScreen] = useState('email'); // 'email', 'magic-link-sent', 'magic-link-verify', 'register'
   const isAuthenticated = Boolean(user);
   
@@ -53,28 +54,28 @@ function App() {
       setSelectedReportId(null);
     }
     
-    setActiveScreen(screen);
+    navigate(screen);
   };
   
   const handleStartAssessment = (location) => {
     setSelectedLocation(location);
-    setActiveScreen('new-assessment');
+    navigate('new-assessment');
   };
   
   const handleContinueDraft = (location, assessment) => {
     setSelectedLocation(location);
     setDraftAssessment(assessment);
-    setActiveScreen('new-assessment');
+    navigate('new-assessment');
   };
   
   const handleViewReport = (reportId) => {
     setSelectedReportId(reportId);
-    setActiveScreen('report-viewer');
+    navigate('report-viewer');
   };
   
   const handleLogin = (userData) => {
     setUser(userData);
-    setActiveScreen('home');
+    navigate('home');
   };
   
   const handleLogout = () => {
@@ -182,12 +183,7 @@ function App() {
       {/* Desktop Sidebar - always visible on desktop */}
       <div className={`${isMobile ? 'hidden' : 'block'} h-screen`}>
         <ErrorBoundary>
-          <Sidebar 
-            activeScreen={activeScreen} 
-            handleNavigate={handleNavigate}
-            onLogout={handleLogout}
-            user={user}
-          />
+          <Sidebar onLogout={handleLogout} />
         </ErrorBoundary>
       </div>
       
@@ -196,18 +192,15 @@ function App() {
         {/* Only show header on mobile */}
         {isMobile && (
           <ErrorBoundary>
-            <Header 
-              activeScreen={activeScreen}
-            />
+            <Header />
           </ErrorBoundary>
         )}
         
         <div className="flex-1 overflow-y-auto p-4 pb-16 md:pb-4">
           <ErrorBoundary>
-            {activeScreen === 'home' && <HomeScreen onNavigate={handleNavigate} isMobile={isMobile} user={user} />}
+            {activeScreen === 'home' && <HomeScreen isMobile={isMobile} />}
             {activeScreen === 'assessments' && (
-              <AssessmentsScreen 
-                onNavigate={handleNavigate} 
+              <AssessmentsScreen
                 isMobile={isMobile}
                 onStartAssessment={handleStartAssessment}
                 onContinueDraft={handleContinueDraft}
@@ -215,9 +208,8 @@ function App() {
             )}
             {activeScreen === 'reports' && <ReportsScreen isMobile={isMobile} onViewReport={handleViewReport} />}
             {activeScreen === 'new-assessment' && (
-              <NewAssessmentScreen 
-                isMobile={isMobile} 
-                onNavigate={handleNavigate}
+              <NewAssessmentScreen
+                isMobile={isMobile}
                 onViewReport={handleViewReport}
                 prefillLocation={selectedLocation}
                 draftAssessment={draftAssessment}
@@ -231,21 +223,18 @@ function App() {
               />
             )}
             {activeScreen === 'stockfeed' && <StockFeedScreen isMobile={isMobile} />}
-            {activeScreen === 'more' && <MoreScreen onNavigate={handleNavigate} isMobile={isMobile} onLogout={handleLogout} user={user} />}
-            {activeScreen === 'locations' && <LocationsScreen isMobile={isMobile} user={user} />}
-            {activeScreen === 'settings' && <SettingsScreen isMobile={isMobile} onNavigate={handleNavigate} user={user} />}
-            {activeScreen === 'about-us' && <AboutUsScreen onNavigate={handleNavigate} isMobile={isMobile} />}
-            {activeScreen === 'terms' && <TermsScreen onNavigate={handleNavigate} isMobile={isMobile} />}
+            {activeScreen === 'more' && <MoreScreen isMobile={isMobile} onLogout={handleLogout} />}
+            {activeScreen === 'locations' && <LocationsScreen isMobile={isMobile} />}
+            {activeScreen === 'settings' && <SettingsScreen isMobile={isMobile} />}
+            {activeScreen === 'about-us' && <AboutUsScreen isMobile={isMobile} />}
+            {activeScreen === 'terms' && <TermsScreen isMobile={isMobile} />}
           </ErrorBoundary>
         </div>
         
         {/* Mobile Bottom Navigation */}
         {isMobile && (
           <ErrorBoundary>
-            <BottomNav 
-              activeScreen={activeScreen} 
-              handleNavigate={handleNavigate} 
-            />
+            <BottomNav />
           </ErrorBoundary>
         )}
       </div>

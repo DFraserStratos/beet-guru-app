@@ -1,13 +1,15 @@
 import React from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { FormButton } from '../ui/form';
+import { useNavigation } from '../../context/NavigationContext';
 
 /**
  * Screen for displaying the Terms & Conditions
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const TermsScreen = ({ onNavigate, isMobile = false }) => {
+const TermsScreen = ({ isMobile = false }) => {
+  const { navigate } = useNavigation();
   return (
     <div className="space-y-6">
       {/* Header with back button - only shown on mobile */}
@@ -16,7 +18,7 @@ const TermsScreen = ({ onNavigate, isMobile = false }) => {
           <FormButton
             variant="outline"
             icon={<ArrowLeft size={16} />}
-            onClick={() => onNavigate('more')}
+            onClick={() => navigate('more')}
             size="sm"
           >
             Back

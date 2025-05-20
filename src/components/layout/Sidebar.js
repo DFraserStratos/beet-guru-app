@@ -9,8 +9,12 @@ import {
   HelpCircle
 } from 'lucide-react';
 import beetGuruSquareLogo from '../../BeetGuruSq.png';
+import { useNavigation } from '../../context/NavigationContext';
+import { useUser } from '../../context/UserContext';
 
-const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
+const Sidebar = ({ onLogout }) => {
+  const { activeScreen, navigate } = useNavigation();
+  const { user } = useUser();
   return (
     <div className="w-64 bg-green-800 text-white h-full flex flex-col">
       <div className="p-4 flex items-center justify-between border-b border-green-700">
@@ -31,31 +35,31 @@ const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
             icon={<Home size={20} />} 
             label="Home" 
             isActive={activeScreen === 'home'} 
-            onClick={() => handleNavigate('home')}
+            onClick={() => navigate('home')}
           />
           <SidebarItem 
             icon={<BarChart3 size={20} />} 
             label="Assessments" 
             isActive={activeScreen === 'assessments'} 
-            onClick={() => handleNavigate('assessments')}
+            onClick={() => navigate('assessments')}
           />
           <SidebarItem 
             icon={<FileText size={20} />} 
             label="Reports" 
             isActive={activeScreen === 'reports'} 
-            onClick={() => handleNavigate('reports')}
+            onClick={() => navigate('reports')}
           />
           <SidebarItem 
             icon={<MapPin size={20} />} 
             label="Locations" 
             isActive={activeScreen === 'locations'} 
-            onClick={() => handleNavigate('locations')}
+            onClick={() => navigate('locations')}
           />
           <SidebarItem 
             icon={<Calculator size={20} />} 
             label="Stock Feed" 
             isActive={activeScreen === 'stockfeed'} 
-            onClick={() => handleNavigate('stockfeed')}
+            onClick={() => navigate('stockfeed')}
           />
         </ul>
       </div>
@@ -83,19 +87,19 @@ const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
               icon={<Settings size={20} />} 
               label="Settings" 
               isActive={activeScreen === 'settings'} 
-              onClick={() => handleNavigate('settings')}
+              onClick={() => navigate('settings')}
             />
             <SidebarItem 
               icon={<HelpCircle size={20} />} 
               label="About Us" 
               isActive={activeScreen === 'about-us'} 
-              onClick={() => handleNavigate('about-us')}
+              onClick={() => navigate('about-us')}
             />
             <SidebarItem 
               icon={<FileText size={20} />} 
               label="Terms & Conditions" 
               isActive={activeScreen === 'terms'} 
-              onClick={() => handleNavigate('terms')}
+              onClick={() => navigate('terms')}
             />
             <SidebarItem 
               icon={<LogOut size={20} />} 

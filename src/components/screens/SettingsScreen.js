@@ -3,13 +3,17 @@ import { Save, User, MapPin, Lock, ChevronLeft, Building } from 'lucide-react';
 import { logger } from '../../utils/logger';
 import { FormButton, FormField } from '../ui/form';
 import { useForm } from '../../hooks';
+import { useNavigation } from '../../context/NavigationContext';
+import { useUser } from '../../context/UserContext';
 
 /**
  * Settings screen for managing user and farm information
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const SettingsScreen = ({ isMobile, onNavigate, user }) => {
+const SettingsScreen = ({ isMobile }) => {
+  const { navigate } = useNavigation();
+  const { user } = useUser();
   const [activeSection, setActiveSection] = useState('profile');
   
   // Initialize form with user data and default farm information
@@ -59,7 +63,7 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
           <div className="flex items-center">
             {isMobile && (
               <button
-                onClick={() => onNavigate('more')}
+                onClick={() => navigate('more')}
                 className="mr-2 p-1.5 rounded-full hover:bg-gray-100"
               >
                 <ChevronLeft size={20} className="text-gray-600" />

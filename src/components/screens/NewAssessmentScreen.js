@@ -13,13 +13,16 @@ import {
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const NewAssessmentScreen = ({ 
-  isMobile = false, 
-  onNavigate = () => {},
+import ErrorBoundary from '../utility/ErrorBoundary';
+import { useNavigation } from '../../context/NavigationContext';
+
+const NewAssessmentScreen = ({
+  isMobile = false,
   onViewReport = () => {},
   prefillLocation = null,
-  draftAssessment = null 
+  draftAssessment = null
 }) => {
+  const { navigate } = useNavigation();
   // Get today's date in YYYY-MM-DD format
   const today = new Date().toISOString().split('T')[0];
   
@@ -102,7 +105,7 @@ const NewAssessmentScreen = ({
       // Otherwise, reset form and return to assessments screen
       setFormData({});
       setCurrentStep(1);
-      onNavigate('assessments');
+      navigate('assessments');
     }
   };
   
@@ -112,7 +115,7 @@ const NewAssessmentScreen = ({
     if (window.confirm('Are you sure you want to cancel? Any unsaved changes will be lost.')) {
       setFormData({});
       setCurrentStep(1);
-      onNavigate('assessments');
+      navigate('assessments');
     }
   };
   

@@ -5,19 +5,25 @@ import WeatherWidget from '../ui/WeatherWidget';
 import CultivarInfoWidget from '../ui/CultivarInfoWidget';
 import SeasonalTimeline from '../ui/SeasonalTimeline';
 import { FormButton } from '../ui/form';
+import { useNavigation } from '../../context/NavigationContext';
+import { useUser } from '../../context/UserContext';
 
 /**
  * Home screen component with dashboard widgets
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const HomeScreen = ({ onNavigate, isMobile = false, user = { name: 'John Doe' } }) => {
+const HomeScreen = ({ isMobile = false }) => {
+  const { navigate } = useNavigation();
+  const { user } = useUser();
+  const currentUser = user || { name: 'John Doe' };
+
   const handleNewAssessment = () => {
-    onNavigate('new-assessment');
+    navigate('new-assessment');
   };
 
   const handleCompleteNow = () => {
-    onNavigate('new-assessment');
+    navigate('new-assessment');
   };
 
   const handleSchedule = () => {
@@ -37,7 +43,7 @@ const HomeScreen = ({ onNavigate, isMobile = false, user = { name: 'John Doe' } 
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-800 mb-1">
-              Welcome, {user.name}
+              Welcome, {currentUser.name}
             </h1>
             <p className="text-gray-600 mb-2">
               Beet Guru simplifies estimating beet dry matter yield by calculating an accurate average from fresh weight samples. It provides a clear, reliable yield range, making your farm planning more effective and data-driven.

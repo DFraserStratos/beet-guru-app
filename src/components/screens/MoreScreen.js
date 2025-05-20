@@ -1,6 +1,10 @@
 import { MapPin, Settings, LogOut, ChevronRight, Calculator, HelpCircle, FileText } from 'lucide-react';
+import { useNavigation } from '../../context/NavigationContext';
+import { useUser } from '../../context/UserContext';
 
-const MoreScreen = ({ onNavigate, onLogout, user }) => {
+const MoreScreen = ({ onLogout }) => {
+  const { navigate } = useNavigation();
+  const { user } = useUser();
   return (
     <div className="space-y-4">
       {/* User Profile Section */}
@@ -20,30 +24,30 @@ const MoreScreen = ({ onNavigate, onLogout, user }) => {
       {/* More Menu Options */}
       <div className="bg-white rounded-xl shadow overflow-hidden">
         <ul className="divide-y divide-gray-100">
-          <MenuItem 
+          <MenuItem
             icon={<MapPin size={20} className="text-green-600" />}
             label="Locations"
-            onClick={() => onNavigate('locations')}
+            onClick={() => navigate('locations')}
           />
-          <MenuItem 
+          <MenuItem
             icon={<Calculator size={20} className="text-green-600" />}
             label="Stock Feed Calculator"
-            onClick={() => onNavigate('stockfeed')}
+            onClick={() => navigate('stockfeed')}
           />
-          <MenuItem 
+          <MenuItem
             icon={<Settings size={20} className="text-gray-600" />}
             label="Settings"
-            onClick={() => onNavigate('settings')}
+            onClick={() => navigate('settings')}
           />
-          <MenuItem 
+          <MenuItem
             icon={<HelpCircle size={20} className="text-blue-600" />}
             label="About Us"
-            onClick={() => onNavigate('about-us')}
+            onClick={() => navigate('about-us')}
           />
-          <MenuItem 
+          <MenuItem
             icon={<FileText size={20} className="text-blue-600" />}
             label="Terms & Conditions"
-            onClick={() => onNavigate('terms')}
+            onClick={() => navigate('terms')}
           />
           <MenuItem 
             icon={<LogOut size={20} className="text-red-500" />}

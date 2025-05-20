@@ -1,6 +1,6 @@
 import beetGuruSquareLogo from '../../BeetGuruSq.png';
 
-const Header = ({ activeScreen }) => {
+const Header = () => {
   return (
     <div className="bg-green-800 text-white border-b border-green-700">
       <div className="p-4 flex items-center">

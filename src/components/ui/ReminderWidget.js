@@ -1,7 +1,9 @@
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
 import { logger } from '../../utils/logger';
+import { useNavigation } from '../../context/NavigationContext';
 
-const ReminderWidget = ({ onNavigate }) => {
+const ReminderWidget = () => {
+  const { navigate } = useNavigation();
   // Mock reminders data
   const reminders = [
     {
@@ -10,7 +12,7 @@ const ReminderWidget = ({ onNavigate }) => {
       message: 'North Field assessment is due',
       action: 'Complete now',
       urgent: true,
-      onActionClick: () => onNavigate('new-assessment')
+      onActionClick: () => navigate('new-assessment')
     },
     {
       id: 2,
@@ -18,7 +20,7 @@ const ReminderWidget = ({ onNavigate }) => {
       message: 'It\'s time to reassess West Paddock',
       action: 'Schedule',
       urgent: false,
-      onActionClick: () => onNavigate('assessments')
+      onActionClick: () => navigate('assessments')
     },
     {
       id: 3,

@@ -4,8 +4,10 @@ import {
   FileText,
   MoreHorizontal
 } from 'lucide-react';
+import { useNavigation } from '../../context/NavigationContext';
 
-const BottomNav = ({ activeScreen, handleNavigate }) => {
+const BottomNav = () => {
+  const { activeScreen, navigate } = useNavigation();
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-10">
       <div className="grid grid-cols-4 h-16">
@@ -13,25 +15,25 @@ const BottomNav = ({ activeScreen, handleNavigate }) => {
           icon={<Home size={20} />}
           label="Home"
           isActive={activeScreen === 'home'}
-          onClick={() => handleNavigate('home')}
+          onClick={() => navigate('home')}
         />
         <NavItem
           icon={<BarChart3 size={20} />}
           label="Assessments"
           isActive={activeScreen === 'assessments'}
-          onClick={() => handleNavigate('assessments')}
+          onClick={() => navigate('assessments')}
         />
         <NavItem
           icon={<FileText size={20} />}
           label="Reports"
           isActive={activeScreen === 'reports'}
-          onClick={() => handleNavigate('reports')}
+          onClick={() => navigate('reports')}
         />
         <NavItem
           icon={<MoreHorizontal size={20} />}
           label="More"
           isActive={['more', 'locations', 'settings'].includes(activeScreen)}
-          onClick={() => handleNavigate('more')}
+          onClick={() => navigate('more')}
         />
       </div>
     </div>
