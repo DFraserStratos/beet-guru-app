@@ -69,21 +69,28 @@ const NewAssessmentScreen = ({
       }));
     }
   }, [prefillLocation, draftAssessment]);
-  
+
+  const scrollToTop = () => {
+    const mainContent = document.getElementById('main-content');
+    if (mainContent) {
+      mainContent.scrollTo({ top: 0 });
+      return;
+    }
+    window.scrollTo({ top: 0 });
+  };
+
   // Navigation between steps
   const nextStep = () => {
     if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
-      // Scroll to top when changing steps
-      window.scrollTo(0, 0);
+      scrollToTop();
     }
   };
-  
+
   const prevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
-      // Scroll to top when changing steps
-      window.scrollTo(0, 0);
+      scrollToTop();
     }
   };
   
