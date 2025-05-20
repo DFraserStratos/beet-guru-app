@@ -13,6 +13,7 @@ import { useApi } from '../../hooks';
 import enhancedApi from '../../services/enhancedApi';
 import { FormButton } from '../ui/form';
 import PageContainer from '../layout/PageContainer';
+import ReportViewerSkeleton from '../ui/ReportViewerSkeleton';
 
 /**
  * Detailed report viewer component that displays a single report
@@ -94,11 +95,7 @@ const ReportViewerScreen = ({
 
   // Loading state
   if (loadingReport || loadingAssessment) {
-    return (
-      <div className="bg-white rounded-xl shadow p-6 text-center">
-        <p className="text-gray-500">Loading report...</p>
-      </div>
-    );
+    return <ReportViewerSkeleton />;
   }
 
   // Error state
