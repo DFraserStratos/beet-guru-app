@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { PlusCircle, Calendar } from 'lucide-react';
 import LocationCard from '../ui/LocationCard';
+import LocationCardSkeleton from '../ui/LocationCardSkeleton';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
 import { FormButton } from '../ui/form';
@@ -67,8 +68,12 @@ const AssessmentsScreen = ({
       
       {/* Loading State */}
       {loading && (
-        <div className="bg-white rounded-xl shadow p-6 text-center">
-          <p className="text-gray-500">Loading locations...</p>
+        <div className="bg-white rounded-xl shadow overflow-hidden">
+          <ul className="divide-y divide-gray-200">
+            {[...Array(3)].map((_, index) => (
+              <LocationCardSkeleton key={index} />
+            ))}
+          </ul>
         </div>
       )}
       
