@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { User, Mail, Lock, ArrowLeft, Check } from 'lucide-react';
-import beetGuruWideLogo from '../../BeetGuruWide.png';
+import beetGuruWideLogo from '../../assets/BeetGuruWide.png';
 import { FormField, FormButton } from '../ui/form';
 
 const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {

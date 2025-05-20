@@ -25,11 +25,11 @@ This update implements the new Beet Guru logo throughout the application, replac
 ## Implementation Details
 
 ### Asset Management
-- Logo files are stored in the root of the `src` directory for direct importing
+- Logo files are stored in the `src/assets` directory for direct importing
 - Images are imported using standard React import syntax:
   ```javascript
-  import beetGuruSquareLogo from '../../BeetGuruSq.png';
-  import beetGuruWideLogo from '../../BeetGuruWide.png';
+  import beetGuruSquareLogo from '../../assets/BeetGuruSq.png';
+  import beetGuruWideLogo from '../../assets/BeetGuruWide.png';
   ```
 
 ### Logo Implementation

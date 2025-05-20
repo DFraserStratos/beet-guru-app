@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Mail, ArrowLeft } from 'lucide-react';
 import { FormButton } from '../ui/form';
 import ErrorBoundary from '../utility/ErrorBoundary';
-import beetGuruWideLogo from '../../BeetGuruWide.png';
+import beetGuruWideLogo from '../../assets/BeetGuruWide.png';
 
 /**
  * Screen shown after magic link is sent

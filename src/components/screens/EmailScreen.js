@@ -3,7 +3,7 @@ import { Mail, ArrowRight } from 'lucide-react';
 import { FormField, FormButton } from '../ui/form';
 import { useForm } from '../../hooks';
 import ErrorBoundary from '../utility/ErrorBoundary';
-import beetGuruWideLogo from '../../BeetGuruWide.png';
+import beetGuruWideLogo from '../../assets/BeetGuruWide.png';
 import api from '../../services/api';
 
 /**
