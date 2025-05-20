@@ -3,6 +3,8 @@ import { MapPin, Plus, Edit, Trash } from 'lucide-react';
 import { useApi } from '../../hooks';
 import { referencesAPI } from '../../services/api';
 import { FormButton } from '../ui/form';
+import PageContainer from '../layout/PageContainer';
+import LocationListItemSkeleton from '../ui/LocationListItemSkeleton';
 import LocationForm from './LocationForm';
 import ErrorBoundary from '../utility/ErrorBoundary';
 
@@ -108,7 +110,7 @@ const LocationsScreen = ({ isMobile, user }) => {
   };
   
   return (
-    <div className="space-y-6">
+    <PageContainer>
       {/* Header Section */}
       <div className="bg-white rounded-xl shadow p-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -136,9 +138,11 @@ const LocationsScreen = ({ isMobile, user }) => {
       {/* Locations List */}
       <div className="bg-white rounded-xl shadow overflow-hidden">
         {getLocationsApi.loading ? (
-          <div className="p-8 text-center">
-            <p className="text-gray-500">Loading locations...</p>
-          </div>
+          <ul className="divide-y divide-gray-200">
+            {[...Array(3)].map((_, index) => (
+              <LocationListItemSkeleton key={index} />
+            ))}
+          </ul>
         ) : locations.length === 0 ? (
           <div className="p-8 text-center">
             <MapPin size={48} className="text-gray-300 mx-auto mb-4" />
@@ -245,7 +249,7 @@ const LocationsScreen = ({ isMobile, user }) => {
           </div>
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 };
 

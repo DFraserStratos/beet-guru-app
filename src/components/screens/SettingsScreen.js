@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Save, User, MapPin, Lock, ChevronLeft, Building } from 'lucide-react';
 import { logger } from '../../utils/logger';
 import { FormButton, FormField } from '../ui/form';
+import PageContainer from '../layout/PageContainer';
 import { useForm } from '../../hooks';
 
 /**
@@ -53,8 +54,8 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
   const shouldShowSidebar = !isMobile;
   
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="bg-white rounded-xl shadow p-6 mb-6">
+    <PageContainer>
+      <div className="bg-white rounded-xl shadow p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center">
             {isMobile && (
@@ -377,7 +378,7 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
           </div>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

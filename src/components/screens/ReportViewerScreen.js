@@ -12,6 +12,7 @@ import {
 import { useApi } from '../../hooks';
 import enhancedApi from '../../services/enhancedApi';
 import { FormButton } from '../ui/form';
+import PageContainer from '../layout/PageContainer';
 
 /**
  * Detailed report viewer component that displays a single report
@@ -131,7 +132,7 @@ const ReportViewerScreen = ({
   }
 
   return (
-    <div className="space-y-6">
+    <PageContainer>
       {/* Navigation Header - Standalone buttons, no card */}
       <div className="flex justify-between items-center">
         <FormButton
@@ -422,7 +423,7 @@ const ReportViewerScreen = ({
           </p>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

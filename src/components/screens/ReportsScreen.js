@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { ChevronDown, Filter, X, FileText, Calendar, Leaf, ArrowDownUp, Download } from 'lucide-react';
 import { logger } from '../../utils/logger';
-import AssessmentTable from '../ui/AssessmentTable';
+import DataTable from '../ui/DataTable';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
 import { FormButton } from '../ui/form';
+import PageHeader from '../ui/PageHeader';
+import PageContainer from '../layout/PageContainer';
 
 /**
  * Screen for displaying and managing reports
@@ -143,12 +145,37 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {} }) => {
   
   // Format date for display
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-NZ', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
+    return new Date(dateString).toLocaleDateString('en-NZ', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     });
   };
+
+  const renderReportCard = (report) => (
+    <>
+      <h3 className="font-medium text-base text-gray-900 line-clamp-1 mb-1">
+        {report.title}
+      </h3>
+      <div className="text-sm text-gray-600 space-y-1 mb-3">
+        <p>Date: {formatDate(report.created)}</p>
+        <p>Location: {report.location}</p>
+        <p>Cultivar: {report.cultivar || 'Not specified'}</p>
+        <p>Season: {report.season || 'Not specified'}</p>
+      </div>
+      <div className="flex justify-between mt-2">
+        {report.actions.map((action, index) => (
+          <button
+            key={index}
+            className={`text-sm font-medium ${action.className}`}
+            onClick={action.onClick}
+          >
+            {action.label}
+          </button>
+        ))}
+      </div>
+    </>
+  );
 
   // Empty state content
   const emptyStateContent = (
@@ -166,27 +193,21 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {} }) => {
   const seasons = ['All Seasons', '2024/2025', '2023/2024', '2022/2023'];
 
   return (
-    <div className="space-y-6">
+    <PageContainer>
       {/* Header Section */}
-      <div className="bg-white rounded-xl shadow p-6">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800 mb-1">
-              Reports
-            </h1>
-            <p className="text-gray-600">
-              View and share your assessment reports
-            </p>
-          </div>
-          <FormButton 
-            variant="primary" 
+      <PageHeader
+        title="Reports"
+        subtitle="View and share your assessment reports"
+        actions={(
+          <FormButton
+            variant="primary"
             icon={<Download size={16} />}
             onClick={handleExport}
           >
             {isMobile ? 'Export' : 'Export Reports'}
           </FormButton>
-        </div>
-      </div>
+        )}
+      />
       
       {/* Mobile Filter Toggle */}
       {isMobile && (
@@ -341,59 +362,18 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {} }) => {
         </div>
       )}
       
-      {/* Reports - Desktop Table View or Mobile Card View */}
+      {/* Reports List */}
       {!loading && !error && reports && (
-        <>
-          {isMobile ? (
-            // Mobile Card View
-            <div className="bg-white rounded-xl shadow overflow-hidden">
-              {reportsWithActions.length === 0 ? (
-                emptyStateContent
-              ) : (
-                <ul className="divide-y divide-gray-200">
-                  {reportsWithActions.map((report) => (
-                    <li key={report.id} className="hover:bg-gray-50">
-                      <div className="p-4">
-                        <h3 className="font-medium text-base text-gray-900 line-clamp-1 mb-1">
-                          {report.title}
-                        </h3>
-                        
-                        <div className="text-sm text-gray-600 space-y-1 mb-3">
-                          <p>Date: {formatDate(report.created)}</p>
-                          <p>Location: {report.location}</p>
-                          <p>Cultivar: {report.cultivar || 'Not specified'}</p>
-                          <p>Season: {report.season || 'Not specified'}</p>
-                        </div>
-                        
-                        <div className="flex justify-between mt-2">
-                          {report.actions.map((action, index) => (
-                            <button 
-                              key={index}
-                              className={`text-sm font-medium ${action.className}`}
-                              onClick={action.onClick}
-                            >
-                              {action.label}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ) : (
-            // Desktop Table View
-            <AssessmentTable 
-              data={reportsWithActions}
-              columns={columns}
-              onRowClick={handleRowClick}
-              emptyMessage={emptyStateContent}
-            />
-          )}
-        </>
+        <DataTable
+          data={reportsWithActions}
+          columns={columns}
+          onRowClick={handleRowClick}
+          emptyMessage={emptyStateContent}
+          mobileCardLayout={isMobile}
+          renderMobileCard={renderReportCard}
+        />
       )}
-    </div>
+    </PageContainer>
   );
 };
 
