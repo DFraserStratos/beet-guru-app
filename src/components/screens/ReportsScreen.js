@@ -44,7 +44,7 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {} }) => {
     fetchCompletedAssessments();
   }, [fetchReports, fetchCompletedAssessments]);
   
-  const toggleFilters = () => {
+  const handleToggleFilters = () => {
     setShowFilters(!showFilters);
   };
 
@@ -56,7 +56,7 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {} }) => {
     });
   };
 
-  const applyFilters = () => {
+  const handleApplyFilters = () => {
     // In a real app, this would filter the data
     logger.info('Applying filters:', filters);
     // Close the filters panel on mobile
@@ -65,7 +65,7 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {} }) => {
     }
   };
 
-  const resetFilters = () => {
+  const handleResetFilters = () => {
     setFilters({
       dateRange: 'all',
       cultivar: 'all',
@@ -214,7 +214,7 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {} }) => {
       {isMobile && (
         <button 
           className="w-full bg-white rounded-lg shadow py-3 px-4 text-left flex justify-between items-center" 
-          onClick={toggleFilters}
+          onClick={handleToggleFilters}
         >
           <span className="font-medium text-gray-700 flex items-center">
             <Filter size={16} className="mr-2" /> 
@@ -232,7 +232,7 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {} }) => {
               <h3 className="font-medium">Filters</h3>
               <button 
                 className="text-gray-500" 
-                onClick={toggleFilters}
+                onClick={handleToggleFilters}
               >
                 <X size={18} />
               </button>
@@ -333,14 +333,14 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {} }) => {
               <FormButton 
                 variant="outline" 
                 size="sm"
-                onClick={resetFilters}
+                onClick={handleResetFilters}
               >
                 Reset
               </FormButton>
               <FormButton 
                 variant="primary" 
                 size="sm"
-                onClick={applyFilters}
+                onClick={handleApplyFilters}
               >
                 Apply Filters
               </FormButton>
