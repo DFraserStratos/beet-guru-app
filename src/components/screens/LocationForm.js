@@ -3,6 +3,7 @@ import { X, MapPin, Crosshair } from 'lucide-react';
 import { FormField, FormButton } from '../ui/form';
 import { useForm } from '../../hooks';
 import MapPicker from './MapPicker';
+import PageContainer from '../layout/PageContainer';
 
 /**
  * Location Form Component
@@ -95,7 +96,7 @@ const LocationForm = ({ location, onSubmit, onCancel }) => {
   };
   
   return (
-    <div>
+    <PageContainer>
       {/* Form Header */}
       <div className="flex items-center justify-between bg-green-700 text-white p-4 rounded-t-xl">
         <h2 className="text-lg font-semibold">
@@ -227,7 +228,7 @@ const LocationForm = ({ location, onSubmit, onCancel }) => {
           </div>
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 };
 
