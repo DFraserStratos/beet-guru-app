@@ -3,9 +3,8 @@ import {
   ArrowLeft, 
   Share, 
   Calendar, 
-  MapPin, 
-  Sprout, 
-  FileText, 
+  MapPin,
+  Sprout,
   Calendar as CalendarIcon,
   Check,
   Droplets
