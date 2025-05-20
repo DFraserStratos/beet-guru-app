@@ -371,11 +371,11 @@ const mockData = {
 };
 
 /**
- * Simulate API delay
+ * Simulate API delay. Defaults to 0ms to avoid unnecessary loading states.
  * @param {number} ms - Milliseconds to delay
  * @returns {Promise}
  */
-const delay = (ms = 300) => new Promise(resolve => setTimeout(resolve, ms));
+const delay = (ms = 0) => new Promise(resolve => setTimeout(resolve, ms));
 
 /**
  * Auth API
