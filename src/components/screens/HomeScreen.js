@@ -9,6 +9,7 @@ import PageHeader from '../ui/PageHeader';
 import Card from '../ui/Card';
 import PageContainer from '../layout/PageContainer';
 
+
 /**
  * Home screen component with dashboard widgets
  * @param {Object} props - Component props
