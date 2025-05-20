@@ -34,3 +34,6 @@ Follow these rules when you write code:
 - Use consts instead of functions, for example, “const toggle = () =>”. Also, define a type if possible.
 
 Give the user clear steps for how they should test any given change or pull request.
+Assume the app is running and they're logged in.
+Direct them on which pages they should look at, note if mobile, desktop or both. 
+If relivent, name componants to review.
