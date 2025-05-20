@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { ChevronDown, Filter, X, FileText, Calendar, Leaf, ArrowDownUp, Download } from 'lucide-react';
 import { logger } from '../../utils/logger';
 import DataTable from '../ui/DataTable';
+import ReportsTableSkeleton from '../ui/ReportsTableSkeleton';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
 import { FormButton } from '../ui/form';
@@ -351,9 +352,7 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {} }) => {
       
       {/* Loading State */}
       {(loading || loadingAssessments) && (
-        <div className="bg-white rounded-xl shadow p-6 text-center">
-          <p className="text-gray-500">Loading reports...</p>
-        </div>
+        <ReportsTableSkeleton rows={3} />
       )}
       
       {/* Error State */}
