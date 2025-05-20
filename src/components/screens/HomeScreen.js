@@ -51,6 +51,7 @@ const HomeScreen = ({ onNavigate, isMobile = false, user = { name: 'John Doe' } 
         subtitle={headerSubtitle}
         actions={(
           <FormButton variant="primary" icon={<PlusCircle size={16} />} onClick={handleNewAssessment}>
+
             {isMobile ? 'New' : 'New Assessment'}
           </FormButton>
         )}
