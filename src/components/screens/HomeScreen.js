@@ -7,6 +7,8 @@ import SeasonalTimeline from '../ui/SeasonalTimeline';
 import { FormButton } from '../ui/form';
 import PageHeader from '../ui/PageHeader';
 import Card from '../ui/Card';
+import PageContainer from '../layout/PageContainer';
+
 
 /**
  * Home screen component with dashboard widgets
@@ -44,7 +46,7 @@ const HomeScreen = ({ onNavigate, isMobile = false, user = { name: 'John Doe' } 
   );
 
   return (
-    <div className="space-y-6">
+    <PageContainer>
       {/* Header Card */}
       <PageHeader
         title={`Welcome, ${user.name}`}
@@ -218,7 +220,7 @@ const HomeScreen = ({ onNavigate, isMobile = false, user = { name: 'John Doe' } 
           </div>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

@@ -6,6 +6,8 @@ import api from '../../services/api';
 import { useApi } from '../../hooks';
 import { FormButton } from '../ui/form';
 import PageHeader from '../ui/PageHeader';
+import PageContainer from '../layout/PageContainer';
+
 
 /**
  * Screen for displaying and managing reports
@@ -192,7 +194,7 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {} }) => {
   const seasons = ['All Seasons', '2024/2025', '2023/2024', '2022/2023'];
 
   return (
-    <div className="space-y-6">
+    <PageContainer>
       {/* Header Section */}
       <PageHeader
         title="Reports"
@@ -372,7 +374,7 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {} }) => {
           renderMobileCard={renderReportCard}
         />
       )}
-    </div>
+    </PageContainer>
   );
 };
 

@@ -6,6 +6,8 @@ import api from '../../services/api';
 import { useApi } from '../../hooks';
 import { FormButton } from '../ui/form';
 import PageHeader from '../ui/PageHeader';
+import PageContainer from '../layout/PageContainer';
+
 
 /**
  * Screen for displaying and managing assessments
@@ -50,7 +52,7 @@ const AssessmentsScreen = ({
   };
 
   return (
-    <div className="space-y-6">
+    <PageContainer>
       {/* Header Section */}
       <PageHeader
         title="Assessments"
@@ -119,7 +121,7 @@ const AssessmentsScreen = ({
           )}
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 };
 
