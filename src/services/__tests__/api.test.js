@@ -23,18 +23,16 @@ describe('authAPI', () => {
   });
 
   test('magic link login is single use', async () => {
+    // Use real timers for this async flow
+    jest.useRealTimers();
+
     const result = await authAPI.generateMagicLink('john.doe@example.com');
-    jest.runAllTimers();
     const token = new URL(result.magicLink).searchParams.get('token');
 
-    const first = authAPI.loginWithMagicLink(token);
-    jest.runAllTimers();
-    const user = await first;
+    const user = await authAPI.loginWithMagicLink(token);
     expect(user.email).toBe('john.doe@example.com');
 
-    const second = authAPI.loginWithMagicLink(token);
-    jest.runAllTimers();
-    await expect(second).rejects.toThrow('Invalid or expired token');
+    await expect(authAPI.loginWithMagicLink(token)).rejects.toThrow('Invalid or expired token');
   });
 });
 
