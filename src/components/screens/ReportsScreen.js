@@ -5,6 +5,7 @@ import DataTable from '../ui/DataTable';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
 import { FormButton } from '../ui/form';
+import PageHeader from '../ui/PageHeader';
 
 /**
  * Screen for displaying and managing reports
@@ -193,25 +194,19 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {} }) => {
   return (
     <div className="space-y-6">
       {/* Header Section */}
-      <div className="bg-white rounded-xl shadow p-6">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800 mb-1">
-              Reports
-            </h1>
-            <p className="text-gray-600">
-              View and share your assessment reports
-            </p>
-          </div>
-          <FormButton 
-            variant="primary" 
+      <PageHeader
+        title="Reports"
+        subtitle="View and share your assessment reports"
+        actions={(
+          <FormButton
+            variant="primary"
             icon={<Download size={16} />}
             onClick={handleExport}
           >
             {isMobile ? 'Export' : 'Export Reports'}
           </FormButton>
-        </div>
-      </div>
+        )}
+      />
       
       {/* Mobile Filter Toggle */}
       {isMobile && (

@@ -4,6 +4,7 @@ import LocationCard from '../ui/LocationCard';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
 import { FormButton } from '../ui/form';
+import PageHeader from '../ui/PageHeader';
 
 /**
  * Screen for displaying and managing assessments
@@ -50,25 +51,19 @@ const AssessmentsScreen = ({
   return (
     <div className="space-y-6">
       {/* Header Section */}
-      <div className="bg-white rounded-xl shadow p-6">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800 mb-1">
-              Assessments
-            </h1>
-            <p className="text-gray-600">
-              Manage crop assessments for your locations
-            </p>
-          </div>
-          <FormButton 
-            variant="primary" 
+      <PageHeader
+        title="Assessments"
+        subtitle="Manage crop assessments for your locations"
+        actions={(
+          <FormButton
+            variant="primary"
             icon={<PlusCircle size={16} />}
             onClick={handleNewAssessment}
           >
             {isMobile ? 'New' : 'New Assessment'}
           </FormButton>
-        </div>
-      </div>
+        )}
+      />
       
       {/* Loading State */}
       {loading && (
