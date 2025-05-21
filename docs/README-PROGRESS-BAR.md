@@ -15,7 +15,7 @@ The progress bar component provides a visual indicator of the user's progress th
 
 ## Technical Implementation
 
-The progress bar is built with a combination of CSS Grid for layout, DOM measurements for precise positioning, and React state for dynamic updates.
+The progress bar uses CSS Grid for consistent spacing and a simple percentage calculation for progress. No DOM measurements are required.
 
 ### Key Components
 
@@ -31,17 +31,13 @@ The progress bar is built with a combination of CSS Grid for layout, DOM measure
 
 ### Positioning Logic
 
-The component uses DOM measurements to ensure precise alignment:
+Spacing between dots is handled by CSS Grid. The progress width is calculated from the current step index and the total number of steps:
 
-1. **Track Positioning**:
-   - The track is sized to exactly match the distance between first and last dot centers
-   - It's positioned with margins to align perfectly with dot centers
-   - CSS transform ensures vertical centering
+```
+progress = ((currentStep - 1) / (steps.length - 1)) * 100;
+```
 
-2. **Progress Calculation**:
-   - Progress width is calculated as a percentage of the track width
-   - Based on the position of the current step's dot
-   - Updates dynamically as steps change
+This percentage directly controls the width of the green indicator.
 
 3. **Layering with Z-Index**:
    - Dots (z-index: 20) appear on top of the track
@@ -76,6 +72,6 @@ The component uses DOM measurements to ensure precise alignment:
 
 ## Technical Notes
 
-- Uses `useRef` and `useEffect` for DOM measurements
-- Dynamically calculates positions rather than hardcoded values
+- Relies on CSS Grid and flex utilities for spacing
+- Progress percentage is computed with simple math
 - Maintains visual consistency through all steps and screen sizes
