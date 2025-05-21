@@ -3,6 +3,7 @@ import { User, Lock, ArrowRight } from 'lucide-react';
 import { FormField, FormButton } from '../ui/form';
 import { useForm } from '../../hooks';
 import api from '../../services/api';
+import { getDemoCredentials } from '../../utils/demoData';
 import ErrorBoundary from '../utility/ErrorBoundary';
 import beetGuruWideLogo from '../../BeetGuruWide.png';
 import PageContainer from '../layout/PageContainer';
@@ -48,11 +49,7 @@ const LoginScreen = ({ onLogin, onRegister }) => {
   
   // Fill form with sample data
   const fillFormWithSampleData = () => {
-    setValues({
-      email: 'john.doe@example.com',
-      password: 'password',
-      rememberMe: false
-    });
+    setValues(getDemoCredentials());
     setFormFilled(true);
   };
   
