@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { User, Mail, Lock, ArrowLeft, Check } from 'lucide-react';
 import beetGuruWideLogo from '../../BeetGuruWide.png';
 import { FormField, FormButton } from '../ui/form';
+import { PrimaryButton } from '../ui/buttons';
 
 const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
   const [formData, setFormData] = useState({
@@ -174,30 +175,28 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
                 User Type
               </label>
               <div className="grid grid-cols-2 gap-3">
-                <button
+                <PrimaryButton
                   type="button"
                   onClick={() => handleUserTypeSelect('farmer')}
-                  className={`
-                    flex items-center justify-center px-4 py-2 border rounded-md shadow-sm text-sm font-medium 
-                    ${formData.userType === 'farmer' 
-                      ? 'bg-green-600 text-white border-transparent' 
-                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}
-                  `}
+                  className={
+                    formData.userType === 'farmer'
+                      ? ''
+                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                  }
                 >
                   Farmer
-                </button>
-                <button
+                </PrimaryButton>
+                <PrimaryButton
                   type="button"
                   onClick={() => handleUserTypeSelect('retailer')}
-                  className={`
-                    flex items-center justify-center px-4 py-2 border rounded-md shadow-sm text-sm font-medium 
-                    ${formData.userType === 'retailer' 
-                      ? 'bg-green-600 text-white border-transparent' 
-                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}
-                  `}
+                  className={
+                    formData.userType === 'retailer'
+                      ? ''
+                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                  }
                 >
                   Retailer
-                </button>
+                </PrimaryButton>
               </div>
             </div>
             
