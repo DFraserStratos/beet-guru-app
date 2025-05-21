@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Calculator, Save, AlertTriangle } from 'lucide-react';
 import FeedForecastWidget from '../ui/FeedForecastWidget';
 import { PrimaryButton } from '../ui/buttons';
+import PageContainer from '../layout/PageContainer';
 
 const StockFeedScreen = ({ isMobile }) => {
   const [stockCount, setStockCount] = useState(50);
@@ -17,7 +18,7 @@ const StockFeedScreen = ({ isMobile }) => {
   };
   
   return (
-    <div className="space-y-6">
+    <PageContainer>
       {/* Page Header Card */}
       <div className="bg-white rounded-xl shadow p-6">
         <div className="flex items-center justify-between mb-1">
@@ -127,7 +128,7 @@ const StockFeedScreen = ({ isMobile }) => {
           </PrimaryButton>
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

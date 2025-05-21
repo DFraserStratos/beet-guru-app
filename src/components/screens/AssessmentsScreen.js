@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import { PlusCircle, Calendar } from 'lucide-react';
 import LocationCard from '../ui/LocationCard';
+import LocationCardSkeleton from '../ui/LocationCardSkeleton';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
 import { FormButton } from '../ui/form';
+import PageHeader from '../ui/PageHeader';
+import PageContainer from '../layout/PageContainer';
+
 
 /**
  * Screen for displaying and managing assessments
@@ -48,32 +52,30 @@ const AssessmentsScreen = ({
   };
 
   return (
-    <div className="space-y-6">
+    <PageContainer>
       {/* Header Section */}
-      <div className="bg-white rounded-xl shadow p-6">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800 mb-1">
-              Assessments
-            </h1>
-            <p className="text-gray-600">
-              Manage crop assessments for your locations
-            </p>
-          </div>
-          <FormButton 
-            variant="primary" 
+      <PageHeader
+        title="Assessments"
+        subtitle="Manage crop assessments for your locations"
+        actions={(
+          <FormButton
+            variant="primary"
             icon={<PlusCircle size={16} />}
             onClick={handleNewAssessment}
           >
             {isMobile ? 'New' : 'New Assessment'}
           </FormButton>
-        </div>
-      </div>
+        )}
+      />
       
       {/* Loading State */}
       {loading && (
-        <div className="bg-white rounded-xl shadow p-6 text-center">
-          <p className="text-gray-500">Loading locations...</p>
+        <div className="bg-white rounded-xl shadow overflow-hidden">
+          <ul className="divide-y divide-gray-200">
+            {[...Array(3)].map((_, index) => (
+              <LocationCardSkeleton key={index} />
+            ))}
+          </ul>
         </div>
       )}
       
@@ -119,7 +121,7 @@ const AssessmentsScreen = ({
           )}
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 };
 
