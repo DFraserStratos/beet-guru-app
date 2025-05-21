@@ -32,7 +32,7 @@ const YieldVisualizationDemo = () => {
         (narrower confidence intervals).
       </p>
       
-      <div className="border rounded-lg shadow-sm overflow-hidden">
+      <div className="rounded-lg overflow-hidden">
         <div className="p-4 border-b bg-gray-50">
           <h3 className="font-medium">Yield Analysis</h3>
         </div>
