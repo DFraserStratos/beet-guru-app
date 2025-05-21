@@ -6,6 +6,9 @@ Beet Guru is a modern React application for farmers to manage beet crop assessme
 
 The application follows a mobile-first approach since farmers primarily use it directly in the field on their mobile devices. However, it also has a fully functional desktop interface for office use. The project is currently a front-end mockup with no backend integration.
 
+## Documentation
+Detailed feature update notes are stored in the [docs](./docs) folder. Each README describes a specific improvement.
+
 ## Domain Knowledge: Beet Farming Concepts
 
 To understand the application fully, it's important to know these key concepts:
@@ -174,7 +177,7 @@ The home screen provides a dashboard view with important information for farmers
 - Color-coded notifications with actionable buttons
 - Simplified content for mobile views
 
-See [README-HOME-SCREEN-UPDATE-V3.md](./README-HOME-SCREEN-UPDATE-V3.md) for full details.
+See [README-HOME-SCREEN-UPDATE-V3.md](./docs/README-HOME-SCREEN-UPDATE-V3.md) for full details.
 
 ## Assessment System
 
@@ -202,7 +205,7 @@ The assessment wizard uses a custom StepProgress component that:
 - Includes a progress bar that advances as steps are completed
 - Uses color coding to indicate current, completed, and upcoming steps
 - Maintains precise alignment between dots and the progress track
-- See [README-PROGRESS-BAR.md](./README-PROGRESS-BAR.md) for details
+- See [README-PROGRESS-BAR.md](./docs/README-PROGRESS-BAR.md) for details
 
 ### Field Setup Form
 The Field Setup step provides important tools for measuring crop samples:
@@ -210,7 +213,7 @@ The Field Setup step provides important tools for measuring crop samples:
 - Real-time calculation of sample area based on row spacing and measurement length
 - Input fields for bulb and leaf dry matter estimates
 - Toggle between estimate and actual value types
-- See [README-FIELD-SETUP-FORM.md](./README-FIELD-SETUP-FORM.md) for details
+- See [README-FIELD-SETUP-FORM.md](./docs/README-FIELD-SETUP-FORM.md) for details
 
 ### Sample Measurements Form
 The Measurements step allows farmers to record detailed sample data:
@@ -219,7 +222,7 @@ The Measurements step allows farmers to record detailed sample data:
 - Allows adding multiple samples from different field areas
 - Displays a visual yield preview graph showing leaf, bulb, and total weights
 - Starts with a single sample by default for simplicity
-- See [README-MEASUREMENTS-FORM.md](./README-MEASUREMENTS-FORM.md) for details
+- See [README-MEASUREMENTS-FORM.md](./docs/README-MEASUREMENTS-FORM.md) for details
 
 ## Stock Feed Calculator
 
@@ -371,7 +374,7 @@ The app includes a service layer for API calls:
 - Enhanced widget components with improved h-full support
 - Improved alignment and spacing between all elements
 - Implemented 12-column grid system for precise layout control
-- See [README-HOME-SCREEN-UPDATE-V3.md](./README-HOME-SCREEN-UPDATE-V3.md) for details
+- See [README-HOME-SCREEN-UPDATE-V3.md](./docs/README-HOME-SCREEN-UPDATE-V3.md) for details
 
 ### Measurements Form Updates (May 2025)
 - Redesigned the measurements step to capture leaf weight, bulb weight, and plant count
@@ -379,7 +382,7 @@ The app includes a service layer for API calls:
 - Added ability to add multiple samples for better field coverage
 - Implemented a yield preview graph showing leaf, bulb, and total weights
 - Streamlined the interface by removing unnecessary fields and helper text
-- See [README-MEASUREMENTS-FORM.md](./README-MEASUREMENTS-FORM.md) for details
+- See [README-MEASUREMENTS-FORM.md](./docs/README-MEASUREMENTS-FORM.md) for details
 
 ### Field Setup Form Updates (May 2025)
 - Reorganized the form into distinct sections for Field Measurements and Dry Matter Estimates
@@ -387,7 +390,7 @@ The app includes a service layer for API calls:
 - Added toggle between Estimate and Actual value types for dry matter content
 - Improved form handling to allow clearing and editing all fields
 - Maintained sensible defaults with user-friendly placeholders
-- See [README-FIELD-SETUP-FORM.md](./README-FIELD-SETUP-FORM.md) for details
+- See [README-FIELD-SETUP-FORM.md](./docs/README-FIELD-SETUP-FORM.md) for details
 
 ### Progress Bar Improvements (May 2025)
 - Enhanced the StepProgress component with exact alignment between dots and tracks
@@ -395,7 +398,7 @@ The app includes a service layer for API calls:
 - Implemented dynamic progress calculation based on current step
 - Added proper z-index layering for visual continuity
 - Ensured responsive behavior across all screen sizes
-- See [README-PROGRESS-BAR.md](./README-PROGRESS-BAR.md) for details
+- See [README-PROGRESS-BAR.md](./docs/README-PROGRESS-BAR.md) for details
 
 ### Assessments and Reports Update (May 2025)
 - Split functionality between Assessments (in-progress) and Reports (completed)
@@ -405,14 +408,14 @@ The app includes a service layer for API calls:
 - Optimized Reports screen for mobile with card-based layout
 - Added historical reports spanning multiple years
  - Created reusable UI components (LocationCard, DataTable)
-- See [README-ASSESSMENTS-UPDATE.md](./README-ASSESSMENTS-UPDATE.md) for details
+- See [README-ASSESSMENTS-UPDATE.md](./docs/README-ASSESSMENTS-UPDATE.md) for details
 
 ### Logo Implementation (May 2025)
 - Added official Beet Guru logo in two variants (square and wide)
 - Implemented wide logo on Login and Registration screens
 - Added square logo to Header and Sidebar navigation
 - Maintained consistent styling and branding throughout the app
-- See [README-LOGO-UPDATE.md](./README-LOGO-UPDATE.md) for details
+- See [README-LOGO-UPDATE.md](./docs/README-LOGO-UPDATE.md) for details
 
 ### Code Refactoring (May 2025)
 - Implemented custom hooks for reusable functionality
@@ -421,7 +424,7 @@ The app includes a service layer for API calls:
 - Developed reusable form components
 - Split large components into smaller, focused ones
 - Added comprehensive documentation
-- See [README-REFACTORING.md](./README-REFACTORING.md) for details
+- See [README-REFACTORING.md](./docs/README-REFACTORING.md) for details
 
 ### Home Screen Update (May 2025)
 - Renamed "Dashboard" to "Home" for more intuitive navigation
@@ -432,7 +435,7 @@ The app includes a service layer for API calls:
 - Added non-expandable Cultivar Information widget
 - Added Seasonal Timeline and Weather Widgets
 - Added Reminder Widget for notifications
-- See [README-HOME-SCREEN-UPDATE.md](./README-HOME-SCREEN-UPDATE.md) for details
+- See [README-HOME-SCREEN-UPDATE.md](./docs/README-HOME-SCREEN-UPDATE.md) for details
 
 ### Navigation Fixes (April 2025)
 - Removed header on desktop view
@@ -441,7 +444,7 @@ The app includes a service layer for API calls:
 - Placed app version and copyright on a single line
 - Fixed z-index issues with overlapping elements
 - Improved responsive breakpoints behavior
-- See [README-NAVIGATION-FIXES.md](./README-NAVIGATION-FIXES.md) for details
+- See [README-NAVIGATION-FIXES.md](./docs/README-NAVIGATION-FIXES.md) for details
 
 ## Future Improvements Roadmap
 
