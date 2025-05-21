@@ -26,11 +26,11 @@ const YieldRangeVisualization = ({
   
   return (
     <div className="bg-green-50 rounded-lg p-6" id="yield-visualization">
-      {/* Title */}
+      {/* Header content */}
       <h3 className="text-lg font-medium text-gray-800 mb-2">Yield Estimate</h3>
       
-      {/* Bar Chart Visualization */}
-      <div className="mb-4 pt-4">
+      {/* Chart in white card */}
+      <div className="bg-white rounded-lg p-4 mb-4 shadow-sm">
         {/* Chart container with grid lines */}
         <div className="relative mb-8">
           {/* Grid lines */}
@@ -50,7 +50,7 @@ const YieldRangeVisualization = ({
               <div className="flex-1 relative h-16">
                 {/* Bar for Current */}
                 <div 
-                  className="absolute bg-green-500 top-1/2 transform -translate-y-1/2 h-16"
+                  className="absolute bg-red-500 top-1/2 transform -translate-y-1/2 h-16"
                   style={{
                     width: `${getBarWidth(currentData.mean)}%`,
                     minWidth: '40px',
@@ -70,7 +70,7 @@ const YieldRangeVisualization = ({
               <div className="flex-1 relative h-16">
                 {/* Bar for +5 Samples */}
                 <div 
-                  className="absolute bg-blue-400 top-1/2 transform -translate-y-1/2 h-16"
+                  className="absolute bg-amber-500 top-1/2 transform -translate-y-1/2 h-16"
                   style={{
                     width: `${getBarWidth(additionalData.mean)}%`,
                     minWidth: '40px',
@@ -87,13 +87,9 @@ const YieldRangeVisualization = ({
           
           {/* X-axis labels */}
           <div className="flex justify-between text-xs text-gray-500 mt-4 relative" style={{ marginLeft: '10%', width: '80%' }}>
-            <div className="absolute left-0 -ml-2">0</div>
-            <div className="absolute left-1/6 -ml-2">5</div>
-            <div className="absolute left-2/6 -ml-2">10</div>
-            <div className="absolute left-3/6 -ml-2">15</div>
-            <div className="absolute left-4/6 -ml-2">20</div>
-            <div className="absolute left-5/6 -ml-2">30</div>
-            <div className="absolute right-0 -mr-2">40</div>
+            <div className="absolute left-0 -ml-2">11</div>
+            <div className="absolute left-1/4 -ml-2">17.0</div>
+            <div className="absolute right-0 -mr-2">23</div>
           </div>
           
           {/* X-axis title */}
@@ -104,7 +100,7 @@ const YieldRangeVisualization = ({
       </div>
       
       {/* Statistical Values Display */}
-      <div className="grid grid-cols-2 gap-4 text-sm mt-8">
+      <div className="grid grid-cols-2 gap-4 text-sm mt-2">
         {/* Current Samples Column */}
         <div className="bg-white p-4 rounded">
           <h4 className="font-medium text-green-700 mb-3">Current</h4>
@@ -128,7 +124,7 @@ const YieldRangeVisualization = ({
         
         {/* Additional Samples Column */}
         <div className="bg-white p-4 rounded">
-          <h4 className="font-medium text-blue-600 mb-3">+5 Samples</h4>
+          <h4 className="font-medium text-amber-600 mb-3">+5 Samples</h4>
           <div className="grid grid-cols-2 gap-y-2">
             <div className="text-gray-600">Mean:</div>
             <div className="text-right text-gray-900 font-medium">{formatValue(additionalData.mean)}</div>
