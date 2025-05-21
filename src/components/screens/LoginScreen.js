@@ -5,6 +5,7 @@ import { useForm } from '../../hooks';
 import api from '../../services';
 import ErrorBoundary from '../utility/ErrorBoundary';
 import beetGuruWideLogo from '../../BeetGuruWide.png';
+import PageContainer from '../layout/PageContainer';
 
 /**
  * Login screen component
@@ -85,7 +86,7 @@ const LoginScreen = ({ onLogin, onRegister }) => {
   };
   
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <PageContainer className="min-h-screen bg-gray-50 flex flex-col justify-center py-12">
       <ErrorBoundary>
         <div className="flex justify-center">
           <img 
@@ -181,7 +182,7 @@ const LoginScreen = ({ onLogin, onRegister }) => {
           <p>Beet Guru v1.0.0 • © 2025 Beet Guru Ltd.</p>
         </div>
       </ErrorBoundary>
-    </div>
+    </PageContainer>
   );
 };
 

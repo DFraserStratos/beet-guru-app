@@ -99,9 +99,9 @@ The Beet Guru application now follows a consistent visual language across all ma
 - Simplified the action button to a chevron icon for cleaner visual appearance
 - Maintained all existing functionality while improving visual consistency
 
-### AssessmentTable Component
+### DataTable Component
 - Updated to support JSX in the emptyMessage prop
-- This allows for rich empty state messages with icons and buttons
+- Added optional mobile card layout
 - Maintained table functionality while improving the UI
 
 ### Navigation Components

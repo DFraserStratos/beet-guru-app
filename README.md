@@ -43,6 +43,13 @@ To understand the application fully, it's important to know these key concepts:
 - Error boundaries for improved error handling
 - Reusable form components
 
+### Tailwind Color Palette
+The project defines shared color groups in `tailwind.config.js`:
+- **primary**: Green shades used for main actions (`#16a34a` default, `#4ade80` light, `#15803d` dark)
+- **secondary**: Blue shades for secondary actions (`#1d4ed8` default, `#60a5fa` light, `#1e40af` dark)
+- **accent**: Amber shades for highlights (`#f59e0b` default, `#fcd34d` light, `#b45309` dark)
+Apply these with Tailwind classes such as `bg-primary`, `text-secondary-light`, or `border-accent-dark` for consistent styling.
+
 ## Project Structure
 
 ```
@@ -81,7 +88,7 @@ src/
 - **SeasonalTimeline.js**: Visual calendar of growing seasons
 - **ReminderWidget.js**: Action items and notifications for users
 - **LocationCard.js**: Displays location with status (Draft/Not Started)
-- **AssessmentTable.js**: Reusable table component for displaying data
+ - **DataTable.js**: Generic table component with optional mobile card layout
 - Form components (FormField, FormButton) for consistent styling
 
 #### Assessment Components
@@ -397,7 +404,7 @@ The app includes a service layer for API calls:
 - Added draft assessment continuation functionality
 - Optimized Reports screen for mobile with card-based layout
 - Added historical reports spanning multiple years
-- Created reusable UI components (LocationCard, AssessmentTable)
+ - Created reusable UI components (LocationCard, DataTable)
 - See [README-ASSESSMENTS-UPDATE.md](./README-ASSESSMENTS-UPDATE.md) for details
 
 ### Logo Implementation (May 2025)
