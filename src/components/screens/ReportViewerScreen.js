@@ -327,7 +327,7 @@ const ReportViewerScreen = ({
             </div>
           </div>
           
-          {/* Yield Visualization - Updated to use new component */}
+          {/* Yield Analysis - Updated to use new component */}
           <div className="mt-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Yield Analysis</h2>
             <p className="text-sm text-gray-600 mb-6">
