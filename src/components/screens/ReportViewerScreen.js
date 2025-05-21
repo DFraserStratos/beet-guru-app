@@ -311,47 +311,76 @@ const ReportViewerScreen = ({
           {/* Yield Visualization */}
           <div className="mt-6">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">Yield Visualization</h3>
-            
+
             <div className="bg-white rounded-lg p-6 shadow-sm">
-              <div className="h-64 flex items-center justify-center">
-                <div className="flex space-x-12 items-end h-full w-full max-w-md">
-                  {assessmentData.yieldBreakdown ? (
-                    <>
-                      <div className="flex flex-col items-center">
-                        <div className="bg-green-200 w-20 rounded-t" style={{ height: '30%' }}></div>
-                        <p className="mt-2 text-sm font-medium">Leaf</p>
-                        <p className="text-xs text-gray-500">{assessmentData.yieldBreakdown.leafYield}</p>
-                      </div>
-                      <div className="flex flex-col items-center">
-                        <div className="bg-green-500 w-20 rounded-t" style={{ height: '70%' }}></div>
-                        <p className="mt-2 text-sm font-medium">Bulb</p>
-                        <p className="text-xs text-gray-500">{assessmentData.yieldBreakdown.bulbYield}</p>
-                      </div>
-                      <div className="flex flex-col items-center">
-                        <div className="bg-green-700 w-20 rounded-t" style={{ height: '100%' }}></div>
-                        <p className="mt-2 text-sm font-medium">Total</p>
-                        <p className="text-xs text-gray-500">{assessmentData.yieldBreakdown.totalYield}</p>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="flex flex-col items-center">
-                        <div className="bg-green-200 w-20 rounded-t" style={{ height: '30%' }}></div>
-                        <p className="mt-2 text-sm font-medium">Leaf</p>
-                        <p className="text-xs text-gray-500">6.7 t/ha</p>
-                      </div>
-                      <div className="flex flex-col items-center">
-                        <div className="bg-green-500 w-20 rounded-t" style={{ height: '70%' }}></div>
-                        <p className="mt-2 text-sm font-medium">Bulb</p>
-                        <p className="text-xs text-gray-500">15.7 t/ha</p>
-                      </div>
-                      <div className="flex flex-col items-center">
-                        <div className="bg-green-700 w-20 rounded-t" style={{ height: '100%' }}></div>
-                        <p className="mt-2 text-sm font-medium">Total</p>
-                        <p className="text-xs text-gray-500">{assessmentData.estimatedYield}</p>
-                      </div>
-                    </>
-                  )}
+              <div className="relative h-64 w-full max-w-sm mx-auto">
+                {[-10, -5, 0, 5, 10].map((v) => (
+                  <div
+                    key={v}
+                    className={`absolute inset-x-0 ${v === 0 ? 'border-t-2 border-gray-400' : 'border-t border-gray-200'}`}
+                    style={{ bottom: `${((v + 10) / 20) * 100}%` }}
+                  >
+                    <span className="absolute -left-8 -translate-y-1/2 text-xs text-gray-500">
+                      {v}
+                    </span>
+                  </div>
+                ))}
+
+                {/* Current Band */}
+                <div className="absolute inset-0 flex justify-around items-end px-6">
+                  <div className="flex flex-col items-center w-1/2">
+                    <div className="relative w-8">
+                      <div
+                        className="absolute left-0 right-0 rounded bg-primary/30"
+                        style={{
+                          bottom: `${(( -0.8 + 10) / 20) * 100}%`,
+                          height: `${((2.2 - -0.8) / 20) * 100}%`
+                        }}
+                      ></div>
+                      <div
+                        className="absolute left-1/2 -translate-x-1/2 rounded-full border-2 border-primary-dark bg-white w-3 h-3"
+                        style={{ bottom: `${((0.7 + 10) / 20) * 100}%` }}
+                      ></div>
+                    </div>
+                    <p className="mt-2 text-sm font-medium">Current</p>
+                  </div>
+
+                  {/* Plus 5 Samples Band */}
+                  <div className="flex flex-col items-center w-1/2">
+                    <div className="relative w-6">
+                      <div
+                        className="absolute left-0 right-0 rounded bg-secondary/30"
+                        style={{
+                          bottom: `${((0.2 + 10) / 20) * 100}%`,
+                          height: `${((1.2 - 0.2) / 20) * 100}%`
+                        }}
+                      ></div>
+                      <div
+                        className="absolute left-1/2 -translate-x-1/2 rounded-full border-2 border-secondary-dark bg-white w-3 h-3"
+                        style={{ bottom: `${((0.7 + 10) / 20) * 100}%` }}
+                      ></div>
+                    </div>
+                    <p className="mt-2 text-sm font-medium">+5 Samples</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 grid grid-cols-2 divide-x divide-gray-200 text-sm">
+                <div className="pr-4 text-center space-y-1">
+                  <p className="font-semibold">Current</p>
+                  <p>Mean: 0.7 t DM/ha</p>
+                  <p>Upper: 2.2</p>
+                  <p>Lower: -0.8</p>
+                  <p>Bulb: 0.3</p>
+                  <p>Leaf: 0.4</p>
+                </div>
+                <div className="pl-4 text-center space-y-1">
+                  <p className="font-semibold">+5 Samples</p>
+                  <p>Mean: 0.7 t DM/ha</p>
+                  <p>Upper: 1.2</p>
+                  <p>Lower: 0.2</p>
+                  <p>Bulb: 0.5</p>
+                  <p>Leaf: 0.2</p>
                 </div>
               </div>
             </div>
