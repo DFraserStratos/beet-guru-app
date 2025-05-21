@@ -4,29 +4,31 @@ import { FormButton } from '../ui/form';
 import ErrorBoundary from '../utility/ErrorBoundary';
 import beetGuruWideLogo from '../../BeetGuruWide.png';
 import PageContainer from '../layout/PageContainer';
+import { getInitials } from '../../utils/demoData';
 
 /**
  * Screen shown after magic link verification
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const MagicLinkVerifyScreen = ({ email, onBack, onLogin, onRegister }) => {
+const MagicLinkVerifyScreen = ({ email, persona, onBack, onLogin, onRegister }) => {
   // Handle login demo - immediately login
   const handleLoginDemo = () => {
-    // Simulate existing user login with John Doe data
-    onLogin({ 
+    const selected = persona || { name: 'John Doe', email: email || 'john.doe@example.com', role: 'Farm Manager' };
+    onLogin({
       id: '1',
-      email: email || 'john.doe@example.com', 
-      name: 'John Doe', 
-      role: 'Farm Manager',
-      initials: 'JD'
+      email: selected.email,
+      name: selected.name,
+      role: selected.role,
+      initials: getInitials(selected.name)
     });
   };
   
   // Handle registration demo - immediately go to registration
   const handleRegisterDemo = () => {
     // Redirect to registration form with email pre-filled
-    onRegister(email || 'john.doe@example.com');
+    const selected = persona || { email: email || 'john.doe@example.com', name: 'John Doe' };
+    onRegister(selected.email);
   };
   
   return (

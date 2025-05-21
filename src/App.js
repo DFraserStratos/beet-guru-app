@@ -20,6 +20,7 @@ import AboutUsScreen from './components/screens/AboutUsScreen';
 import TermsScreen from './components/screens/TermsScreen';
 import ErrorBoundary from './components/utility/ErrorBoundary';
 import { useDeviceDetection, useLocalStorage } from './hooks';
+import { getRandomDemoPersona } from './utils/demoData';
 
 function App() {
   // Use custom hooks for device detection and persisting user session
@@ -33,6 +34,7 @@ function App() {
   
   // Magic link authentication data
   const [currentEmail, setCurrentEmail] = useState('');
+  const [selectedPersona, setSelectedPersona] = useState(null);
   
   // Add state for selected location or draft assessment
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -81,6 +83,7 @@ function App() {
     setUser(null);
     setAuthScreen('email');
     setCurrentEmail('');
+    setSelectedPersona(null);
   };
   
   // Magic link authentication handlers
@@ -94,6 +97,7 @@ function App() {
   
   const handleBackToEmail = () => {
     setAuthScreen('email');
+    setSelectedPersona(null);
   };
   
   const handleVerifyMagicLink = () => {
@@ -113,8 +117,10 @@ function App() {
       case 'email':
         return (
           <ErrorBoundary>
-            <EmailScreen 
-              onEmailSubmit={handleEmailSubmit} 
+            <EmailScreen
+              persona={selectedPersona}
+              onPersonaSelect={setSelectedPersona}
+              onEmailSubmit={handleEmailSubmit}
               onKnownUser={handleEmailContinue}
               onNewUser={handleRegisterClick}
             />
@@ -135,8 +141,9 @@ function App() {
       case 'magic-link-verify':
         return (
           <ErrorBoundary>
-            <MagicLinkVerifyScreen 
+            <MagicLinkVerifyScreen
               email={currentEmail}
+              persona={selectedPersona}
               onBack={handleBackToEmail}
               onLogin={handleLogin}
               onRegister={handleRegisterClick}
@@ -147,10 +154,11 @@ function App() {
       case 'register':
         return (
           <ErrorBoundary>
-            <RegisterScreen 
-              onBack={handleBackToEmail} 
+            <RegisterScreen
+              onBack={handleBackToEmail}
               onComplete={handleLogin}
               prefillEmail={currentEmail}
+              persona={selectedPersona}
             />
           </ErrorBoundary>
         );
@@ -159,15 +167,21 @@ function App() {
       case 'login':
         return (
           <ErrorBoundary>
-            <LoginScreen onLogin={handleLogin} onRegister={() => setAuthScreen('register')} />
+            <LoginScreen
+              onLogin={handleLogin}
+              onRegister={() => setAuthScreen('register')}
+              persona={selectedPersona || getRandomDemoPersona()}
+            />
           </ErrorBoundary>
         );
       
       default:
         return (
           <ErrorBoundary>
-            <EmailScreen 
-              onEmailSubmit={handleEmailSubmit} 
+            <EmailScreen
+              persona={selectedPersona}
+              onPersonaSelect={setSelectedPersona}
+              onEmailSubmit={handleEmailSubmit}
               onKnownUser={handleEmailContinue}
               onNewUser={handleRegisterClick}
             />

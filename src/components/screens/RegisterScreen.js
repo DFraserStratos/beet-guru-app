@@ -5,8 +5,13 @@ import { FormField, FormButton } from '../ui/form';
 import { PrimaryButton } from '../ui/buttons';
 import PageContainer from '../layout/PageContainer';
 import { cn } from '../../utils/cn';
+import {
+  getDemoRegistrationData,
+  getRandomDemoPersona,
+  getInitials
+} from '../../utils/demoData';
 
-const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
+const RegisterScreen = ({ onBack, onComplete, prefillEmail = '', persona }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: prefillEmail || '',
@@ -52,15 +57,8 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
     cn(formData.userType !== type && userTypeUnselectedClass);
   
   const fillFormWithSampleData = () => {
-    setFormData({
-      name: 'Donald',
-      email: prefillEmail || 'donald@stp.co.nz',
-      password: 'password',
-      confirmPassword: 'password',
-      userType: 'farmer',
-      subscribeToNews: true,
-      agreeToTerms: true
-    });
+    const selected = persona || getRandomDemoPersona();
+    setFormData(getDemoRegistrationData(selected, prefillEmail));
     setFormFilled(true);
   };
   
@@ -74,11 +72,11 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
     }
     
     // Second click: Complete registration
-    onComplete({ 
+    onComplete({
       email: formData.email,
       name: formData.name,
       role: formData.userType === 'farmer' ? 'Farm Manager' : 'Retail Consultant',
-      initials: formData.name ? formData.name.split(' ').map(n => n && n[0]).join('') : 'D'
+      initials: getInitials(formData.name)
     });
   };
   
@@ -89,11 +87,11 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
       fillFormWithSampleData();
     } else {
       // Handle the second click (complete registration)
-      onComplete({ 
+      onComplete({
         email: formData.email,
         name: formData.name,
         role: formData.userType === 'farmer' ? 'Farm Manager' : 'Retail Consultant',
-        initials: formData.name ? formData.name.split(' ').map(n => n && n[0]).join('') : 'D'
+        initials: getInitials(formData.name)
       });
     }
   };
