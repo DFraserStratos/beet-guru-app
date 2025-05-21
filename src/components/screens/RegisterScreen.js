@@ -2,6 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { User, Mail, Lock, ArrowLeft, Check } from 'lucide-react';
 import beetGuruWideLogo from '../../BeetGuruWide.png';
 import { FormField, FormButton } from '../ui/form';
+import { PrimaryButton } from '../ui/buttons';
+import PageContainer from '../layout/PageContainer';
+import { cn } from '../../utils/cn';
 
 const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
   const [formData, setFormData] = useState({
@@ -42,6 +45,11 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
   const handleUserTypeSelect = (type) => {
     setFormData(prev => ({ ...prev, userType: type }));
   };
+
+  const userTypeUnselectedClass =
+    'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50';
+  const getUserTypeButtonClasses = (type) =>
+    cn(formData.userType !== type && userTypeUnselectedClass);
   
   const fillFormWithSampleData = () => {
     setFormData({
@@ -106,7 +114,7 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
   };
   
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <PageContainer className="min-h-screen bg-gray-50 flex flex-col justify-center py-12">
       <div className="flex justify-center">
         <img 
           src={beetGuruWideLogo} 
@@ -174,30 +182,20 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
                 User Type
               </label>
               <div className="grid grid-cols-2 gap-3">
-                <button
+                <PrimaryButton
                   type="button"
                   onClick={() => handleUserTypeSelect('farmer')}
-                  className={`
-                    flex items-center justify-center px-4 py-2 border rounded-md shadow-sm text-sm font-medium 
-                    ${formData.userType === 'farmer' 
-                      ? 'bg-green-600 text-white border-transparent' 
-                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}
-                  `}
+                  className={getUserTypeButtonClasses('farmer')}
                 >
                   Farmer
-                </button>
-                <button
+                </PrimaryButton>
+                <PrimaryButton
                   type="button"
                   onClick={() => handleUserTypeSelect('retailer')}
-                  className={`
-                    flex items-center justify-center px-4 py-2 border rounded-md shadow-sm text-sm font-medium 
-                    ${formData.userType === 'retailer' 
-                      ? 'bg-green-600 text-white border-transparent' 
-                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}
-                  `}
+                  className={getUserTypeButtonClasses('retailer')}
                 >
                   Retailer
-                </button>
+                </PrimaryButton>
               </div>
             </div>
             
@@ -251,7 +249,7 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
       <div className="mt-8 text-center text-sm text-gray-500">
         <p>Beet Guru v1.1.0 • © 2025 Beet Guru Ltd.</p>
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { FormButton } from '../ui/form';
+import PageContainer from '../layout/PageContainer';
 
 /**
  * Screen for displaying the About Us information
@@ -9,7 +10,7 @@ import { FormButton } from '../ui/form';
  */
 const AboutUsScreen = ({ onNavigate, isMobile = false }) => {
   return (
-    <div className="space-y-6">
+    <PageContainer>
       {/* Header with back button - only shown on mobile */}
       {isMobile && (
         <div className="flex items-center mb-4">
@@ -82,7 +83,7 @@ const AboutUsScreen = ({ onNavigate, isMobile = false }) => {
         <p className="text-gray-500 text-sm">Beet Guru v1.0.0</p>
         <p className="text-xs text-gray-400 mt-1">© 2025 Agricom New Zealand</p>
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, Check } from 'lucide-react';
 import { FormButton } from '../ui/form';
+import PageContainer from '../layout/PageContainer';
 
 /**
  * Map Picker Component
@@ -56,7 +57,7 @@ const MapPicker = ({ initialLatitude, initialLongitude, onSelect }) => {
   };
   
   return (
-    <div className="space-y-4">
+    <PageContainer className="space-y-4">
       {/* Mock Map Display */}
       <div 
         className="relative w-full h-64 md:h-80 rounded-lg overflow-hidden bg-gray-100 cursor-crosshair" 
@@ -111,7 +112,7 @@ const MapPicker = ({ initialLatitude, initialLongitude, onSelect }) => {
           Confirm Location
         </FormButton>
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

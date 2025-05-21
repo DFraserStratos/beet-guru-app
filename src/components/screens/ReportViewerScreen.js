@@ -10,6 +10,8 @@ import FieldMeasurements from './FieldMeasurements';
 import ResultsSection from './ResultsSection';
 import RecommendationsSection from './RecommendationsSection';
 import NotesSection from './NotesSection';
+import PageContainer from '../layout/PageContainer';
+import ReportViewerSkeleton from '../ui/ReportViewerSkeleton';
 
 /**
  * Detailed report viewer component that displays a single report
@@ -91,11 +93,7 @@ const ReportViewerScreen = ({
 
   // Loading state
   if (loadingReport || loadingAssessment) {
-    return (
-      <div className="bg-white rounded-xl shadow p-6 text-center">
-        <p className="text-gray-500">Loading report...</p>
-      </div>
-    );
+    return <ReportViewerSkeleton />;
   }
 
   // Error state
@@ -129,7 +127,7 @@ const ReportViewerScreen = ({
   }
 
   return (
-    <div className="space-y-6">
+    <PageContainer>
       {/* Navigation Header - Standalone buttons, no card */}
       <div className="flex justify-between items-center">
         <FormButton
@@ -163,7 +161,7 @@ const ReportViewerScreen = ({
         <RecommendationsSection recommendations={assessmentData.recommendations} />
         <NotesSection data={assessmentData} formatDate={formatDate} />
       </div>
-    </div>
+    </PageContainer>
   );
 };
 

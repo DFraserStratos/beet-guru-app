@@ -251,17 +251,20 @@ If you're a developer working on this project, here are the key things to know:
    - `<FormField>` for all form inputs
    - `<FormButton>` for buttons with consistent styling
 
-3. **Follow the component composition pattern**:
+3. **Use the Card component**:
+   - Wrap content with `<Card>` for the common white container style
+
+4. **Follow the component composition pattern**:
    - Break large components into smaller, focused ones
    - Group related components in dedicated directories
    - Use index.js files for clean exports
 
-4. **Wrap key components with error boundaries**:
+5. **Wrap key components with error boundaries**:
    - Use at the top level of screens
    - Use for critical functionality that shouldn't crash the app
    - Consider custom fallbacks for specific components
 
-5. **Use the API service for data fetching**:
+6. **Use the API service for data fetching**:
    - Import from `src/services/api.js`
    - Pair with `useApi` hook for loading/error states
    - Follow the established patterns for new endpoints

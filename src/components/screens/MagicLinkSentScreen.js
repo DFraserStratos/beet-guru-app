@@ -3,6 +3,7 @@ import { Mail, ArrowLeft } from 'lucide-react';
 import { FormButton } from '../ui/form';
 import ErrorBoundary from '../utility/ErrorBoundary';
 import beetGuruWideLogo from '../../BeetGuruWide.png';
+import PageContainer from '../layout/PageContainer';
 
 /**
  * Screen shown after magic link is sent
@@ -17,7 +18,7 @@ const MagicLinkSentScreen = ({ email, onBack, onVerify }) => {
   };
   
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <PageContainer className="min-h-screen bg-gray-50 flex flex-col justify-center py-12">
       <ErrorBoundary>
         <div className="flex justify-center">
           <img 
@@ -83,7 +84,7 @@ const MagicLinkSentScreen = ({ email, onBack, onVerify }) => {
           <p>Beet Guru v1.1.0 • © 2025 Beet Guru Ltd.</p>
         </div>
       </ErrorBoundary>
-    </div>
+    </PageContainer>
   );
 };
 
