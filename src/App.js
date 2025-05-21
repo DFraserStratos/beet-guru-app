@@ -20,6 +20,7 @@ import AboutUsScreen from './components/screens/AboutUsScreen';
 import TermsScreen from './components/screens/TermsScreen';
 import ErrorBoundary from './components/utility/ErrorBoundary';
 import { useDeviceDetection, useLocalStorage } from './hooks';
+import YieldVisualizationDemo from './components/demos/YieldVisualizationDemo';
 
 function App() {
   // Use custom hooks for device detection and persisting user session
@@ -236,6 +237,7 @@ function App() {
             {activeScreen === 'settings' && <SettingsScreen isMobile={isMobile} onNavigate={handleNavigate} user={user} />}
             {activeScreen === 'about-us' && <AboutUsScreen onNavigate={handleNavigate} isMobile={isMobile} />}
             {activeScreen === 'terms' && <TermsScreen onNavigate={handleNavigate} isMobile={isMobile} />}
+            {activeScreen === 'yield-demo' && <YieldVisualizationDemo />}
           </ErrorBoundary>
         </div>
         
