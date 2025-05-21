@@ -4,6 +4,7 @@ import beetGuruWideLogo from '../../BeetGuruWide.png';
 import { FormField, FormButton } from '../ui/form';
 import { PrimaryButton } from '../ui/buttons';
 import PageContainer from '../layout/PageContainer';
+import { cn } from '../../utils/cn';
 
 const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
   const [formData, setFormData] = useState({
@@ -44,6 +45,11 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
   const handleUserTypeSelect = (type) => {
     setFormData(prev => ({ ...prev, userType: type }));
   };
+
+  const userTypeUnselectedClass =
+    'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50';
+  const getUserTypeButtonClasses = (type) =>
+    cn(formData.userType !== type && userTypeUnselectedClass);
   
   const fillFormWithSampleData = () => {
     setFormData({
@@ -179,22 +185,14 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
                 <PrimaryButton
                   type="button"
                   onClick={() => handleUserTypeSelect('farmer')}
-                  className={
-                    formData.userType === 'farmer'
-                      ? ''
-                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                  }
+                  className={getUserTypeButtonClasses('farmer')}
                 >
                   Farmer
                 </PrimaryButton>
                 <PrimaryButton
                   type="button"
                   onClick={() => handleUserTypeSelect('retailer')}
-                  className={
-                    formData.userType === 'retailer'
-                      ? ''
-                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                  }
+                  className={getUserTypeButtonClasses('retailer')}
                 >
                   Retailer
                 </PrimaryButton>
