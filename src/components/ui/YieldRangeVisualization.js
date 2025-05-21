@@ -29,10 +29,10 @@ const YieldRangeVisualization = ({
       {/* Header content */}
       <h3 className="text-lg font-medium text-gray-800 mb-2">Yield Estimate</h3>
       
-      {/* Chart in white card */}
-      <div className="bg-white rounded-lg p-6 mb-4 shadow-sm">
+      {/* Chart in white card - now containing both chart and data blocks */}
+      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         {/* Chart container with grid lines */}
-        <div className="relative mb-12">
+        <div className="relative p-6 pb-8">
           {/* Grid lines */}
           <div className="absolute inset-0 grid grid-cols-6 w-full h-full" aria-hidden="true">
             <div className="border-l border-gray-200 h-full"></div>
@@ -43,7 +43,7 @@ const YieldRangeVisualization = ({
             <div className="border-l border-gray-200 h-full"></div>
           </div>
           
-          <div className="flex flex-col gap-16 mb-2 relative">
+          <div className="flex flex-col gap-16 mb-8 relative pt-4">
             {/* Current Sample Bar */}
             <div className="flex items-center">
               <div className="w-24 text-sm font-medium text-gray-700 text-right pr-4">Current</div>
@@ -86,7 +86,7 @@ const YieldRangeVisualization = ({
           </div>
           
           {/* X-axis labels */}
-          <div className="flex justify-between text-xs text-gray-500 mt-4">
+          <div className="flex justify-between text-xs text-gray-500 mt-2">
             <div className="text-left">11</div>
             <div className="text-center">17.0</div>
             <div className="text-right">23</div>
@@ -97,49 +97,49 @@ const YieldRangeVisualization = ({
             Total yield (t DM/ha)
           </div>
         </div>
-      </div>
-      
-      {/* Statistical Values Display */}
-      <div className="grid grid-cols-2 gap-4 text-sm mt-2">
-        {/* Current Samples Column */}
-        <div className="bg-gray-100 p-4 rounded-lg">
-          <h4 className="font-medium text-green-700 mb-3">Current</h4>
-          <div className="grid grid-cols-2 gap-y-2">
-            <div className="text-gray-600">Mean:</div>
-            <div className="text-right text-gray-900 font-medium">{formatValue(currentData.mean)}</div>
-            
-            <div className="text-gray-600">Upper Limit:</div>
-            <div className="text-right text-gray-900">{formatValue(currentData.upperLimit)}</div>
-            
-            <div className="text-gray-600">Lower Limit:</div>
-            <div className="text-right text-gray-900">{formatValue(currentData.lowerLimit)}</div>
-            
-            <div className="text-gray-600">Bulb Yield:</div>
-            <div className="text-right text-gray-900">{formatValue(currentData.bulbYield)}</div>
-            
-            <div className="text-gray-600">Leaf Yield:</div>
-            <div className="text-right text-gray-900">{formatValue(currentData.leafYield)}</div>
-          </div>
-        </div>
         
-        {/* Additional Samples Column */}
-        <div className="bg-gray-100 p-4 rounded-lg">
-          <h4 className="font-medium text-amber-600 mb-3">+5 Samples</h4>
-          <div className="grid grid-cols-2 gap-y-2">
-            <div className="text-gray-600">Mean:</div>
-            <div className="text-right text-gray-900 font-medium">{formatValue(additionalData.mean)}</div>
-            
-            <div className="text-gray-600">Upper Limit:</div>
-            <div className="text-right text-gray-900">{formatValue(additionalData.upperLimit)}</div>
-            
-            <div className="text-gray-600">Lower Limit:</div>
-            <div className="text-right text-gray-900">{formatValue(additionalData.lowerLimit)}</div>
-            
-            <div className="text-gray-600">Bulb Yield:</div>
-            <div className="text-right text-gray-900">{formatValue(additionalData.bulbYield)}</div>
-            
-            <div className="text-gray-600">Leaf Yield:</div>
-            <div className="text-right text-gray-900">{formatValue(additionalData.leafYield)}</div>
+        {/* Statistical Values Display - Now inside the white card */}
+        <div className="grid grid-cols-2 gap-4 p-6 pt-0">
+          {/* Current Samples Column */}
+          <div className="bg-gray-100 p-4 rounded-lg">
+            <h4 className="font-medium text-green-700 mb-3">Current</h4>
+            <div className="grid grid-cols-2 gap-y-2">
+              <div className="text-gray-600">Mean:</div>
+              <div className="text-right text-gray-900 font-medium">{formatValue(currentData.mean)}</div>
+              
+              <div className="text-gray-600">Upper Limit:</div>
+              <div className="text-right text-gray-900">{formatValue(currentData.upperLimit)}</div>
+              
+              <div className="text-gray-600">Lower Limit:</div>
+              <div className="text-right text-gray-900">{formatValue(currentData.lowerLimit)}</div>
+              
+              <div className="text-gray-600">Bulb Yield:</div>
+              <div className="text-right text-gray-900">{formatValue(currentData.bulbYield)}</div>
+              
+              <div className="text-gray-600">Leaf Yield:</div>
+              <div className="text-right text-gray-900">{formatValue(currentData.leafYield)}</div>
+            </div>
+          </div>
+          
+          {/* Additional Samples Column */}
+          <div className="bg-gray-100 p-4 rounded-lg">
+            <h4 className="font-medium text-amber-600 mb-3">+5 Samples</h4>
+            <div className="grid grid-cols-2 gap-y-2">
+              <div className="text-gray-600">Mean:</div>
+              <div className="text-right text-gray-900 font-medium">{formatValue(additionalData.mean)}</div>
+              
+              <div className="text-gray-600">Upper Limit:</div>
+              <div className="text-right text-gray-900">{formatValue(additionalData.upperLimit)}</div>
+              
+              <div className="text-gray-600">Lower Limit:</div>
+              <div className="text-right text-gray-900">{formatValue(additionalData.lowerLimit)}</div>
+              
+              <div className="text-gray-600">Bulb Yield:</div>
+              <div className="text-right text-gray-900">{formatValue(additionalData.bulbYield)}</div>
+              
+              <div className="text-gray-600">Leaf Yield:</div>
+              <div className="text-right text-gray-900">{formatValue(additionalData.leafYield)}</div>
+            </div>
           </div>
         </div>
       </div>
