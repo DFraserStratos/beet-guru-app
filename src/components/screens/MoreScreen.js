@@ -1,4 +1,4 @@
-import { MapPin, Settings, LogOut, ChevronRight, Calculator, HelpCircle, FileText } from 'lucide-react';
+import { MapPin, Settings, LogOut, ChevronRight, Calculator, HelpCircle, FileText, BarChart3 } from 'lucide-react';
 import PageContainer from '../layout/PageContainer';
 
 const MoreScreen = ({ onNavigate, onLogout, user }) => {
@@ -30,6 +30,11 @@ const MoreScreen = ({ onNavigate, onLogout, user }) => {
             icon={<Calculator size={20} className="text-green-600" />}
             label="Stock Feed Calculator"
             onClick={() => onNavigate('stockfeed')}
+          />
+          <MenuItem 
+            icon={<BarChart3 size={20} className="text-amber-500" />}
+            label="Yield Visualization Demo"
+            onClick={() => onNavigate('yield-demo')}
           />
           <MenuItem 
             icon={<Settings size={20} className="text-gray-600" />}
