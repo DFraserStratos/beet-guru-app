@@ -6,13 +6,14 @@ import ErrorBoundary from '../utility/ErrorBoundary';
 import beetGuruWideLogo from '../../BeetGuruWide.png';
 import api from '../../services/api';
 import PageContainer from '../layout/PageContainer';
+import { getDemoEmail, getRandomDemoPersona } from '../../utils/demoData';
 
 /**
  * Initial Email Screen for Magic Link authentication
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const EmailScreen = ({ onEmailSubmit, onRegister, onKnownUser, onNewUser }) => {
+const EmailScreen = ({ onEmailSubmit, onRegister, onKnownUser, onNewUser, onSelectPersona }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [formFilled, setFormFilled] = useState(false);
   
@@ -45,9 +46,9 @@ const EmailScreen = ({ onEmailSubmit, onRegister, onKnownUser, onNewUser }) => {
   
   // Fill form with sample data
   const fillFormWithSampleData = () => {
-    setValues({
-      email: 'john.doe@example.com'
-    });
+    const persona = getRandomDemoPersona();
+    onSelectPersona?.(persona);
+    setValues(getDemoEmail(persona));
     setFormFilled(true);
   };
   

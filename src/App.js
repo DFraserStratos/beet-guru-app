@@ -33,6 +33,7 @@ function App() {
   
   // Magic link authentication data
   const [currentEmail, setCurrentEmail] = useState('');
+  const [demoPersona, setDemoPersona] = useState(null);
   
   // Add state for selected location or draft assessment
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -82,6 +83,10 @@ function App() {
     setAuthScreen('email');
     setCurrentEmail('');
   };
+
+  const handleSelectPersona = (persona) => {
+    setDemoPersona(persona);
+  };
   
   // Magic link authentication handlers
   const handleEmailSubmit = (email) => {
@@ -113,10 +118,11 @@ function App() {
       case 'email':
         return (
           <ErrorBoundary>
-            <EmailScreen 
-              onEmailSubmit={handleEmailSubmit} 
+            <EmailScreen
+              onEmailSubmit={handleEmailSubmit}
               onKnownUser={handleEmailContinue}
               onNewUser={handleRegisterClick}
+              onSelectPersona={handleSelectPersona}
             />
           </ErrorBoundary>
         );
@@ -135,11 +141,12 @@ function App() {
       case 'magic-link-verify':
         return (
           <ErrorBoundary>
-            <MagicLinkVerifyScreen 
+            <MagicLinkVerifyScreen
               email={currentEmail}
               onBack={handleBackToEmail}
               onLogin={handleLogin}
               onRegister={handleRegisterClick}
+              demoPersona={demoPersona}
             />
           </ErrorBoundary>
         );
@@ -147,10 +154,10 @@ function App() {
       case 'register':
         return (
           <ErrorBoundary>
-            <RegisterScreen 
-              onBack={handleBackToEmail} 
+            <RegisterScreen
+              onBack={handleBackToEmail}
               onComplete={handleLogin}
-              prefillEmail={currentEmail}
+              demoPersona={demoPersona}
             />
           </ErrorBoundary>
         );
@@ -159,7 +166,11 @@ function App() {
       case 'login':
         return (
           <ErrorBoundary>
-            <LoginScreen onLogin={handleLogin} onRegister={() => setAuthScreen('register')} />
+            <LoginScreen
+              onLogin={handleLogin}
+              onRegister={() => setAuthScreen('register')}
+              demoPersona={demoPersona}
+            />
           </ErrorBoundary>
         );
       

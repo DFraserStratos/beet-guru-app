@@ -5,11 +5,12 @@ import { FormField, FormButton } from '../ui/form';
 import { PrimaryButton } from '../ui/buttons';
 import PageContainer from '../layout/PageContainer';
 import { cn } from '../../utils/cn';
+import { getDemoRegistrationData, getRandomDemoPersona } from '../../utils/demoData';
 
-const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
+const RegisterScreen = ({ onBack, onComplete, demoPersona }) => {
   const [formData, setFormData] = useState({
     name: '',
-    email: prefillEmail || '',
+    email: '',
     password: '',
     confirmPassword: '',
     userType: '',
@@ -24,7 +25,7 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
   useEffect(() => {
     setFormData({
       name: '',
-      email: prefillEmail || '',
+      email: '',
       password: '',
       confirmPassword: '',
       userType: '',
@@ -32,7 +33,7 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
       agreeToTerms: false
     });
     setFormFilled(false);
-  }, [prefillEmail]);
+  }, []);
   
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -52,15 +53,8 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
     cn(formData.userType !== type && userTypeUnselectedClass);
   
   const fillFormWithSampleData = () => {
-    setFormData({
-      name: 'Donald',
-      email: prefillEmail || 'donald@stp.co.nz',
-      password: 'password',
-      confirmPassword: 'password',
-      userType: 'farmer',
-      subscribeToNews: true,
-      agreeToTerms: true
-    });
+    const persona = demoPersona || getRandomDemoPersona();
+    setFormData(getDemoRegistrationData(persona));
     setFormFilled(true);
   };
   

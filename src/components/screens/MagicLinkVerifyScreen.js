@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { CheckCircle, ArrowLeft, UserPlus, User } from 'lucide-react';
 import { FormButton } from '../ui/form';
 import ErrorBoundary from '../utility/ErrorBoundary';
@@ -10,23 +9,26 @@ import PageContainer from '../layout/PageContainer';
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const MagicLinkVerifyScreen = ({ email, onBack, onLogin, onRegister }) => {
+const MagicLinkVerifyScreen = ({ email, onBack, onLogin, onRegister, demoPersona }) => {
   // Handle login demo - immediately login
   const handleLoginDemo = () => {
-    // Simulate existing user login with John Doe data
-    onLogin({ 
+    const persona = demoPersona || { name: 'John Doe', email: 'john.doe@example.com', userType: 'farmer' };
+    onLogin({
       id: '1',
-      email: email || 'john.doe@example.com', 
-      name: 'John Doe', 
-      role: 'Farm Manager',
-      initials: 'JD'
+      email: persona.email,
+      name: persona.name,
+      role: persona.userType === 'farmer' ? 'Farm Manager' : 'Retail Consultant',
+      initials: persona.name
+        .split(' ')
+        .map(n => n && n[0])
+        .join('')
     });
   };
   
   // Handle registration demo - immediately go to registration
   const handleRegisterDemo = () => {
-    // Redirect to registration form with email pre-filled
-    onRegister(email || 'john.doe@example.com');
+    const persona = demoPersona || { email: 'john.doe@example.com' };
+    onRegister(persona.email);
   };
   
   return (
