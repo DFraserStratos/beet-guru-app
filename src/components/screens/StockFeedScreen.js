@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Calculator, Save, AlertTriangle } from 'lucide-react';
 import FeedForecastWidget from '../ui/FeedForecastWidget';
+import { PrimaryButton } from '../ui/buttons';
 import PageContainer from '../layout/PageContainer';
 
 const StockFeedScreen = ({ isMobile }) => {
@@ -100,12 +101,9 @@ const StockFeedScreen = ({ isMobile }) => {
           </div>
           
           {/* Calculate Button */}
-          <button
-            className="w-full bg-green-600 text-white p-3 rounded-lg flex justify-center items-center shadow-md hover:bg-green-700 transition-colors"
-            onClick={handleCalculate}
-          >
+          <PrimaryButton className="w-full" onClick={handleCalculate}>
             Calculate Feed Duration
-          </button>
+          </PrimaryButton>
           
           {/* Results */}
           <div className="bg-green-50 rounded-lg p-4 mt-4">
@@ -122,12 +120,12 @@ const StockFeedScreen = ({ isMobile }) => {
           </div>
           
           {/* Save Button */}
-          <button
-            className="w-full border border-green-600 text-green-600 p-3 rounded-lg flex justify-center items-center hover:bg-green-50 transition-colors"
+          <PrimaryButton
+            className="w-full border border-primary bg-white text-primary hover:bg-primary-light"
           >
             <Save size={18} className="mr-2" />
             Save Calculation to Report
-          </button>
+          </PrimaryButton>
         </div>
       </div>
     </PageContainer>

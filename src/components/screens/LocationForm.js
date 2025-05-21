@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, MapPin, Crosshair } from 'lucide-react';
 import { FormField, FormButton } from '../ui/form';
+import { IconButton } from '../ui/buttons';
 import { useForm } from '../../hooks';
 import MapPicker from './MapPicker';
 import PageContainer from '../layout/PageContainer';
@@ -102,12 +103,12 @@ const LocationForm = ({ location, onSubmit, onCancel }) => {
         <h2 className="text-lg font-semibold">
           {isEditMode ? 'Edit Location' : 'Add New Location'}
         </h2>
-        <button 
-          className="rounded-full p-1 hover:bg-green-600 transition-colors"
+        <IconButton
           onClick={onCancel}
-        >
-          <X size={20} />
-        </button>
+          icon={<X size={20} />}
+          label="Close"
+          className="text-white hover:bg-primary-dark"
+        />
       </div>
       
       {/* Form Content */}
@@ -211,12 +212,12 @@ const LocationForm = ({ location, onSubmit, onCancel }) => {
           <div className="bg-white rounded-xl shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between bg-green-700 text-white p-4 rounded-t-xl">
               <h2 className="text-lg font-semibold">Select Location on Map</h2>
-              <button 
-                className="rounded-full p-1 hover:bg-green-600 transition-colors"
+              <IconButton
                 onClick={() => setShowMap(false)}
-              >
-                <X size={20} />
-              </button>
+                icon={<X size={20} />}
+                label="Close map"
+                className="text-white hover:bg-primary-dark"
+              />
             </div>
             <div className="p-4">
               <MapPicker 
