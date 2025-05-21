@@ -43,6 +43,13 @@ To understand the application fully, it's important to know these key concepts:
 - Error boundaries for improved error handling
 - Reusable form components
 
+### Tailwind Color Palette
+The project defines shared color groups in `tailwind.config.js`:
+- **primary**: Green shades used for main actions (`#16a34a` default, `#4ade80` light, `#15803d` dark)
+- **secondary**: Blue shades for secondary actions (`#1d4ed8` default, `#60a5fa` light, `#1e40af` dark)
+- **accent**: Amber shades for highlights (`#f59e0b` default, `#fcd34d` light, `#b45309` dark)
+Apply these with Tailwind classes such as `bg-primary`, `text-secondary-light`, or `border-accent-dark` for consistent styling.
+
 ## Project Structure
 
 ```
