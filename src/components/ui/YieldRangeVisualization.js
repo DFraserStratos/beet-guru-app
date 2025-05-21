@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 
 /**
- * Component for visualizing yield estimates with confidence intervals
+ * Component for visualizing yield estimates with bar graphs and confidence intervals
  * 
  * @param {Object} currentData - Data for current samples
  * @param {Object} additionalData - Data for scenario with additional samples
@@ -15,25 +15,6 @@ const YieldRangeVisualization = ({
 }) => {
   // State for tracking the active view (total or components)
   const [activeView, setActiveView] = useState('total');
-  
-  // Refs for calculating dimensions and scales
-  const containerRef = useRef(null);
-  
-  // Derived calculations
-  const allValues = [
-    currentData.lowerLimit, 
-    currentData.upperLimit, 
-    additionalData.lowerLimit, 
-    additionalData.upperLimit
-  ];
-  const minValue = Math.floor(Math.min(...allValues));
-  const maxValue = Math.ceil(Math.max(...allValues));
-  const rangeWidth = maxValue - minValue;
-  
-  // Calculate positions as percentages for responsive sizing
-  const getPositionPercent = (value) => {
-    return ((value - minValue) / rangeWidth) * 100;
-  };
   
   // Handle view toggle
   const handleToggleView = () => {
@@ -52,145 +33,169 @@ const YieldRangeVisualization = ({
   const formatValue = (value) => {
     return value.toFixed(1);
   };
+
+  // Calculate the maximum value for scaling the bars
+  const maxValue = Math.max(
+    currentData.upperLimit, 
+    additionalData.upperLimit, 
+    40 // Minimum scale to match the desired look
+  );
+  
+  // Calculate bar heights as percentages of maxValue
+  const getBarHeight = (value) => {
+    return (value / maxValue) * 100;
+  };
   
   return (
-    <div className="bg-white rounded-lg shadow p-4" ref={containerRef}>
-      {/* Optional Title */}
+    <div className="bg-white rounded-lg p-4" id="yield-visualization">
+      {/* Title */}
       <h3 className="text-lg font-medium text-gray-900 mb-4">Yield Estimate</h3>
       
-      {/* Optional View Toggle */}
-      <div className="flex justify-end mb-2">
+      {/* Toggle Button */}
+      <div className="flex justify-end mb-4">
         <button 
           onClick={handleToggleView}
-          className={`text-sm px-2 py-1 rounded ${
-            activeView === 'total' 
-              ? 'bg-green-600 text-white' 
-              : 'bg-gray-200 text-gray-700'
-          }`}
+          className="px-4 py-2 rounded-md text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
         >
           {activeView === 'total' ? 'Show Components' : 'Show Total'}
         </button>
       </div>
       
-      {/* Visualization Container */}
-      <div className="h-48 relative mb-4">
-        {/* X-Axis Labels and Ticks */}
-        <div className="absolute bottom-0 left-0 right-0 h-6 flex justify-between text-xs text-gray-500">
-          <span>{minValue}</span>
-          <span>{((minValue + maxValue) / 2).toFixed(1)}</span>
-          <span>{maxValue}</span>
-        </div>
-        
-        {/* Current Samples Row */}
-        <div className="absolute top-1/4 left-0 right-0 h-10 flex items-center">
-          {/* Label */}
-          <div className="w-24 text-sm font-medium text-gray-700">Current</div>
-          
-          {/* Range Line */}
-          <div className="flex-1 relative h-full flex items-center">
-            <div 
-              className="absolute h-1 bg-gray-300 rounded-full"
-              style={{
-                left: `${getPositionPercent(currentData.lowerLimit)}%`,
-                width: `${getPositionPercent(currentData.upperLimit) - getPositionPercent(currentData.lowerLimit)}%`
-              }}
-            ></div>
-            
-            {/* Mean Marker */}
-            <div 
-              className="absolute h-4 w-4 rounded-full bg-green-600 transform -translate-x-1/2 -translate-y-1/2"
-              style={{
-                left: `${getPositionPercent(currentData.mean)}%`
-              }}
-            ></div>
-            
-            {/* Mean Value Label */}
-            <div 
-              className="absolute text-sm font-medium text-gray-900 transform -translate-x-1/2"
-              style={{
-                left: `${getPositionPercent(currentData.mean)}%`,
-                top: '-20px'
-              }}
-            >
-              {formatValue(currentData.mean)}
-            </div>
-            
-            {/* Component Breakdown (conditional) */}
-            {activeView === 'components' && (
-              <div className="absolute -bottom-5 flex">
+      {/* Bar Chart Visualization */}
+      <div className="mb-8 pt-4">
+        <div className="flex flex-col gap-12">
+          {/* Current Sample Bar */}
+          <div className="flex items-center">
+            <div className="w-24 text-sm font-medium text-gray-700">Current</div>
+            <div className="flex-1 relative">
+              {/* Bar for Current */}
+              <div className="h-16 flex items-center">
                 <div 
-                  className="h-2 bg-green-700 rounded-l"
+                  className="absolute h-12 bg-green-500 rounded"
                   style={{
-                    left: `${getPositionPercent(currentData.mean - currentData.leafYield)}%`,
-                    width: `${getPositionPercent(currentData.leafYield)}%`
+                    width: `${getBarHeight(currentData.mean)}%`,
+                    minWidth: '40px'
                   }}
-                ></div>
+                >
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-6 font-medium text-gray-800">
+                    {formatValue(currentData.mean)}
+                  </div>
+                </div>
+                
+                {/* Confidence Interval Line */}
                 <div 
-                  className="h-2 bg-green-500 rounded-r"
+                  className="absolute h-0.5 bg-gray-300"
                   style={{
-                    left: `${getPositionPercent(currentData.mean)}%`,
-                    width: `${getPositionPercent(currentData.bulbYield)}%`
+                    left: `${getBarHeight(currentData.lowerLimit)}%`,
+                    width: `${getBarHeight(currentData.upperLimit - currentData.lowerLimit)}%`,
+                    top: '6px'
                   }}
-                ></div>
+                >
+                  {/* Lower Limit Marker */}
+                  <div className="absolute left-0 h-2 w-0.5 bg-gray-300 -translate-y-1/2"></div>
+                  
+                  {/* Upper Limit Marker */}
+                  <div className="absolute right-0 h-2 w-0.5 bg-gray-300 -translate-y-1/2"></div>
+                </div>
               </div>
-            )}
+              
+              {/* Component breakdown (conditional) */}
+              {activeView === 'components' && (
+                <div className="flex">
+                  <div 
+                    className="h-8 bg-green-700 rounded-l"
+                    style={{
+                      width: `${getBarHeight(currentData.bulbYield)}%`,
+                    }}
+                  >
+                    <div className="text-xs text-white text-center mt-2">
+                      Bulb: {formatValue(currentData.bulbYield)}
+                    </div>
+                  </div>
+                  <div 
+                    className="h-8 bg-green-300 rounded-r"
+                    style={{
+                      width: `${getBarHeight(currentData.leafYield)}%`,
+                    }}
+                  >
+                    <div className="text-xs text-green-800 text-center mt-2">
+                      Leaf: {formatValue(currentData.leafYield)}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* +5 Samples Bar */}
+          <div className="flex items-center">
+            <div className="w-24 text-sm font-medium text-gray-700">+5 Samples</div>
+            <div className="flex-1 relative">
+              {/* Bar for +5 Samples */}
+              <div className="h-16 flex items-center">
+                <div 
+                  className="absolute h-12 bg-amber-500 rounded"
+                  style={{
+                    width: `${getBarHeight(additionalData.mean)}%`,
+                    minWidth: '40px'
+                  }}
+                >
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-6 font-medium text-gray-800">
+                    {formatValue(additionalData.mean)}
+                  </div>
+                </div>
+                
+                {/* Confidence Interval Line */}
+                <div 
+                  className="absolute h-0.5 bg-gray-300"
+                  style={{
+                    left: `${getBarHeight(additionalData.lowerLimit)}%`,
+                    width: `${getBarHeight(additionalData.upperLimit - additionalData.lowerLimit)}%`,
+                    top: '6px'
+                  }}
+                >
+                  {/* Lower Limit Marker */}
+                  <div className="absolute left-0 h-2 w-0.5 bg-gray-300 -translate-y-1/2"></div>
+                  
+                  {/* Upper Limit Marker */}
+                  <div className="absolute right-0 h-2 w-0.5 bg-gray-300 -translate-y-1/2"></div>
+                </div>
+              </div>
+              
+              {/* Component breakdown (conditional) */}
+              {activeView === 'components' && (
+                <div className="flex">
+                  <div 
+                    className="h-8 bg-amber-700 rounded-l"
+                    style={{
+                      width: `${getBarHeight(additionalData.bulbYield)}%`,
+                    }}
+                  >
+                    <div className="text-xs text-white text-center mt-2">
+                      Bulb: {formatValue(additionalData.bulbYield)}
+                    </div>
+                  </div>
+                  <div 
+                    className="h-8 bg-amber-300 rounded-r"
+                    style={{
+                      width: `${getBarHeight(additionalData.leafYield)}%`,
+                    }}
+                  >
+                    <div className="text-xs text-amber-800 text-center mt-2">
+                      Leaf: {formatValue(additionalData.leafYield)}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         
-        {/* Additional Samples Row */}
-        <div className="absolute top-2/3 left-0 right-0 h-10 flex items-center">
-          {/* Label */}
-          <div className="w-24 text-sm font-medium text-gray-700">+5 Samples</div>
-          
-          {/* Range Line */}
-          <div className="flex-1 relative h-full flex items-center">
-            <div 
-              className="absolute h-1 bg-gray-300 rounded-full"
-              style={{
-                left: `${getPositionPercent(additionalData.lowerLimit)}%`,
-                width: `${getPositionPercent(additionalData.upperLimit) - getPositionPercent(additionalData.lowerLimit)}%`
-              }}
-            ></div>
-            
-            {/* Mean Marker */}
-            <div 
-              className="absolute h-4 w-4 rounded-full bg-amber-500 transform -translate-x-1/2 -translate-y-1/2"
-              style={{
-                left: `${getPositionPercent(additionalData.mean)}%`
-              }}
-            ></div>
-            
-            {/* Mean Value Label */}
-            <div 
-              className="absolute text-sm font-medium text-gray-900 transform -translate-x-1/2"
-              style={{
-                left: `${getPositionPercent(additionalData.mean)}%`,
-                top: '-20px'
-              }}
-            >
-              {formatValue(additionalData.mean)}
-            </div>
-            
-            {/* Component Breakdown (conditional) */}
-            {activeView === 'components' && (
-              <div className="absolute -bottom-5 flex">
-                <div 
-                  className="h-2 bg-amber-700 rounded-l"
-                  style={{
-                    left: `${getPositionPercent(additionalData.mean - additionalData.leafYield)}%`,
-                    width: `${getPositionPercent(additionalData.leafYield)}%`
-                  }}
-                ></div>
-                <div 
-                  className="h-2 bg-amber-400 rounded-r"
-                  style={{
-                    left: `${getPositionPercent(additionalData.mean)}%`,
-                    width: `${getPositionPercent(additionalData.bulbYield)}%`
-                  }}
-                ></div>
-              </div>
-            )}
-          </div>
+        {/* X-axis labels */}
+        <div className="flex justify-between text-xs text-gray-500 mt-2 px-24">
+          <div>11</div>
+          <div>17.0</div>
+          <div>23</div>
         </div>
       </div>
       
