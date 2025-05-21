@@ -6,6 +6,7 @@ import ErrorBoundary from '../utility/ErrorBoundary';
 import beetGuruWideLogo from '../../BeetGuruWide.png';
 import api from '../../services/api';
 import PageContainer from '../layout/PageContainer';
+import { getDemoEmail, getRandomDemoPersona } from '../../utils/demoData';
 
 /**
  * Initial Email Screen for Magic Link authentication
@@ -45,9 +46,9 @@ const EmailScreen = ({ onEmailSubmit, onRegister, onKnownUser, onNewUser }) => {
   
   // Fill form with sample data
   const fillFormWithSampleData = () => {
-    setValues({
-      email: 'john.doe@example.com'
-    });
+    const persona = getRandomDemoPersona();
+    const { email } = getDemoEmail(persona);
+    setValues({ email });
     setFormFilled(true);
   };
   

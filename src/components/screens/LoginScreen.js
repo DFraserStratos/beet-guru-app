@@ -3,6 +3,7 @@ import { User, Lock, ArrowRight } from 'lucide-react';
 import { FormField, FormButton } from '../ui/form';
 import { useForm } from '../../hooks';
 import api from '../../services/api';
+import { getDemoCredentials, getRandomDemoPersona } from '../../utils/demoData';
 import ErrorBoundary from '../utility/ErrorBoundary';
 import beetGuruWideLogo from '../../BeetGuruWide.png';
 import PageContainer from '../layout/PageContainer';
@@ -14,6 +15,7 @@ import PageContainer from '../layout/PageContainer';
  */
 const LoginScreen = ({ onLogin, onRegister }) => {
   const [formFilled, setFormFilled] = useState(false);
+  const [selectedPersona, setSelectedPersona] = useState(null);
   
   // Form validation
   const validateLogin = (values) => {
@@ -48,11 +50,10 @@ const LoginScreen = ({ onLogin, onRegister }) => {
   
   // Fill form with sample data
   const fillFormWithSampleData = () => {
-    setValues({
-      email: 'john.doe@example.com',
-      password: 'password',
-      rememberMe: false
-    });
+    const persona = getRandomDemoPersona();
+    setSelectedPersona(persona);
+    const { email, password, rememberMe } = getDemoCredentials(persona);
+    setValues({ email, password, rememberMe });
     setFormFilled(true);
   };
   
@@ -65,12 +66,18 @@ const LoginScreen = ({ onLogin, onRegister }) => {
     }
     
     // Second click: Actually log in
-    onLogin({ 
-      id: '1',  // Make sure this matches the userId in the mock locations
-      email: formValues.email, 
-      name: 'John Doe', 
+    const name = selectedPersona?.name || 'John Doe';
+    const initials = name
+      .split(' ')
+      .map(n => n && n[0])
+      .join('');
+
+    onLogin({
+      id: '1', // Make sure this matches the userId in the mock locations
+      email: formValues.email,
+      name,
       role: 'Farm Manager',
-      initials: 'JD'
+      initials
     });
   }
   

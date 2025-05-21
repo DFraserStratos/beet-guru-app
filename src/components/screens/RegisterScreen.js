@@ -5,6 +5,7 @@ import { FormField, FormButton } from '../ui/form';
 import { PrimaryButton } from '../ui/buttons';
 import PageContainer from '../layout/PageContainer';
 import { cn } from '../../utils/cn';
+import { getDemoRegistrationData, getRandomDemoPersona } from '../../utils/demoData';
 
 const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
   const [formData, setFormData] = useState({
@@ -50,17 +51,10 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
     'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50';
   const getUserTypeButtonClasses = (type) =>
     cn(formData.userType !== type && userTypeUnselectedClass);
-  
+
   const fillFormWithSampleData = () => {
-    setFormData({
-      name: 'Donald',
-      email: prefillEmail || 'donald@stp.co.nz',
-      password: 'password',
-      confirmPassword: 'password',
-      userType: 'farmer',
-      subscribeToNews: true,
-      agreeToTerms: true
-    });
+    const persona = getRandomDemoPersona();
+    setFormData(getDemoRegistrationData(prefillEmail, persona));
     setFormFilled(true);
   };
   
