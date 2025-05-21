@@ -100,21 +100,21 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
   const prepareVisualizationData = () => {
     // Statistics for current samples
     const currentStats = {
-      mean: 17.24,  // t DM/ha
+      mean: 17.2,  // t DM/ha
       upperLimit: 22.6,
       lowerLimit: 11.8,
       bulbYield: 14.3,
-      leafYield: 2.94
+      leafYield: 2.9
     };
     
     // Projected statistics with additional samples
     // Note: In a real implementation, this would use more complex statistical methods
     const additionalStats = {
-      mean: 18.04,  // t DM/ha
+      mean: 18.0,  // t DM/ha
       upperLimit: 21.4, // Narrower confidence interval with more samples
       lowerLimit: 14.7, // Higher lower bound with more samples
       bulbYield: 15.1,
-      leafYield: 2.94
+      leafYield: 2.9
     };
 
     return {
@@ -248,20 +248,12 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
               </div>
             </div>
             
-            {/* Yield Visualization - New Section */}
-            <div className="p-4">
-              <h4 className="font-medium text-gray-900 mb-3">Yield Analysis</h4>
-              <div className="mb-4">
-                <p className="text-sm text-gray-600 mb-3">
-                  The chart below shows your current yield estimate and how it might change with additional samples.
-                  More samples typically produce a more precise estimate (narrower confidence interval).
-                </p>
-                
-                <YieldRangeVisualization 
-                  currentData={visualizationData.currentStats}
-                  additionalData={visualizationData.additionalStats}
-                />
-              </div>
+            {/* Yield Analysis - New Section */}
+            <div className="p-0">
+              <YieldRangeVisualization 
+                currentData={visualizationData.currentStats}
+                additionalData={visualizationData.additionalStats}
+              />
             </div>
             
             <div className="p-4 bg-green-50">
