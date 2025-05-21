@@ -141,21 +141,21 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
     
     // Calculate yield statistics based on current samples
     const currentStats = {
-      mean: 17.24,  // t DM/ha
+      mean: 17.2,  // t DM/ha
       upperLimit: 22.6,
       lowerLimit: 11.8,
       bulbYield: 14.3,
-      leafYield: 2.94
+      leafYield: 2.9
     };
     
     // Projected statistics with additional samples
     // Note: In a real implementation, this would use more complex statistical methods
     const additionalStats = {
-      mean: 18.04,  // t DM/ha
+      mean: 18.0,  // t DM/ha
       upperLimit: 21.4, // Narrower confidence interval with more samples
       lowerLimit: 14.7, // Higher lower bound with more samples
       bulbYield: 15.1,
-      leafYield: 2.94
+      leafYield: 2.9
     };
     
     return {
@@ -223,20 +223,26 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
           </div>
         </div>
         
-        {/* Yield Visualization */}
-        <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
+        {/* Yield Analysis Section with green background */}
+        <div className="border rounded-lg shadow-sm overflow-hidden">
           <div className="p-4 border-b bg-gray-50">
-            <h3 className="font-medium">Yield Estimate</h3>
+            <h3 className="font-medium">Yield Analysis</h3>
           </div>
           
-          <div className="p-4">
+          <div className="p-0">
             {visualizationData.validSamples > 0 ? (
-              <YieldRangeVisualization 
-                currentData={visualizationData.currentStats}
-                additionalData={visualizationData.additionalStats}
-              />
+              <div>
+                <p className="px-4 pt-4 text-sm text-gray-600">
+                  The chart below shows your current yield estimate and how it might change with additional samples.
+                  More samples typically produce a more precise estimate (narrower confidence interval).
+                </p>
+                <YieldRangeVisualization 
+                  currentData={visualizationData.currentStats}
+                  additionalData={visualizationData.additionalStats}
+                />
+              </div>
             ) : (
-              <div className="h-64 w-full flex items-center justify-center bg-gray-100 rounded">
+              <div className="h-64 w-full flex items-center justify-center bg-gray-100">
                 <div className="text-center text-gray-500">
                   <BarChart3 size={40} className="mx-auto mb-2 text-gray-400" />
                   <p>Enter sample measurements to see the yield estimate</p>
