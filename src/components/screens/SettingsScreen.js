@@ -1,8 +1,12 @@
-import { useState, useEffect } from 'react';
-import { Save, User, MapPin, Lock, ChevronLeft, Building } from 'lucide-react';
+import { useState } from 'react';
+import { Save, User, Lock, ChevronLeft, Building } from 'lucide-react';
 import { logger } from '../../utils/logger';
-import { FormButton, FormField } from '../ui/form';
+import { FormButton } from '../ui/form';
 import { useForm } from '../../hooks';
+import SettingsNavItem from './SettingsNavItem';
+import ProfileSection from './ProfileSection';
+import FarmSection from './FarmSection';
+import SecuritySection from './SecuritySection';
 
 /**
  * Settings screen for managing user and farm information
@@ -150,197 +154,28 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
             
             {/* Profile Information Section */}
             {activeSection === 'profile' && (
-              <form>
-                <h2 className="text-xl font-semibold mb-4">Profile Information</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                  <FormField
-                    label="Full Name"
-                    name="name"
-                    type="text"
-                    value={values.name}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={errors.name}
-                    touched={touched.name}
-                    placeholder="Your full name"
-                    required
-                  />
-                  <FormField
-                    label="Email Address"
-                    name="email"
-                    type="email"
-                    value={values.email}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={errors.email}
-                    touched={touched.email}
-                    placeholder="Your email address"
-                    required
-                  />
-                  <FormField
-                    label="Role"
-                    name="role"
-                    type="text"
-                    value={values.role}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={errors.role}
-                    touched={touched.role}
-                    placeholder="Your role (e.g. Farm Manager)"
-                  />
-                  <FormField
-                    label="Phone Number"
-                    name="phone"
-                    type="text"
-                    value={values.phone}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={errors.phone}
-                    touched={touched.phone}
-                    placeholder="Your phone number"
-                  />
-                </div>
-                <div className="border-t border-gray-200 pt-4">
-                  <p className="text-sm text-gray-500 mb-4">
-                    Profile information will be used for reports and notifications
-                  </p>
-                </div>
-              </form>
+              <ProfileSection
+                values={values}
+                errors={errors}
+                touched={touched}
+                handleChange={handleChange}
+                handleBlur={handleBlur}
+              />
             )}
             
             {/* Farm Details Section */}
             {activeSection === 'farm' && (
-              <form>
-                <h2 className="text-xl font-semibold mb-4">Farm Details</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                  <FormField
-                    label="Farm Name"
-                    name="farmName"
-                    type="text"
-                    value={values.farmName}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={errors.farmName}
-                    touched={touched.farmName}
-                    placeholder="Your farm name"
-                    required
-                  />
-                  <FormField
-                    label="Farm Address"
-                    name="farmAddress"
-                    type="text"
-                    value={values.farmAddress}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={errors.farmAddress}
-                    touched={touched.farmAddress}
-                    placeholder="Street address"
-                    required
-                  />
-                  <FormField
-                    label="City/Town"
-                    name="city"
-                    type="text"
-                    value={values.city}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={errors.city}
-                    touched={touched.city}
-                    placeholder="City or town"
-                    required
-                  />
-                  <FormField
-                    label="Postal Code"
-                    name="postalCode"
-                    type="text"
-                    value={values.postalCode}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={errors.postalCode}
-                    touched={touched.postalCode}
-                    placeholder="Postal code"
-                  />
-                  <FormField
-                    label="Region"
-                    name="region"
-                    type="text"
-                    value={values.region}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={errors.region}
-                    touched={touched.region}
-                    placeholder="Region/State/Province"
-                    required
-                  />
-                  <FormField
-                    label="Country"
-                    name="country"
-                    type="text"
-                    value={values.country}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={errors.country}
-                    touched={touched.country}
-                    placeholder="Country"
-                    required
-                  />
-                </div>
-                <div className="border-t border-gray-200 pt-4">
-                  <p className="text-sm text-gray-500 mb-4">
-                    Farm details will be used on reports and for weather information
-                  </p>
-                </div>
-              </form>
+              <FarmSection
+                values={values}
+                errors={errors}
+                touched={touched}
+                handleChange={handleChange}
+                handleBlur={handleBlur}
+              />
             )}
             
             {/* Security Section */}
-            {activeSection === 'security' && (
-              <form>
-                <h2 className="text-xl font-semibold mb-4">Security Settings</h2>
-                <div className="space-y-4 mb-6">
-                  <div className="border-b border-gray-200 pb-4">
-                    <h3 className="font-medium mb-2">Change Password</h3>
-                    <div className="grid grid-cols-1 gap-4">
-                      <FormField
-                        label="Current Password"
-                        name="currentPassword"
-                        type="password"
-                        placeholder="Your current password"
-                      />
-                      <FormField
-                        label="New Password"
-                        name="newPassword"
-                        type="password"
-                        placeholder="New password"
-                      />
-                      <FormField
-                        label="Confirm New Password"
-                        name="confirmPassword"
-                        type="password"
-                        placeholder="Confirm new password"
-                      />
-                      <div>
-                        <FormButton
-                          variant="outline"
-                          size="sm"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            alert('Password change functionality would be implemented here');
-                          }}
-                        >
-                          Update Password
-                        </FormButton>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="border-t border-gray-200 pt-4">
-                  <p className="text-sm text-gray-500 mb-4">
-                    Keeping your account secure helps protect your farm data
-                  </p>
-                </div>
-              </form>
-            )}
+            {activeSection === 'security' && <SecuritySection />}
             
             {/* Mobile Section Navigation Buttons */}
             {isMobile && (
@@ -378,27 +213,6 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
         </div>
       </div>
     </div>
-  );
-};
-
-/**
- * Navigation item for the settings sidebar
- */
-const SettingsNavItem = ({ label, icon, isActive, onClick }) => {
-  return (
-    <li>
-      <button
-        className={`w-full p-4 flex items-center text-left ${
-          isActive ? 'bg-green-50 text-green-600 font-medium' : 'hover:bg-gray-50'
-        }`}
-        onClick={onClick}
-      >
-        <div className={`mr-3 ${isActive ? 'text-green-600' : 'text-gray-500'}`}>
-          {icon}
-        </div>
-        <span>{label}</span>
-      </button>
-    </li>
   );
 };
 

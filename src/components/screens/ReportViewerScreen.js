@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { 
-  ArrowLeft, 
-  Share, 
-  Calendar, 
-  MapPin,
-  Sprout,
-  Calendar as CalendarIcon,
-  Check,
-  Droplets
-} from 'lucide-react';
+import { ArrowLeft, Share } from 'lucide-react';
 import { useApi } from '../../hooks';
 import enhancedApi from '../../services/enhancedApi';
 import { FormButton } from '../ui/form';
+import ReportMetadata from './ReportMetadata';
+import ReportSummary from './ReportSummary';
+import CropInfo from './CropInfo';
+import FieldMeasurements from './FieldMeasurements';
+import ResultsSection from './ResultsSection';
+import RecommendationsSection from './RecommendationsSection';
+import NotesSection from './NotesSection';
 
 /**
  * Detailed report viewer component that displays a single report
@@ -152,275 +150,18 @@ const ReportViewerScreen = ({
 
       {/* Single Report Document Card */}
       <div className="bg-white rounded-xl shadow overflow-hidden">
-        {/* Report Title and Metadata */}
-        <div className="p-6 border-b border-gray-100">
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">
-            {assessmentData.reportTitle}
-          </h1>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="flex items-center text-gray-600">
-              <Calendar size={18} className="mr-2 text-green-600" />
-              <span>Report Date: {formatDate(assessmentData.reportCreated)}</span>
-            </div>
-            
-            <div className="flex items-center text-gray-600">
-              <MapPin size={18} className="mr-2 text-green-600" />
-              <span>Location: {assessmentData.location}</span>
-            </div>
-            
-            <div className="flex items-center text-gray-600">
-              <Sprout size={18} className="mr-2 text-green-600" />
-              <span>Cultivar: {assessmentData.reportCultivar}</span>
-            </div>
-            
-            <div className="flex items-center text-gray-600">
-              <CalendarIcon size={18} className="mr-2 text-green-600" />
-              <span>Season: {assessmentData.reportSeason}</span>
-            </div>
-          </div>
-        </div>
+        <ReportMetadata data={assessmentData} formatDate={formatDate} />
 
-        {/* Executive Summary */}
-        <div className="p-6 border-b border-gray-100">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Executive Summary</h2>
-          <p className="text-gray-600">
-            This assessment of {assessmentData.location} shows a crop yield estimate of {assessmentData.estimatedYield}. 
-            Based on current dry matter content of {assessmentData.dryMatter}, this crop can feed {assessmentData.stockCount} animals 
-            for approximately {assessmentData.feedingCapacity}.
-          </p>
-        </div>
-
-        {/* Two-column layout for crop and field info */}
+        <ReportSummary data={assessmentData} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
-          {/* Crop Information */}
-          <div className="p-6 border-b md:border-r border-gray-100">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Crop Information</h2>
-            
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-sm font-medium text-gray-500">Crop Type</h3>
-                <p className="text-gray-800">{assessmentData.cropType}</p>
-              </div>
-              
-              <div>
-                <h3 className="text-sm font-medium text-gray-500">Cultivar</h3>
-                <p className="text-gray-800">{assessmentData.reportCultivar}</p>
-              </div>
-              
-              <div>
-                <h3 className="text-sm font-medium text-gray-500">Sowing Date</h3>
-                <p className="text-gray-800">{formatDate(assessmentData.date)}</p>
-              </div>
-              
-              <div>
-                <h3 className="text-sm font-medium text-gray-500">Assessment Date</h3>
-                <p className="text-gray-800">{formatDate(assessmentData.date)}</p>
-              </div>
-              
-              <div>
-                <h3 className="text-sm font-medium text-gray-500">Water Type</h3>
-                <div className="flex items-center">
-                  <Droplets size={16} className="mr-1 text-blue-500" />
-                  <span className="capitalize">{assessmentData.waterType}</span>
-                </div>
-              </div>
-              
-              <div>
-                <h3 className="text-sm font-medium text-gray-500">Est. Growing Cost</h3>
-                <p className="text-gray-800">$2500/ha</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Field Measurements */}
-          <div className="p-6 border-b border-gray-100">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Field Measurements</h2>
-            
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-sm font-medium text-gray-500">Row Spacing</h3>
-                <p className="text-gray-800">{assessmentData.rowSpacing} m</p>
-              </div>
-              
-              <div>
-                <h3 className="text-sm font-medium text-gray-500">Measurement Length</h3>
-                <p className="text-gray-800">4 m</p>
-              </div>
-              
-              <div>
-                <h3 className="text-sm font-medium text-gray-500">Field Area</h3>
-                <p className="text-gray-800">3.5 ha</p>
-              </div>
-              
-              <div>
-                <h3 className="text-sm font-medium text-gray-500">Dry Matter %</h3>
-                <p className="text-gray-800">{assessmentData.dryMatter}</p>
-              </div>
-              
-              <div>
-                <h3 className="text-sm font-medium text-gray-500">Samples Taken</h3>
-                <p className="text-gray-800">1</p>
-              </div>
-            </div>
-          </div>
+          <CropInfo data={assessmentData} formatDate={formatDate} />
+          <FieldMeasurements data={assessmentData} />
         </div>
 
-        {/* Results Section - With pale green background */}
-        <div className="p-6 bg-green-50 border-b border-gray-100">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Results</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Yield Estimate Box */}
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <div className="flex items-center mb-3">
-                <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center mr-2">
-                  <Check size={14} className="text-green-600" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-800">Yield Estimate</h3>
-              </div>
-              <div className="text-4xl font-bold text-green-600 mb-2">
-                {assessmentData.estimatedYield}
-              </div>
-              <p className="text-gray-600 mb-1">
-                Total: {assessmentData.totalYield}
-              </p>
-              <p className="text-xs text-gray-400">
-                Based on 3.5 ha field
-              </p>
-            </div>
-            
-            {/* Feeding Capacity Box */}
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <div className="flex items-center mb-3">
-                <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center mr-2">
-                  <Calendar size={14} className="text-green-600" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-800">Feeding Capacity</h3>
-              </div>
-              <div className="text-4xl font-bold text-green-600 mb-2">
-                {assessmentData.feedingCapacity}
-              </div>
-              <p className="text-gray-600 mb-1">
-                For {assessmentData.stockCount} animals
-              </p>
-              <p className="text-xs text-gray-400">
-                Based on 8kg DM/animal/day
-              </p>
-            </div>
-          </div>
-          
-          {/* Yield Visualization */}
-          <div className="mt-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Yield Visualization</h3>
-            
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <div className="h-64 flex items-center justify-center">
-                <div className="flex space-x-12 items-end h-full w-full max-w-md">
-                  {assessmentData.yieldBreakdown ? (
-                    <>
-                      <div className="flex flex-col items-center">
-                        <div className="bg-green-200 w-20 rounded-t" style={{ height: '30%' }}></div>
-                        <p className="mt-2 text-sm font-medium">Leaf</p>
-                        <p className="text-xs text-gray-500">{assessmentData.yieldBreakdown.leafYield}</p>
-                      </div>
-                      <div className="flex flex-col items-center">
-                        <div className="bg-green-500 w-20 rounded-t" style={{ height: '70%' }}></div>
-                        <p className="mt-2 text-sm font-medium">Bulb</p>
-                        <p className="text-xs text-gray-500">{assessmentData.yieldBreakdown.bulbYield}</p>
-                      </div>
-                      <div className="flex flex-col items-center">
-                        <div className="bg-green-700 w-20 rounded-t" style={{ height: '100%' }}></div>
-                        <p className="mt-2 text-sm font-medium">Total</p>
-                        <p className="text-xs text-gray-500">{assessmentData.yieldBreakdown.totalYield}</p>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="flex flex-col items-center">
-                        <div className="bg-green-200 w-20 rounded-t" style={{ height: '30%' }}></div>
-                        <p className="mt-2 text-sm font-medium">Leaf</p>
-                        <p className="text-xs text-gray-500">6.7 t/ha</p>
-                      </div>
-                      <div className="flex flex-col items-center">
-                        <div className="bg-green-500 w-20 rounded-t" style={{ height: '70%' }}></div>
-                        <p className="mt-2 text-sm font-medium">Bulb</p>
-                        <p className="text-xs text-gray-500">15.7 t/ha</p>
-                      </div>
-                      <div className="flex flex-col items-center">
-                        <div className="bg-green-700 w-20 rounded-t" style={{ height: '100%' }}></div>
-                        <p className="mt-2 text-sm font-medium">Total</p>
-                        <p className="text-xs text-gray-500">{assessmentData.estimatedYield}</p>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ResultsSection data={assessmentData} />
 
-        {/* Recommendations Section */}
-        <div className="p-6 border-b border-gray-100">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Recommendations</h2>
-          
-          <ul className="space-y-2 text-gray-600">
-            {assessmentData.recommendations ? (
-              assessmentData.recommendations.map((recommendation, index) => (
-                <li key={index} className="flex items-start">
-                  <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
-                    <Check size={12} className="text-green-600" />
-                  </div>
-                  <span>{recommendation}</span>
-                </li>
-              ))
-            ) : (
-              <>
-                <li className="flex items-start">
-                  <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
-                    <Check size={12} className="text-green-600" />
-                  </div>
-                  <span>Consider strip grazing to maximize feed utilization efficiency.</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
-                    <Check size={12} className="text-green-600" />
-                  </div>
-                  <span>Introduce animals to this crop gradually over a 7-10 day period to avoid digestive issues.</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
-                    <Check size={12} className="text-green-600" />
-                  </div>
-                  <span>Supplement with fiber sources such as hay or straw (minimum 20% of diet).</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
-                    <Check size={12} className="text-green-600" />
-                  </div>
-                  <span>Monitor animal condition regularly while grazing this crop.</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
-                    <Check size={12} className="text-green-600" />
-                  </div>
-                  <span>Consider follow-up assessment in 4-6 weeks to monitor crop development.</span>
-                </li>
-              </>
-            )}
-          </ul>
-        </div>
-
-        {/* Notes Section */}
-        <div className="p-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Notes</h2>
-          
-          <p className="text-gray-600">
-            This assessment was conducted on {formatDate(assessmentData.date)}. Results are based on field measurements 
-            and represent an estimate of crop yield and feeding capacity. Actual yields may vary based on growing conditions, 
-            harvesting method, and animal consumption patterns.
-          </p>
-        </div>
+        <RecommendationsSection recommendations={assessmentData.recommendations} />
+        <NotesSection data={assessmentData} formatDate={formatDate} />
       </div>
     </div>
   );
