@@ -1,4 +1,4 @@
-import { authAPI, assessmentsAPI, reportsAPI } from '../api';
+import { authAPI, assessmentsAPI, reportsAPI } from '..';
 
 describe('authAPI', () => {
   beforeEach(() => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormButtonNav } from '../ui/form';
-import api from '../../services/api';
+import api from '../../services';
 import { useApi } from '../../hooks';
 
 /**

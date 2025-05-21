@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { User, Lock, ArrowRight } from 'lucide-react';
 import { FormField, FormButton } from '../ui/form';
 import { useForm } from '../../hooks';
-import api from '../../services/api';
+import api from '../../services';
 import ErrorBoundary from '../utility/ErrorBoundary';
 import beetGuruWideLogo from '../../BeetGuruWide.png';
 

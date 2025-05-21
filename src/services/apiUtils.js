@@ -1,0 +1,365 @@
+// Base API configuration
+export const API_BASE_URL = process.env.REACT_APP_API_URL || '';
+export const API_TIMEOUT = 8000; // 8 seconds timeout
+
+export const apiRequest = async (endpoint, options = {}) => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT);
+
+  try {
+    const url = `${API_BASE_URL}${endpoint}`;
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(options.headers || {})
+      },
+      signal: controller.signal
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    clearTimeout(timeoutId);
+
+    if (error.name === 'AbortError') {
+      throw new Error('Request timeout');
+    }
+
+    throw error;
+  }
+};
+
+export const mockData = {
+  users: [
+    { id: '1', name: 'John Doe', email: 'john.doe@example.com', role: 'Farm Manager' },
+    { id: '2', name: 'Donald', email: 'donald@example.co.nz', role: 'Farm Manager' }
+  ],
+  locations: [
+    { 
+      id: '1', 
+      name: 'North Paddock', 
+      userId: '1',
+      area: 3.5,
+      latitude: -43.5280,
+      longitude: 172.6316,
+      status: 'draft', // New status field: 'draft' or 'not-started'
+      assessmentId: '4' // Reference to draft assessment
+    },
+    { 
+      id: '2', 
+      name: 'Mid Paddock', 
+      userId: '1',
+      area: 2.2,
+      latitude: -43.5310,
+      longitude: 172.6290,
+      status: 'not-started'
+    },
+    { 
+      id: '3', 
+      name: 'South Paddock', 
+      userId: '1',
+      area: 4.1,
+      latitude: -43.5270,
+      longitude: 172.6400,
+      status: 'not-started'
+    },
+    { 
+      id: '4', 
+      name: 'East Block', 
+      userId: '1',
+      area: 3.8,
+      latitude: -43.5260,
+      longitude: 172.6380,
+      status: 'not-started'
+    },
+    { 
+      id: '5', 
+      name: 'West Block', 
+      userId: '1',
+      area: 2.7,
+      latitude: -43.5300,
+      longitude: 172.6250,
+      status: 'not-started'
+    }
+  ],
+  cropTypes: [
+    { id: '1', name: 'Fodder Beet' },
+    { id: '2', name: 'Sugar Beet' },
+    { id: '3', name: 'Mangels' }
+  ],
+  cultivars: [
+    { id: '1', name: 'Brigadier', cropTypeId: '1', dryMatter: '12-15%', yield: '20-30 t/acre', growingTime: '24-28 weeks', description: 'Low dry matter content, high sugar content. Suitable for all stock types. World\'s number one for strip grazing.' },
+    { id: '2', name: 'Feldherr', cropTypeId: '1', dryMatter: '19-21%', yield: '16-20 t/ha', growingTime: '190-210 days' },
+    { id: '3', name: 'Kyros', cropTypeId: '1', dryMatter: '17-19%', yield: '17-22 t/ha', growingTime: '185-205 days' },
+    { id: '4', name: 'Blizzard', cropTypeId: '1', dryMatter: '13-15%', yield: '15-19 t/ha', growingTime: '170-190 days' },
+    { id: '5', name: 'Blaze', cropTypeId: '1', dryMatter: '16-18%', yield: '18-24 t/ha', growingTime: '180-200 days' }
+  ],
+  assessments: [
+    { 
+      id: '1', 
+      locationId: '1', 
+      cropTypeId: '1', 
+      cultivarId: '1', 
+      dryMatter: '21.8%', 
+      date: '2025-05-08', 
+      status: 'completed',
+      waterType: 'irrigated',
+      rowSpacing: 0.5,
+      estimatedYield: '22.4 t/ha',
+      totalYield: '78.4 tonnes',
+      feedingCapacity: '186 days',
+      stockCount: 50
+    },
+    { 
+      id: '2', 
+      locationId: '2', 
+      cropTypeId: '2', 
+      cultivarId: '3', 
+      dryMatter: '19.0%', 
+      date: '2025-05-07', 
+      status: 'completed',
+      waterType: 'dryland',
+      rowSpacing: 0.5,
+      estimatedYield: '17.2 t/ha',
+      totalYield: '60.2 tonnes',
+      feedingCapacity: '142 days',
+      stockCount: 50
+    },
+    { 
+      id: '3', 
+      locationId: '3', 
+      cropTypeId: '3', 
+      cultivarId: '4', 
+      dryMatter: '20.4%', 
+      date: '2025-05-06', 
+      status: 'completed',
+      waterType: 'irrigated',
+      rowSpacing: 0.45,
+      estimatedYield: '18.6 t/ha',
+      totalYield: '55.8 tonnes',
+      feedingCapacity: '115 days',
+      stockCount: 60
+    },
+    { 
+      // Draft assessment
+      id: '4', 
+      locationId: '1', 
+      cropTypeId: '1', 
+      cultivarId: '1', 
+      dryMatter: '18.2%', 
+      date: '2025-05-12', 
+      status: 'draft',
+      waterType: 'irrigated',
+      rowSpacing: 0.5,
+      estimatedYield: '',
+      totalYield: '',
+      feedingCapacity: '',
+      stockCount: 45,
+      sampleAreas: [
+        { id: 1, sampleLength: '2', weight: '26.1', dryMatter: '18.2', notes: 'Edge of field' },
+        { id: 2, sampleLength: '', weight: '', dryMatter: '', notes: '' }
+      ]
+    },
+    { 
+      id: '5', 
+      locationId: '4', 
+      cropTypeId: '1', 
+      cultivarId: '2', 
+      dryMatter: '19.5%', 
+      date: '2024-11-12', 
+      status: 'completed',
+      waterType: 'irrigated',
+      rowSpacing: 0.55,
+      estimatedYield: '20.1 t/ha',
+      totalYield: '76.4 tonnes',
+      feedingCapacity: '155 days',
+      stockCount: 55
+    },
+    { 
+      id: '6', 
+      locationId: '5', 
+      cropTypeId: '2', 
+      cultivarId: '3', 
+      dryMatter: '17.8%', 
+      date: '2024-09-22', 
+      status: 'completed',
+      waterType: 'dryland',
+      rowSpacing: 0.5,
+      estimatedYield: '16.8 t/ha',
+      totalYield: '45.4 tonnes',
+      feedingCapacity: '98 days',
+      stockCount: 50
+    },
+    { 
+      id: '7', 
+      locationId: '3', 
+      cropTypeId: '1', 
+      cultivarId: '1', 
+      dryMatter: '22.3%', 
+      date: '2023-11-15', 
+      status: 'completed',
+      waterType: 'irrigated',
+      rowSpacing: 0.5,
+      estimatedYield: '23.1 t/ha',
+      totalYield: '94.7 tonnes',
+      feedingCapacity: '196 days',
+      stockCount: 58
+    },
+    { 
+      id: '8', 
+      locationId: '2', 
+      cropTypeId: '3', 
+      cultivarId: '4', 
+      dryMatter: '18.5%', 
+      date: '2023-10-08', 
+      status: 'completed',
+      waterType: 'irrigated',
+      rowSpacing: 0.45,
+      estimatedYield: '19.2 t/ha',
+      totalYield: '42.2 tonnes',
+      feedingCapacity: '84 days',
+      stockCount: 60
+    },
+    { 
+      id: '9', 
+      locationId: '1', 
+      cropTypeId: '2', 
+      cultivarId: '3', 
+      dryMatter: '20.1%', 
+      date: '2022-10-25', 
+      status: 'completed',
+      waterType: 'dryland',
+      rowSpacing: 0.5,
+      estimatedYield: '18.7 t/ha',
+      totalYield: '65.5 tonnes',
+      feedingCapacity: '145 days',
+      stockCount: 52
+    }
+  ],
+  reports: [
+    {
+      id: '1',
+      assessmentId: '1',
+      title: 'North Paddock Assessment',
+      type: 'basic',
+      created: '2025-05-08',
+      status: 'sent',
+      pages: 3,
+      recipients: 1,
+      cultivar: 'Brigadier',
+      season: '2024/2025'
+    },
+    {
+      id: '2',
+      assessmentId: '2',
+      title: 'Mid Paddock Overview',
+      type: 'advanced',
+      created: '2025-05-07',
+      status: 'sent',
+      pages: 4,
+      recipients: 2,
+      cultivar: 'Kyros',
+      season: '2024/2025'
+    },
+    {
+      id: '3',
+      assessmentId: '3',
+      title: 'South Paddock Analysis',
+      type: 'basic',
+      created: '2025-05-06',
+      status: 'sent',
+      pages: 5,
+      recipients: 3,
+      cultivar: 'Blizzard',
+      season: '2024/2025'
+    },
+    {
+      id: '4',
+      assessmentId: '5',
+      title: 'East Block November Report',
+      type: 'basic',
+      created: '2024-11-12',
+      status: 'sent',
+      pages: 3,
+      recipients: 2,
+      cultivar: 'Feldherr',
+      season: '2024/2025'
+    },
+    {
+      id: '5',
+      assessmentId: '6',
+      title: 'West Block Harvest Summary',
+      type: 'advanced',
+      created: '2024-09-22',
+      status: 'sent',
+      pages: 5,
+      recipients: 4,
+      cultivar: 'Kyros',
+      season: '2024/2025'
+    },
+    {
+      id: '6',
+      assessmentId: '7',
+      title: 'South Paddock 2023 Analysis',
+      type: 'basic',
+      created: '2023-11-15',
+      status: 'sent',
+      pages: 4,
+      recipients: 2,
+      cultivar: 'Brigadier',
+      season: '2023/2024'
+    },
+    {
+      id: '7',
+      assessmentId: '8',
+      title: 'Mid Paddock October Evaluation',
+      type: 'advanced',
+      created: '2023-10-08',
+      status: 'sent',
+      pages: 4,
+      recipients: 3,
+      cultivar: 'Blizzard',
+      season: '2023/2024'
+    },
+    {
+      id: '8',
+      assessmentId: '9',
+      title: 'North Paddock 2022 Assessment',
+      type: 'basic',
+      created: '2022-10-25',
+      status: 'sent',
+      pages: 3,
+      recipients: 2,
+      cultivar: 'Kyros',
+      season: '2022/2023'
+    },
+    {
+      id: '9',
+      assessmentId: '5',
+      title: 'East Block Supplementary Report',
+      type: 'advanced',
+      created: '2024-11-14',
+      status: 'draft',
+      pages: 6,
+      recipients: 0,
+      cultivar: 'Feldherr',
+      season: '2024/2025'
+    }
+  ],
+  // Mock storage for magic links tokens
+  magicLinkTokens: []
+};
+
+/**
+ * Simulate API delay
+ * @param {number} ms - Milliseconds to delay
+ * @returns {Promise}
+ */
+export const delay = (ms = 300) => new Promise(resolve => setTimeout(resolve, ms));

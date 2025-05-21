@@ -4,7 +4,7 @@ import { FormField, FormButton } from '../ui/form';
 import { useForm } from '../../hooks';
 import ErrorBoundary from '../utility/ErrorBoundary';
 import beetGuruWideLogo from '../../BeetGuruWide.png';
-import api from '../../services/api';
+import api from '../../services';
 
 /**
  * Initial Email Screen for Magic Link authentication

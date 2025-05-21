@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { ChevronDown, Filter, X, FileText, Calendar, Leaf, ArrowDownUp, Download } from 'lucide-react';
 import { logger } from '../../utils/logger';
 import AssessmentTable from '../ui/AssessmentTable';
-import api from '../../services/api';
+import api from '../../services';
 import { useApi } from '../../hooks';
 import { FormButton } from '../ui/form';
 

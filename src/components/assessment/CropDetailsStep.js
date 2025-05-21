@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FormField, FormButtonNav } from '../ui/form';
-import api from '../../services/api';
+import api from '../../services';
 import { useApi } from '../../hooks';
 import { logger } from '../../utils/logger';
 

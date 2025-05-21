@@ -4,7 +4,7 @@
  */
 
 // Import the original API - fixed import path
-import api from '../services/api';
+import api from './index';
 
 // Add more detailed report data functionality
 const enhancedReportsAPI = {

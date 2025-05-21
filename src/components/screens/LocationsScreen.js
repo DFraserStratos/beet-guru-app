@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, Plus, Edit, Trash } from 'lucide-react';
 import { useApi } from '../../hooks';
-import { referencesAPI } from '../../services/api';
+import { referencesAPI } from '../../services';
 import { FormButton } from '../ui/form';
 import LocationForm from './LocationForm';
 import ErrorBoundary from '../utility/ErrorBoundary';

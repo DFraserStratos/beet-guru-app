@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { PlusCircle, Calendar } from 'lucide-react';
 import LocationCard from '../ui/LocationCard';
-import api from '../../services/api';
+import api from '../../services';
 import { useApi } from '../../hooks';
 import { FormButton } from '../ui/form';
 
