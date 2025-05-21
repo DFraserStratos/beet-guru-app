@@ -30,9 +30,9 @@ const YieldRangeVisualization = ({
       <h3 className="text-lg font-medium text-gray-800 mb-2">Yield Estimate</h3>
       
       {/* Chart in white card */}
-      <div className="bg-white rounded-lg p-4 mb-4 shadow-sm">
+      <div className="bg-white rounded-lg p-6 mb-4 shadow-sm">
         {/* Chart container with grid lines */}
-        <div className="relative mb-8">
+        <div className="relative mb-12">
           {/* Grid lines */}
           <div className="absolute inset-0 grid grid-cols-6 w-full h-full" aria-hidden="true">
             <div className="border-l border-gray-200 h-full"></div>
@@ -46,15 +46,15 @@ const YieldRangeVisualization = ({
           <div className="flex flex-col gap-16 mb-2 relative">
             {/* Current Sample Bar */}
             <div className="flex items-center">
-              <div className="w-24 text-sm font-medium text-gray-700">Current</div>
+              <div className="w-24 text-sm font-medium text-gray-700 text-right pr-4">Current</div>
               <div className="flex-1 relative h-16">
                 {/* Bar for Current */}
                 <div 
-                  className="absolute bg-red-500 top-1/2 transform -translate-y-1/2 h-16"
+                  className="absolute bg-red-500 top-1/2 transform -translate-y-1/2 h-16 rounded"
                   style={{
                     width: `${getBarWidth(currentData.mean)}%`,
                     minWidth: '40px',
-                    marginLeft: '10%' // Offset to center the bars
+                    left: '0'
                   }}
                 >
                   <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-6 text-base font-medium text-gray-800">
@@ -66,15 +66,15 @@ const YieldRangeVisualization = ({
             
             {/* +5 Samples Bar */}
             <div className="flex items-center">
-              <div className="w-24 text-sm font-medium text-gray-700">+5 Samples</div>
+              <div className="w-24 text-sm font-medium text-gray-700 text-right pr-4">+5 Samples</div>
               <div className="flex-1 relative h-16">
                 {/* Bar for +5 Samples */}
                 <div 
-                  className="absolute bg-amber-500 top-1/2 transform -translate-y-1/2 h-16"
+                  className="absolute bg-amber-500 top-1/2 transform -translate-y-1/2 h-16 rounded"
                   style={{
                     width: `${getBarWidth(additionalData.mean)}%`,
                     minWidth: '40px',
-                    marginLeft: '10%' // Offset to center the bars
+                    left: '0'
                   }}
                 >
                   <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-6 text-base font-medium text-gray-800">
@@ -86,14 +86,14 @@ const YieldRangeVisualization = ({
           </div>
           
           {/* X-axis labels */}
-          <div className="flex justify-between text-xs text-gray-500 mt-4 relative" style={{ marginLeft: '10%', width: '80%' }}>
-            <div className="absolute left-0 -ml-2">11</div>
-            <div className="absolute left-1/4 -ml-2">17.0</div>
-            <div className="absolute right-0 -mr-2">23</div>
+          <div className="flex justify-between text-xs text-gray-500 mt-4">
+            <div className="text-left">11</div>
+            <div className="text-center">17.0</div>
+            <div className="text-right">23</div>
           </div>
           
           {/* X-axis title */}
-          <div className="text-sm text-gray-600 text-center mt-8">
+          <div className="text-sm text-gray-600 text-center mt-4">
             Total yield (t DM/ha)
           </div>
         </div>
@@ -102,7 +102,7 @@ const YieldRangeVisualization = ({
       {/* Statistical Values Display */}
       <div className="grid grid-cols-2 gap-4 text-sm mt-2">
         {/* Current Samples Column */}
-        <div className="bg-white p-4 rounded">
+        <div className="bg-gray-100 p-4 rounded-lg">
           <h4 className="font-medium text-green-700 mb-3">Current</h4>
           <div className="grid grid-cols-2 gap-y-2">
             <div className="text-gray-600">Mean:</div>
@@ -123,7 +123,7 @@ const YieldRangeVisualization = ({
         </div>
         
         {/* Additional Samples Column */}
-        <div className="bg-white p-4 rounded">
+        <div className="bg-gray-100 p-4 rounded-lg">
           <h4 className="font-medium text-amber-600 mb-3">+5 Samples</h4>
           <div className="grid grid-cols-2 gap-y-2">
             <div className="text-gray-600">Mean:</div>
