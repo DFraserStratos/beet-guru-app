@@ -14,6 +14,7 @@ import enhancedApi from '../../services/enhancedApi';
 import { FormButton } from '../ui/form';
 import PageContainer from '../layout/PageContainer';
 import ReportViewerSkeleton from '../ui/ReportViewerSkeleton';
+import YieldRangeVisualization from '../ui/YieldRangeVisualization';
 
 /**
  * Detailed report viewer component that displays a single report
@@ -90,6 +91,24 @@ const ReportViewerScreen = ({
       });
     } catch (error) {
       return dateString;
+    }
+  };
+
+  // Sample data for the yield visualization
+  const yieldVisualizationData = {
+    currentData: {
+      mean: 17.2,
+      upperLimit: 22.6,
+      lowerLimit: 11.8,
+      bulbYield: 14.3,
+      leafYield: 2.9
+    },
+    additionalData: {
+      mean: 18.0,
+      upperLimit: 21.4,
+      lowerLimit: 14.7,
+      bulbYield: 15.1,
+      leafYield: 2.9
     }
   };
 
@@ -308,53 +327,18 @@ const ReportViewerScreen = ({
             </div>
           </div>
           
-          {/* Yield Visualization */}
+          {/* Yield Visualization - Updated to use new component */}
           <div className="mt-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Yield Visualization</h3>
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">Yield Analysis</h2>
+            <p className="text-sm text-gray-600 mb-6">
+              The chart below shows your current yield estimate and how it might change with additional samples. 
+              More samples typically produce a more precise estimate (narrower confidence interval).
+            </p>
             
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <div className="h-64 flex items-center justify-center">
-                <div className="flex space-x-12 items-end h-full w-full max-w-md">
-                  {assessmentData.yieldBreakdown ? (
-                    <>
-                      <div className="flex flex-col items-center">
-                        <div className="bg-green-200 w-20 rounded-t" style={{ height: '30%' }}></div>
-                        <p className="mt-2 text-sm font-medium">Leaf</p>
-                        <p className="text-xs text-gray-500">{assessmentData.yieldBreakdown.leafYield}</p>
-                      </div>
-                      <div className="flex flex-col items-center">
-                        <div className="bg-green-500 w-20 rounded-t" style={{ height: '70%' }}></div>
-                        <p className="mt-2 text-sm font-medium">Bulb</p>
-                        <p className="text-xs text-gray-500">{assessmentData.yieldBreakdown.bulbYield}</p>
-                      </div>
-                      <div className="flex flex-col items-center">
-                        <div className="bg-green-700 w-20 rounded-t" style={{ height: '100%' }}></div>
-                        <p className="mt-2 text-sm font-medium">Total</p>
-                        <p className="text-xs text-gray-500">{assessmentData.yieldBreakdown.totalYield}</p>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="flex flex-col items-center">
-                        <div className="bg-green-200 w-20 rounded-t" style={{ height: '30%' }}></div>
-                        <p className="mt-2 text-sm font-medium">Leaf</p>
-                        <p className="text-xs text-gray-500">6.7 t/ha</p>
-                      </div>
-                      <div className="flex flex-col items-center">
-                        <div className="bg-green-500 w-20 rounded-t" style={{ height: '70%' }}></div>
-                        <p className="mt-2 text-sm font-medium">Bulb</p>
-                        <p className="text-xs text-gray-500">15.7 t/ha</p>
-                      </div>
-                      <div className="flex flex-col items-center">
-                        <div className="bg-green-700 w-20 rounded-t" style={{ height: '100%' }}></div>
-                        <p className="mt-2 text-sm font-medium">Total</p>
-                        <p className="text-xs text-gray-500">{assessmentData.estimatedYield}</p>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
+            <YieldRangeVisualization 
+              currentData={yieldVisualizationData.currentData}
+              additionalData={yieldVisualizationData.additionalData}
+            />
           </div>
         </div>
 
