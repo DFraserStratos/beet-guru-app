@@ -34,15 +34,11 @@ const YieldRangeVisualization = ({
     return value.toFixed(1);
   };
 
-  // Calculate the maximum value for scaling the bars
-  const maxValue = Math.max(
-    currentData.upperLimit, 
-    additionalData.upperLimit, 
-    40 // Minimum scale to match the desired look
-  );
+  // Calculate the maximum value for scaling the bars (40 as max value for consistent scaling)
+  const maxValue = 40;
   
-  // Calculate bar heights as percentages of maxValue
-  const getBarHeight = (value) => {
+  // Calculate bar widths as percentages of maxValue
+  const getBarWidth = (value) => {
     return (value / maxValue) * 100;
   };
   
@@ -63,130 +59,42 @@ const YieldRangeVisualization = ({
       
       {/* Bar Chart Visualization */}
       <div className="mb-8 pt-4">
-        <div className="flex flex-col gap-12">
+        <div className="flex flex-col gap-16 mb-2">
           {/* Current Sample Bar */}
           <div className="flex items-center">
             <div className="w-24 text-sm font-medium text-gray-700">Current</div>
-            <div className="flex-1 relative">
+            <div className="flex-1 relative h-16">
               {/* Bar for Current */}
-              <div className="h-16 flex items-center">
-                <div 
-                  className="absolute h-12 bg-green-500 rounded"
-                  style={{
-                    width: `${getBarHeight(currentData.mean)}%`,
-                    minWidth: '40px'
-                  }}
-                >
-                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-6 font-medium text-gray-800">
-                    {formatValue(currentData.mean)}
-                  </div>
-                </div>
-                
-                {/* Confidence Interval Line */}
-                <div 
-                  className="absolute h-0.5 bg-gray-300"
-                  style={{
-                    left: `${getBarHeight(currentData.lowerLimit)}%`,
-                    width: `${getBarHeight(currentData.upperLimit - currentData.lowerLimit)}%`,
-                    top: '6px'
-                  }}
-                >
-                  {/* Lower Limit Marker */}
-                  <div className="absolute left-0 h-2 w-0.5 bg-gray-300 -translate-y-1/2"></div>
-                  
-                  {/* Upper Limit Marker */}
-                  <div className="absolute right-0 h-2 w-0.5 bg-gray-300 -translate-y-1/2"></div>
+              <div 
+                className="absolute bg-red-500 top-1/2 transform -translate-y-1/2 h-16"
+                style={{
+                  width: `${getBarWidth(currentData.mean)}%`,
+                  minWidth: '40px'
+                }}
+              >
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-6 text-base font-medium text-gray-800">
+                  {formatValue(currentData.mean)}
                 </div>
               </div>
-              
-              {/* Component breakdown (conditional) */}
-              {activeView === 'components' && (
-                <div className="flex">
-                  <div 
-                    className="h-8 bg-green-700 rounded-l"
-                    style={{
-                      width: `${getBarHeight(currentData.bulbYield)}%`,
-                    }}
-                  >
-                    <div className="text-xs text-white text-center mt-2">
-                      Bulb: {formatValue(currentData.bulbYield)}
-                    </div>
-                  </div>
-                  <div 
-                    className="h-8 bg-green-300 rounded-r"
-                    style={{
-                      width: `${getBarHeight(currentData.leafYield)}%`,
-                    }}
-                  >
-                    <div className="text-xs text-green-800 text-center mt-2">
-                      Leaf: {formatValue(currentData.leafYield)}
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
           
           {/* +5 Samples Bar */}
           <div className="flex items-center">
             <div className="w-24 text-sm font-medium text-gray-700">+5 Samples</div>
-            <div className="flex-1 relative">
+            <div className="flex-1 relative h-16">
               {/* Bar for +5 Samples */}
-              <div className="h-16 flex items-center">
-                <div 
-                  className="absolute h-12 bg-amber-500 rounded"
-                  style={{
-                    width: `${getBarHeight(additionalData.mean)}%`,
-                    minWidth: '40px'
-                  }}
-                >
-                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-6 font-medium text-gray-800">
-                    {formatValue(additionalData.mean)}
-                  </div>
-                </div>
-                
-                {/* Confidence Interval Line */}
-                <div 
-                  className="absolute h-0.5 bg-gray-300"
-                  style={{
-                    left: `${getBarHeight(additionalData.lowerLimit)}%`,
-                    width: `${getBarHeight(additionalData.upperLimit - additionalData.lowerLimit)}%`,
-                    top: '6px'
-                  }}
-                >
-                  {/* Lower Limit Marker */}
-                  <div className="absolute left-0 h-2 w-0.5 bg-gray-300 -translate-y-1/2"></div>
-                  
-                  {/* Upper Limit Marker */}
-                  <div className="absolute right-0 h-2 w-0.5 bg-gray-300 -translate-y-1/2"></div>
+              <div 
+                className="absolute bg-amber-500 top-1/2 transform -translate-y-1/2 h-16"
+                style={{
+                  width: `${getBarWidth(additionalData.mean)}%`,
+                  minWidth: '40px'
+                }}
+              >
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-6 text-base font-medium text-gray-800">
+                  {formatValue(additionalData.mean)}
                 </div>
               </div>
-              
-              {/* Component breakdown (conditional) */}
-              {activeView === 'components' && (
-                <div className="flex">
-                  <div 
-                    className="h-8 bg-amber-700 rounded-l"
-                    style={{
-                      width: `${getBarHeight(additionalData.bulbYield)}%`,
-                    }}
-                  >
-                    <div className="text-xs text-white text-center mt-2">
-                      Bulb: {formatValue(additionalData.bulbYield)}
-                    </div>
-                  </div>
-                  <div 
-                    className="h-8 bg-amber-300 rounded-r"
-                    style={{
-                      width: `${getBarHeight(additionalData.leafYield)}%`,
-                    }}
-                  >
-                    <div className="text-xs text-amber-800 text-center mt-2">
-                      Leaf: {formatValue(additionalData.leafYield)}
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -200,11 +108,11 @@ const YieldRangeVisualization = ({
       </div>
       
       {/* Statistical Values Display */}
-      <div className="grid grid-cols-2 gap-2 text-sm">
+      <div className="grid grid-cols-2 gap-4 text-sm mt-8">
         {/* Current Samples Column */}
-        <div className="bg-gray-50 p-3 rounded">
-          <h4 className="font-medium text-green-700 mb-2">Current</h4>
-          <div className="grid grid-cols-2 gap-1">
+        <div className="bg-gray-50 p-4 rounded">
+          <h4 className="font-medium text-green-700 mb-3">Current</h4>
+          <div className="grid grid-cols-2 gap-y-2">
             <div className="text-gray-600">Mean:</div>
             <div className="text-right text-gray-900 font-medium">{formatValue(currentData.mean)}</div>
             
@@ -223,9 +131,9 @@ const YieldRangeVisualization = ({
         </div>
         
         {/* Additional Samples Column */}
-        <div className="bg-gray-50 p-3 rounded">
-          <h4 className="font-medium text-amber-600 mb-2">+5 Samples</h4>
-          <div className="grid grid-cols-2 gap-1">
+        <div className="bg-gray-50 p-4 rounded">
+          <h4 className="font-medium text-amber-600 mb-3">+5 Samples</h4>
+          <div className="grid grid-cols-2 gap-y-2">
             <div className="text-gray-600">Mean:</div>
             <div className="text-right text-gray-900 font-medium">{formatValue(additionalData.mean)}</div>
             
