@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import useValidation from './useValidation';
 
 /**
  * Hook for form handling with validation
@@ -9,54 +10,38 @@ import { useState } from 'react';
  */
 const useForm = (initialValues = {}, validate = () => ({}), onSubmit = () => {}) => {
   const [values, setValues] = useState(initialValues);
-  const [errors, setErrors] = useState({});
-  const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const {
+    errors,
+    touched,
+    handleBlur: validationBlur,
+    validateField,
+    touchAll,
+    resetValidation,
+  } = useValidation(validate);
   
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const fieldValue = type === 'checkbox' ? checked : value;
-    
-    setValues({
+
+    const newValues = {
       ...values,
-      [name]: fieldValue
-    });
-    
-    // Validate field if it's been touched
-    if (touched[name]) {
-      const validationErrors = validate({ ...values, [name]: fieldValue });
-      setErrors(validationErrors);
-    }
+      [name]: fieldValue,
+    };
+
+    setValues(newValues);
+    validateField(name, fieldValue, newValues);
   };
   
   const handleBlur = (e) => {
-    const { name } = e.target;
-    
-    setTouched({
-      ...touched,
-      [name]: true
-    });
-    
-    // Validate on blur
-    const validationErrors = validate(values);
-    setErrors(validationErrors);
+    validationBlur(e, values);
   };
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Mark all fields as touched
-    const touchedFields = {};
-    Object.keys(values).forEach(key => {
-      touchedFields[key] = true;
-    });
-    setTouched(touchedFields);
-    
-    // Validate all fields
-    const validationErrors = validate(values);
-    setErrors(validationErrors);
-    
-    // If no errors, submit
+
+    const validationErrors = touchAll(values);
+
     if (Object.keys(validationErrors).length === 0) {
       setIsSubmitting(true);
       onSubmit(values, () => setIsSubmitting(false));
@@ -65,8 +50,7 @@ const useForm = (initialValues = {}, validate = () => ({}), onSubmit = () => {})
   
   const resetForm = () => {
     setValues(initialValues);
-    setErrors({});
-    setTouched({});
+    resetValidation();
     setIsSubmitting(false);
   };
   

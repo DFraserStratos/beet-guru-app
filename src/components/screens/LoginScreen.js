@@ -109,7 +109,7 @@ const LoginScreen = ({ onLogin, onRegister }) => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 error={errors.email}
-                touched={true}
+                touched={touched.email}
                 icon={<User size={18} className="text-gray-400" />}
               />
               
@@ -122,7 +122,7 @@ const LoginScreen = ({ onLogin, onRegister }) => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 error={errors.password}
-                touched={true}
+                touched={touched.password}
                 icon={<Lock size={18} className="text-gray-400" />}
               />
               

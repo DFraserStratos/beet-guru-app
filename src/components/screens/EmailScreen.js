@@ -125,7 +125,7 @@ const EmailScreen = ({ onEmailSubmit, onRegister, onKnownUser, onNewUser }) => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 error={errors.email}
-                touched={true}
+                touched={touched.email}
                 icon={<Mail size={18} className="text-gray-400" />}
               />
               

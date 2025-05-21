@@ -94,8 +94,39 @@ src/
 #### Custom Hooks
 - **useDeviceDetection**: Detects device type based on screen width
 - **useForm**: Handles form state, validation, and submission
+- **useValidation**: Provides consistent error handling for forms
 - **useLocalStorage**: Persists state in localStorage
 - **useApi**: Handles API calls with loading and error states
+
+Example usage of `useForm` with built-in `useValidation`:
+
+```javascript
+const validate = (vals) => {
+  const errs = {};
+  if (!vals.email) errs.email = 'Required';
+  return errs;
+};
+
+const {
+  values,
+  errors,
+  touched,
+  handleChange,
+  handleBlur,
+  handleSubmit,
+} = useForm({ email: '' }, validate, (vals) => console.log(vals));
+
+// In JSX
+<form onSubmit={handleSubmit}>
+  <input
+    name="email"
+    value={values.email}
+    onChange={handleChange}
+    onBlur={handleBlur}
+  />
+  {touched.email && errors.email && <span>{errors.email}</span>}
+</form>
+```
 
 ## State Management
 
