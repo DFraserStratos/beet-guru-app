@@ -34,6 +34,9 @@ function App() {
   // Magic link authentication data
   const [currentEmail, setCurrentEmail] = useState('');
   
+  // Add state for selected persona
+  const [selectedPersona, setSelectedPersona] = useState(null);
+  
   // Add state for selected location or draft assessment
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [draftAssessment, setDraftAssessment] = useState(null);
@@ -73,14 +76,27 @@ function App() {
   };
   
   const handleLogin = (userData) => {
-    setUser(userData);
+    // If we have a selected persona, use that instead of the provided userData
+    // This ensures consistency with the persona selected during the email step
+    const userToSet = selectedPersona || userData;
+    setUser(userToSet);
     setActiveScreen('home');
+    // Reset the selected persona
+    setSelectedPersona(null);
   };
   
   const handleLogout = () => {
     setUser(null);
     setAuthScreen('email');
     setCurrentEmail('');
+    setSelectedPersona(null);
+  };
+  
+  // Handler for selecting a persona
+  const handleSelectPersona = (persona) => {
+    setSelectedPersona(persona);
+    // Also update the current email to match the persona's email
+    setCurrentEmail(persona.email);
   };
   
   // Magic link authentication handlers
@@ -117,6 +133,7 @@ function App() {
               onEmailSubmit={handleEmailSubmit} 
               onKnownUser={handleEmailContinue}
               onNewUser={handleRegisterClick}
+              onSelectPersona={handleSelectPersona}
             />
           </ErrorBoundary>
         );
@@ -140,6 +157,7 @@ function App() {
               onBack={handleBackToEmail}
               onLogin={handleLogin}
               onRegister={handleRegisterClick}
+              selectedPersona={selectedPersona}
             />
           </ErrorBoundary>
         );
@@ -151,6 +169,7 @@ function App() {
               onBack={handleBackToEmail} 
               onComplete={handleLogin}
               prefillEmail={currentEmail}
+              selectedPersona={selectedPersona}
             />
           </ErrorBoundary>
         );
@@ -159,7 +178,11 @@ function App() {
       case 'login':
         return (
           <ErrorBoundary>
-            <LoginScreen onLogin={handleLogin} onRegister={() => setAuthScreen('register')} />
+            <LoginScreen 
+              onLogin={handleLogin} 
+              onRegister={() => setAuthScreen('register')}
+              selectedPersona={selectedPersona}
+            />
           </ErrorBoundary>
         );
       
@@ -170,6 +193,7 @@ function App() {
               onEmailSubmit={handleEmailSubmit} 
               onKnownUser={handleEmailContinue}
               onNewUser={handleRegisterClick}
+              onSelectPersona={handleSelectPersona}
             />
           </ErrorBoundary>
         );
