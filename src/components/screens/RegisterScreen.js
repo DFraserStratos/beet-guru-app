@@ -6,7 +6,7 @@ import { PrimaryButton } from '../ui/buttons';
 import PageContainer from '../layout/PageContainer';
 import { cn } from '../../utils/cn';
 
-const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
+const RegisterScreen = ({ onBack, onComplete, prefillEmail = '', selectedPersona = null }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: prefillEmail || '',
@@ -51,16 +51,33 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
   const getUserTypeButtonClasses = (type) =>
     cn(formData.userType !== type && userTypeUnselectedClass);
   
+  // Use the selected persona data if available
   const fillFormWithSampleData = () => {
-    setFormData({
-      name: 'Donald',
-      email: prefillEmail || 'donald@stp.co.nz',
-      password: 'password',
-      confirmPassword: 'password',
-      userType: 'farmer',
-      subscribeToNews: true,
-      agreeToTerms: true
-    });
+    if (selectedPersona) {
+      // Determine user type based on role
+      const userType = selectedPersona.role.toLowerCase().includes('farm') ? 'farmer' : 'retailer';
+      
+      setFormData({
+        name: selectedPersona.name,
+        email: selectedPersona.email,
+        password: 'password',
+        confirmPassword: 'password',
+        userType: userType,
+        subscribeToNews: true,
+        agreeToTerms: true
+      });
+    } else {
+      // Fallback to default sample data
+      setFormData({
+        name: 'Donald',
+        email: prefillEmail || 'donald@example.co.nz',
+        password: 'password',
+        confirmPassword: 'password',
+        userType: 'farmer',
+        subscribeToNews: true,
+        agreeToTerms: true
+      });
+    }
     setFormFilled(true);
   };
   
@@ -78,7 +95,13 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
       email: formData.email,
       name: formData.name,
       role: formData.userType === 'farmer' ? 'Farm Manager' : 'Retail Consultant',
-      initials: formData.name ? formData.name.split(' ').map(n => n && n[0]).join('') : 'D'
+      initials: formData.name ? formData.name.split(' ').map(n => n && n[0]).join('') : 'D',
+      // Include additional fields from the selected persona if available
+      ...(selectedPersona ? {
+        farmName: selectedPersona.farmName,
+        location: selectedPersona.location,
+        gender: selectedPersona.gender
+      } : {})
     });
   };
   
@@ -93,7 +116,13 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
         email: formData.email,
         name: formData.name,
         role: formData.userType === 'farmer' ? 'Farm Manager' : 'Retail Consultant',
-        initials: formData.name ? formData.name.split(' ').map(n => n && n[0]).join('') : 'D'
+        initials: formData.name ? formData.name.split(' ').map(n => n && n[0]).join('') : 'D',
+        // Include additional fields from the selected persona if available
+        ...(selectedPersona ? {
+          farmName: selectedPersona.farmName,
+          location: selectedPersona.location,
+          gender: selectedPersona.gender
+        } : {})
       });
     }
   };
@@ -241,6 +270,12 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
               >
                 {formFilled ? 'Complete Registration' : 'Continue'}
               </FormButton>
+              
+              {selectedPersona && !formFilled && (
+                <p className="text-xs text-gray-500 mt-1 text-center">
+                  Click to fill with {selectedPersona.name}'s information
+                </p>
+              )}
             </div>
           </form>
         </div>
