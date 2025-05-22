@@ -27,7 +27,7 @@ const YieldRangeVisualization = ({
   },
   className 
 }) => {
-  // Scale configuration
+  // Scale configuration - adjust to accommodate the data
   const minValue = 11;
   const maxValue = 23;
   const range = maxValue - minValue;
@@ -40,13 +40,13 @@ const YieldRangeVisualization = ({
   // Calculate bar properties
   const currentBar = {
     start: getPercentage(currentData.lowerLimit),
-    width: getPercentage(currentData.upperLimit) - getPercentage(currentData.lowerLimit),
+    end: getPercentage(currentData.upperLimit),
     meanPosition: getPercentage(currentData.mean)
   };
   
   const additionalBar = {
     start: getPercentage(additionalData.lowerLimit),
-    width: getPercentage(additionalData.upperLimit) - getPercentage(additionalData.lowerLimit),
+    end: getPercentage(additionalData.upperLimit),
     meanPosition: getPercentage(additionalData.mean)
   };
   
@@ -93,13 +93,18 @@ const YieldRangeVisualization = ({
               <div className="relative h-full flex flex-col justify-around py-4">
                 {/* Current Bar */}
                 <div className="relative h-8">
+                  {/* Bar background (full width for context) */}
+                  <div className="absolute h-full w-full opacity-5 bg-gray-400" />
+                  
+                  {/* Actual confidence interval bar */}
                   <div
                     className="absolute h-full bg-green-500 rounded"
                     style={{
                       left: `${currentBar.start}%`,
-                      width: `${currentBar.width}%`
+                      width: `${currentBar.end - currentBar.start}%`
                     }}
                   />
+                  
                   {/* Mean value label */}
                   <div
                     className="absolute -top-6 transform -translate-x-1/2 text-sm font-medium text-gray-700"
@@ -111,13 +116,18 @@ const YieldRangeVisualization = ({
                 
                 {/* Additional Samples Bar */}
                 <div className="relative h-8">
+                  {/* Bar background (full width for context) */}
+                  <div className="absolute h-full w-full opacity-5 bg-gray-400" />
+                  
+                  {/* Actual confidence interval bar */}
                   <div
                     className="absolute h-full bg-blue-400 rounded"
                     style={{
                       left: `${additionalBar.start}%`,
-                      width: `${additionalBar.width}%`
+                      width: `${additionalBar.end - additionalBar.start}%`
                     }}
                   />
+                  
                   {/* Mean value label */}
                   <div
                     className="absolute -top-6 transform -translate-x-1/2 text-sm font-medium text-gray-700"
