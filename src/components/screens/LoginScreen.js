@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { User, Lock, ArrowRight } from 'lucide-react';
 import { FormField, FormButton } from '../ui/form';
 import { useForm } from '../../hooks';
@@ -12,7 +12,7 @@ import PageContainer from '../layout/PageContainer';
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const LoginScreen = ({ onLogin, onRegister }) => {
+const LoginScreen = ({ onLogin, onRegister, selectedPersona }) => {
   const [formFilled, setFormFilled] = useState(false);
   
   // Form validation
@@ -46,32 +46,48 @@ const LoginScreen = ({ onLogin, onRegister }) => {
     handleLogin
   );
   
-  // Fill form with sample data
+  // Fill form with sample data from selected persona if available
   const fillFormWithSampleData = () => {
-    setValues({
-      email: 'john.doe@example.com',
-      password: 'password',
-      rememberMe: false
-    });
+    if (selectedPersona) {
+      // Use the selected persona's email
+      setValues({
+        email: selectedPersona.email,
+        password: 'password',
+        rememberMe: false
+      });
+    } else {
+      // Fallback to default values
+      setValues({
+        email: 'john.doe@example.com',
+        password: 'password',
+        rememberMe: false
+      });
+    }
     setFormFilled(true);
   };
   
   // Handle login submission
   function handleLogin(formValues) {
-    // First click: Fill in fake credentials
+    // First click: Fill in credentials
     if (!formFilled) {
       fillFormWithSampleData();
       return;
     }
     
     // Second click: Actually log in
-    onLogin({ 
-      id: '1',  // Make sure this matches the userId in the mock locations
-      email: formValues.email, 
-      name: 'John Doe', 
-      role: 'Farm Manager',
-      initials: 'JD'
-    });
+    if (selectedPersona) {
+      // Use the selected persona data
+      onLogin(selectedPersona);
+    } else {
+      // Fallback to default user data
+      onLogin({ 
+        id: '1',
+        email: formValues.email, 
+        name: 'John Doe', 
+        role: 'Farm Manager',
+        initials: 'JD'
+      });
+    }
   }
   
   // Handle continue button click
@@ -153,6 +169,12 @@ const LoginScreen = ({ onLogin, onRegister }) => {
               >
                 {formFilled ? 'Sign in' : 'Continue'}
               </FormButton>
+              
+              {selectedPersona && !formFilled && (
+                <p className="text-xs text-gray-500 mt-1 text-center">
+                  Click to sign in as {selectedPersona.name}
+                </p>
+              )}
             </form>
             
             <div className="mt-6">
@@ -179,7 +201,7 @@ const LoginScreen = ({ onLogin, onRegister }) => {
         </div>
         
         <div className="mt-8 text-center text-sm text-gray-500">
-          <p>Beet Guru v1.0.0 • © 2025 Beet Guru Ltd.</p>
+          <p>Beet Guru v1.1.0 • © 2025 Beet Guru Ltd.</p>
         </div>
       </ErrorBoundary>
     </PageContainer>
