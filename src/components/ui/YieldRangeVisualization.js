@@ -27,9 +27,27 @@ const YieldRangeVisualization = ({
   },
   className 
 }) => {
-  // Scale configuration - adjust to accommodate the data
-  const minValue = 11;
-  const maxValue = 23;
+  // Determine the scale dynamically based on the data
+  const allValues = [
+    currentData.upperLimit,
+    currentData.lowerLimit,
+    additionalData.upperLimit,
+    additionalData.lowerLimit
+  ];
+  
+  const dataMin = Math.min(...allValues);
+  const dataMax = Math.max(...allValues);
+  
+  // Add some padding to the scale
+  const padding = (dataMax - dataMin) * 0.1;
+  const scaleMin = Math.floor(dataMin - padding);
+  const scaleMax = Math.ceil(dataMax + padding);
+  
+  // Ensure we have nice round numbers for the scale
+  const minValue = Math.floor(scaleMin / 5) * 5; // Round down to nearest 5
+  const maxValue = Math.ceil(scaleMax / 5) * 5;  // Round up to nearest 5
+  const midValue = Math.round((minValue + maxValue) / 2);
+  
   const range = maxValue - minValue;
   
   // Calculate percentage position for a value on the scale
@@ -52,9 +70,9 @@ const YieldRangeVisualization = ({
   
   // Grid line positions
   const gridLines = [
-    { value: 11, position: 0 },
-    { value: 17.0, position: getPercentage(17) },
-    { value: 23, position: 100 }
+    { value: minValue, position: 0 },
+    { value: midValue, position: 50 },
+    { value: maxValue, position: 100 }
   ];
 
   return (
