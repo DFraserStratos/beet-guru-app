@@ -14,6 +14,7 @@ import enhancedApi from '../../services/enhancedApi';
 import { FormButton } from '../ui/form';
 import PageContainer from '../layout/PageContainer';
 import ReportViewerSkeleton from '../ui/ReportViewerSkeleton';
+import YieldRangeVisualization from '../ui/YieldRangeVisualization';
 
 /**
  * Detailed report viewer component that displays a single report
@@ -93,6 +94,59 @@ const ReportViewerScreen = ({
     }
   };
 
+  // Prepare data for YieldRangeVisualization
+  const getYieldVisualizationData = () => {
+    // Default data based on the reference image
+    const currentData = {
+      mean: 17.2,
+      upperLimit: 22.6,
+      lowerLimit: 11.8,
+      bulbYield: 14.3,
+      leafYield: 2.9
+    };
+
+    const additionalData = {
+      mean: 18.0,
+      upperLimit: 21.4,
+      lowerLimit: 14.7,
+      bulbYield: 15.1,
+      leafYield: 2.9
+    };
+
+    // If we have actual yield breakdown data, use it
+    if (assessmentData?.yieldBreakdown) {
+      const { bulbYield, leafYield, totalYield } = assessmentData.yieldBreakdown;
+      
+      // Parse yield values (remove units)
+      const parseYield = (yieldStr) => {
+        const match = yieldStr.match(/(\d+\.?\d*)/);
+        return match ? parseFloat(match[1]) : 0;
+      };
+
+      const bulbValue = parseYield(bulbYield);
+      const leafValue = parseYield(leafYield);
+      const totalValue = parseYield(totalYield);
+
+      // Update current data with actual values
+      currentData.bulbYield = bulbValue;
+      currentData.leafYield = leafValue;
+      currentData.mean = totalValue;
+      
+      // Estimate confidence intervals (±30% for current, ±20% for additional samples)
+      currentData.upperLimit = totalValue * 1.3;
+      currentData.lowerLimit = totalValue * 0.7;
+      
+      // Additional samples data (slight improvement)
+      additionalData.mean = totalValue * 1.05;
+      additionalData.bulbYield = bulbValue * 1.05;
+      additionalData.leafYield = leafValue;
+      additionalData.upperLimit = additionalData.mean * 1.2;
+      additionalData.lowerLimit = additionalData.mean * 0.8;
+    }
+
+    return { currentData, additionalData };
+  };
+
   // Loading state
   if (loadingReport || loadingAssessment) {
     return <ReportViewerSkeleton />;
@@ -127,6 +181,8 @@ const ReportViewerScreen = ({
       </div>
     );
   }
+
+  const { currentData, additionalData } = getYieldVisualizationData();
 
   return (
     <PageContainer>
@@ -308,53 +364,13 @@ const ReportViewerScreen = ({
             </div>
           </div>
           
-          {/* Yield Visualization */}
+          {/* Yield Range Visualization */}
           <div className="mt-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Yield Visualization</h3>
-            
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <div className="h-64 flex items-center justify-center">
-                <div className="flex space-x-12 items-end h-full w-full max-w-md">
-                  {assessmentData.yieldBreakdown ? (
-                    <>
-                      <div className="flex flex-col items-center">
-                        <div className="bg-green-200 w-20 rounded-t" style={{ height: '30%' }}></div>
-                        <p className="mt-2 text-sm font-medium">Leaf</p>
-                        <p className="text-xs text-gray-500">{assessmentData.yieldBreakdown.leafYield}</p>
-                      </div>
-                      <div className="flex flex-col items-center">
-                        <div className="bg-green-500 w-20 rounded-t" style={{ height: '70%' }}></div>
-                        <p className="mt-2 text-sm font-medium">Bulb</p>
-                        <p className="text-xs text-gray-500">{assessmentData.yieldBreakdown.bulbYield}</p>
-                      </div>
-                      <div className="flex flex-col items-center">
-                        <div className="bg-green-700 w-20 rounded-t" style={{ height: '100%' }}></div>
-                        <p className="mt-2 text-sm font-medium">Total</p>
-                        <p className="text-xs text-gray-500">{assessmentData.yieldBreakdown.totalYield}</p>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="flex flex-col items-center">
-                        <div className="bg-green-200 w-20 rounded-t" style={{ height: '30%' }}></div>
-                        <p className="mt-2 text-sm font-medium">Leaf</p>
-                        <p className="text-xs text-gray-500">6.7 t/ha</p>
-                      </div>
-                      <div className="flex flex-col items-center">
-                        <div className="bg-green-500 w-20 rounded-t" style={{ height: '70%' }}></div>
-                        <p className="mt-2 text-sm font-medium">Bulb</p>
-                        <p className="text-xs text-gray-500">15.7 t/ha</p>
-                      </div>
-                      <div className="flex flex-col items-center">
-                        <div className="bg-green-700 w-20 rounded-t" style={{ height: '100%' }}></div>
-                        <p className="mt-2 text-sm font-medium">Total</p>
-                        <p className="text-xs text-gray-500">{assessmentData.estimatedYield}</p>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
+            <YieldRangeVisualization 
+              currentData={currentData}
+              additionalData={additionalData}
+              className="bg-transparent p-0"
+            />
           </div>
         </div>
 
