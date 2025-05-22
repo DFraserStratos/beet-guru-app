@@ -4,6 +4,8 @@
  * when backend integration is implemented
  */
 
+import personas from './personas';
+
 // Base API configuration
 const API_BASE_URL = process.env.REACT_APP_API_URL || '';
 const API_TIMEOUT = 8000; // 8 seconds timeout
@@ -50,10 +52,12 @@ const apiRequest = async (endpoint, options = {}) => {
 
 // Mock data store (will be replaced by actual API calls)
 const mockData = {
-  users: [
-    { id: '1', name: 'John Doe', email: 'john.doe@example.com', role: 'Farm Manager' },
-    { id: '2', name: 'Donald', email: 'donald@example.co.nz', role: 'Farm Manager' }
-  ],
+  // Replace users with personas for authentication
+  users: personas,
+  
+  // Store the last selected persona to avoid selecting the same one twice in a row
+  lastSelectedPersonaId: null,
+  
   locations: [
     { 
       id: '1', 
@@ -381,6 +385,24 @@ const delay = (ms = 300) => new Promise(resolve => setTimeout(resolve, ms));
  * Auth API
  */
 export const authAPI = {
+  // New method to get a random persona
+  getRandomPersona: async () => {
+    await delay();
+    
+    // Get a random persona that's different from the last selected one
+    const availablePersonas = mockData.lastSelectedPersonaId 
+      ? mockData.users.filter(p => p.id !== mockData.lastSelectedPersonaId)
+      : mockData.users;
+    
+    const randomIndex = Math.floor(Math.random() * availablePersonas.length);
+    const selectedPersona = availablePersonas[randomIndex];
+    
+    // Store the selected persona ID to avoid selecting it again next time
+    mockData.lastSelectedPersonaId = selectedPersona.id;
+    
+    return selectedPersona;
+  },
+  
   login: async (email, password) => {
     await delay();
     const user = mockData.users.find(u => u.email === email);
@@ -409,8 +431,7 @@ export const authAPI = {
     return { success: true };
   },
   
-  // New methods for magic link authentication
-  
+  // Modified to work with personas
   checkEmailExists: async (email) => {
     await delay();
     const user = mockData.users.find(u => u.email === email);
