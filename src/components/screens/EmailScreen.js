@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Mail, ArrowRight } from 'lucide-react';
 import { FormField, FormButton } from '../ui/form';
 import { useForm } from '../../hooks';
@@ -12,9 +12,25 @@ import PageContainer from '../layout/PageContainer';
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const EmailScreen = ({ onEmailSubmit, onRegister, onKnownUser, onNewUser }) => {
+const EmailScreen = ({ onEmailSubmit, onRegister, onKnownUser, onNewUser, onSelectPersona }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [formFilled, setFormFilled] = useState(false);
+  const [selectedPersona, setSelectedPersona] = useState(null);
+  
+  // Select a random persona when the component mounts
+  useEffect(() => {
+    const getRandomPersona = async () => {
+      try {
+        const persona = await api.auth.getRandomPersona();
+        setSelectedPersona(persona);
+        console.log('Selected random persona:', persona.name);
+      } catch (error) {
+        console.error('Error getting random persona:', error);
+      }
+    };
+    
+    getRandomPersona();
+  }, []);
   
   // Form validation
   const validateEmail = (values) => {
@@ -43,10 +59,11 @@ const EmailScreen = ({ onEmailSubmit, onRegister, onKnownUser, onNewUser }) => {
     handleFormSubmit
   );
   
-  // Fill form with sample data
+  // Fill form with persona email
   const fillFormWithSampleData = () => {
+    // Use the selected persona's email if available, fall back to default if not
     setValues({
-      email: 'john.doe@example.com'
+      email: selectedPersona?.email || 'john.doe@example.com'
     });
     setFormFilled(true);
   };
@@ -69,6 +86,12 @@ const EmailScreen = ({ onEmailSubmit, onRegister, onKnownUser, onNewUser }) => {
       // Pass the email to parent
       onEmailSubmit(formValues.email);
       
+      // If we have a selected persona and its email matches the form email,
+      // pass the persona to the parent component
+      if (selectedPersona && selectedPersona.email === formValues.email) {
+        onSelectPersona(selectedPersona);
+      }
+      
       // Redirect based on whether the user exists
       if (checkResult.exists) {
         onKnownUser(); // Redirect to magic link sent screen for login flow
@@ -78,11 +101,18 @@ const EmailScreen = ({ onEmailSubmit, onRegister, onKnownUser, onNewUser }) => {
     } catch (error) {
       console.error('Error checking email:', error);
       // For demo purposes, just simulate the flow
-      if (formValues.email === 'john.doe@example.com' || formValues.email.includes('example.com')) {
-        onEmailSubmit(formValues.email);
+      onEmailSubmit(formValues.email);
+      
+      // If we have a selected persona and its email matches the form email,
+      // pass the persona to the parent component
+      if (selectedPersona && selectedPersona.email === formValues.email) {
+        onSelectPersona(selectedPersona);
+      }
+      
+      // Use email pattern to determine if it's an existing user (for demo purposes)
+      if (formValues.email.includes('example.com')) {
         onKnownUser();
       } else {
-        onEmailSubmit(formValues.email);
         onNewUser();
       }
     } finally {
