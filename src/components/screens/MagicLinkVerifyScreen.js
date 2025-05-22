@@ -10,23 +10,39 @@ import PageContainer from '../layout/PageContainer';
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const MagicLinkVerifyScreen = ({ email, onBack, onLogin, onRegister }) => {
-  // Handle login demo - immediately login
+const MagicLinkVerifyScreen = ({ email, onBack, onLogin, onRegister, selectedPersona }) => {
+  // Handle login demo - immediately login with selected persona or fallback
   const handleLoginDemo = () => {
-    // Simulate existing user login with John Doe data
-    onLogin({ 
-      id: '1',
-      email: email || 'john.doe@example.com', 
-      name: 'John Doe', 
-      role: 'Farm Manager',
-      initials: 'JD'
-    });
+    if (selectedPersona) {
+      // Use the selected persona data
+      onLogin(selectedPersona);
+    } else {
+      // Fallback to default user data
+      onLogin({ 
+        id: '1',
+        email: email || 'john.doe@example.com', 
+        name: 'John Doe', 
+        role: 'Farm Manager',
+        initials: 'JD'
+      });
+    }
   };
   
   // Handle registration demo - immediately go to registration
   const handleRegisterDemo = () => {
     // Redirect to registration form with email pre-filled
-    onRegister(email || 'john.doe@example.com');
+    onRegister(email || selectedPersona?.email || 'john.doe@example.com');
+  };
+  
+  // Get the name of the user for display
+  const getUserDisplayName = () => {
+    if (selectedPersona) {
+      return selectedPersona.name;
+    } else if (email) {
+      return email.split('@')[0]; // Use the first part of the email as a name
+    } else {
+      return 'John Doe';
+    }
   };
   
   return (
@@ -77,7 +93,9 @@ const MagicLinkVerifyScreen = ({ email, onBack, onLogin, onRegister }) => {
                     Demo: Existing User Login
                   </FormButton>
                   <p className="text-xs text-gray-500 mt-1">
-                    Simulates the login flow for a returning user
+                    {selectedPersona 
+                      ? `Logs in as ${selectedPersona.name}`
+                      : 'Simulates the login flow for a returning user'}
                   </p>
                 </div>
                 
@@ -92,7 +110,9 @@ const MagicLinkVerifyScreen = ({ email, onBack, onLogin, onRegister }) => {
                     Demo: New User Registration
                   </FormButton>
                   <p className="text-xs text-gray-500 mt-1">
-                    Simulates the registration flow for a new user
+                    {selectedPersona 
+                      ? `Pre-fills registration form with ${selectedPersona.name}'s info`
+                      : 'Simulates the registration flow for a new user'}
                   </p>
                 </div>
               </div>
