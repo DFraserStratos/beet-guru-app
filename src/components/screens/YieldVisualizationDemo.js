@@ -7,38 +7,58 @@ import PageContainer from '../components/layout/PageContainer';
  * Demo screen to showcase the YieldRangeVisualization component
  */
 const YieldVisualizationDemo = ({ isMobile }) => {
-  // Example data for demonstration
-  const currentData = {
-    mean: 17.2,
-    upperLimit: 22.6,
-    lowerLimit: 11.8,
-    bulbYield: 14.3,
-    leafYield: 2.9
+  // Example data for demonstration - matching the screenshot
+  const screenshotData = {
+    current: {
+      mean: 22.4,
+      upperLimit: 29.1,
+      lowerLimit: 15.7,
+      bulbYield: 15.7,
+      leafYield: 6.7
+    },
+    additional: {
+      mean: 23.5,
+      upperLimit: 28.2,
+      lowerLimit: 18.8,
+      bulbYield: 16.5,
+      leafYield: 6.7
+    }
   };
 
-  const additionalData = {
-    mean: 18.0,
-    upperLimit: 21.4,
-    lowerLimit: 14.7,
-    bulbYield: 15.1,
-    leafYield: 2.9
+  // Original default data
+  const defaultData = {
+    current: {
+      mean: 17.2,
+      upperLimit: 22.6,
+      lowerLimit: 11.8,
+      bulbYield: 14.3,
+      leafYield: 2.9
+    },
+    additional: {
+      mean: 18.0,
+      upperLimit: 21.4,
+      lowerLimit: 14.7,
+      bulbYield: 15.1,
+      leafYield: 2.9
+    }
   };
 
   // Alternative example with different values
-  const alternativeCurrentData = {
-    mean: 15.5,
-    upperLimit: 19.2,
-    lowerLimit: 11.8,
-    bulbYield: 12.8,
-    leafYield: 2.7
-  };
-
-  const alternativeAdditionalData = {
-    mean: 16.3,
-    upperLimit: 18.1,
-    lowerLimit: 14.5,
-    bulbYield: 13.5,
-    leafYield: 2.8
+  const alternativeData = {
+    current: {
+      mean: 15.5,
+      upperLimit: 19.2,
+      lowerLimit: 11.8,
+      bulbYield: 12.8,
+      leafYield: 2.7
+    },
+    additional: {
+      mean: 16.3,
+      upperLimit: 18.1,
+      lowerLimit: 14.5,
+      bulbYield: 13.5,
+      leafYield: 2.8
+    }
   };
 
   return (
@@ -51,21 +71,39 @@ const YieldVisualizationDemo = ({ isMobile }) => {
         </p>
       </Card>
 
+      {/* Screenshot Example */}
+      <div className="mb-8">
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">Example 1: Screenshot Values (Extended Scale)</h2>
+        <p className="text-sm text-gray-600 mb-4">
+          This example uses the exact values from the screenshot. Note how the scale extends beyond 23 to accommodate the data.
+        </p>
+        <YieldRangeVisualization 
+          currentData={screenshotData.current}
+          additionalData={screenshotData.additional}
+        />
+      </div>
+
       {/* Default Example */}
       <div className="mb-8">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">Example 1: Default Values</h2>
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">Example 2: Default Values (Standard Scale)</h2>
+        <p className="text-sm text-gray-600 mb-4">
+          This example shows data that fits within the standard 11-23 scale.
+        </p>
         <YieldRangeVisualization 
-          currentData={currentData}
-          additionalData={additionalData}
+          currentData={defaultData.current}
+          additionalData={defaultData.additional}
         />
       </div>
 
       {/* Alternative Example */}
       <div className="mb-8">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">Example 2: Lower Yield Scenario</h2>
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">Example 3: Lower Yield Scenario</h2>
+        <p className="text-sm text-gray-600 mb-4">
+          This example demonstrates how the visualization clearly shows the narrowing of confidence intervals with additional samples.
+        </p>
         <YieldRangeVisualization 
-          currentData={alternativeCurrentData}
-          additionalData={alternativeAdditionalData}
+          currentData={alternativeData.current}
+          additionalData={alternativeData.additional}
         />
       </div>
 
@@ -117,11 +155,15 @@ const MyComponent = () => {
           </li>
           <li className="flex items-start">
             <span className="text-green-500 mr-2">✓</span>
-            Clear labeling with mean values displayed above bars
+            Clear labeling with mean values positioned at their actual location
           </li>
           <li className="flex items-start">
             <span className="text-green-500 mr-2">✓</span>
-            Grid lines for easy value reading
+            Grid lines at key reference points (11, 17, and max)
+          </li>
+          <li className="flex items-start">
+            <span className="text-green-500 mr-2">✓</span>
+            Dynamic scale that extends when data exceeds standard range
           </li>
           <li className="flex items-start">
             <span className="text-green-500 mr-2">✓</span>
@@ -133,7 +175,7 @@ const MyComponent = () => {
           </li>
           <li className="flex items-start">
             <span className="text-green-500 mr-2">✓</span>
-            Accepts custom className for additional styling
+            Clearly shows narrowing of confidence interval with more samples
           </li>
         </ul>
       </Card>
