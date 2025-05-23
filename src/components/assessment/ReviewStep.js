@@ -2,6 +2,7 @@ import React from 'react';
 import { FormButtonNav } from '../ui/form';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
+import YieldRangeVisualization from '../ui/YieldRangeVisualization';
 
 /**
  * Fourth and final step of assessment creation - review and submit
@@ -95,6 +96,27 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
   
   const results = calculateResults();
   
+  // Fixed data for YieldRangeVisualization - represents demo yield analysis
+  const getYieldVisualizationData = () => {
+    const currentData = {
+      mean: 22.4,
+      upperLimit: 29.1,
+      lowerLimit: 15.7,
+      bulbYield: 15.7,
+      leafYield: 6.7
+    };
+
+    const additionalData = {
+      mean: 23.5,
+      upperLimit: 28.2,
+      lowerLimit: 18.8,
+      bulbYield: 16.5,
+      leafYield: 6.7
+    };
+
+    return { currentData, additionalData };
+  };
+  
   // API hooks for saving assessment
   const saveAssessmentApi = useApi(api.assessments.create);
   const generateReportApi = useApi(api.reports.generate);
@@ -143,6 +165,8 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
       console.error('Error saving draft:', error);
     }
   };
+  
+  const { currentData, additionalData } = getYieldVisualizationData();
   
   return (
     <div>
@@ -245,6 +269,12 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
             </div>
           </div>
         </div>
+        
+        {/* Yield Range Visualization - placed below the yield and feed estimates */}
+        <YieldRangeVisualization 
+          currentData={currentData}
+          additionalData={additionalData}
+        />
         
         {/* Button Navigation - Using the FormButtonNav component */}
         <FormButtonNav
