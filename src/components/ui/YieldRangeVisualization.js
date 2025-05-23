@@ -27,7 +27,12 @@ const YieldRangeVisualization = ({
   },
   className 
 }) => {
-  // Determine the scale dynamically based on the data
+  // Use fixed scale values that match the reference image
+  const minValue = 11;
+  const midValue = 17;
+  const maxValue = 23;
+  
+  // For data that exceeds our scale, we'll need to extend it
   const allValues = [
     currentData.upperLimit,
     currentData.lowerLimit,
@@ -35,20 +40,11 @@ const YieldRangeVisualization = ({
     additionalData.lowerLimit
   ];
   
-  const dataMin = Math.min(...allValues);
   const dataMax = Math.max(...allValues);
   
-  // Add some padding to the scale
-  const padding = (dataMax - dataMin) * 0.1;
-  const scaleMin = Math.floor(dataMin - padding);
-  const scaleMax = Math.ceil(dataMax + padding);
-  
-  // Ensure we have nice round numbers for the scale
-  const minValue = Math.floor(scaleMin / 5) * 5; // Round down to nearest 5
-  const maxValue = Math.ceil(scaleMax / 5) * 5;  // Round up to nearest 5
-  const midValue = Math.round((minValue + maxValue) / 2);
-  
-  const range = maxValue - minValue;
+  // If data exceeds 23, extend the scale
+  const scaleMax = dataMax > 23 ? Math.ceil(dataMax + 2) : 23;
+  const range = scaleMax - minValue;
   
   // Calculate percentage position for a value on the scale
   const getPercentage = (value) => {
@@ -59,20 +55,22 @@ const YieldRangeVisualization = ({
   const currentBar = {
     start: getPercentage(currentData.lowerLimit),
     end: getPercentage(currentData.upperLimit),
+    width: getPercentage(currentData.upperLimit) - getPercentage(currentData.lowerLimit),
     meanPosition: getPercentage(currentData.mean)
   };
   
   const additionalBar = {
     start: getPercentage(additionalData.lowerLimit),
     end: getPercentage(additionalData.upperLimit),
+    width: getPercentage(additionalData.upperLimit) - getPercentage(additionalData.lowerLimit),
     meanPosition: getPercentage(additionalData.mean)
   };
   
   // Grid line positions
   const gridLines = [
     { value: minValue, position: 0 },
-    { value: midValue, position: 50 },
-    { value: maxValue, position: 100 }
+    { value: midValue, position: getPercentage(midValue) },
+    { value: scaleMax, position: 100 }
   ];
 
   return (
@@ -110,22 +108,19 @@ const YieldRangeVisualization = ({
               {/* Bars Container */}
               <div className="relative h-full flex flex-col justify-around py-4">
                 {/* Current Bar */}
-                <div className="relative h-8">
-                  {/* Bar background (full width for context) */}
-                  <div className="absolute h-full w-full opacity-5 bg-gray-400" />
-                  
+                <div className="relative h-8 flex items-center">
                   {/* Actual confidence interval bar */}
                   <div
                     className="absolute h-full bg-green-500 rounded"
                     style={{
                       left: `${currentBar.start}%`,
-                      width: `${currentBar.end - currentBar.start}%`
+                      width: `${currentBar.width}%`
                     }}
                   />
                   
-                  {/* Mean value label */}
+                  {/* Mean value label - positioned above the mean point */}
                   <div
-                    className="absolute -top-6 transform -translate-x-1/2 text-sm font-medium text-gray-700"
+                    className="absolute -top-6 transform -translate-x-1/2 text-sm font-medium text-gray-700 whitespace-nowrap"
                     style={{ left: `${currentBar.meanPosition}%` }}
                   >
                     {currentData.mean.toFixed(1)}
@@ -133,22 +128,19 @@ const YieldRangeVisualization = ({
                 </div>
                 
                 {/* Additional Samples Bar */}
-                <div className="relative h-8">
-                  {/* Bar background (full width for context) */}
-                  <div className="absolute h-full w-full opacity-5 bg-gray-400" />
-                  
+                <div className="relative h-8 flex items-center">
                   {/* Actual confidence interval bar */}
                   <div
                     className="absolute h-full bg-blue-400 rounded"
                     style={{
                       left: `${additionalBar.start}%`,
-                      width: `${additionalBar.end - additionalBar.start}%`
+                      width: `${additionalBar.width}%`
                     }}
                   />
                   
-                  {/* Mean value label */}
+                  {/* Mean value label - positioned above the mean point */}
                   <div
-                    className="absolute -top-6 transform -translate-x-1/2 text-sm font-medium text-gray-700"
+                    className="absolute -top-6 transform -translate-x-1/2 text-sm font-medium text-gray-700 whitespace-nowrap"
                     style={{ left: `${additionalBar.meanPosition}%` }}
                   >
                     {additionalData.mean.toFixed(1)}
@@ -157,12 +149,12 @@ const YieldRangeVisualization = ({
               </div>
               
               {/* X-axis */}
-              <div className="absolute bottom-0 left-0 right-0 flex justify-between pt-2 border-t border-gray-200">
+              <div className="absolute bottom-0 left-0 right-0 pt-2 border-t border-gray-200">
                 {gridLines.map((line, index) => (
                   <div
                     key={index}
                     className="absolute text-xs text-gray-600 transform -translate-x-1/2"
-                    style={{ left: `${line.position}%` }}
+                    style={{ left: `${line.position}%`, bottom: '-20px' }}
                   >
                     {line.value}
                   </div>
