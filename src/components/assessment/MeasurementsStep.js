@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FormField, FormButton, FormButtonNav } from '../ui/form';
 import { PlusCircle, Trash2, BarChart3, Info } from 'lucide-react';
+import YieldRangeVisualization from '../ui/YieldRangeVisualization';
 import { logger } from '../../utils/logger';
 
 /**
@@ -119,32 +120,61 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
     ));
   };
   
-  // Calculate total weights and plant counts for the graph
-  const getTotals = () => {
-    let totalLeafWeight = 0;
-    let totalBulbWeight = 0;
-    let validSamples = 0;
+  // Calculate yield data for visualization
+  const getYieldVisualizationData = () => {
+    const totals = {
+      totalLeafWeight: 0,
+      totalBulbWeight: 0,
+      validSamples: 0
+    };
     
     sampleAreas.forEach(area => {
       const leafWeight = parseFloat(area.leafWeight) || 0;
       const bulbWeight = parseFloat(area.bulbWeight) || 0;
       
       if (leafWeight > 0 || bulbWeight > 0) {
-        totalLeafWeight += leafWeight;
-        totalBulbWeight += bulbWeight;
-        validSamples++;
+        totals.totalLeafWeight += leafWeight;
+        totals.totalBulbWeight += bulbWeight;
+        totals.validSamples++;
       }
     });
     
-    return {
-      totalLeafWeight,
-      totalBulbWeight,
-      totalWeight: totalLeafWeight + totalBulbWeight,
-      validSamples
+    // Calculate yields based on field setup data
+    const rowSpacing = parseFloat(formData.rowSpacing) || 0.5;
+    const measurementLength = parseFloat(formData.measurementLength) || 4;
+    const area = rowSpacing * measurementLength;
+    
+    // Convert weights to yield per hectare
+    const bulbYieldPerHa = totals.validSamples > 0 
+      ? (totals.totalBulbWeight / totals.validSamples / area) * 10000 
+      : 15.7; // Default value
+      
+    const leafYieldPerHa = totals.validSamples > 0 
+      ? (totals.totalLeafWeight / totals.validSamples / area) * 10000 
+      : 6.7; // Default value
+    
+    const totalYield = bulbYieldPerHa + leafYieldPerHa;
+    
+    // Current data based on actual measurements
+    const currentData = {
+      mean: totalYield,
+      upperLimit: totalYield * 1.3, // ±30% confidence interval
+      lowerLimit: totalYield * 0.7,
+      bulbYield: bulbYieldPerHa,
+      leafYield: leafYieldPerHa
     };
+    
+    // Additional samples data (projected improvement)
+    const additionalData = {
+      mean: totalYield * 1.05, // 5% increase in mean
+      upperLimit: totalYield * 1.05 * 1.2, // ±20% confidence interval (narrower)
+      lowerLimit: totalYield * 1.05 * 0.8,
+      bulbYield: bulbYieldPerHa * 1.05,
+      leafYield: leafYieldPerHa
+    };
+    
+    return { currentData, additionalData };
   };
-  
-  const totals = getTotals();
   
   // Handle Save as Draft
   const handleSaveAsDraft = () => {
@@ -152,6 +182,11 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
     // In a real implementation, this would call an API to save the draft
     alert('Assessment saved as draft successfully!');
   };
+  
+  const { currentData, additionalData } = getYieldVisualizationData();
+  const hasValidSamples = sampleAreas.some(area => 
+    (parseFloat(area.leafWeight) > 0 || parseFloat(area.bulbWeight) > 0)
+  );
   
   return (
     <div>
@@ -199,40 +234,25 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
           </div>
         </div>
         
-        {/* Preview Graph */}
-        <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
-          <div className="p-4 border-b bg-gray-50">
-            <h3 className="font-medium">Yield Preview</h3>
-          </div>
-          
-          <div className="p-4 flex justify-center">
-            <div className="h-64 w-full max-w-lg flex items-center justify-center bg-gray-100 rounded">
-              {totals.validSamples > 0 ? (
-                <div className="w-full h-full flex justify-center items-center p-4">
-                  <div className="flex space-x-12 items-end h-full w-full max-w-md">
-                    <div className="flex flex-col items-center">
-                      <div className="bg-green-200 w-20 rounded-t" style={{ height: `${Math.min(totals.totalLeafWeight * 2, 80)}%` }}></div>
-                      <p className="mt-2 text-sm font-medium">Leaf</p>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="bg-green-500 w-20 rounded-t" style={{ height: `${Math.min(totals.totalBulbWeight, 80)}%` }}></div>
-                      <p className="mt-2 text-sm font-medium">Bulb</p>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="bg-green-700 w-20 rounded-t" style={{ height: `${Math.min(totals.totalWeight / 2, 80)}%` }}></div>
-                      <p className="mt-2 text-sm font-medium">Total</p>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center text-gray-500">
-                  <BarChart3 size={40} className="mx-auto mb-2 text-gray-400" />
-                  <p>Enter sample measurements to see the yield preview</p>
-                </div>
-              )}
+        {/* Yield Range Visualization */}
+        {hasValidSamples ? (
+          <YieldRangeVisualization 
+            currentData={currentData}
+            additionalData={additionalData}
+            className="bg-transparent p-0"
+          />
+        ) : (
+          <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
+            <div className="p-4 border-b bg-gray-50">
+              <h3 className="font-medium">Yield Analysis</h3>
+            </div>
+            
+            <div className="p-8 text-center text-gray-500">
+              <BarChart3 size={40} className="mx-auto mb-2 text-gray-400" />
+              <p>Enter sample measurements to see the yield analysis</p>
             </div>
           </div>
-        </div>
+        )}
         
         {/* Button Navigation - Using the FormButtonNav component */}
         <FormButtonNav
