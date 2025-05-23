@@ -86,14 +86,14 @@ const YieldRangeVisualization = ({
           
           {/* Chart Container */}
           <div className="relative mb-8">
-            {/* Y-axis labels */}
-            <div className="absolute left-0 top-0 bottom-0 w-24 flex flex-col justify-center gap-6">
-              <div className="text-sm text-gray-700 text-right pr-4">Current</div>
-              <div className="text-sm text-gray-700 text-right pr-4">+5 Samples</div>
-            </div>
-            
-            {/* Chart Area */}
-            <div className="ml-24 relative" style={{ height: '100px' }}>
+            {/* Chart Area with Y-axis labels */}
+            <div className="ml-24 relative" style={{ height: '120px' }}>
+              {/* Y-axis labels - positioned to align with bars */}
+              <div className="absolute -left-24 top-0 h-full flex flex-col justify-center">
+                <div className="text-sm text-gray-700 text-right pr-4 mb-10">Current</div>
+                <div className="text-sm text-gray-700 text-right pr-4">+5 Samples</div>
+              </div>
+              
               {/* Grid Lines */}
               <div className="absolute inset-0">
                 {gridLines.map((line, index) => (
@@ -105,10 +105,10 @@ const YieldRangeVisualization = ({
                 ))}
               </div>
               
-              {/* Bars Container - with gap between bars */}
-              <div className="relative h-full flex flex-col justify-center gap-4">
+              {/* Bars Container - with larger gap between bars */}
+              <div className="relative h-full flex flex-col justify-center">
                 {/* Current Bar */}
-                <div className="relative h-8">
+                <div className="relative h-8 mb-10">
                   {/* Actual confidence interval bar */}
                   <div
                     className="absolute h-full bg-green-500 rounded"
