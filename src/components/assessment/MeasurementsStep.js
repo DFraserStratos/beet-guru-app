@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FormField, FormButton, FormButtonNav } from '../ui/form';
 import { PlusCircle, Trash2, BarChart3, Info } from 'lucide-react';
 import { logger } from '../../utils/logger';
+import YieldRangeVisualization from '../ui/YieldRangeVisualization';
 
 /**
  * Sample area component for measurements
@@ -119,32 +120,26 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
     ));
   };
   
-  // Calculate total weights and plant counts for the graph
-  const getTotals = () => {
-    let totalLeafWeight = 0;
-    let totalBulbWeight = 0;
-    let validSamples = 0;
-    
-    sampleAreas.forEach(area => {
-      const leafWeight = parseFloat(area.leafWeight) || 0;
-      const bulbWeight = parseFloat(area.bulbWeight) || 0;
-      
-      if (leafWeight > 0 || bulbWeight > 0) {
-        totalLeafWeight += leafWeight;
-        totalBulbWeight += bulbWeight;
-        validSamples++;
-      }
-    });
-    
-    return {
-      totalLeafWeight,
-      totalBulbWeight,
-      totalWeight: totalLeafWeight + totalBulbWeight,
-      validSamples
+  // Fixed data for YieldRangeVisualization - represents demo yield analysis
+  const getYieldVisualizationData = () => {
+    const currentData = {
+      mean: 17.2,
+      upperLimit: 22.6,
+      lowerLimit: 11.8,
+      bulbYield: 14.3,
+      leafYield: 2.9
     };
+
+    const additionalData = {
+      mean: 18.0,
+      upperLimit: 21.4,
+      lowerLimit: 14.7,
+      bulbYield: 15.1,
+      leafYield: 2.9
+    };
+
+    return { currentData, additionalData };
   };
-  
-  const totals = getTotals();
   
   // Handle Save as Draft
   const handleSaveAsDraft = () => {
@@ -152,6 +147,8 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
     // In a real implementation, this would call an API to save the draft
     alert('Assessment saved as draft successfully!');
   };
+  
+  const { currentData, additionalData } = getYieldVisualizationData();
   
   return (
     <div>
@@ -199,40 +196,11 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
           </div>
         </div>
         
-        {/* Preview Graph */}
-        <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
-          <div className="p-4 border-b bg-gray-50">
-            <h3 className="font-medium">Yield Preview</h3>
-          </div>
-          
-          <div className="p-4 flex justify-center">
-            <div className="h-64 w-full max-w-lg flex items-center justify-center bg-gray-100 rounded">
-              {totals.validSamples > 0 ? (
-                <div className="w-full h-full flex justify-center items-center p-4">
-                  <div className="flex space-x-12 items-end h-full w-full max-w-md">
-                    <div className="flex flex-col items-center">
-                      <div className="bg-green-200 w-20 rounded-t" style={{ height: `${Math.min(totals.totalLeafWeight * 2, 80)}%` }}></div>
-                      <p className="mt-2 text-sm font-medium">Leaf</p>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="bg-green-500 w-20 rounded-t" style={{ height: `${Math.min(totals.totalBulbWeight, 80)}%` }}></div>
-                      <p className="mt-2 text-sm font-medium">Bulb</p>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="bg-green-700 w-20 rounded-t" style={{ height: `${Math.min(totals.totalWeight / 2, 80)}%` }}></div>
-                      <p className="mt-2 text-sm font-medium">Total</p>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center text-gray-500">
-                  <BarChart3 size={40} className="mx-auto mb-2 text-gray-400" />
-                  <p>Enter sample measurements to see the yield preview</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+        {/* Yield Range Visualization */}
+        <YieldRangeVisualization 
+          currentData={currentData}
+          additionalData={additionalData}
+        />
         
         {/* Button Navigation - Using the FormButtonNav component */}
         <FormButtonNav
