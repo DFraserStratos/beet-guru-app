@@ -77,7 +77,7 @@ const YieldRangeVisualization = ({
     <div className={cn("bg-green-50 rounded-lg p-6", className)}>
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         {/* Graph Section */}
-        <div className="p-6 pb-4">
+        <div className="p-6">
           <h3 className="text-lg font-medium text-gray-800 mb-6">Yield Analysis</h3>
           <p className="text-sm text-gray-600 mb-6">
             The chart below shows your current yield estimate and how it might change with additional samples. 
@@ -85,15 +85,15 @@ const YieldRangeVisualization = ({
           </p>
           
           {/* Chart Container */}
-          <div className="relative">
+          <div className="relative mb-8">
             {/* Y-axis labels */}
-            <div className="absolute left-0 top-0 bottom-0 w-24 flex flex-col justify-around py-8">
+            <div className="absolute left-0 top-0 bottom-0 w-24 flex flex-col justify-center gap-6">
               <div className="text-sm text-gray-700 text-right pr-4">Current</div>
               <div className="text-sm text-gray-700 text-right pr-4">+5 Samples</div>
             </div>
             
             {/* Chart Area */}
-            <div className="ml-24 relative" style={{ height: '120px' }}>
+            <div className="ml-24 relative" style={{ height: '100px' }}>
               {/* Grid Lines */}
               <div className="absolute inset-0">
                 {gridLines.map((line, index) => (
@@ -105,10 +105,10 @@ const YieldRangeVisualization = ({
                 ))}
               </div>
               
-              {/* Bars Container */}
-              <div className="relative h-full flex flex-col justify-around py-4">
+              {/* Bars Container - with gap between bars */}
+              <div className="relative h-full flex flex-col justify-center gap-4">
                 {/* Current Bar */}
-                <div className="relative h-8 flex items-center">
+                <div className="relative h-8">
                   {/* Actual confidence interval bar */}
                   <div
                     className="absolute h-full bg-green-500 rounded"
@@ -120,7 +120,7 @@ const YieldRangeVisualization = ({
                   
                   {/* Mean value label - positioned above the mean point */}
                   <div
-                    className="absolute -top-6 transform -translate-x-1/2 text-sm font-medium text-gray-700 whitespace-nowrap"
+                    className="absolute -top-7 transform -translate-x-1/2 text-sm font-medium text-gray-700 whitespace-nowrap"
                     style={{ left: `${currentBar.meanPosition}%` }}
                   >
                     {currentData.mean.toFixed(1)}
@@ -128,7 +128,7 @@ const YieldRangeVisualization = ({
                 </div>
                 
                 {/* Additional Samples Bar */}
-                <div className="relative h-8 flex items-center">
+                <div className="relative h-8">
                   {/* Actual confidence interval bar */}
                   <div
                     className="absolute h-full bg-blue-400 rounded"
@@ -140,7 +140,7 @@ const YieldRangeVisualization = ({
                   
                   {/* Mean value label - positioned above the mean point */}
                   <div
-                    className="absolute -top-6 transform -translate-x-1/2 text-sm font-medium text-gray-700 whitespace-nowrap"
+                    className="absolute -top-7 transform -translate-x-1/2 text-sm font-medium text-gray-700 whitespace-nowrap"
                     style={{ left: `${additionalBar.meanPosition}%` }}
                   >
                     {additionalData.mean.toFixed(1)}
@@ -148,28 +148,35 @@ const YieldRangeVisualization = ({
                 </div>
               </div>
               
-              {/* X-axis */}
-              <div className="absolute bottom-0 left-0 right-0 pt-2 border-t border-gray-200">
+              {/* X-axis with tick marks */}
+              <div className="absolute -bottom-6 left-0 right-0 border-t border-gray-300">
                 {gridLines.map((line, index) => (
-                  <div
-                    key={index}
-                    className="absolute text-xs text-gray-600 transform -translate-x-1/2"
-                    style={{ left: `${line.position}%`, bottom: '-20px' }}
-                  >
-                    {line.value}
-                  </div>
+                  <React.Fragment key={index}>
+                    {/* Tick mark */}
+                    <div
+                      className="absolute w-px h-2 bg-gray-300 -top-1"
+                      style={{ left: `${line.position}%` }}
+                    />
+                    {/* Label */}
+                    <div
+                      className="absolute text-xs text-gray-600 transform -translate-x-1/2 top-2"
+                      style={{ left: `${line.position}%` }}
+                    >
+                      {line.value}
+                    </div>
+                  </React.Fragment>
                 ))}
               </div>
-              
-              {/* X-axis label */}
-              <div className="text-center mt-8 text-sm text-gray-600">
-                Total yield (t DM/ha)
-              </div>
+            </div>
+            
+            {/* X-axis label - moved down with more spacing */}
+            <div className="text-center mt-10 text-sm text-gray-600">
+              Total yield (t DM/ha)
             </div>
           </div>
         </div>
         
-        {/* Statistics Section */}
+        {/* Statistics Section - with top border and padding */}
         <div className="border-t border-gray-200 px-6 py-4">
           <div className="grid grid-cols-2 gap-8">
             {/* Current Statistics */}
