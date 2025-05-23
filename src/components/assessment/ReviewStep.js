@@ -1,5 +1,6 @@
 import React from 'react';
 import { FormButtonNav } from '../ui/form';
+import YieldRangeVisualization from '../ui/YieldRangeVisualization';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
 
@@ -48,52 +49,116 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
   
   // Calculate results based on sample measurements
   const calculateResults = () => {
-    // Simplified calculation for demonstration
-    const validSamples = formData.sampleAreas?.filter(
-      area => area.sampleLength && area.weight && area.dryMatter
-    ) || [];
+    // Get sample areas from formData
+    const sampleAreas = formData.sampleAreas || [];
     
-    if (validSamples.length === 0) {
+    // Calculate totals from sample measurements
+    let totalLeafWeight = 0;
+    let totalBulbWeight = 0;
+    let validSamples = 0;
+    
+    sampleAreas.forEach(area => {
+      const leafWeight = parseFloat(area.leafWeight) || 0;
+      const bulbWeight = parseFloat(area.bulbWeight) || 0;
+      
+      if (leafWeight > 0 || bulbWeight > 0) {
+        totalLeafWeight += leafWeight;
+        totalBulbWeight += bulbWeight;
+        validSamples++;
+      }
+    });
+    
+    if (validSamples === 0) {
       return { 
         yield: 'N/A', 
         totalYield: 'N/A', 
-        feedingDays: 'N/A' 
+        feedingDays: 'N/A',
+        bulbYield: 0,
+        leafYield: 0
       };
     }
     
-    // Average dry matter percentage
-    const avgDryMatter = validSamples.reduce(
-      (sum, area) => sum + Number(area.dryMatter), 0
-    ) / validSamples.length;
+    // Calculate average weights
+    const avgLeafWeight = totalLeafWeight / validSamples;
+    const avgBulbWeight = totalBulbWeight / validSamples;
     
-    // Average weight per sample length
-    const avgWeightPerMeter = validSamples.reduce(
-      (sum, area) => sum + (Number(area.weight) / Number(area.sampleLength)), 0
-    ) / validSamples.length;
+    // Get field setup data
+    const rowSpacing = parseFloat(formData.rowSpacing) || 0.5;
+    const measurementLength = parseFloat(formData.measurementLength) || 4;
+    const area = rowSpacing * measurementLength;
     
-    // Estimate yield based on row spacing and calculated weight
-    const rowSpacing = Number(formData.rowSpacing) || 0.5;
-    const yieldPerHa = avgWeightPerMeter * (10000 / (rowSpacing * 100)) * (avgDryMatter / 100);
+    // Convert weights to yield per hectare
+    const bulbYieldPerHa = (avgBulbWeight / area) * 10000;
+    const leafYieldPerHa = (avgLeafWeight / area) * 10000;
+    const totalYieldPerHa = bulbYieldPerHa + leafYieldPerHa;
     
     // Calculate total yield (assuming 3.5 ha as default)
     const assumedFieldArea = 3.5;
-    const totalYield = yieldPerHa * assumedFieldArea;
+    const totalYield = totalYieldPerHa * assumedFieldArea;
     
     // Calculate feeding days (50 cows as default)
     const cowCount = 50;
     const kgPerCowPerDay = 8;
-    const feedingDays = Math.floor(totalYield * 1000 / (cowCount * kgPerCowPerDay));
+    const feedingDays = Math.floor(totalYield / (cowCount * kgPerCowPerDay));
     
     return {
-      yield: yieldPerHa.toFixed(1) + ' t/ha',
+      yield: totalYieldPerHa.toFixed(1) + ' t/ha',
       totalYield: totalYield.toFixed(1) + ' tonnes',
       feedingDays: feedingDays + ' days',
       cowCount,
-      fieldArea: assumedFieldArea + ' ha'
+      fieldArea: assumedFieldArea + ' ha',
+      bulbYield: bulbYieldPerHa,
+      leafYield: leafYieldPerHa,
+      meanYield: totalYieldPerHa
     };
   };
   
   const results = calculateResults();
+  
+  // Get yield visualization data
+  const getYieldVisualizationData = () => {
+    const hasValidData = results.meanYield && results.meanYield > 0;
+    
+    if (!hasValidData) {
+      // Return default values if no valid data
+      return {
+        currentData: {
+          mean: 17.2,
+          upperLimit: 22.6,
+          lowerLimit: 11.8,
+          bulbYield: 14.3,
+          leafYield: 2.9
+        },
+        additionalData: {
+          mean: 18.0,
+          upperLimit: 21.4,
+          lowerLimit: 14.7,
+          bulbYield: 15.1,
+          leafYield: 2.9
+        }
+      };
+    }
+    
+    // Current data based on actual measurements
+    const currentData = {
+      mean: results.meanYield,
+      upperLimit: results.meanYield * 1.3, // ±30% confidence interval
+      lowerLimit: results.meanYield * 0.7,
+      bulbYield: results.bulbYield,
+      leafYield: results.leafYield
+    };
+    
+    // Additional samples data (projected improvement)
+    const additionalData = {
+      mean: results.meanYield * 1.05, // 5% increase in mean
+      upperLimit: results.meanYield * 1.05 * 1.2, // ±20% confidence interval (narrower)
+      lowerLimit: results.meanYield * 1.05 * 0.8,
+      bulbYield: results.bulbYield * 1.05,
+      leafYield: results.leafYield
+    };
+    
+    return { currentData, additionalData };
+  };
   
   // API hooks for saving assessment
   const saveAssessmentApi = useApi(api.assessments.create);
@@ -143,6 +208,8 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
       console.error('Error saving draft:', error);
     }
   };
+  
+  const { currentData, additionalData } = getYieldVisualizationData();
   
   return (
     <div>
@@ -211,7 +278,9 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
                   <div className="text-gray-500">Average Weight:</div>
                   <div className="text-gray-900">
                     {formData.sampleAreas?.length > 0 
-                      ? (formData.sampleAreas.reduce((sum, area) => sum + Number(area.weight || 0), 0) / formData.sampleAreas.length).toFixed(1) 
+                      ? (formData.sampleAreas.reduce((sum, area) => 
+                          sum + Number(area.leafWeight || 0) + Number(area.bulbWeight || 0), 0
+                        ) / formData.sampleAreas.length).toFixed(1) 
                       : '0'} kg
                   </div>
                 </div>
@@ -245,6 +314,15 @@ const ReviewStep = ({ formData, onBack, onComplete, onCancel, isMobile }) => {
             </div>
           </div>
         </div>
+        
+        {/* Yield Range Visualization */}
+        {results.meanYield > 0 && (
+          <YieldRangeVisualization 
+            currentData={currentData}
+            additionalData={additionalData}
+            className="bg-transparent p-0"
+          />
+        )}
         
         {/* Button Navigation - Using the FormButtonNav component */}
         <FormButtonNav
