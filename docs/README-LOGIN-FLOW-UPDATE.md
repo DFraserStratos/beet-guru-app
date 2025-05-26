@@ -11,6 +11,7 @@ The EmailScreen now features progressive disclosure with animated form expansion
 - After email entry, smoothly expands to reveal password field
 - Provides two action buttons: "Sign in" (password) and "Use Magic Link"
 - Smart detection of magic-link-only users with appropriate UI hints
+- Two demo buttons: "Fill with known account" and "Fill with unknown account"
 
 ### 2. Updated Personas System
 - Added `hasPassword` field to distinguish authentication methods
@@ -23,44 +24,47 @@ The EmailScreen now features progressive disclosure with animated form expansion
 - Proper error handling for authentication attempts
 - Returns user data without password field for security
 
-### 4. User Experience Flow
+### 4. Magic Link Flow Restoration
+The complete magic link flow has been restored with the following screens:
+- **EmailScreen**: Entry point with dual demo buttons
+- **MagicLinkSentScreen**: Shows confirmation that magic link was sent
+- **MagicLinkVerifyScreen**: Handles verification and routes to login or registration
 
-#### Step 1: Email Entry
-- User enters email address
-- Form validates email format
-- "Continue" button to proceed
+### 5. User Experience Flow
 
-#### Step 2: Authentication Options (After Email Entry)
-The form expands with animation to show:
-- Password field (auto-focused)
-- "Sign in" button for password authentication
-- "Use Magic Link" button for passwordless login
-- "Forgot password?" link for future implementation
+#### Demo Flow 1: Known Account (Existing User)
+1. Click "Fill with known account" to pre-fill with a random persona
+2. Form expands showing password field
+3. Either:
+   - Click "Sign in" for direct password login (if persona has password)
+   - Click "Use Magic Link" to go through magic link flow
+4. Magic link flow: Email Sent → Click Demo Link → Choose "Existing User Login"
+
+#### Demo Flow 2: Unknown Account (New User)
+1. Click "Fill with unknown account" to pre-fill with newuser@example.com
+2. Form expands (password field shown but not used for new users)
+3. Click "Use Magic Link"
+4. Magic link flow: Email Sent → Click Demo Link → Redirected to Registration
 
 #### Authentication Paths:
 1. **Password Login**: Direct authentication if credentials match
-2. **Magic Link**: Redirects to existing magic link flow
-3. **New User**: Redirects to registration if email not found
+2. **Magic Link (Existing User)**: Email → Link Sent → Verify → Login
+3. **Magic Link (New User)**: Email → Link Sent → Verify → Registration
 
-### 5. Demo Functionality
-- "Fill with demo account" button for easy testing
-- Randomly selects a persona on component mount
-- Shows hint if selected persona doesn't have password
-- Smooth transitions between states
+### 6. Technical Implementation
 
-## Technical Implementation
-
-### State Management
+#### State Management
 - `isExpanded`: Controls form expansion animation
 - `authMethod`: Tracks selected authentication method ('password' | 'magic-link')
 - `selectedPersona`: Maintains demo persona throughout flow
+- `isNewUser`: Tracks whether user is new for proper routing
 
-### Animation
+#### Animation
 - CSS transitions with 300ms duration
 - `max-height` and `opacity` for smooth expansion
 - Password field auto-focus after expansion
 
-### Security Considerations
+#### Security Considerations
 - Always shows same UI regardless of email existence
 - Generic error messages to prevent user enumeration
 - Password field supports autofill/password managers
@@ -70,26 +74,29 @@ The form expands with animation to show:
 
 ### Test Cases:
 1. **Password-enabled persona** (e.g., Maria Rodriguez):
-   - Fill demo → Expand form → Enter password → Sign in
+   - Fill known account → Expand form → Enter password → Sign in
 
 2. **Magic-link-only persona** (e.g., Li Wei Chen):
-   - Fill demo → Expand form → See hint → Use Magic Link
+   - Fill known account → Expand form → See hint → Use Magic Link
 
-3. **Quick typing/Autofill**:
-   - Start typing email → Quickly type password → Should cancel email check
+3. **New user flow**:
+   - Fill unknown account → Use Magic Link → Complete registration
 
-4. **Unknown email**:
-   - Enter non-existent email → Either method redirects appropriately
+4. **Quick typing/Autofill**:
+   - Start typing email → Quickly type password → Should work seamlessly
 
-## Future Enhancements
-- Implement "Forgot password?" functionality
-- Add password strength requirements
-- Consider adding "Remember me" option
-- Add password visibility toggle
-- Implement proper password reset flow for magic-link users
+## Key Features
+- Consistent use of AuthLayout across all authentication screens
+- Smooth animations and transitions
+- Clear visual feedback for different user types
+- Maintains backward compatibility with existing flows
+- Demo-friendly with clear helper buttons
 
 ## Files Modified
-- `src/components/screens/EmailScreen.js` - Enhanced with password support
+- `src/components/screens/EmailScreen.js` - Enhanced with password support and dual demo buttons
+- `src/components/screens/MagicLinkSentScreen.js` - Updated to use AuthLayout
+- `src/components/screens/MagicLinkVerifyScreen.js` - Updated to handle new user flow
+- `src/components/layout/AuthLayout.js` - Fixed JSX comment syntax
 - `src/services/personas.js` - Added password fields and hasPassword flag
 - `src/services/api.js` - Added loginWithPassword method
-- `src/App.js` - Added onLogin prop to EmailScreen
+- `src/App.js` - Updated routing logic for proper flow handling
