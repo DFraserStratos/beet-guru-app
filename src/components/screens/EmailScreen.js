@@ -59,8 +59,7 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
     handleBlur, 
     handleSubmit,
     setValues,
-    touched,
-    setTouched
+    touched
   } = useForm(
     { email: '', password: '' },
     validateForm,
@@ -106,7 +105,6 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
         email: selectedPersona.email,
         password: selectedPersona.hasPassword ? selectedPersona.password : ''
       });
-      setTouched({ email: true });
       
       // Expand form after a short delay
       setTimeout(() => {
