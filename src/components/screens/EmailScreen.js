@@ -98,8 +98,8 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
     }, 300);
   };
   
-  // Fill form with demo data
-  const fillFormWithDemoData = () => {
+  // Fill form with known account (existing user)
+  const fillFormWithKnownAccount = () => {
     if (selectedPersona) {
       setValues({
         email: selectedPersona.email,
@@ -111,6 +111,19 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
         expandForm();
       }, 300);
     }
+  };
+  
+  // Fill form with unknown account (new user)
+  const fillFormWithUnknownAccount = () => {
+    setValues({
+      email: 'newuser@example.com',
+      password: ''
+    });
+    
+    // Expand form after a short delay
+    setTimeout(() => {
+      expandForm();
+    }, 300);
   };
   
   // Handle form submission
@@ -139,30 +152,19 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
           // Direct login
           onLogin(user);
         } catch (error) {
-          // For demo: if it's a persona email, use the persona data
-          if (selectedPersona && selectedPersona.email === formValues.email) {
+          // For demo: if it's a persona email with password, use the persona data
+          if (selectedPersona && selectedPersona.email === formValues.email && selectedPersona.hasPassword) {
             onSelectPersona(selectedPersona);
             onLogin(selectedPersona);
           } else {
-            throw error;
+            // If login fails or it's not a persona, treat as magic link flow
+            setAuthMethod('magic-link');
+            await handleMagicLinkFlow(formValues);
           }
         }
       } else {
         // Magic link flow
-        onEmailSubmit(formValues.email);
-        
-        if (selectedPersona && selectedPersona.email === formValues.email) {
-          onSelectPersona(selectedPersona);
-        }
-        
-        // Check if user exists to determine flow
-        const checkResult = await api.auth.checkEmailExists(formValues.email);
-        
-        if (checkResult.exists) {
-          onKnownUser();
-        } else {
-          onNewUser();
-        }
+        await handleMagicLinkFlow(formValues);
       }
     } catch (error) {
       console.error('Authentication error:', error);
@@ -171,6 +173,33 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
       setIsProcessing(false);
     }
   }
+  
+  // Handle magic link flow
+  const handleMagicLinkFlow = async (formValues) => {
+    onEmailSubmit(formValues.email);
+    
+    if (selectedPersona && selectedPersona.email === formValues.email) {
+      onSelectPersona(selectedPersona);
+    }
+    
+    // Check if user exists to determine flow
+    try {
+      const checkResult = await api.auth.checkEmailExists(formValues.email);
+      
+      if (checkResult.exists) {
+        onKnownUser(); // Go to magic link sent screen for existing user
+      } else {
+        onNewUser(); // Go to magic link sent screen for new user (will lead to registration)
+      }
+    } catch (error) {
+      // For demo purposes, treat any example.com email as existing user
+      if (formValues.email.includes('@example.com') && formValues.email !== 'newuser@example.com') {
+        onKnownUser();
+      } else {
+        onNewUser();
+      }
+    }
+  };
   
   // Handle magic link button click
   const handleMagicLinkClick = async () => {
@@ -222,7 +251,9 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
             icon={<Lock size={18} className="text-gray-400" />}
             autoComplete="current-password"
             disabled={isProcessing}
-            hint={!selectedPersona?.hasPassword ? "This demo user doesn't have a password. Use magic link instead." : null}
+            hint={selectedPersona && !selectedPersona.hasPassword && values.email === selectedPersona.email 
+              ? "This demo user doesn't have a password. Use magic link instead." 
+              : null}
           />
         </div>
         
@@ -247,7 +278,7 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
                 variant="primary"
                 fullWidth
                 isLoading={isProcessing && authMethod === 'password'}
-                disabled={isProcessing || (!selectedPersona?.hasPassword && values.email === selectedPersona?.email)}
+                disabled={isProcessing || (selectedPersona && !selectedPersona.hasPassword && values.email === selectedPersona.email)}
                 onClick={() => setAuthMethod('password')}
               >
                 Sign in
@@ -268,16 +299,27 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
           )}
         </div>
         
-        {/* Demo Helper */}
+        {/* Demo Helpers */}
         {!values.email && (
-          <div className="text-center">
-            <button
-              type="button"
-              onClick={fillFormWithDemoData}
-              className="text-sm text-green-600 hover:text-green-500 font-medium"
-            >
-              Fill with demo account
-            </button>
+          <div className="space-y-2">
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={fillFormWithKnownAccount}
+                className="text-sm text-green-600 hover:text-green-500 font-medium"
+              >
+                Fill with known account
+              </button>
+            </div>
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={fillFormWithUnknownAccount}
+                className="text-sm text-green-600 hover:text-green-500 font-medium"
+              >
+                Fill with unknown account
+              </button>
+            </div>
           </div>
         )}
         
