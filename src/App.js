@@ -33,6 +33,7 @@ function App() {
   
   // Magic link authentication data
   const [currentEmail, setCurrentEmail] = useState('');
+  const [isNewUser, setIsNewUser] = useState(false); // Track if it's a new user for magic link flow
   
   // Add state for selected persona
   const [selectedPersona, setSelectedPersona] = useState(null);
@@ -83,6 +84,7 @@ function App() {
     setActiveScreen('home');
     // Reset the selected persona
     setSelectedPersona(null);
+    setIsNewUser(false);
   };
   
   const handleLogout = () => {
@@ -90,6 +92,7 @@ function App() {
     setAuthScreen('email');
     setCurrentEmail('');
     setSelectedPersona(null);
+    setIsNewUser(false);
   };
   
   // Handler for selecting a persona
@@ -105,11 +108,18 @@ function App() {
   };
   
   const handleEmailContinue = () => {
+    setIsNewUser(false);
+    setAuthScreen('magic-link-sent');
+  };
+  
+  const handleNewUserContinue = () => {
+    setIsNewUser(true);
     setAuthScreen('magic-link-sent');
   };
   
   const handleBackToEmail = () => {
     setAuthScreen('email');
+    setIsNewUser(false);
   };
   
   const handleVerifyMagicLink = () => {
@@ -132,7 +142,7 @@ function App() {
             <EmailScreen 
               onEmailSubmit={handleEmailSubmit} 
               onKnownUser={handleEmailContinue}
-              onNewUser={handleRegisterClick}
+              onNewUser={handleNewUserContinue}
               onSelectPersona={handleSelectPersona}
               onLogin={handleLogin}
             />
@@ -159,6 +169,7 @@ function App() {
               onLogin={handleLogin}
               onRegister={handleRegisterClick}
               selectedPersona={selectedPersona}
+              isNewUser={isNewUser}
             />
           </ErrorBoundary>
         );
@@ -193,7 +204,7 @@ function App() {
             <EmailScreen 
               onEmailSubmit={handleEmailSubmit} 
               onKnownUser={handleEmailContinue}
-              onNewUser={handleRegisterClick}
+              onNewUser={handleNewUserContinue}
               onSelectPersona={handleSelectPersona}
               onLogin={handleLogin}
             />
