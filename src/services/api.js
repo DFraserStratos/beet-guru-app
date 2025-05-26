@@ -412,6 +412,30 @@ export const authAPI = {
     return user;
   },
   
+  // New method to support password authentication
+  loginWithPassword: async (email, password) => {
+    await delay();
+    const user = mockData.users.find(u => u.email === email);
+    
+    if (!user) {
+      throw new Error('Invalid email or password');
+    }
+    
+    // Check if user has a password
+    if (!user.hasPassword || !user.password) {
+      throw new Error('This account uses magic link authentication only');
+    }
+    
+    // Verify password
+    if (user.password !== password) {
+      throw new Error('Invalid email or password');
+    }
+    
+    // Return user data without password
+    const { password: _, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+  },
+  
   register: async (userData) => {
     await delay();
     const newUser = {
