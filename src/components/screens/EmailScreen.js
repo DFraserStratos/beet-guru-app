@@ -1,21 +1,22 @@
-import { useState, useEffect } from 'react';
-import { Mail, ArrowRight } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Mail, ArrowRight, Lock, Sparkles } from 'lucide-react';
 import { FormField, FormButton } from '../ui/form';
 import { useForm } from '../../hooks';
-import ErrorBoundary from '../utility/ErrorBoundary';
-import beetGuruWideLogo from '../../BeetGuruWide.png';
+import AuthLayout from '../layout/AuthLayout';
 import api from '../../services/api';
-import PageContainer from '../layout/PageContainer';
 
 /**
- * Initial Email Screen for Magic Link authentication
+ * Enhanced Email Screen with progressive disclosure for password authentication
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const EmailScreen = ({ onEmailSubmit, onRegister, onKnownUser, onNewUser, onSelectPersona }) => {
+const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, onLogin }) => {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [formFilled, setFormFilled] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [selectedPersona, setSelectedPersona] = useState(null);
+  const [authMethod, setAuthMethod] = useState(null); // 'password' | 'magic-link' | null
+  const passwordFieldRef = useRef(null);
+  const emailCheckAbortRef = useRef(null);
   
   // Select a random persona when the component mounts
   useEffect(() => {
@@ -23,7 +24,7 @@ const EmailScreen = ({ onEmailSubmit, onRegister, onKnownUser, onNewUser, onSele
       try {
         const persona = await api.auth.getRandomPersona();
         setSelectedPersona(persona);
-        console.log('Selected random persona:', persona.name);
+        console.log('Selected persona:', persona.name, persona.hasPassword ? '(has password)' : '(magic link only)');
       } catch (error) {
         console.error('Error getting random persona:', error);
       }
@@ -33,13 +34,18 @@ const EmailScreen = ({ onEmailSubmit, onRegister, onKnownUser, onNewUser, onSele
   }, []);
   
   // Form validation
-  const validateEmail = (values) => {
+  const validateForm = (values) => {
     const errors = {};
     
     if (!values.email) {
       errors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(values.email)) {
       errors.email = 'Email is invalid';
+    }
+    
+    // Only validate password if form is expanded and password method is selected
+    if (isExpanded && authMethod === 'password' && !values.password) {
+      errors.password = 'Password is required';
     }
     
     return errors;
@@ -52,135 +58,241 @@ const EmailScreen = ({ onEmailSubmit, onRegister, onKnownUser, onNewUser, onSele
     handleChange, 
     handleBlur, 
     handleSubmit,
-    setValues 
+    setValues,
+    touched,
+    setTouched
   } = useForm(
-    { email: '' },
-    validateEmail,
+    { email: '', password: '' },
+    validateForm,
     handleFormSubmit
   );
   
-  // Fill form with persona email
-  const fillFormWithSampleData = () => {
-    // Use the selected persona's email if available, fall back to default if not
-    setValues({
-      email: selectedPersona?.email || 'john.doe@example.com'
-    });
-    setFormFilled(true);
+  // Handle email field blur - trigger expansion
+  const handleEmailBlur = async (e) => {
+    handleBlur(e);
+    
+    // Only expand if we have a valid email and not already expanded
+    if (values.email && !errors.email && !isExpanded) {
+      expandForm();
+    }
+  };
+  
+  // Handle password field change - cancel any pending email check
+  const handlePasswordChange = (e) => {
+    handleChange(e);
+    
+    // If user starts typing password, cancel email check
+    if (emailCheckAbortRef.current) {
+      emailCheckAbortRef.current.abort();
+      emailCheckAbortRef.current = null;
+    }
+  };
+  
+  // Expand the form with animation
+  const expandForm = () => {
+    setIsExpanded(true);
+    setAuthMethod('password'); // Default to password
+    
+    // Focus password field after animation
+    setTimeout(() => {
+      passwordFieldRef.current?.focus();
+    }, 300);
+  };
+  
+  // Fill form with demo data
+  const fillFormWithDemoData = () => {
+    if (selectedPersona) {
+      setValues({
+        email: selectedPersona.email,
+        password: selectedPersona.hasPassword ? selectedPersona.password : ''
+      });
+      setTouched({ email: true });
+      
+      // Expand form after a short delay
+      setTimeout(() => {
+        expandForm();
+      }, 300);
+    }
   };
   
   // Handle form submission
   async function handleFormSubmit(formValues) {
-    // First click: Fill in demo email
-    if (!formFilled) {
-      fillFormWithSampleData();
-      return;
-    }
-    
-    // Second click: Actually check email
     setIsProcessing(true);
     
     try {
-      // Call API to check if email exists
-      const checkResult = await api.auth.checkEmailExists(formValues.email);
-      
-      // Pass the email to parent
-      onEmailSubmit(formValues.email);
-      
-      // If we have a selected persona and its email matches the form email,
-      // pass the persona to the parent component
-      if (selectedPersona && selectedPersona.email === formValues.email) {
-        onSelectPersona(selectedPersona);
+      // If not expanded yet, expand the form
+      if (!isExpanded) {
+        expandForm();
+        setIsProcessing(false);
+        return;
       }
       
-      // Redirect based on whether the user exists
-      if (checkResult.exists) {
-        onKnownUser(); // Redirect to magic link sent screen for login flow
+      // Handle based on selected auth method
+      if (authMethod === 'password') {
+        // Try password login
+        try {
+          const user = await api.auth.loginWithPassword(formValues.email, formValues.password);
+          
+          // Pass persona data if email matches
+          if (selectedPersona && selectedPersona.email === formValues.email) {
+            onSelectPersona(selectedPersona);
+          }
+          
+          // Direct login
+          onLogin(user);
+        } catch (error) {
+          // For demo: if it's a persona email, use the persona data
+          if (selectedPersona && selectedPersona.email === formValues.email) {
+            onSelectPersona(selectedPersona);
+            onLogin(selectedPersona);
+          } else {
+            throw error;
+          }
+        }
       } else {
-        onNewUser(); // Redirect to register screen
+        // Magic link flow
+        onEmailSubmit(formValues.email);
+        
+        if (selectedPersona && selectedPersona.email === formValues.email) {
+          onSelectPersona(selectedPersona);
+        }
+        
+        // Check if user exists to determine flow
+        const checkResult = await api.auth.checkEmailExists(formValues.email);
+        
+        if (checkResult.exists) {
+          onKnownUser();
+        } else {
+          onNewUser();
+        }
       }
     } catch (error) {
-      console.error('Error checking email:', error);
-      // For demo purposes, just simulate the flow
-      onEmailSubmit(formValues.email);
-      
-      // If we have a selected persona and its email matches the form email,
-      // pass the persona to the parent component
-      if (selectedPersona && selectedPersona.email === formValues.email) {
-        onSelectPersona(selectedPersona);
-      }
-      
-      // Use email pattern to determine if it's an existing user (for demo purposes)
-      if (formValues.email.includes('example.com')) {
-        onKnownUser();
-      } else {
-        onNewUser();
-      }
+      console.error('Authentication error:', error);
+      // Handle error - in real app, show error message
     } finally {
       setIsProcessing(false);
     }
   }
   
-  // Handle continue button click
-  const handleContinueClick = (e) => {
+  // Handle magic link button click
+  const handleMagicLinkClick = async () => {
+    setAuthMethod('magic-link');
+    handleSubmit({ preventDefault: () => {} });
+  };
+  
+  const handleFormSubmitWrapper = (e) => {
     e.preventDefault();
-    
-    if (!formFilled) {
-      fillFormWithSampleData();
-    } else {
-      handleSubmit(e);
-    }
+    handleSubmit(e);
   };
   
   return (
-    <PageContainer className="min-h-screen bg-gray-50 flex flex-col justify-center py-12">
-      <ErrorBoundary>
-        <div className="flex justify-center">
-          <img 
-            src={beetGuruWideLogo} 
-            alt="Beet Guru Logo" 
-            className="h-28 w-auto" 
+    <AuthLayout title="Sign in to Beet Guru">
+      <form className="space-y-6" onSubmit={handleFormSubmitWrapper} noValidate>
+        {/* Email Field */}
+        <FormField
+          label="Email address"
+          name="email"
+          type="email"
+          placeholder="you@example.com"
+          value={values.email}
+          onChange={handleChange}
+          onBlur={handleEmailBlur}
+          error={errors.email}
+          touched={touched.email}
+          icon={<Mail size={18} className="text-gray-400" />}
+          autoComplete="email"
+          disabled={isProcessing}
+        />
+        
+        {/* Password Field - Animated Expansion */}
+        <div 
+          className={`overflow-hidden transition-all duration-300 ease-out ${
+            isExpanded ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
+          }`}
+        >
+          <FormField
+            ref={passwordFieldRef}
+            label="Password"
+            name="password"
+            type="password"
+            placeholder="Enter your password"
+            value={values.password}
+            onChange={handlePasswordChange}
+            onBlur={handleBlur}
+            error={errors.password}
+            touched={touched.password}
+            icon={<Lock size={18} className="text-gray-400" />}
+            autoComplete="current-password"
+            disabled={isProcessing}
+            hint={!selectedPersona?.hasPassword ? "This demo user doesn't have a password. Use magic link instead." : null}
           />
         </div>
         
-        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-            <h2 className="text-center text-2xl font-semibold text-gray-800 mb-6">Sign in with Email</h2>
-            
-            <form className="space-y-6" onSubmit={handleSubmit} noValidate>
-              <FormField
-                label="Email address"
-                name="email"
-                type="email"
-                placeholder="you@example.com"
-                value={values.email}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={errors.email}
-                touched={true}
-                icon={<Mail size={18} className="text-gray-400" />}
-              />
+        {/* Action Buttons */}
+        <div className="space-y-3">
+          {!isExpanded ? (
+            // Initial state - single continue button
+            <FormButton
+              type="submit"
+              variant="primary"
+              fullWidth
+              isLoading={isProcessing}
+              disabled={!values.email}
+            >
+              Continue
+            </FormButton>
+          ) : (
+            // Expanded state - sign in and magic link buttons
+            <>
+              <FormButton
+                type="submit"
+                variant="primary"
+                fullWidth
+                isLoading={isProcessing && authMethod === 'password'}
+                disabled={isProcessing || (!selectedPersona?.hasPassword && values.email === selectedPersona?.email)}
+                onClick={() => setAuthMethod('password')}
+              >
+                Sign in
+              </FormButton>
               
-              <div className="pt-2">
-                <FormButton
-                  type="button"
-                  onClick={handleContinueClick}
-                  variant="primary"
-                  fullWidth
-                  isLoading={isProcessing}
-                  icon={formFilled ? <ArrowRight size={16} /> : null}
-                >
-                  {formFilled ? 'Continue with Email' : 'Continue'}
-                </FormButton>
-              </div>
-            </form>
-          </div>
+              <FormButton
+                type="button"
+                variant="outline"
+                fullWidth
+                isLoading={isProcessing && authMethod === 'magic-link'}
+                disabled={isProcessing}
+                onClick={handleMagicLinkClick}
+                icon={<Sparkles size={16} />}
+              >
+                Use Magic Link
+              </FormButton>
+            </>
+          )}
         </div>
         
-        <div className="mt-8 text-center text-sm text-gray-500">
-          <p>Beet Guru v1.1.0 • © 2025 Beet Guru Ltd.</p>
-        </div>
-      </ErrorBoundary>
-    </PageContainer>
+        {/* Demo Helper */}
+        {!values.email && (
+          <div className="text-center">
+            <button
+              type="button"
+              onClick={fillFormWithDemoData}
+              className="text-sm text-green-600 hover:text-green-500 font-medium"
+            >
+              Fill with demo account
+            </button>
+          </div>
+        )}
+        
+        {/* Forgot Password Link */}
+        {isExpanded && (
+          <div className="text-center">
+            <a href="#" className="text-sm text-green-600 hover:text-green-500">
+              Forgot your password?
+            </a>
+          </div>
+        )}
+      </form>
+    </AuthLayout>
   );
 };
 
