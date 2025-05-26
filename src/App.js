@@ -134,6 +134,7 @@ function App() {
               onKnownUser={handleEmailContinue}
               onNewUser={handleRegisterClick}
               onSelectPersona={handleSelectPersona}
+              onLogin={handleLogin}
             />
           </ErrorBoundary>
         );
@@ -194,6 +195,7 @@ function App() {
               onKnownUser={handleEmailContinue}
               onNewUser={handleRegisterClick}
               onSelectPersona={handleSelectPersona}
+              onLogin={handleLogin}
             />
           </ErrorBoundary>
         );
