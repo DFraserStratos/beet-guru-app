@@ -33,7 +33,7 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
     getRandomPersona();
   }, []);
   
-  // Form validation
+  // Form validation - only validate what's needed based on auth method
   const validateForm = (values) => {
     const errors = {};
     
@@ -43,8 +43,8 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
       errors.email = 'Email is invalid';
     }
     
-    // Only validate password if form is expanded and password method is selected
-    if (isExpanded && authMethod === 'password' && !values.password) {
+    // Only validate password if we're actually trying to sign in with password
+    if (authMethod === 'password' && isExpanded && !values.password) {
       errors.password = 'Password is required';
     }
     
@@ -90,7 +90,7 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
   // Expand the form with animation
   const expandForm = () => {
     setIsExpanded(true);
-    setAuthMethod('password'); // Default to password
+    // Don't set auth method here - let user choose
     
     // Focus password field after animation
     setTimeout(() => {
@@ -128,16 +128,20 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
   
   // Handle form submission
   async function handleFormSubmit(formValues) {
+    // If no auth method selected yet, just expand the form
+    if (!isExpanded) {
+      expandForm();
+      return;
+    }
+    
+    // If no auth method is set, don't process
+    if (!authMethod) {
+      return;
+    }
+    
     setIsProcessing(true);
     
     try {
-      // If not expanded yet, expand the form
-      if (!isExpanded) {
-        expandForm();
-        setIsProcessing(false);
-        return;
-      }
-      
       // Handle based on selected auth method
       if (authMethod === 'password') {
         // Try password login
@@ -157,12 +161,11 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
             onSelectPersona(selectedPersona);
             onLogin(selectedPersona);
           } else {
-            // If login fails or it's not a persona, treat as magic link flow
-            setAuthMethod('magic-link');
-            await handleMagicLinkFlow(formValues);
+            console.error('Password login failed:', error);
+            // In a real app, show error message
           }
         }
-      } else {
+      } else if (authMethod === 'magic-link') {
         // Magic link flow
         await handleMagicLinkFlow(formValues);
       }
@@ -171,6 +174,7 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
       // Handle error - in real app, show error message
     } finally {
       setIsProcessing(false);
+      setAuthMethod(null); // Reset for next attempt
     }
   }
   
@@ -201,8 +205,14 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
     }
   };
   
+  // Handle sign in button click
+  const handleSignInClick = () => {
+    setAuthMethod('password');
+    handleSubmit({ preventDefault: () => {} });
+  };
+  
   // Handle magic link button click
-  const handleMagicLinkClick = async () => {
+  const handleMagicLinkClick = () => {
     setAuthMethod('magic-link');
     handleSubmit({ preventDefault: () => {} });
   };
@@ -274,12 +284,12 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
             // Expanded state - sign in and magic link buttons
             <>
               <FormButton
-                type="submit"
+                type="button"
                 variant="primary"
                 fullWidth
                 isLoading={isProcessing && authMethod === 'password'}
                 disabled={isProcessing || (selectedPersona && !selectedPersona.hasPassword && values.email === selectedPersona.email)}
-                onClick={() => setAuthMethod('password')}
+                onClick={handleSignInClick}
               >
                 Sign in
               </FormButton>
