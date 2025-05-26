@@ -48,14 +48,14 @@ const AuthLayout = ({
                     <span className="text-sm font-medium">Back</span>
                   </button>
                 ) : (
-                  <div className="w-16"></div> {/* Spacer for alignment */}
+                  <div className="w-16" />
                 )}
                 
                 <div className="text-center flex-1">
                   <h2 className="text-2xl font-semibold text-gray-800">{title}</h2>
                 </div>
                 
-                <div className="w-16"></div> {/* Spacer for alignment */}
+                <div className="w-16" />
               </div>
             )}
             
