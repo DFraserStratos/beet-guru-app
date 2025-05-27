@@ -35,8 +35,11 @@ function App() {
   const [currentEmail, setCurrentEmail] = useState('');
   const [isNewUser, setIsNewUser] = useState(false); // Track if it's a new user for magic link flow
   
-  // Add state for selected persona
-  const [selectedPersona, setSelectedPersona] = useState(null);
+  // Add state for selected persona persisted in localStorage
+  const [selectedPersona, setSelectedPersona] = useLocalStorage(
+    'selected-persona',
+    null
+  );
   
   // Add state for selected location or draft assessment
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -92,9 +95,10 @@ function App() {
     setAuthScreen('email');
     setCurrentEmail('');
     setSelectedPersona(null);
+    window.localStorage.removeItem('selected-persona');
     setIsNewUser(false);
   };
-  
+
   // Handler for selecting a persona
   const handleSelectPersona = (persona) => {
     setSelectedPersona(persona);
