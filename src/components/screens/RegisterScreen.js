@@ -76,6 +76,41 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '', selectedPersona
            formData.password === formData.confirmPassword;
   };
   
+  // Fill form with demo data
+  const fillDemoData = () => {
+    // If we have a selected persona, use their data
+    if (selectedPersona) {
+      const userType = selectedPersona.role.toLowerCase().includes('farm') ? 'farmer' : 'retailer';
+      setFormData({
+        name: selectedPersona.name,
+        email: selectedPersona.email,
+        password: selectedPersona.hasPassword ? selectedPersona.password : 'password123',
+        confirmPassword: selectedPersona.hasPassword ? selectedPersona.password : 'password123',
+        userType: userType,
+        agreeToTerms: true
+      });
+    } else {
+      // Fallback demo data if no persona
+      setFormData({
+        name: 'New User',
+        email: prefillEmail || 'newuser@example.com',
+        password: 'password123',
+        confirmPassword: 'password123',
+        userType: 'farmer',
+        agreeToTerms: true
+      });
+    }
+  };
+  
+  // Check if form is empty (excluding pre-filled email)
+  const isFormEmpty = () => {
+    return !formData.name && 
+           !formData.password && 
+           !formData.confirmPassword && 
+           !formData.userType && 
+           !formData.agreeToTerms;
+  };
+  
   return (
     <AuthLayout 
       title="Create Account"
@@ -182,6 +217,19 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '', selectedPersona
             </p>
           )}
         </div>
+        
+        {/* Demo Helper - only show if form is mostly empty */}
+        {isFormEmpty() && (
+          <div className="text-center">
+            <button
+              type="button"
+              onClick={fillDemoData}
+              className="text-sm text-green-600 hover:text-green-500 font-medium"
+            >
+              Fill registration form
+            </button>
+          </div>
+        )}
       </form>
     </AuthLayout>
   );
