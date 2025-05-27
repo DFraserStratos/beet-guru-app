@@ -112,13 +112,28 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
   };
   
   // Fill form with unknown account (new user)
-  const fillFormWithUnknownAccount = () => {
+  const fillFormWithUnknownAccount = async () => {
     setIsUnknownAccount(true);
     setIsExpanded(false); // Don't expand for unknown accounts
-    setValues({
-      email: 'newuser@example.com',
-      password: ''
-    });
+
+    try {
+      const persona = await api.auth.getRandomPersona();
+      const newPersona = {
+        ...persona,
+        email: persona.email.replace('@', '.new@')
+      };
+      setSelectedPersona(newPersona);
+      setValues({
+        email: newPersona.email,
+        password: ''
+      });
+    } catch (error) {
+      console.error('Error selecting persona:', error);
+      setValues({
+        email: 'newuser@example.com',
+        password: ''
+      });
+    }
   };
   
   // Handle form submission (only used for initial continue button and unknown accounts)

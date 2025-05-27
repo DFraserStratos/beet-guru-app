@@ -14,7 +14,12 @@ const personas = [
     initials: 'MR',
     gender: 'female',
     farmName: 'Sunnydale Organics',
-    location: 'California'
+    location: 'California',
+    farmAddress: '123 Farm Lane',
+    city: 'Sacramento',
+    postalCode: '95829',
+    region: 'California',
+    country: 'United States'
   },
   {
     id: '2',
@@ -26,7 +31,12 @@ const personas = [
     initials: 'LC',
     gender: 'male',
     farmName: 'Eastern Horizons Farm',
-    location: 'Oregon'
+    location: 'Oregon',
+    farmAddress: '456 Pacific Hwy',
+    city: 'Portland',
+    postalCode: '97217',
+    region: 'Oregon',
+    country: 'United States'
   },
   {
     id: '3',
@@ -38,7 +48,12 @@ const personas = [
     initials: 'JW',
     gender: 'male',
     farmName: 'Washington Family Farms',
-    location: 'Georgia'
+    location: 'Georgia',
+    farmAddress: '789 Peachtree St',
+    city: 'Atlanta',
+    postalCode: '30303',
+    region: 'Georgia',
+    country: 'United States'
   },
   {
     id: '4',
@@ -50,7 +65,12 @@ const personas = [
     initials: 'SJ',
     gender: 'female',
     farmName: 'Johnson Dairy',
-    location: 'Wisconsin'
+    location: 'Wisconsin',
+    farmAddress: '321 Dairy Rd',
+    city: 'Madison',
+    postalCode: '53703',
+    region: 'Wisconsin',
+    country: 'United States'
   },
   {
     id: '5',
@@ -62,7 +82,12 @@ const personas = [
     initials: 'AA',
     gender: 'male',
     farmName: 'Innovation Agriculture',
-    location: 'Arizona'
+    location: 'Arizona',
+    farmAddress: '654 Innovation Way',
+    city: 'Phoenix',
+    postalCode: '85001',
+    region: 'Arizona',
+    country: 'United States'
   },
   {
     id: '6',
@@ -74,7 +99,12 @@ const personas = [
     initials: 'PP',
     gender: 'female',
     farmName: 'Green Solutions Research',
-    location: 'Illinois'
+    location: 'Illinois',
+    farmAddress: '147 Research Blvd',
+    city: 'Chicago',
+    postalCode: '60616',
+    region: 'Illinois',
+    country: 'United States'
   },
   {
     id: '7',
@@ -86,7 +116,12 @@ const personas = [
     initials: 'DK',
     gender: 'male',
     farmName: 'Kim Family Orchards',
-    location: 'Washington'
+    location: 'Washington',
+    farmAddress: '258 Orchard Ave',
+    city: 'Seattle',
+    postalCode: '98109',
+    region: 'Washington',
+    country: 'United States'
   },
   {
     id: '8',
@@ -98,7 +133,12 @@ const personas = [
     initials: 'IR',
     gender: 'female',
     farmName: 'Bella Terra Organics',
-    location: 'California'
+    location: 'California',
+    farmAddress: '369 Bella Terra Rd',
+    city: 'Napa',
+    postalCode: '94558',
+    region: 'California',
+    country: 'United States'
   },
   {
     id: '9',
@@ -110,7 +150,12 @@ const personas = [
     initials: 'KO',
     gender: 'male',
     farmName: 'Sustainable Harvest',
-    location: 'Texas'
+    location: 'Texas',
+    farmAddress: '159 Harvest Loop',
+    city: 'Austin',
+    postalCode: '73301',
+    region: 'Texas',
+    country: 'United States'
   },
   {
     id: '10',
@@ -122,7 +167,12 @@ const personas = [
     initials: 'ET',
     gender: 'female',
     farmName: 'Thompson Ranch',
-    location: 'Montana'
+    location: 'Montana',
+    farmAddress: '753 Ranch Trail',
+    city: 'Billings',
+    postalCode: '59101',
+    region: 'Montana',
+    country: 'United States'
   },
   {
     id: '11',
@@ -134,7 +184,12 @@ const personas = [
     initials: 'MH',
     gender: 'male',
     farmName: 'Hernandez Family Farms',
-    location: 'New Mexico'
+    location: 'New Mexico',
+    farmAddress: '852 Desert Farm Rd',
+    city: 'Albuquerque',
+    postalCode: '87101',
+    region: 'New Mexico',
+    country: 'United States'
   },
   {
     id: '12',
@@ -146,7 +201,12 @@ const personas = [
     initials: 'AK',
     gender: 'female',
     farmName: 'Future Farming Institute',
-    location: 'Michigan'
+    location: 'Michigan',
+    farmAddress: '963 Future Farm Dr',
+    city: 'Lansing',
+    postalCode: '48910',
+    region: 'Michigan',
+    country: 'United States'
   }
 ];
 

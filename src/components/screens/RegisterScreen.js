@@ -37,7 +37,11 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '', selectedPersona
         userType: userType,
         agreeToTerms: true,
         farmName: selectedPersona.farmName || '',
-        city: selectedPersona.location || ''
+        farmAddress: selectedPersona.farmAddress || '',
+        city: selectedPersona.city || selectedPersona.location || '',
+        postalCode: selectedPersona.postalCode || '',
+        region: selectedPersona.region || selectedPersona.location || '',
+        country: selectedPersona.country || 'New Zealand'
       }));
     } else if (prefillEmail) {
       // Just pre-fill the email if that's all we have
@@ -140,11 +144,11 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '', selectedPersona
       setFormData(prev => ({
         ...prev,
         farmName: selectedPersona?.farmName || 'Oxford Valley Farm',
-        farmAddress: '123 Canterbury Plains Rd',
-        city: selectedPersona?.location || 'Oxford',
-        postalCode: '7495',
-        region: 'Canterbury',
-        country: 'New Zealand'
+        farmAddress: selectedPersona?.farmAddress || '123 Canterbury Plains Rd',
+        city: selectedPersona?.city || selectedPersona?.location || 'Oxford',
+        postalCode: selectedPersona?.postalCode || '7495',
+        region: selectedPersona?.region || 'Canterbury',
+        country: selectedPersona?.country || 'New Zealand'
       }));
     }
   };
