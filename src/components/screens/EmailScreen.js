@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Mail, ArrowRight, Lock, Sparkles } from 'lucide-react';
+import { Mail, ArrowRight, Lock, Sparkles, UserPlus } from 'lucide-react';
 import { FormField, FormButton } from '../ui/form';
 import { useForm } from '../../hooks';
 import AuthLayout from '../layout/AuthLayout';
@@ -13,10 +13,10 @@ import api from '../../services/api';
 const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, onLogin }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isUnknownAccount, setIsUnknownAccount] = useState(false);
   const [selectedPersona, setSelectedPersona] = useState(null);
   const [authMethod, setAuthMethod] = useState(null); // 'password' | 'magic-link' | null
   const passwordFieldRef = useRef(null);
-  const emailCheckAbortRef = useRef(null);
   
   // Select a random persona when the component mounts
   useEffect(() => {
@@ -66,31 +66,24 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
     handleFormSubmit
   );
   
-  // Handle email field blur - trigger expansion
+  // Handle email field blur - trigger expansion for known accounts only
   const handleEmailBlur = async (e) => {
     handleBlur(e);
     
-    // Only expand if we have a valid email and not already expanded
-    if (values.email && !errors.email && !isExpanded) {
+    // Only expand if we have a valid email, not already expanded, and not unknown account
+    if (values.email && !errors.email && !isExpanded && !isUnknownAccount) {
       expandForm();
     }
   };
   
-  // Handle password field change - cancel any pending email check
+  // Handle password field change
   const handlePasswordChange = (e) => {
     handleChange(e);
-    
-    // If user starts typing password, cancel email check
-    if (emailCheckAbortRef.current) {
-      emailCheckAbortRef.current.abort();
-      emailCheckAbortRef.current = null;
-    }
   };
   
-  // Expand the form with animation
+  // Expand the form with animation (for known accounts)
   const expandForm = () => {
     setIsExpanded(true);
-    // Don't set auth method here - let user choose
     
     // Focus password field after animation
     setTimeout(() => {
@@ -100,6 +93,7 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
   
   // Fill form with known account (existing user)
   const fillFormWithKnownAccount = () => {
+    setIsUnknownAccount(false);
     if (selectedPersona) {
       setValues({
         email: selectedPersona.email,
@@ -115,20 +109,29 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
   
   // Fill form with unknown account (new user)
   const fillFormWithUnknownAccount = () => {
+    setIsUnknownAccount(true);
+    setIsExpanded(false); // Don't expand for unknown accounts
     setValues({
       email: 'newuser@example.com',
       password: ''
     });
-    
-    // Expand form after a short delay
-    setTimeout(() => {
-      expandForm();
-    }, 300);
   };
   
   // Handle form submission
   async function handleFormSubmit(formValues) {
-    // If no auth method selected yet, just expand the form
+    // For unknown accounts, go directly to magic link flow
+    if (isUnknownAccount) {
+      setAuthMethod('magic-link');
+      setIsProcessing(true);
+      try {
+        await handleMagicLinkFlow(formValues);
+      } finally {
+        setIsProcessing(false);
+      }
+      return;
+    }
+    
+    // For known accounts, check if we need to expand first
     if (!isExpanded) {
       expandForm();
       return;
@@ -186,6 +189,12 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
       onSelectPersona(selectedPersona);
     }
     
+    // For unknown accounts, always go to new user flow
+    if (isUnknownAccount) {
+      onNewUser();
+      return;
+    }
+    
     // Check if user exists to determine flow
     try {
       const checkResult = await api.auth.checkEmailExists(formValues.email);
@@ -241,36 +250,50 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
           disabled={isProcessing}
         />
         
-        {/* Password Field - Animated Expansion */}
-        <div 
-          className={`overflow-hidden transition-all duration-300 ease-out ${
-            isExpanded ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
-          }`}
-        >
-          <FormField
-            ref={passwordFieldRef}
-            label="Password"
-            name="password"
-            type="password"
-            placeholder="Enter your password"
-            value={values.password}
-            onChange={handlePasswordChange}
-            onBlur={handleBlur}
-            error={errors.password}
-            touched={touched.password}
-            icon={<Lock size={18} className="text-gray-400" />}
-            autoComplete="current-password"
-            disabled={isProcessing}
-            hint={selectedPersona && !selectedPersona.hasPassword && values.email === selectedPersona.email 
-              ? "This demo user doesn't have a password. Use magic link instead." 
-              : null}
-          />
-        </div>
+        {/* Password Field - Animated Expansion (only for known accounts) */}
+        {!isUnknownAccount && (
+          <div 
+            className={`overflow-hidden transition-all duration-300 ease-out ${
+              isExpanded ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
+            }`}
+          >
+            <FormField
+              ref={passwordFieldRef}
+              label="Password"
+              name="password"
+              type="password"
+              placeholder="Enter your password"
+              value={values.password}
+              onChange={handlePasswordChange}
+              onBlur={handleBlur}
+              error={errors.password}
+              touched={touched.password}
+              icon={<Lock size={18} className="text-gray-400" />}
+              autoComplete="current-password"
+              disabled={isProcessing}
+              hint={selectedPersona && !selectedPersona.hasPassword && values.email === selectedPersona.email 
+                ? "This demo user doesn't have a password. Use magic link instead." 
+                : null}
+            />
+          </div>
+        )}
         
         {/* Action Buttons */}
         <div className="space-y-3">
-          {!isExpanded ? (
-            // Initial state - single continue button
+          {/* Unknown account - single button */}
+          {isUnknownAccount ? (
+            <FormButton
+              type="submit"
+              variant="primary"
+              fullWidth
+              isLoading={isProcessing}
+              disabled={!values.email || isProcessing}
+              icon={<UserPlus size={16} />}
+            >
+              Sign up with Email
+            </FormButton>
+          ) : !isExpanded ? (
+            // Known account - initial state - single continue button
             <FormButton
               type="submit"
               variant="primary"
@@ -281,7 +304,7 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
               Continue
             </FormButton>
           ) : (
-            // Expanded state - sign in and magic link buttons
+            // Known account - expanded state - sign in and magic link buttons
             <>
               <FormButton
                 type="button"
@@ -334,7 +357,7 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
         )}
         
         {/* Forgot Password Link */}
-        {isExpanded && (
+        {isExpanded && !isUnknownAccount && (
           <div className="text-center">
             <a href="#" className="text-sm text-green-600 hover:text-green-500">
               Forgot your password?
