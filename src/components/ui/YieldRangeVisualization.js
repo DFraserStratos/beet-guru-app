@@ -85,7 +85,11 @@ const YieldRangeVisualization = ({
           </p>
           
           {/* Chart Container */}
-          <div className="relative mb-8">
+          <div
+            role="img"
+            aria-label="Bar chart comparing yield ranges for current and projected additional samples"
+            className="relative mb-8"
+          >
             {/* Chart Area with Y-axis labels */}
             <div className="ml-24 relative" style={{ height: '120px' }}>
               {/* Y-axis labels - positioned to align with bars */}
@@ -112,6 +116,7 @@ const YieldRangeVisualization = ({
                   {/* Actual confidence interval bar */}
                   <div
                     className="absolute h-full bg-green-500 rounded"
+                    aria-valuenow={currentData.mean.toFixed(1)}
                     style={{
                       left: `${currentBar.start}%`,
                       width: `${currentBar.width}%`
@@ -132,6 +137,7 @@ const YieldRangeVisualization = ({
                   {/* Actual confidence interval bar */}
                   <div
                     className="absolute h-full bg-blue-400 rounded"
+                    aria-valuenow={additionalData.mean.toFixed(1)}
                     style={{
                       left: `${additionalBar.start}%`,
                       width: `${additionalBar.width}%`
