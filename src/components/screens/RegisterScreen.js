@@ -2,8 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { User, Mail, Lock, ArrowLeft, Check } from 'lucide-react';
 import AuthLayout from '../layout/AuthLayout';
 import { FormField, FormButton } from '../ui/form';
-import { PrimaryButton } from '../ui/buttons';
-import { cn } from '../../utils/cn';
 
 const RegisterScreen = ({ onBack, onComplete, prefillEmail = '', selectedPersona = null }) => {
   const [formData, setFormData] = useState({
@@ -12,7 +10,6 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '', selectedPersona
     password: '',
     confirmPassword: '',
     userType: '',
-    subscribeToNews: false,
     agreeToTerms: false
   });
   
@@ -28,7 +25,6 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '', selectedPersona
         password: selectedPersona.hasPassword ? selectedPersona.password : 'password123',
         confirmPassword: selectedPersona.hasPassword ? selectedPersona.password : 'password123',
         userType: userType,
-        subscribeToNews: true,
         agreeToTerms: true
       });
     } else if (prefillEmail) {
@@ -51,11 +47,6 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '', selectedPersona
   const handleUserTypeSelect = (type) => {
     setFormData(prev => ({ ...prev, userType: type }));
   };
-
-  const userTypeUnselectedClass =
-    'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50';
-  const getUserTypeButtonClasses = (type) =>
-    cn(formData.userType !== type && userTypeUnselectedClass);
   
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -142,53 +133,37 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '', selectedPersona
             User Type
           </label>
           <div className="grid grid-cols-2 gap-3">
-            <PrimaryButton
+            <FormButton
               type="button"
               onClick={() => handleUserTypeSelect('farmer')}
-              className={getUserTypeButtonClasses('farmer')}
+              variant={formData.userType === 'farmer' ? 'primary' : 'outline'}
+              fullWidth
             >
               Farmer
-            </PrimaryButton>
-            <PrimaryButton
+            </FormButton>
+            <FormButton
               type="button"
               onClick={() => handleUserTypeSelect('retailer')}
-              className={getUserTypeButtonClasses('retailer')}
+              variant={formData.userType === 'retailer' ? 'primary' : 'outline'}
+              fullWidth
             >
               Retailer
-            </PrimaryButton>
+            </FormButton>
           </div>
         </div>
         
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <input
-              id="subscribeToNews"
-              name="subscribeToNews"
-              type="checkbox"
-              checked={formData.subscribeToNews}
-              onChange={handleChange}
-              className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-            />
-            <label htmlFor="subscribeToNews" className="ml-2 block text-sm text-gray-700">
-              Subscribe to news & updates
-            </label>
-          </div>
-        </div>
-        
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <input
-              id="agreeToTerms"
-              name="agreeToTerms"
-              type="checkbox"
-              checked={formData.agreeToTerms}
-              onChange={handleChange}
-              className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-            />
-            <label htmlFor="agreeToTerms" className="ml-2 block text-sm text-gray-700">
-              I agree to the <a href="#" className="text-green-600 hover:text-green-500">Terms and Conditions</a>
-            </label>
-          </div>
+        <div className="flex items-center">
+          <input
+            id="agreeToTerms"
+            name="agreeToTerms"
+            type="checkbox"
+            checked={formData.agreeToTerms}
+            onChange={handleChange}
+            className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+          />
+          <label htmlFor="agreeToTerms" className="ml-2 block text-sm text-gray-700">
+            I agree to the <a href="#" className="text-green-600 hover:text-green-500">Terms and Conditions</a>
+          </label>
         </div>
         
         <div>
