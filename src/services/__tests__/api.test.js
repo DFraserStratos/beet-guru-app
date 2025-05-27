@@ -10,14 +10,15 @@ describe('authAPI', () => {
   });
 
   test('login succeeds with correct credentials', async () => {
-    const promise = authAPI.login('john.doe@example.com', 'password');
+    const email = 'maria.rodriguez@example.com';
+    const promise = authAPI.login(email, 'password');
     jest.runAllTimers();
     const user = await promise;
-    expect(user).toMatchObject({ id: '1', email: 'john.doe@example.com' });
+    expect(user).toMatchObject({ email });
   });
 
   test('login fails with wrong password', async () => {
-    const promise = authAPI.login('john.doe@example.com', 'wrong');
+    const promise = authAPI.login('maria.rodriguez@example.com', 'wrong');
     jest.runAllTimers();
     await expect(promise).rejects.toThrow('Invalid credentials');
   });
@@ -26,11 +27,11 @@ describe('authAPI', () => {
     // Use real timers for this async flow
     jest.useRealTimers();
 
-    const result = await authAPI.generateMagicLink('john.doe@example.com');
+    const result = await authAPI.generateMagicLink('maria.rodriguez@example.com');
     const token = new URL(result.magicLink).searchParams.get('token');
 
     const user = await authAPI.loginWithMagicLink(token);
-    expect(user.email).toBe('john.doe@example.com');
+    expect(user.email).toBe('maria.rodriguez@example.com');
 
     await expect(authAPI.loginWithMagicLink(token)).rejects.toThrow('Invalid or expired token');
   });
