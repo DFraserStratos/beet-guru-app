@@ -1,119 +1,126 @@
-import { useState } from 'react';
-import { CheckCircle, ArrowLeft, UserPlus, User } from 'lucide-react';
-import { FormButton } from '../ui/form';
+import { useEffect, useState } from 'react';
+import { CheckCircle, Loader2 } from 'lucide-react';
 import AuthLayout from '../layout/AuthLayout';
 
 /**
- * Screen shown after magic link verification
+ * Screen shown when clicking a magic link - simulates automatic verification
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
 const MagicLinkVerifyScreen = ({ email, onBack, onLogin, onRegister, selectedPersona, isNewUser }) => {
-  // Handle login demo - immediately login with selected persona or fallback
-  const handleLoginDemo = () => {
-    if (selectedPersona) {
-      // Use the selected persona data
-      onLogin(selectedPersona);
-    } else {
-      // Fallback to default user data
-      onLogin({ 
-        id: '1',
-        email: email || 'john.doe@example.com', 
-        name: 'John Doe', 
-        role: 'Farm Manager',
-        initials: 'JD'
-      });
-    }
-  };
+  const [verificationState, setVerificationState] = useState('verifying'); // 'verifying', 'verified', 'redirecting'
+  const [redirectMessage, setRedirectMessage] = useState('');
   
-  // Handle registration demo - immediately go to registration
-  const handleRegisterDemo = () => {
-    // Redirect to registration form with email pre-filled
-    onRegister(email || 'newuser@example.com');
-  };
+  useEffect(() => {
+    // Simulate the magic link verification process
+    const simulateVerification = async () => {
+      // Step 1: Verifying the link (1.5 seconds)
+      setVerificationState('verifying');
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Step 2: Show verified state (1 second)
+      setVerificationState('verified');
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Step 3: Show redirecting message and redirect (0.5 seconds)
+      setVerificationState('redirecting');
+      if (isNewUser) {
+        setRedirectMessage('Redirecting to complete registration...');
+      } else {
+        setRedirectMessage(`Logging you in as ${selectedPersona?.name || email}...`);
+      }
+      
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Step 4: Actually redirect
+      if (isNewUser) {
+        // Redirect to registration
+        onRegister(email || 'newuser@example.com');
+      } else {
+        // Auto-login
+        if (selectedPersona) {
+          onLogin(selectedPersona);
+        } else {
+          // Fallback to default user data
+          onLogin({ 
+            id: '1',
+            email: email || 'john.doe@example.com', 
+            name: 'John Doe', 
+            role: 'Farm Manager',
+            initials: 'JD'
+          });
+        }
+      }
+    };
+    
+    simulateVerification();
+  }, [email, isNewUser, onLogin, onRegister, selectedPersona]);
   
   return (
     <AuthLayout 
-      title="Magic Link Verified"
-      onBack={onBack}
-      showBackButton={true}
+      title=""
+      showBackButton={false} // No back button during auto-verification
     >
       <div className="text-center">
-        <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
-          <CheckCircle className="h-6 w-6 text-green-600" aria-hidden="true" />
-        </div>
-        
-        <p className="text-sm text-gray-500 mb-6">
-          Email verified successfully! 
-          {isNewUser 
-            ? ' Since this is a new email address, please complete registration.'
-            : ' For demo purposes, please select one of the following options:'}
-        </p>
-        
-        <div className="space-y-4 mt-8">
-          {isNewUser ? (
-            // New user - only show registration option
-            <div>
-              <FormButton
-                type="button"
-                onClick={handleRegisterDemo}
-                variant="primary"
-                fullWidth
-                icon={<UserPlus size={16} />}
-              >
-                Continue to Registration
-              </FormButton>
-              <p className="text-xs text-gray-500 mt-1">
-                Complete your account setup
-              </p>
-            </div>
+        {/* Icon and Status */}
+        <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-6">
+          {verificationState === 'verifying' ? (
+            <Loader2 className="h-8 w-8 text-green-600 animate-spin" aria-hidden="true" />
           ) : (
-            // Existing user - show both options for demo
-            <>
-              <div>
-                <FormButton
-                  type="button"
-                  onClick={handleLoginDemo}
-                  variant="primary"
-                  fullWidth
-                  icon={<User size={16} />}
-                >
-                  Demo: Existing User Login
-                </FormButton>
-                <p className="text-xs text-gray-500 mt-1">
-                  {selectedPersona 
-                    ? `Logs in as ${selectedPersona.name}`
-                    : 'Simulates the login flow for a returning user'}
-                </p>
-              </div>
-              
-              <div>
-                <FormButton
-                  type="button"
-                  onClick={handleRegisterDemo}
-                  variant="outline"
-                  fullWidth
-                  icon={<UserPlus size={16} />}
-                >
-                  Demo: New User Registration
-                </FormButton>
-                <p className="text-xs text-gray-500 mt-1">
-                  {selectedPersona 
-                    ? `Pre-fills registration form with ${selectedPersona.name}'s info`
-                    : 'Simulates the registration flow for a new user'}
-                </p>
-              </div>
-            </>
+            <CheckCircle className="h-8 w-8 text-green-600" aria-hidden="true" />
           )}
         </div>
         
-        {!isNewUser && (
-          <div className="border-t border-gray-200 pt-6 mt-6">
+        {/* Status Messages */}
+        {verificationState === 'verifying' && (
+          <>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+              Verifying Magic Link
+            </h2>
             <p className="text-sm text-gray-500">
-              In a real implementation, the system would automatically determine the correct path based on whether the email is already registered.
+              Please wait while we verify your authentication link...
             </p>
-          </div>
+          </>
         )}
+        
+        {verificationState === 'verified' && (
+          <>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+              Email Verified!
+            </h2>
+            <p className="text-sm text-gray-500">
+              Your email has been successfully verified.
+            </p>
+          </>
+        )}
+        
+        {verificationState === 'redirecting' && (
+          <>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+              {isNewUser ? 'Almost There!' : 'Welcome Back!'}
+            </h2>
+            <p className="text-sm text-gray-500">
+              {redirectMessage}
+            </p>
+            
+            {/* Loading dots animation */}
+            <div className="flex justify-center items-center space-x-1 mt-4">
+              <div className="w-2 h-2 bg-green-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+              <div className="w-2 h-2 bg-green-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+              <div className="w-2 h-2 bg-green-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+            </div>
+          </>
+        )}
+        
+        {/* Email Display */}
+        <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+          <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold mb-1">
+            Verifying email
+          </p>
+          <p className="text-sm font-medium text-gray-900">
+            {email || 'user@example.com'}
+          </p>
+        </div>
       </div>
     </AuthLayout>
   );
