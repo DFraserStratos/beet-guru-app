@@ -4,6 +4,7 @@ import { FormField, FormButton } from '../ui/form';
 import { useForm } from '../../hooks';
 import AuthLayout from '../layout/AuthLayout';
 import api from '../../services/api';
+import { logger } from '../../utils/logger';
 
 /**
  * Enhanced Email Screen with progressive disclosure for password authentication
@@ -23,7 +24,11 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
       try {
         const persona = await api.auth.getRandomPersona();
         setSelectedPersona(persona);
-        console.log('Selected persona:', persona.name, persona.hasPassword ? '(has password)' : '(magic link only)');
+        logger.info(
+          'Selected persona:',
+          persona.name,
+          persona.hasPassword ? '(has password)' : '(magic link only)'
+        );
       } catch (error) {
         console.error('Error getting random persona:', error);
       }
