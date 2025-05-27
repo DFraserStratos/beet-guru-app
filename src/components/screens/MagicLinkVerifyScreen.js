@@ -12,16 +12,21 @@ const MagicLinkVerifyScreen = ({ email, onBack, onLogin, onRegister, selectedPer
   const [redirectMessage, setRedirectMessage] = useState('');
   
   useEffect(() => {
+    let isMounted = true;
+
     // Simulate the magic link verification process
     const simulateVerification = async () => {
+      if (!isMounted) return;
       // Step 1: Verifying the link (1.5 seconds)
       setVerificationState('verifying');
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+      if (!isMounted) return;
+
       // Step 2: Show verified state (1 second)
       setVerificationState('verified');
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      if (!isMounted) return;
+
       // Step 3: Show redirecting message and redirect (0.5 seconds)
       setVerificationState('redirecting');
       if (isNewUser) {
@@ -29,9 +34,10 @@ const MagicLinkVerifyScreen = ({ email, onBack, onLogin, onRegister, selectedPer
       } else {
         setRedirectMessage(`Logging you in as ${selectedPersona?.name || email}...`);
       }
-      
+
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+      if (!isMounted) return;
+
       // Step 4: Actually redirect
       if (isNewUser) {
         // Redirect to registration
@@ -42,18 +48,22 @@ const MagicLinkVerifyScreen = ({ email, onBack, onLogin, onRegister, selectedPer
           onLogin(selectedPersona);
         } else {
           // Fallback to default user data
-          onLogin({ 
+          onLogin({
             id: '1',
-            email: email || 'john.doe@example.com', 
-            name: 'John Doe', 
+            email: email || 'john.doe@example.com',
+            name: 'John Doe',
             role: 'Farm Manager',
             initials: 'JD'
           });
         }
       }
     };
-    
+
     simulateVerification();
+
+    return () => {
+      isMounted = false;
+    };
   }, [email, isNewUser, onLogin, onRegister, selectedPersona]);
   
   return (
