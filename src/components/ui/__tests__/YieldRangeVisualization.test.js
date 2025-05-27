@@ -39,8 +39,8 @@ describe('YieldRangeVisualization', () => {
     );
     
     // Check that mean values are displayed
-    expect(screen.getByText('17.2')).toBeInTheDocument();
-    expect(screen.getByText('18.0')).toBeInTheDocument();
+    expect(screen.getAllByText('17.2')[0]).toBeInTheDocument();
+    expect(screen.getAllByText('18.0')[0]).toBeInTheDocument();
   });
 
   test('shows correct statistics in tables', () => {
@@ -52,21 +52,21 @@ describe('YieldRangeVisualization', () => {
     );
     
     // Check current data statistics
-    expect(screen.getByText('22.6')).toBeInTheDocument(); // Upper limit
-    expect(screen.getByText('11.8')).toBeInTheDocument(); // Lower limit
-    expect(screen.getByText('14.3')).toBeInTheDocument(); // Bulb yield
+    expect(screen.getAllByText('22.6')[0]).toBeInTheDocument(); // Upper limit
+    expect(screen.getAllByText('11.8')[0]).toBeInTheDocument(); // Lower limit
+    expect(screen.getAllByText('14.3')[0]).toBeInTheDocument(); // Bulb yield
     
     // Check additional data statistics
-    expect(screen.getByText('21.4')).toBeInTheDocument(); // Upper limit
-    expect(screen.getByText('14.7')).toBeInTheDocument(); // Lower limit
-    expect(screen.getByText('15.1')).toBeInTheDocument(); // Bulb yield
+    expect(screen.getAllByText('21.4')[0]).toBeInTheDocument(); // Upper limit
+    expect(screen.getAllByText('14.7')[0]).toBeInTheDocument(); // Lower limit
+    expect(screen.getAllByText('15.1')[0]).toBeInTheDocument(); // Bulb yield
   });
 
   test('renders with default data when no props provided', () => {
     render(<YieldRangeVisualization />);
     
     expect(screen.getByText('Yield Analysis')).toBeInTheDocument();
-    expect(screen.getByText('17.2')).toBeInTheDocument();
+    expect(screen.getAllByText('17.2')[0]).toBeInTheDocument();
   });
 
   test('applies custom className', () => {
