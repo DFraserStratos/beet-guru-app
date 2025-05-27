@@ -15,7 +15,6 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
   const [isExpanded, setIsExpanded] = useState(false);
   const [isUnknownAccount, setIsUnknownAccount] = useState(false);
   const [selectedPersona, setSelectedPersona] = useState(null);
-  const [authMethod, setAuthMethod] = useState(null); // 'password' | 'magic-link' | null
   const passwordFieldRef = useRef(null);
   
   // Select a random persona when the component mounts
@@ -33,7 +32,7 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
     getRandomPersona();
   }, []);
   
-  // Form validation - only validate what's needed based on auth method
+  // Form validation
   const validateForm = (values) => {
     const errors = {};
     
@@ -43,8 +42,8 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
       errors.email = 'Email is invalid';
     }
     
-    // Only validate password if we're actually trying to sign in with password
-    if (authMethod === 'password' && isExpanded && !values.password) {
+    // Only validate password if we're expanded and trying to use password auth
+    if (isExpanded && !values.password) {
       errors.password = 'Password is required';
     }
     
@@ -117,11 +116,10 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
     });
   };
   
-  // Handle form submission
+  // Handle form submission (only used for initial continue button and unknown accounts)
   async function handleFormSubmit(formValues) {
     // For unknown accounts, go directly to magic link flow
     if (isUnknownAccount) {
-      setAuthMethod('magic-link');
       setIsProcessing(true);
       try {
         await handleMagicLinkFlow(formValues);
@@ -136,50 +134,46 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
       expandForm();
       return;
     }
-    
-    // If no auth method is set, don't process
-    if (!authMethod) {
+  }
+  
+  // Handle password sign in - direct processing without form submission
+  const handlePasswordSignIn = async () => {
+    // Validate required fields
+    if (!values.email || !values.password) {
       return;
     }
     
     setIsProcessing(true);
     
     try {
-      // Handle based on selected auth method
-      if (authMethod === 'password') {
-        // Try password login
-        try {
-          const user = await api.auth.loginWithPassword(formValues.email, formValues.password);
-          
-          // Pass persona data if email matches
-          if (selectedPersona && selectedPersona.email === formValues.email) {
-            onSelectPersona(selectedPersona);
-          }
-          
-          // Direct login
-          onLogin(user);
-        } catch (error) {
-          // For demo: if it's a persona email with password, use the persona data
-          if (selectedPersona && selectedPersona.email === formValues.email && selectedPersona.hasPassword) {
-            onSelectPersona(selectedPersona);
-            onLogin(selectedPersona);
-          } else {
-            console.error('Password login failed:', error);
-            // In a real app, show error message
-          }
+      // Try password login
+      try {
+        const user = await api.auth.loginWithPassword(values.email, values.password);
+        
+        // Pass persona data if email matches
+        if (selectedPersona && selectedPersona.email === values.email) {
+          onSelectPersona(selectedPersona);
         }
-      } else if (authMethod === 'magic-link') {
-        // Magic link flow
-        await handleMagicLinkFlow(formValues);
+        
+        // Direct login
+        onLogin(user);
+      } catch (error) {
+        // For demo: if it's a persona email with password, use the persona data
+        if (selectedPersona && selectedPersona.email === values.email && selectedPersona.hasPassword) {
+          onSelectPersona(selectedPersona);
+          onLogin(selectedPersona);
+        } else {
+          console.error('Password login failed:', error);
+          // In a real app, show error message
+        }
       }
     } catch (error) {
       console.error('Authentication error:', error);
       // Handle error - in real app, show error message
     } finally {
       setIsProcessing(false);
-      setAuthMethod(null); // Reset for next attempt
     }
-  }
+  };
   
   // Handle magic link flow
   const handleMagicLinkFlow = async (formValues) => {
@@ -214,16 +208,35 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
     }
   };
   
-  // Handle sign in button click
-  const handleSignInClick = () => {
-    setAuthMethod('password');
-    handleSubmit({ preventDefault: () => {} });
+  // Handle sign in button click - direct processing without double submit
+  const handleSignInClick = async () => {
+    // Validate fields first
+    const validationErrors = validateForm(values);
+    if (validationErrors.email || validationErrors.password) {
+      // Touch fields to show errors
+      handleBlur({ target: { name: 'email' } });
+      handleBlur({ target: { name: 'password' } });
+      return;
+    }
+    
+    // Process sign in directly
+    await handlePasswordSignIn();
   };
   
-  // Handle magic link button click
-  const handleMagicLinkClick = () => {
-    setAuthMethod('magic-link');
-    handleSubmit({ preventDefault: () => {} });
+  // Handle magic link button click - direct processing
+  const handleMagicLinkClick = async () => {
+    // Validate email
+    if (!values.email || errors.email) {
+      handleBlur({ target: { name: 'email' } });
+      return;
+    }
+    
+    setIsProcessing(true);
+    try {
+      await handleMagicLinkFlow(values);
+    } finally {
+      setIsProcessing(false);
+    }
   };
   
   const handleFormSubmitWrapper = (e) => {
@@ -310,7 +323,7 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
                 type="button"
                 variant="primary"
                 fullWidth
-                isLoading={isProcessing && authMethod === 'password'}
+                isLoading={isProcessing}
                 disabled={isProcessing || (selectedPersona && !selectedPersona.hasPassword && values.email === selectedPersona.email)}
                 onClick={handleSignInClick}
               >
@@ -321,7 +334,7 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
                 type="button"
                 variant="outline"
                 fullWidth
-                isLoading={isProcessing && authMethod === 'magic-link'}
+                isLoading={isProcessing}
                 disabled={isProcessing}
                 onClick={handleMagicLinkClick}
                 icon={<Sparkles size={16} />}
