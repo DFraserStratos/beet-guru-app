@@ -1,7 +1,9 @@
 import { MapPin, Settings, LogOut, ChevronRight, Calculator, HelpCircle, FileText } from 'lucide-react';
 import PageContainer from '../layout/PageContainer';
+import { useAuth } from '../../context/AuthContext';
 
-const MoreScreen = ({ onNavigate, onLogout, user }) => {
+const MoreScreen = ({ onNavigate }) => {
+  const { user, logout } = useAuth();
   return (
     <PageContainer className="space-y-4">
       {/* User Profile Section */}
@@ -46,10 +48,10 @@ const MoreScreen = ({ onNavigate, onLogout, user }) => {
             label="Terms & Conditions"
             onClick={() => onNavigate('terms')}
           />
-          <MenuItem 
+          <MenuItem
             icon={<LogOut size={20} className="text-red-500" />}
             label="Log Out"
-            onClick={onLogout}
+            onClick={logout}
             textColor="text-red-500"
           />
         </ul>

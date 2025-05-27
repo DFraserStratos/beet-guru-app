@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { Save, User, Lock, ChevronLeft, Building } from 'lucide-react';
 import { logger } from '../../utils/logger';
 import { FormButton } from '../ui/form';
@@ -13,7 +14,8 @@ import SecuritySettings from './settings/SecuritySettings';
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const SettingsScreen = ({ isMobile, onNavigate, user }) => {
+const SettingsScreen = ({ isMobile, onNavigate }) => {
+  const { user } = useAuth();
   const [activeSection, setActiveSection] = useState('profile');
   
   // Initialize form with user data and default farm information

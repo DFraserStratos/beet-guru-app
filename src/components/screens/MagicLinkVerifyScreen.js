@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { CheckCircle, Loader2 } from 'lucide-react';
 import AuthLayout from '../layout/AuthLayout';
+import { useAuth } from '../../context/AuthContext';
 
 /**
  * Screen shown when clicking a magic link - simulates automatic verification
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const MagicLinkVerifyScreen = ({ email, onBack, onLogin, onRegister, selectedPersona, isNewUser }) => {
+const MagicLinkVerifyScreen = ({ email, onBack, onRegister, isNewUser }) => {
+  const { login, selectedPersona } = useAuth();
   const [verificationState, setVerificationState] = useState('verifying'); // 'verifying', 'verified', 'redirecting'
   const [redirectMessage, setRedirectMessage] = useState('');
   
@@ -39,13 +41,13 @@ const MagicLinkVerifyScreen = ({ email, onBack, onLogin, onRegister, selectedPer
       } else {
         // Auto-login
         if (selectedPersona) {
-          onLogin(selectedPersona);
+          login(selectedPersona);
         } else {
           // Fallback to default user data
-          onLogin({ 
+          login({
             id: '1',
-            email: email || 'john.doe@example.com', 
-            name: 'John Doe', 
+            email: email || 'john.doe@example.com',
+            name: 'John Doe',
             role: 'Farm Manager',
             initials: 'JD'
           });
@@ -54,7 +56,7 @@ const MagicLinkVerifyScreen = ({ email, onBack, onLogin, onRegister, selectedPer
     };
     
     simulateVerification();
-  }, [email, isNewUser, onLogin, onRegister, selectedPersona]);
+  }, [email, isNewUser, login, onRegister, selectedPersona]);
   
   return (
     <AuthLayout 

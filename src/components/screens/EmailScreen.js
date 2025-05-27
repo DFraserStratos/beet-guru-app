@@ -4,13 +4,15 @@ import { FormField, FormButton } from '../ui/form';
 import { useForm } from '../../hooks';
 import AuthLayout from '../layout/AuthLayout';
 import api from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 
 /**
  * Enhanced Email Screen with progressive disclosure for password authentication
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, onLogin }) => {
+const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser }) => {
+  const { selectPersona, login } = useAuth();
   const [isProcessing, setIsProcessing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isUnknownAccount, setIsUnknownAccount] = useState(false);
@@ -152,16 +154,16 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
         
         // Pass persona data if email matches
         if (selectedPersona && selectedPersona.email === values.email) {
-          onSelectPersona(selectedPersona);
+          selectPersona(selectedPersona);
         }
-        
+
         // Direct login
-        onLogin(user);
+        login(user);
       } catch (error) {
         // For demo: if it's a persona email with password, use the persona data
         if (selectedPersona && selectedPersona.email === values.email && selectedPersona.hasPassword) {
-          onSelectPersona(selectedPersona);
-          onLogin(selectedPersona);
+          selectPersona(selectedPersona);
+          login(selectedPersona);
         } else {
           console.error('Password login failed:', error);
           // In a real app, show error message
@@ -180,7 +182,7 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
     onEmailSubmit(formValues.email);
     
     if (selectedPersona && selectedPersona.email === formValues.email) {
-      onSelectPersona(selectedPersona);
+      selectPersona(selectedPersona);
     }
     
     // For unknown accounts, always go to new user flow

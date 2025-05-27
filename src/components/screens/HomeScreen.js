@@ -1,4 +1,5 @@
 import React from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { PlusCircle, Info, Clock, AlertCircle } from 'lucide-react';
 import { logger } from '../../utils/logger';
 import WeatherWidget from '../ui/WeatherWidget';
@@ -15,7 +16,8 @@ import PageContainer from '../layout/PageContainer';
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const HomeScreen = ({ onNavigate, isMobile = false, user = { name: 'John Doe' } }) => {
+const HomeScreen = ({ onNavigate, isMobile = false }) => {
+  const { user } = useAuth();
   const handleNewAssessment = () => {
     onNavigate('new-assessment');
   };

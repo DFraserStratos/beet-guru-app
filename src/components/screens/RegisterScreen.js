@@ -2,8 +2,10 @@ import { useState, useEffect, useRef } from 'react';
 import { User, Mail, Lock, ArrowLeft, Check, Building2, MapPin } from 'lucide-react';
 import AuthLayout from '../layout/AuthLayout';
 import { FormField, FormButton } from '../ui/form';
+import { useAuth } from '../../context/AuthContext';
 
-const RegisterScreen = ({ onBack, onComplete, prefillEmail = '', selectedPersona = null }) => {
+const RegisterScreen = ({ onBack, prefillEmail = '' }) => {
+  const { login, selectedPersona } = useAuth();
   const [step, setStep] = useState(1); // 1 = account details, 2 = farm details
   const [formData, setFormData] = useState({
     // Step 1 - Account Details
@@ -71,7 +73,7 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '', selectedPersona
     e.preventDefault();
     
     // Complete registration with all data
-    onComplete({ 
+    login({
       email: formData.email,
       name: formData.name,
       role: formData.userType === 'farmer' ? 'Farm Manager' : 'Retail Consultant',

@@ -19,12 +19,13 @@ import ReportViewerScreen from './components/screens/ReportViewerScreen';
 import AboutUsScreen from './components/screens/AboutUsScreen';
 import TermsScreen from './components/screens/TermsScreen';
 import ErrorBoundary from './components/utility/ErrorBoundary';
-import { useDeviceDetection, useLocalStorage } from './hooks';
+import { useDeviceDetection } from './hooks';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
-function App() {
-  // Use custom hooks for device detection and persisting user session
+function AppContent() {
+  const { user, login, logout, selectPersona, selectedPersona } = useAuth();
+  // Use custom hooks for device detection
   const isMobile = useDeviceDetection(768);
-  const [user, setUser] = useLocalStorage('beet-guru-user', null);
   
   // App state
   const [activeScreen, setActiveScreen] = useState('home');
@@ -35,8 +36,6 @@ function App() {
   const [currentEmail, setCurrentEmail] = useState('');
   const [isNewUser, setIsNewUser] = useState(false); // Track if it's a new user for magic link flow
   
-  // Add state for selected persona
-  const [selectedPersona, setSelectedPersona] = useState(null);
   
   // Add state for selected location or draft assessment
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -77,27 +76,21 @@ function App() {
   };
   
   const handleLogin = (userData) => {
-    // If we have a selected persona, use that instead of the provided userData
-    // This ensures consistency with the persona selected during the email step
-    const userToSet = selectedPersona || userData;
-    setUser(userToSet);
+    login(userData);
     setActiveScreen('home');
-    // Reset the selected persona
-    setSelectedPersona(null);
     setIsNewUser(false);
   };
   
   const handleLogout = () => {
-    setUser(null);
+    logout();
     setAuthScreen('email');
     setCurrentEmail('');
-    setSelectedPersona(null);
     setIsNewUser(false);
   };
   
   // Handler for selecting a persona
   const handleSelectPersona = (persona) => {
-    setSelectedPersona(persona);
+    selectPersona(persona);
     // Also update the current email to match the persona's email
     setCurrentEmail(persona.email);
   };
@@ -139,12 +132,10 @@ function App() {
       case 'email':
         return (
           <ErrorBoundary>
-            <EmailScreen 
-              onEmailSubmit={handleEmailSubmit} 
+            <EmailScreen
+              onEmailSubmit={handleEmailSubmit}
               onKnownUser={handleEmailContinue}
               onNewUser={handleNewUserContinue}
-              onSelectPersona={handleSelectPersona}
-              onLogin={handleLogin}
             />
           </ErrorBoundary>
         );
@@ -163,26 +154,22 @@ function App() {
       case 'magic-link-verify':
         return (
           <ErrorBoundary>
-            <MagicLinkVerifyScreen 
-              email={currentEmail}
-              onBack={handleBackToEmail}
-              onLogin={handleLogin}
-              onRegister={handleRegisterClick}
-              selectedPersona={selectedPersona}
-              isNewUser={isNewUser}
-            />
+          <MagicLinkVerifyScreen
+            email={currentEmail}
+            onBack={handleBackToEmail}
+            onRegister={handleRegisterClick}
+            isNewUser={isNewUser}
+          />
           </ErrorBoundary>
         );
       
       case 'register':
         return (
           <ErrorBoundary>
-            <RegisterScreen 
-              onBack={handleBackToEmail} 
-              onComplete={handleLogin}
-              prefillEmail={currentEmail}
-              selectedPersona={selectedPersona}
-            />
+          <RegisterScreen
+            onBack={handleBackToEmail}
+            prefillEmail={currentEmail}
+          />
           </ErrorBoundary>
         );
       
@@ -190,23 +177,19 @@ function App() {
       case 'login':
         return (
           <ErrorBoundary>
-            <LoginScreen 
-              onLogin={handleLogin} 
-              onRegister={() => setAuthScreen('register')}
-              selectedPersona={selectedPersona}
-            />
+          <LoginScreen
+            onRegister={() => setAuthScreen('register')}
+          />
           </ErrorBoundary>
         );
       
       default:
         return (
           <ErrorBoundary>
-            <EmailScreen 
-              onEmailSubmit={handleEmailSubmit} 
+            <EmailScreen
+              onEmailSubmit={handleEmailSubmit}
               onKnownUser={handleEmailContinue}
               onNewUser={handleNewUserContinue}
-              onSelectPersona={handleSelectPersona}
-              onLogin={handleLogin}
             />
           </ErrorBoundary>
         );
@@ -219,11 +202,9 @@ function App() {
       {/* Desktop Sidebar - always visible on desktop */}
       <div className={`${isMobile ? 'hidden' : 'block'} h-screen`}>
         <ErrorBoundary>
-          <Sidebar 
-            activeScreen={activeScreen} 
+          <Sidebar
+            activeScreen={activeScreen}
             handleNavigate={handleNavigate}
-            onLogout={handleLogout}
-            user={user}
           />
         </ErrorBoundary>
       </div>
@@ -241,7 +222,7 @@ function App() {
         
         <div id="main-content" className="flex-1 overflow-y-auto p-4 pb-16 md:pb-4">
           <ErrorBoundary>
-            {activeScreen === 'home' && <HomeScreen onNavigate={handleNavigate} isMobile={isMobile} user={user} />}
+            {activeScreen === 'home' && <HomeScreen onNavigate={handleNavigate} isMobile={isMobile} />}
             {activeScreen === 'assessments' && (
               <AssessmentsScreen 
                 onNavigate={handleNavigate} 
@@ -268,9 +249,9 @@ function App() {
               />
             )}
             {activeScreen === 'stockfeed' && <StockFeedScreen isMobile={isMobile} />}
-            {activeScreen === 'more' && <MoreScreen onNavigate={handleNavigate} isMobile={isMobile} onLogout={handleLogout} user={user} />}
-            {activeScreen === 'locations' && <LocationsScreen isMobile={isMobile} user={user} />}
-            {activeScreen === 'settings' && <SettingsScreen isMobile={isMobile} onNavigate={handleNavigate} user={user} />}
+            {activeScreen === 'more' && <MoreScreen onNavigate={handleNavigate} isMobile={isMobile} />}
+            {activeScreen === 'locations' && <LocationsScreen isMobile={isMobile} />}
+            {activeScreen === 'settings' && <SettingsScreen isMobile={isMobile} onNavigate={handleNavigate} />}
             {activeScreen === 'about-us' && <AboutUsScreen onNavigate={handleNavigate} isMobile={isMobile} />}
             {activeScreen === 'terms' && <TermsScreen onNavigate={handleNavigate} isMobile={isMobile} />}
           </ErrorBoundary>
@@ -289,5 +270,11 @@ function App() {
     </div>
   );
 }
+
+const App = () => (
+  <AuthProvider>
+    <AppContent />
+  </AuthProvider>
+);
 
 export default App;

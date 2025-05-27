@@ -8,6 +8,7 @@ import PageContainer from '../layout/PageContainer';
 import LocationListItemSkeleton from '../ui/LocationListItemSkeleton';
 import LocationForm from './LocationForm';
 import ErrorBoundary from '../utility/ErrorBoundary';
+import { useAuth } from '../../context/AuthContext';
 
 /**
  * Locations Screen Component
@@ -17,10 +18,10 @@ import ErrorBoundary from '../utility/ErrorBoundary';
  * 
  * @param {Object} props
  * @param {boolean} props.isMobile - Whether the screen is in mobile view
- * @param {Object} props.user - Current user information
  * @returns {JSX.Element}
  */
-const LocationsScreen = ({ isMobile, user }) => {
+const LocationsScreen = ({ isMobile }) => {
+  const { user } = useAuth();
   // State for location data
   const [locations, setLocations] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);

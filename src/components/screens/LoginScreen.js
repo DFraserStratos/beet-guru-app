@@ -6,13 +6,15 @@ import api from '../../services/api';
 import ErrorBoundary from '../utility/ErrorBoundary';
 import beetGuruWideLogo from '../../BeetGuruWide.png';
 import PageContainer from '../layout/PageContainer';
+import { useAuth } from '../../context/AuthContext';
 
 /**
  * Login screen component
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const LoginScreen = ({ onLogin, onRegister, selectedPersona }) => {
+const LoginScreen = ({ onRegister }) => {
+  const { login, selectedPersona } = useAuth();
   const [formFilled, setFormFilled] = useState(false);
   
   // Form validation
@@ -77,13 +79,13 @@ const LoginScreen = ({ onLogin, onRegister, selectedPersona }) => {
     // Second click: Actually log in
     if (selectedPersona) {
       // Use the selected persona data
-      onLogin(selectedPersona);
+      login(selectedPersona);
     } else {
       // Fallback to default user data
-      onLogin({ 
+      login({
         id: '1',
-        email: formValues.email, 
-        name: 'John Doe', 
+        email: formValues.email,
+        name: 'John Doe',
         role: 'Farm Manager',
         initials: 'JD'
       });

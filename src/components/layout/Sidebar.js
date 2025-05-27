@@ -9,8 +9,10 @@ import {
   HelpCircle
 } from 'lucide-react';
 import beetGuruSquareLogo from '../../BeetGuruSq.png';
+import { useAuth } from '../../context/AuthContext';
 
-const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
+const Sidebar = ({ activeScreen, handleNavigate }) => {
+  const { user, logout } = useAuth();
   return (
     <div className="w-64 bg-green-800 text-white h-full flex flex-col">
       <div className="p-4 flex items-center justify-between border-b border-green-700">
@@ -97,11 +99,11 @@ const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
               isActive={activeScreen === 'terms'} 
               onClick={() => handleNavigate('terms')}
             />
-            <SidebarItem 
-              icon={<LogOut size={20} />} 
-              label="Log Out" 
-              isActive={false} 
-              onClick={onLogout}
+            <SidebarItem
+              icon={<LogOut size={20} />}
+              label="Log Out"
+              isActive={false}
+              onClick={logout}
             />
           </ul>
         </div>
