@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { User, Mail, Lock, ArrowLeft, Check } from 'lucide-react';
-import beetGuruWideLogo from '../../BeetGuruWide.png';
+import AuthLayout from '../layout/AuthLayout';
 import { FormField, FormButton } from '../ui/form';
 import { PrimaryButton } from '../ui/buttons';
-import PageContainer from '../layout/PageContainer';
 import { cn } from '../../utils/cn';
 
 const RegisterScreen = ({ onBack, onComplete, prefillEmail = '', selectedPersona = null }) => {
@@ -17,22 +16,29 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '', selectedPersona
     agreeToTerms: false
   });
   
-  const [formFilled, setFormFilled] = useState(false);
-  const formRef = useRef(null);
-  
-  // Reset form state when component mounts (in case user returns from login)
+  // Pre-fill form data on mount if we have a selected persona or email
   useEffect(() => {
-    setFormData({
-      name: '',
-      email: prefillEmail || '',
-      password: '',
-      confirmPassword: '',
-      userType: '',
-      subscribeToNews: false,
-      agreeToTerms: false
-    });
-    setFormFilled(false);
-  }, [prefillEmail]);
+    if (selectedPersona) {
+      // Pre-fill with persona data
+      const userType = selectedPersona.role.toLowerCase().includes('farm') ? 'farmer' : 'retailer';
+      
+      setFormData({
+        name: selectedPersona.name,
+        email: selectedPersona.email,
+        password: selectedPersona.hasPassword ? selectedPersona.password : 'password123',
+        confirmPassword: selectedPersona.hasPassword ? selectedPersona.password : 'password123',
+        userType: userType,
+        subscribeToNews: true,
+        agreeToTerms: true
+      });
+    } else if (prefillEmail) {
+      // Just pre-fill the email if that's all we have
+      setFormData(prev => ({
+        ...prev,
+        email: prefillEmail
+      }));
+    }
+  }, [prefillEmail, selectedPersona]);
   
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -51,51 +57,15 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '', selectedPersona
   const getUserTypeButtonClasses = (type) =>
     cn(formData.userType !== type && userTypeUnselectedClass);
   
-  // Use the selected persona data if available
-  const fillFormWithSampleData = () => {
-    if (selectedPersona) {
-      // Determine user type based on role
-      const userType = selectedPersona.role.toLowerCase().includes('farm') ? 'farmer' : 'retailer';
-      
-      setFormData({
-        name: selectedPersona.name,
-        email: selectedPersona.email,
-        password: 'password',
-        confirmPassword: 'password',
-        userType: userType,
-        subscribeToNews: true,
-        agreeToTerms: true
-      });
-    } else {
-      // Fallback to default sample data
-      setFormData({
-        name: 'Donald',
-        email: prefillEmail || 'donald@example.co.nz',
-        password: 'password',
-        confirmPassword: 'password',
-        userType: 'farmer',
-        subscribeToNews: true,
-        agreeToTerms: true
-      });
-    }
-    setFormFilled(true);
-  };
-  
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // First click: Fill in the form with sample data
-    if (!formFilled) {
-      fillFormWithSampleData();
-      return;
-    }
-    
-    // Second click: Complete registration
+    // Direct submission - no double-click needed
     onComplete({ 
       email: formData.email,
       name: formData.name,
       role: formData.userType === 'farmer' ? 'Farm Manager' : 'Retail Consultant',
-      initials: formData.name ? formData.name.split(' ').map(n => n && n[0]).join('') : 'D',
+      initials: formData.name ? formData.name.split(' ').map(n => n && n[0]).join('') : 'XX',
       // Include additional fields from the selected persona if available
       ...(selectedPersona ? {
         farmName: selectedPersona.farmName,
@@ -105,186 +75,140 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '', selectedPersona
     });
   };
   
-  const handleContinueClick = (e) => {
-    e.preventDefault();
-    
-    if (!formFilled) {
-      fillFormWithSampleData();
-    } else {
-      // Handle the second click (complete registration)
-      onComplete({ 
-        email: formData.email,
-        name: formData.name,
-        role: formData.userType === 'farmer' ? 'Farm Manager' : 'Retail Consultant',
-        initials: formData.name ? formData.name.split(' ').map(n => n && n[0]).join('') : 'D',
-        // Include additional fields from the selected persona if available
-        ...(selectedPersona ? {
-          farmName: selectedPersona.farmName,
-          location: selectedPersona.location,
-          gender: selectedPersona.gender
-        } : {})
-      });
-    }
-  };
-  
-  const handleBackClick = () => {
-    // Reset form state when going back to login
-    setFormData({
-      name: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      userType: '',
-      subscribeToNews: false,
-      agreeToTerms: false
-    });
-    setFormFilled(false);
-    onBack();
+  const isFormValid = () => {
+    return formData.name && 
+           formData.email && 
+           formData.password && 
+           formData.confirmPassword && 
+           formData.userType && 
+           formData.agreeToTerms &&
+           formData.password === formData.confirmPassword;
   };
   
   return (
-    <PageContainer className="min-h-screen bg-gray-50 flex flex-col justify-center py-12">
-      <div className="flex justify-center">
-        <img 
-          src={beetGuruWideLogo} 
-          alt="Beet Guru Logo" 
-          className="h-28 w-auto" 
+    <AuthLayout 
+      title="Create Account"
+      onBack={onBack}
+      showBackButton={true}
+    >
+      <form className="space-y-6" onSubmit={handleSubmit} noValidate>
+        <FormField
+          label="Full Name"
+          name="name"
+          type="text"
+          value={formData.name}
+          onChange={handleChange}
+          placeholder="Enter your name"
+          icon={<User size={18} className="text-gray-400" />}
+          required
         />
-      </div>
-      
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <div className="flex items-center mb-6">
-            <button
-              onClick={handleBackClick}
-              className="flex items-center text-green-600 hover:text-green-500"
+        
+        <FormField
+          label="Email address"
+          name="email"
+          type="email"
+          value={formData.email}
+          onChange={handleChange}
+          placeholder="you@example.com"
+          icon={<Mail size={18} className="text-gray-400" />}
+          required
+        />
+        
+        <FormField
+          label="Password"
+          name="password"
+          type="password"
+          value={formData.password}
+          onChange={handleChange}
+          placeholder="Create a password"
+          icon={<Lock size={18} className="text-gray-400" />}
+          required
+        />
+        
+        <FormField
+          label="Confirm password"
+          name="confirmPassword"
+          type="password"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          placeholder="Confirm your password"
+          error={formData.confirmPassword && formData.password !== formData.confirmPassword ? 'Passwords do not match' : ''}
+          touched={formData.confirmPassword !== ''}
+          required
+        />
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            User Type
+          </label>
+          <div className="grid grid-cols-2 gap-3">
+            <PrimaryButton
+              type="button"
+              onClick={() => handleUserTypeSelect('farmer')}
+              className={getUserTypeButtonClasses('farmer')}
             >
-              <ArrowLeft size={16} className="mr-1" />
-              <span className="text-sm font-medium">Back</span>
-            </button>
-            <div className="text-center flex-1">
-              <h2 className="text-2xl font-semibold text-gray-800">Create Account</h2>
-            </div>
-            <div className="w-16"></div> {/* Spacer for alignment */}
+              Farmer
+            </PrimaryButton>
+            <PrimaryButton
+              type="button"
+              onClick={() => handleUserTypeSelect('retailer')}
+              className={getUserTypeButtonClasses('retailer')}
+            >
+              Retailer
+            </PrimaryButton>
           </div>
-          
-          <form ref={formRef} className="space-y-6" onSubmit={handleSubmit} noValidate>
-            <FormField
-              label="Full Name"
-              name="name"
-              type="text"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Enter your name"
-              icon={<User size={18} className="text-gray-400" />}
-            />
-            
-            <FormField
-              label="Email address"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="you@example.com"
-              icon={<Mail size={18} className="text-gray-400" />}
-            />
-            
-            <FormField
-              label="Password"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              icon={<Lock size={18} className="text-gray-400" />}
-            />
-            
-            <FormField
-              label="Confirm password"
-              name="confirmPassword"
-              type="password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-            />
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                User Type
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                <PrimaryButton
-                  type="button"
-                  onClick={() => handleUserTypeSelect('farmer')}
-                  className={getUserTypeButtonClasses('farmer')}
-                >
-                  Farmer
-                </PrimaryButton>
-                <PrimaryButton
-                  type="button"
-                  onClick={() => handleUserTypeSelect('retailer')}
-                  className={getUserTypeButtonClasses('retailer')}
-                >
-                  Retailer
-                </PrimaryButton>
-              </div>
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="subscribeToNews"
-                  name="subscribeToNews"
-                  type="checkbox"
-                  checked={formData.subscribeToNews}
-                  onChange={handleChange}
-                  className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-                />
-                <label htmlFor="subscribeToNews" className="ml-2 block text-sm text-gray-700">
-                  Subscribe to news & updates
-                </label>
-              </div>
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="agreeToTerms"
-                  name="agreeToTerms"
-                  type="checkbox"
-                  checked={formData.agreeToTerms}
-                  onChange={handleChange}
-                  className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-                />
-                <label htmlFor="agreeToTerms" className="ml-2 block text-sm text-gray-700">
-                  I agree to the <a href="#" className="text-green-600 hover:text-green-500">Terms and Conditions</a>
-                </label>
-              </div>
-            </div>
-            
-            <div>
-              <FormButton
-                type="button" 
-                onClick={handleContinueClick}
-                variant="primary"
-                fullWidth
-                icon={formFilled ? <Check size={16} /> : null}
-              >
-                {formFilled ? 'Complete Registration' : 'Continue'}
-              </FormButton>
-              
-              {selectedPersona && !formFilled && (
-                <p className="text-xs text-gray-500 mt-1 text-center">
-                  Click to fill with {selectedPersona.name}'s information
-                </p>
-              )}
-            </div>
-          </form>
         </div>
-      </div>
-      
-      <div className="mt-8 text-center text-sm text-gray-500">
-        <p>Beet Guru v1.1.0 • © 2025 Beet Guru Ltd.</p>
-      </div>
-    </PageContainer>
+        
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <input
+              id="subscribeToNews"
+              name="subscribeToNews"
+              type="checkbox"
+              checked={formData.subscribeToNews}
+              onChange={handleChange}
+              className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+            />
+            <label htmlFor="subscribeToNews" className="ml-2 block text-sm text-gray-700">
+              Subscribe to news & updates
+            </label>
+          </div>
+        </div>
+        
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <input
+              id="agreeToTerms"
+              name="agreeToTerms"
+              type="checkbox"
+              checked={formData.agreeToTerms}
+              onChange={handleChange}
+              className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+            />
+            <label htmlFor="agreeToTerms" className="ml-2 block text-sm text-gray-700">
+              I agree to the <a href="#" className="text-green-600 hover:text-green-500">Terms and Conditions</a>
+            </label>
+          </div>
+        </div>
+        
+        <div>
+          <FormButton
+            type="submit"
+            variant="primary"
+            fullWidth
+            disabled={!isFormValid()}
+          >
+            Complete Registration
+          </FormButton>
+          
+          {selectedPersona && (
+            <p className="text-xs text-gray-500 mt-2 text-center">
+              Registering as {selectedPersona.name}
+            </p>
+          )}
+        </div>
+      </form>
+    </AuthLayout>
   );
 };
 
