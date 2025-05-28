@@ -10,8 +10,7 @@ import MoreScreen from './components/screens/MoreScreen';
 import LoginScreen from './components/screens/LoginScreen';
 import RegisterScreen from './components/screens/RegisterScreen';
 import EmailScreen from './components/screens/EmailScreen';
-import MagicLinkSentScreen from './components/screens/MagicLinkSentScreen';
-import MagicLinkVerifyScreen from './components/screens/MagicLinkVerifyScreen';
+import VerificationCodeScreen from './components/screens/VerificationCodeScreen';
 import StockFeedScreen from './components/screens/StockFeedScreen';
 import LocationsScreen from './components/screens/LocationsScreen';
 import SettingsScreen from './components/screens/SettingsScreen';
@@ -28,12 +27,12 @@ function App() {
   
   // App state
   const [activeScreen, setActiveScreen] = useState('home');
-  const [authScreen, setAuthScreen] = useState('email'); // 'email', 'magic-link-sent', 'magic-link-verify', 'register'
+  const [authScreen, setAuthScreen] = useState('email'); // 'email', 'verification-code', 'register'
   const isAuthenticated = Boolean(user);
   
-  // Magic link authentication data
+  // Authentication data
   const [currentEmail, setCurrentEmail] = useState('');
-  const [isNewUser, setIsNewUser] = useState(false); // Track if it's a new user for magic link flow
+  const [isNewUser, setIsNewUser] = useState(false); // Track if it's a new user
   
   // Add state for selected persona
   const [selectedPersona, setSelectedPersona] = useState(null);
@@ -102,19 +101,13 @@ function App() {
     setCurrentEmail(persona.email);
   };
   
-  // Magic link authentication handlers
+  // Verification code authentication handlers
   const handleEmailSubmit = (email) => {
     setCurrentEmail(email);
   };
   
-  const handleEmailContinue = () => {
-    setIsNewUser(false);
-    setAuthScreen('magic-link-sent');
-  };
-  
-  const handleNewUserContinue = () => {
-    setIsNewUser(true);
-    setAuthScreen('magic-link-sent');
+  const handleSendCode = () => {
+    setAuthScreen('verification-code');
   };
   
   const handleBackToEmail = () => {
@@ -122,8 +115,23 @@ function App() {
     setIsNewUser(false);
   };
   
-  const handleVerifyMagicLink = () => {
-    setAuthScreen('magic-link-verify');
+  const handleVerifyCode = async (email, userOrPersona) => {
+    // If userOrPersona is provided, it means verification was successful
+    if (userOrPersona) {
+      // Check if this is an existing user
+      if (userOrPersona.id) {
+        // Existing user - log them in directly
+        handleLogin(userOrPersona);
+      } else {
+        // New user - go to registration
+        setIsNewUser(true);
+        setAuthScreen('register');
+      }
+    } else {
+      // No user data means new user registration
+      setIsNewUser(true);
+      setAuthScreen('register');
+    }
   };
   
   const handleRegisterClick = (email = '') => {
@@ -141,35 +149,21 @@ function App() {
           <ErrorBoundary>
             <EmailScreen 
               onEmailSubmit={handleEmailSubmit} 
-              onKnownUser={handleEmailContinue}
-              onNewUser={handleNewUserContinue}
+              onSendCode={handleSendCode}
               onSelectPersona={handleSelectPersona}
               onLogin={handleLogin}
             />
           </ErrorBoundary>
         );
       
-      case 'magic-link-sent':
+      case 'verification-code':
         return (
           <ErrorBoundary>
-            <MagicLinkSentScreen 
+            <VerificationCodeScreen 
               email={currentEmail}
               onBack={handleBackToEmail}
-              onVerify={handleVerifyMagicLink}
-            />
-          </ErrorBoundary>
-        );
-      
-      case 'magic-link-verify':
-        return (
-          <ErrorBoundary>
-            <MagicLinkVerifyScreen 
-              email={currentEmail}
-              onBack={handleBackToEmail}
-              onLogin={handleLogin}
-              onRegister={handleRegisterClick}
+              onVerify={handleVerifyCode}
               selectedPersona={selectedPersona}
-              isNewUser={isNewUser}
             />
           </ErrorBoundary>
         );
@@ -203,8 +197,7 @@ function App() {
           <ErrorBoundary>
             <EmailScreen 
               onEmailSubmit={handleEmailSubmit} 
-              onKnownUser={handleEmailContinue}
-              onNewUser={handleNewUserContinue}
+              onSendCode={handleSendCode}
               onSelectPersona={handleSelectPersona}
               onLogin={handleLogin}
             />
