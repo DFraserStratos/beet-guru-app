@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Mail, ArrowRight, Lock, Sparkles, UserPlus } from 'lucide-react';
+import { Mail, ArrowRight, Lock, Shield, UserPlus } from 'lucide-react';
 import { FormField, FormButton } from '../ui/form';
 import { useForm } from '../../hooks';
 import AuthLayout from '../layout/AuthLayout';
@@ -8,10 +8,11 @@ import { logger } from '../../utils/logger';
 
 /**
  * Enhanced Email Screen with progressive disclosure for password authentication
+ * Updated to use verification codes instead of magic links
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, onLogin }) => {
+const EmailScreen = ({ onEmailSubmit, onSendCode, onSelectPersona, onLogin }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isUnknownAccount, setIsUnknownAccount] = useState(false);
@@ -27,7 +28,7 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
         logger.info(
           'Selected persona:',
           persona.name,
-          persona.hasPassword ? '(has password)' : '(magic link only)'
+          persona.hasPassword ? '(has password)' : '(verification code only)'
         );
       } catch (error) {
         console.error('Error getting random persona:', error);
@@ -123,11 +124,11 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
   
   // Handle form submission (only used for initial continue button and unknown accounts)
   async function handleFormSubmit(formValues) {
-    // For unknown accounts, go directly to magic link flow
+    // For unknown accounts, go directly to verification code flow
     if (isUnknownAccount) {
       setIsProcessing(true);
       try {
-        await handleMagicLinkFlow(formValues);
+        await handleVerificationCodeFlow(formValues);
       } finally {
         setIsProcessing(false);
       }
@@ -180,36 +181,23 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
     }
   };
   
-  // Handle magic link flow
-  const handleMagicLinkFlow = async (formValues) => {
+  // Handle verification code flow
+  const handleVerificationCodeFlow = async (formValues) => {
     onEmailSubmit(formValues.email);
     
     if (selectedPersona && selectedPersona.email === formValues.email) {
       onSelectPersona(selectedPersona);
     }
     
-    // For unknown accounts, always go to new user flow
-    if (isUnknownAccount) {
-      onNewUser();
-      return;
-    }
-    
-    // Check if user exists to determine flow
     try {
-      const checkResult = await api.auth.checkEmailExists(formValues.email);
+      // Generate and send verification code
+      await api.auth.generateVerificationCode(formValues.email);
       
-      if (checkResult.exists) {
-        onKnownUser(); // Go to magic link sent screen for existing user
-      } else {
-        onNewUser(); // Go to magic link sent screen for new user (will lead to registration)
-      }
+      // Navigate to verification code screen
+      onSendCode();
     } catch (error) {
-      // For demo purposes, treat any example.com email as existing user
-      if (formValues.email.includes('@example.com') && formValues.email !== 'newuser@example.com') {
-        onKnownUser();
-      } else {
-        onNewUser();
-      }
+      console.error('Error sending verification code:', error);
+      // In real app, show error message
     }
   };
   
@@ -228,8 +216,8 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
     await handlePasswordSignIn();
   };
   
-  // Handle magic link button click - direct processing
-  const handleMagicLinkClick = async () => {
+  // Handle verification code button click - direct processing
+  const handleVerificationCodeClick = async () => {
     // Validate email
     if (!values.email || errors.email) {
       handleBlur({ target: { name: 'email' } });
@@ -238,7 +226,7 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
     
     setIsProcessing(true);
     try {
-      await handleMagicLinkFlow(values);
+      await handleVerificationCodeFlow(values);
     } finally {
       setIsProcessing(false);
     }
@@ -290,7 +278,7 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
               autoComplete="current-password"
               disabled={isProcessing}
               hint={selectedPersona && !selectedPersona.hasPassword && values.email === selectedPersona.email 
-                ? "This demo user doesn't have a password. Use magic link instead." 
+                ? "This demo user doesn't have a password. Use verification code instead." 
                 : null}
             />
           </div>
@@ -322,7 +310,7 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
               Continue
             </FormButton>
           ) : (
-            // Known account - expanded state - sign in and magic link buttons
+            // Known account - expanded state - sign in and verification code buttons
             <>
               <FormButton
                 type="button"
@@ -341,10 +329,10 @@ const EmailScreen = ({ onEmailSubmit, onKnownUser, onNewUser, onSelectPersona, o
                 fullWidth
                 isLoading={isProcessing}
                 disabled={isProcessing}
-                onClick={handleMagicLinkClick}
-                icon={<Sparkles size={16} />}
+                onClick={handleVerificationCodeClick}
+                icon={<Shield size={16} />}
               >
-                Use Magic Link
+                Use Verification Code
               </FormButton>
             </>
           )}
