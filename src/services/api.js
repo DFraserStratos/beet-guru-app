@@ -370,8 +370,8 @@ const mockData = {
       season: '2024/2025'
     }
   ],
-  // Mock storage for magic links tokens
-  magicLinkTokens: []
+  // Mock storage for verification codes
+  verificationCodes: []
 };
 
 /**
@@ -380,6 +380,14 @@ const mockData = {
  * @returns {Promise}
  */
 const delay = (ms = 300) => new Promise(resolve => setTimeout(resolve, ms));
+
+/**
+ * Generate a random 6-digit code
+ * @returns {string} 6-digit code
+ */
+const generateCode = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
 
 /**
  * Auth API
@@ -423,7 +431,7 @@ export const authAPI = {
     
     // Check if user has a password
     if (!user.hasPassword || !user.password) {
-      throw new Error('This account uses magic link authentication only');
+      throw new Error('This account uses verification code authentication only');
     }
     
     // Verify password
@@ -462,61 +470,100 @@ export const authAPI = {
     return { exists: Boolean(user) };
   },
   
-  generateMagicLink: async (email) => {
+  // New method to generate and send verification code
+  generateVerificationCode: async (email) => {
     await delay(800); // Slightly longer delay to simulate email sending
     
-    const token = Math.random().toString(36).substring(2, 15) + 
-                Math.random().toString(36).substring(2, 15);
+    // Remove any existing codes for this email
+    mockData.verificationCodes = mockData.verificationCodes.filter(
+      c => c.email !== email
+    );
     
-    // Store token with email and expiration
-    mockData.magicLinkTokens.push({
-      token,
+    const code = generateCode();
+    
+    // Store code with email, expiration, and attempt count
+    mockData.verificationCodes.push({
+      code,
       email,
-      expiry: new Date(Date.now() + 30 * 60 * 1000) // 30 minutes
+      expiry: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
+      attempts: 0,
+      createdAt: new Date()
     });
     
-    const magicLink = `${window.location.origin}/auth/verify?token=${token}`;
+    // In a real implementation, this would send an email
+    console.log(`[Demo] Verification code for ${email}: ${code}`);
     
     return { 
       success: true,
-      magicLink // In a real implementation, this would be included in an email
+      message: 'Verification code sent'
     };
   },
   
-  verifyMagicLink: async (token) => {
+  // New method to verify code
+  verifyCode: async (email, code) => {
     await delay();
     
-    const tokenData = mockData.magicLinkTokens.find(t => t.token === token);
-    if (!tokenData) {
-      throw new Error('Invalid or expired token');
+    const codeData = mockData.verificationCodes.find(
+      c => c.email === email
+    );
+    
+    if (!codeData) {
+      throw new Error('No verification code found. Please request a new one.');
     }
     
-    if (new Date() > new Date(tokenData.expiry)) {
-      throw new Error('Token expired');
+    // Check if code has expired
+    if (new Date() > new Date(codeData.expiry)) {
+      // Remove expired code
+      mockData.verificationCodes = mockData.verificationCodes.filter(
+        c => c.email !== email
+      );
+      throw new Error('Verification code has expired. Please request a new one.');
     }
     
-    // For demo purposes, return whether the user exists
-    const user = mockData.users.find(u => u.email === tokenData.email);
+    // Increment attempts
+    codeData.attempts++;
+    
+    // Check if too many attempts
+    if (codeData.attempts > 5) {
+      // Remove code after too many attempts
+      mockData.verificationCodes = mockData.verificationCodes.filter(
+        c => c.email !== email
+      );
+      throw new Error('Too many failed attempts. Please request a new code.');
+    }
+    
+    // Verify the code
+    if (codeData.code !== code) {
+      const remainingAttempts = 5 - codeData.attempts;
+      throw new Error(`Invalid code. ${remainingAttempts} attempts remaining.`);
+    }
+    
+    // Code is valid - remove it (single use)
+    mockData.verificationCodes = mockData.verificationCodes.filter(
+      c => c.email !== email
+    );
+    
+    // Check if user exists
+    const user = mockData.users.find(u => u.email === email);
     
     return {
-      email: tokenData.email,
+      success: true,
+      email: email,
       isExistingUser: Boolean(user),
       user: user || null
     };
   },
   
-  loginWithMagicLink: async (token) => {
+  // Method to complete login with verified email
+  loginWithVerifiedEmail: async (email) => {
     await delay();
     
-    const verification = await authAPI.verifyMagicLink(token);
-    if (!verification.isExistingUser) {
+    const user = mockData.users.find(u => u.email === email);
+    if (!user) {
       throw new Error('User not found');
     }
     
-    // Remove token after use (single-use token)
-    mockData.magicLinkTokens = mockData.magicLinkTokens.filter(t => t.token !== token);
-    
-    return verification.user;
+    return user;
   }
 };
 
