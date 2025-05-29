@@ -94,7 +94,8 @@ const VerificationCodeScreen = ({
     }
   };
   
-  const fillDemoCode = (demoCode) => {
+  const fillDemoCode = () => {
+    const demoCode = '123456';
     const digits = demoCode.split('');
     setCode(digits);
     setError('');
@@ -118,9 +119,9 @@ const VerificationCodeScreen = ({
     setError('');
     
     try {
-      // Demo mode - accept specific codes
+      // Demo mode - accept code 123456
       if (selectedPersona || email === 'demo@example.com' || email.includes('@example.com')) {
-        if (codeString === '123456' || codeString === '111111') {
+        if (codeString === '123456') {
           // Simulate verification success
           setTimeout(() => {
             onVerify(email, selectedPersona);
@@ -281,7 +282,7 @@ const VerificationCodeScreen = ({
             <div className="text-center">
               <button
                 type="button"
-                onClick={() => fillDemoCode('123456')}
+                onClick={fillDemoCode}
                 className="text-sm text-green-600 hover:text-green-500 font-medium"
               >
                 Fill code for existing user
@@ -290,21 +291,12 @@ const VerificationCodeScreen = ({
             <div className="text-center">
               <button
                 type="button"
-                onClick={() => fillDemoCode('111111')}
+                onClick={fillDemoCode}
                 className="text-sm text-green-600 hover:text-green-500 font-medium"
               >
                 Fill code for new user
               </button>
             </div>
-          </div>
-        )}
-        
-        {/* Demo hint */}
-        {isDemoMode && (
-          <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-            <p className="text-xs text-blue-700 text-center">
-              Demo mode: Use code 123456 for existing users or 111111 for new users
-            </p>
           </div>
         )}
         
