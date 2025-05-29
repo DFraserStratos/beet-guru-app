@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { AlertCircle, RefreshCw, UserCheck, UserPlus } from 'lucide-react';
+import { AlertCircle, RefreshCw } from 'lucide-react';
 import AuthLayout from '../layout/AuthLayout';
 import { FormButton } from '../ui/form';
 import { authAPI } from '../../services/api';
@@ -275,38 +275,36 @@ const VerificationCodeScreen = ({
           </div>
         </form>
         
-        {/* Demo helpers */}
+        {/* Demo Helpers - styled to match EmailScreen */}
+        {isDemoMode && !code.every(digit => digit) && (
+          <div className="space-y-2">
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => fillDemoCode('123456')}
+                className="text-sm text-green-600 hover:text-green-500 font-medium"
+              >
+                Fill code for existing user
+              </button>
+            </div>
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => fillDemoCode('111111')}
+                className="text-sm text-green-600 hover:text-green-500 font-medium"
+              >
+                Fill code for new user
+              </button>
+            </div>
+          </div>
+        )}
+        
+        {/* Demo hint */}
         {isDemoMode && (
-          <div className="space-y-4">
-            <div className="border-t pt-4">
-              <p className="text-xs text-gray-500 text-center mb-3">Demo Options</p>
-              <div className="space-y-2">
-                <button
-                  type="button"
-                  onClick={() => fillDemoCode('123456')}
-                  disabled={isLoading}
-                  className="w-full text-sm text-green-600 hover:text-green-500 font-medium py-2 px-4 border border-green-300 rounded-lg hover:bg-green-50 transition-colors inline-flex items-center justify-center"
-                >
-                  <UserCheck size={16} className="mr-2" />
-                  Fill code for existing user (123456)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => fillDemoCode('111111')}
-                  disabled={isLoading}
-                  className="w-full text-sm text-green-600 hover:text-green-500 font-medium py-2 px-4 border border-green-300 rounded-lg hover:bg-green-50 transition-colors inline-flex items-center justify-center"
-                >
-                  <UserPlus size={16} className="mr-2" />
-                  Fill code for new user (111111)
-                </button>
-              </div>
-            </div>
-            
-            <div className="p-3 bg-blue-50 rounded-lg">
-              <p className="text-xs text-blue-700 text-center">
-                Demo mode: Both codes work for testing
-              </p>
-            </div>
+          <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+            <p className="text-xs text-blue-700 text-center">
+              Demo mode: Use code 123456 for existing users or 111111 for new users
+            </p>
           </div>
         )}
         
