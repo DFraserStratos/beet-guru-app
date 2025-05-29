@@ -276,27 +276,16 @@ const VerificationCodeScreen = ({
           </div>
         </form>
         
-        {/* Demo Helpers - styled to match EmailScreen */}
+        {/* Demo Helper - single button */}
         {isDemoMode && !code.every(digit => digit) && (
-          <div className="space-y-2">
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={fillDemoCode}
-                className="text-sm text-green-600 hover:text-green-500 font-medium"
-              >
-                Fill code for existing user
-              </button>
-            </div>
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={fillDemoCode}
-                className="text-sm text-green-600 hover:text-green-500 font-medium"
-              >
-                Fill code for new user
-              </button>
-            </div>
+          <div className="text-center">
+            <button
+              type="button"
+              onClick={fillDemoCode}
+              className="text-sm text-green-600 hover:text-green-500 font-medium"
+            >
+              Fill in Code
+            </button>
           </div>
         )}
         
