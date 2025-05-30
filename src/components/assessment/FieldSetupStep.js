@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { FormField, FormButtonNav } from '../ui/form';
 import { AlertTriangle, Calculator } from 'lucide-react';
 import { logger } from '../../utils/logger';
+import api from '../../services/api';
+import { useApi } from '../../hooks';
 
 /**
  * Second step of assessment creation - field setup
@@ -11,6 +13,10 @@ import { logger } from '../../utils/logger';
 const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile }) => {
   const [valueType, setValueType] = useState(formData.valueType || 'estimate');
   const [totalArea, setTotalArea] = useState(0);
+  const [cultivarInfo, setCultivarInfo] = useState(null);
+  
+  // API hooks
+  const cultivarsApi = useApi(api.references.getCultivars);
   
   // Initialize state for local form values with defaults only applied initially
   const [localFormData, setLocalFormData] = useState({
@@ -19,6 +25,21 @@ const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile
     bulbEstimate: formData.bulbEstimate === undefined ? '2' : formData.bulbEstimate,
     leafEstimate: formData.leafEstimate === undefined ? '3' : formData.leafEstimate
   });
+  
+  // Fetch cultivars data on mount
+  useEffect(() => {
+    cultivarsApi.execute();
+  }, []);
+  
+  // Load cultivar details when formData changes
+  useEffect(() => {
+    if (formData.cultivarId && formData.cultivarId !== 'other' && cultivarsApi.data) {
+      const selectedInfo = cultivarsApi.data.find(c => c.id === formData.cultivarId);
+      setCultivarInfo(selectedInfo);
+    } else {
+      setCultivarInfo(null);
+    }
+  }, [formData.cultivarId, cultivarsApi.data]);
   
   // Calculate total area when local form values change
   useEffect(() => {
@@ -128,6 +149,43 @@ const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile
         {/* Dry Matter Section */}
         <div>
           <h3 className="text-lg font-medium text-gray-800 mb-4">Dry Matter</h3>
+          
+          {/* Cultivar Information Section */}
+          <div className="bg-green-50 rounded-lg p-3 sm:p-4 border border-green-100 mb-6">
+            <h4 className="text-sm font-medium text-green-800 mb-1 sm:mb-2">Cultivar Information</h4>
+            
+            {cultivarInfo ? (
+              <div className="space-y-2 sm:space-y-3">
+                <p className="text-sm text-green-700">
+                  <strong>{cultivarInfo.name}</strong> - {cultivarInfo.description || 'No description available.'}
+                </p>
+                <div className="grid grid-cols-2 gap-2 text-xs text-green-700">
+                  <div>
+                    <span className="font-medium">Yield Potential:</span> {cultivarInfo.yield || 'N/A'}
+                  </div>
+                  <div>
+                    <span className="font-medium">Days to Maturity:</span> {cultivarInfo.growingTime || 'N/A'}
+                  </div>
+                  <div>
+                    <span className="font-medium">Dry Matter:</span> {cultivarInfo.dryMatter || 'N/A'}
+                  </div>
+                </div>
+              </div>
+            ) : formData.cultivarId === 'other' && formData.customCultivarName ? (
+              <div className="space-y-2 sm:space-y-3">
+                <p className="text-sm text-green-700">
+                  <strong>{formData.customCultivarName}</strong> - Custom cultivar information not available.
+                </p>
+                <div className="text-xs text-green-700">
+                  <p>For custom cultivars, please use your own knowledge of the variety or consult with your seed supplier for specific characteristics.</p>
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm text-green-700">
+                Cultivar information will appear here based on your selection from the previous step.
+              </p>
+            )}
+          </div>
           
           {/* Value Type Toggle */}
           <div className="mb-6">
