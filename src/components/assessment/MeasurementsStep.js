@@ -1,87 +1,131 @@
 import React, { useState } from 'react';
-import { FormField, FormButton, FormButtonNav } from '../ui/form';
-import { PlusCircle, Trash2, BarChart3, Info } from 'lucide-react';
+import { FormButtonNav } from '../ui/form';
+import { Plus, Trash2, Info, Leaf, Circle } from 'lucide-react';
 import { logger } from '../../utils/logger';
 import YieldRangeVisualization from '../ui/YieldRangeVisualization';
 
 /**
- * Sample area component for measurements
- * @param {Object} props - Component props
- * @returns {JSX.Element} Rendered component
+ * Modern table row component for sample measurements
  */
-const SampleArea = ({ area, data, onChange, onRemove, showRemoveButton }) => {
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    onChange(area, name, value);
+const SampleRow = ({ sample, index, onChange, onRemove, canRemove }) => {
+  const handleChange = (field, value) => {
+    onChange(sample.id, field, value);
   };
-  
+
+  const handleKeyDown = (e, field) => {
+    // Allow navigation with Tab and Enter
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const nextInput = e.target.closest('tr').querySelector(`input[name="${field}"]`)?.nextElementSibling;
+      if (nextInput) nextInput.focus();
+    }
+  };
+
   return (
-    <div className="rounded-lg border border-gray-200 overflow-hidden">
-      <div className="bg-gray-50 p-3 border-b flex justify-between items-center">
-        <h4 className="font-medium">Sample {area}</h4>
-        {showRemoveButton && (
-          <button 
-            className="text-sm text-red-600 hover:text-red-800 flex items-center"
-            onClick={() => onRemove(area)}
-          >
-            <Trash2 size={16} className="mr-1" />
-            Remove
-          </button>
-        )}
-      </div>
-      
-      <div className="p-4 space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <FormField
-            label="Leaf Weight (kg)"
+    <tr className={`group hover:bg-gray-50/50 transition-colors duration-150 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/20'}`}>
+      {/* Sample Number - Hidden on mobile, visible on desktop */}
+      <td className="hidden md:table-cell px-2 py-4 text-sm font-medium text-gray-600 bg-gray-100/50">
+        <div className="flex items-center justify-center">
+          <span className="text-sm font-medium">
+            {index + 1}
+          </span>
+        </div>
+      </td>
+
+      {/* Leaf Weight */}
+      <td className="px-2 md:px-4 py-4 border-r border-gray-100">
+        <div className="relative">
+          <input
+            type="number"
             name="leafWeight"
-            type="number"
-            value={data.leafWeight || ''}
-            onChange={handleChange}
+            value={sample.leafWeight || ''}
+            onChange={(e) => handleChange('leafWeight', e.target.value)}
+            onKeyDown={(e) => handleKeyDown(e, 'leafWeight')}
+            placeholder="0.0"
             step="0.1"
             min="0"
-            placeholder="0.0"
-          />
-          
-          <FormField
-            label="Bulb Weight (kg)"
-            name="bulbWeight"
-            type="number"
-            value={data.bulbWeight || ''}
-            onChange={handleChange}
-            step="0.1"
-            min="0"
-            placeholder="0.0"
-          />
-          
-          <FormField
-            label="Plant Count"
-            name="plantCount"
-            type="number"
-            value={data.plantCount || ''}
-            onChange={handleChange}
-            step="1"
-            min="0"
-            placeholder="0"
+            className="w-full px-3 py-2 text-sm bg-transparent border-0 focus:bg-white focus:ring-2 focus:ring-green-500/20 focus:border-green-500 rounded-md transition-all duration-150 text-center hover:bg-gray-50/50 md:hover:bg-white/80"
           />
         </div>
-      </div>
-    </div>
+      </td>
+
+      {/* Bulb Weight */}
+      <td className="px-2 md:px-4 py-4 border-r border-gray-100">
+        <div className="relative">
+          <input
+            type="number"
+            name="bulbWeight"
+            value={sample.bulbWeight || ''}
+            onChange={(e) => handleChange('bulbWeight', e.target.value)}
+            onKeyDown={(e) => handleKeyDown(e, 'bulbWeight')}
+            placeholder="0.0"
+            step="0.1"
+            min="0"
+            className="w-full px-3 py-2 text-sm bg-transparent border-0 focus:bg-white focus:ring-2 focus:ring-green-500/20 focus:border-green-500 rounded-md transition-all duration-150 text-center hover:bg-gray-50/50 md:hover:bg-white/80"
+          />
+        </div>
+      </td>
+
+      {/* Plant Count */}
+      <td className="px-2 md:px-4 py-4 border-r border-gray-100">
+        <div className="relative">
+          <input
+            type="number"
+            name="plantCount"
+            value={sample.plantCount || ''}
+            onChange={(e) => handleChange('plantCount', e.target.value)}
+            onKeyDown={(e) => handleKeyDown(e, 'plantCount')}
+            placeholder="0"
+            step="1"
+            min="0"
+            className="w-full px-3 py-2 text-sm bg-transparent border-0 focus:bg-white focus:ring-2 focus:ring-green-500/20 focus:border-green-500 rounded-md transition-all duration-150 text-center hover:bg-gray-50/50 md:hover:bg-white/80"
+          />
+        </div>
+      </td>
+
+      {/* Actions */}
+      <td className="px-2 md:px-4 py-4 text-center">
+        {canRemove && (
+          <button
+            onClick={() => onRemove(sample.id)}
+            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all duration-150 rounded-md"
+            title="Remove sample"
+          >
+            <Trash2 size={16} />
+          </button>
+        )}
+      </td>
+    </tr>
   );
 };
 
 /**
- * Third step of assessment creation - field measurements
- * @param {Object} props - Component props
- * @returns {JSX.Element} Rendered component
+ * Add new sample row component
+ */
+const AddSampleRow = ({ onAdd }) => {
+  return (
+    <tr className="border-t-2 border-dashed border-gray-200">
+      <td colSpan="5" className="px-3 py-4">
+        <button
+          onClick={onAdd}
+          className="w-full flex items-center justify-center gap-2 py-3 text-sm text-green-600 bg-green-50 hover:bg-green-100 hover:text-green-700 border border-green-200 rounded-lg transition-all duration-150 group font-medium"
+        >
+          <Plus size={16} className="group-hover:scale-110 transition-transform duration-150" />
+          Add Sample
+        </button>
+      </td>
+    </tr>
+  );
+};
+
+/**
+ * Third step of assessment creation - field measurements with modern table design
  */
 const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile }) => {
   // Initialize sample areas with just one sample
   const [sampleAreas, setSampleAreas] = useState(() => {
-    // If there are existing sample areas in formData, use only the first one
-    // Otherwise create a new sample with default values
     if (formData.sampleAreas && formData.sampleAreas.length > 0) {
-      return [formData.sampleAreas[0]];
+      return formData.sampleAreas;
     } else {
       return [{ 
         id: 1, 
@@ -120,7 +164,7 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
     ));
   };
   
-  // Fixed data for YieldRangeVisualization - represents demo yield analysis
+  // Fixed data for YieldRangeVisualization
   const getYieldVisualizationData = () => {
     const currentData = {
       mean: 17.2,
@@ -144,7 +188,6 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
   // Handle Save as Draft
   const handleSaveAsDraft = () => {
     logger.info('Saving as draft:', formData);
-    // In a real implementation, this would call an API to save the draft
     alert('Assessment saved as draft successfully!');
   };
   
@@ -155,6 +198,7 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
       <h2 className="text-xl font-semibold mb-6">Sample Measurements</h2>
       
       <div className="space-y-6">
+        {/* Info Banner */}
         <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
           <div className="flex">
             <div className="flex-shrink-0">
@@ -168,31 +212,54 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
           </div>
         </div>
         
-        <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
-          <div className="p-4 border-b bg-gray-50 flex justify-between items-center">
-            <h3 className="font-medium">Sample Measurements</h3>
-            <button 
-              className="text-sm text-green-600 hover:text-green-800 font-medium flex items-center"
-              onClick={addSampleArea}
-            >
-              <PlusCircle size={16} className="mr-1" />
-              Add Sample
-            </button>
-          </div>
-          
-          <div className="p-4">
-            <div className="space-y-6">
-              {sampleAreas.map(area => (
-                <SampleArea
-                  key={area.id}
-                  area={area.id}
-                  data={area}
-                  onChange={handleSampleAreaChange}
-                  onRemove={removeSampleArea}
-                  showRemoveButton={area.id !== 1 && sampleAreas.length > 1}
-                />
-              ))}
-            </div>
+        {/* Modern Measurements Table */}
+        <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full table-fixed">
+              {/* Table Header */}
+              <thead className="bg-gray-50/50 border-b border-gray-200">
+                <tr>
+                  <th className="hidden md:table-cell px-2 py-4 w-[8%]">
+                  </th>
+                  <th className="px-2 md:px-4 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider w-[28%] md:w-[28%]">
+                    <div className="flex items-center justify-center gap-1.5">
+                      <Leaf size={14} className="text-green-500" />
+                      <span>Leaf</span>
+                    </div>
+                    <div className="text-xs font-normal text-gray-500 mt-1">(kg/sample)</div>
+                  </th>
+                  <th className="px-2 md:px-4 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider w-[28%] md:w-[28%]">
+                    <div className="flex items-center justify-center gap-1.5">
+                      <Circle size={14} className="text-green-600 fill-current" />
+                      <span>Bulb</span>
+                    </div>
+                    <div className="text-xs font-normal text-gray-500 mt-1">(kg/sample)</div>
+                  </th>
+                  <th className="px-2 md:px-4 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider w-[28%] md:w-[28%]">
+                    <span>Plant No.</span>
+                    <div className="text-xs font-normal text-gray-500 mt-1">(count)</div>
+                  </th>
+                  <th className="px-2 md:px-4 py-4 w-[16%] md:w-[8%]"></th>
+                </tr>
+              </thead>
+              
+              {/* Table Body */}
+              <tbody className="bg-white divide-y divide-gray-100">
+                {sampleAreas.map((sample, index) => (
+                  <SampleRow
+                    key={sample.id}
+                    sample={sample}
+                    index={index}
+                    onChange={handleSampleAreaChange}
+                    onRemove={removeSampleArea}
+                    canRemove={index > 0 && sampleAreas.length > 1}
+                  />
+                ))}
+                
+                {/* Add Sample Row */}
+                <AddSampleRow onAdd={addSampleArea} />
+              </tbody>
+            </table>
           </div>
         </div>
         
@@ -202,7 +269,7 @@ const MeasurementsStep = ({ formData, onChange, onNext, onBack, onCancel, isMobi
           additionalData={additionalData}
         />
         
-        {/* Button Navigation - Using the FormButtonNav component */}
+        {/* Button Navigation */}
         <FormButtonNav
           onNext={onNext}
           onBack={onBack}
