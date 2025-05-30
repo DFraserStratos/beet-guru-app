@@ -1,483 +1,708 @@
 # Beet Guru App
 
-Beet Guru is a modern React application for farmers to manage beet crop assessments, measure dry matter content, and plan feeding schedules. The app allows farmers to conduct assessments by harvesting small samples from their fields, record measurements, and generate reports on feed quantities and duration.
+A modern React application for farmers to manage beet crop assessments, measure dry matter content, and plan feeding schedules. Built with a mobile-first approach for field use, with full desktop support for office management.
 
-## Project Overview
+## 🚀 Quick Start
 
-The application follows a mobile-first approach since farmers primarily use it directly in the field on their mobile devices. However, it also has a fully functional desktop interface for office use. The project is currently a front-end mockup with no backend integration.
+```bash
+# Clone the repository
+git clone https://github.com/DFraserStratos/beet-guru-app.git
 
-## Documentation
-Detailed feature update notes are stored in the [docs](./docs) folder. Each README describes a specific improvement.
+# Install dependencies
+npm install
 
-## Domain Knowledge: Beet Farming Concepts
+# Start development server
+npm start
 
-To understand the application fully, it's important to know these key concepts:
+# Build for production
+npm run build
+```
 
-- **Fodder Beet**: A high-yielding root crop grown for livestock feed, particularly popular in New Zealand
-- **Dry Matter (DM)**: The non-water content of feed, typically expressed as a percentage
-- **Cultivars**: Different varieties of beet with varying characteristics (yield, dry matter, etc.)
-- **Assessment**: The process of sampling and measuring crop yield and quality
-- **Strip Grazing**: A feeding method where livestock are given access to a small strip of crop at a time
+## 📱 Demo Guide
 
-## Key Features
+### Using the App Demo
+1. **Email Entry**: Enter any email or click "Continue" for demo
+2. **Verification Code**: Click "Fill in Code" to auto-fill `123456`
+3. **Login/Register**: Choose existing user login or new registration
+4. **Explore**: Navigate using sidebar (desktop) or bottom tabs (mobile)
 
-- User authentication (login/registration)
-- Create and manage crop assessments
-- Record field measurements and dry matter percentages 
-- Calculate feed quantities and feeding duration
-- Generate reports for better crop management
-- User profile management
-- Location management
-- Stock Feed Calculator
-- Cultivar information reference
-- Seasonal timeline visualization
-- Weather information display
-- Reminder system for farm tasks
+## 🏗️ Technical Stack
 
-## Technical Implementation
+- **React 18.2.0** - UI framework
+- **Tailwind CSS 3.3.3** - Styling
+- **Lucide React 0.294.0** - Icons
+- **No routing library** - Component-based navigation
+- **No Redux** - React hooks for state management
 
-- Built with React 18.2.0
-- Styled with Tailwind CSS 3.3.3
-- Icons from Lucide React 0.294.0
-- Responsive design with mobile and desktop views
-- State management through React hooks (no Redux)
-- Custom hooks for common functionality
-- API service layer with mock data
-- Error boundaries for improved error handling
-- Reusable form components
+---
 
-### Tailwind Color Palette
-The project defines shared color groups in `tailwind.config.js`:
-- **primary**: Green shades used for main actions (`#16a34a` default, `#4ade80` light, `#15803d` dark)
-- **secondary**: Blue shades for secondary actions (`#1d4ed8` default, `#60a5fa` light, `#1e40af` dark)
-- **accent**: Amber shades for highlights (`#f59e0b` default, `#fcd34d` light, `#b45309` dark)
-Apply these with Tailwind classes such as `bg-primary`, `text-secondary-light`, or `border-accent-dark` for consistent styling.
+# Comprehensive Documentation for Development
 
-## Project Structure
+## Table of Contents
+1. [Project Architecture](#project-architecture)
+2. [Authentication System](#authentication-system)
+3. [Visual Language Guide](#visual-language-guide)
+4. [Component System](#component-system)
+5. [State Management](#state-management)
+6. [API & Mock Data](#api--mock-data)
+7. [Development Guidelines](#development-guidelines)
+8. [Feature Documentation](#feature-documentation)
 
+## Project Architecture
+
+### Directory Structure
 ```
 src/
-├── components/        # Reusable UI components
-│   ├── assessment/    # Assessment wizard components
-│   ├── layout/        # Layout components (Sidebar, Header, BottomNav)
-│   ├── screens/       # Main screen components 
-│   ├── ui/            # UI elements (cards, buttons, widgets, forms)
-│   └── utility/       # Utility components (ErrorBoundary, etc.)
-├── hooks/             # Custom React hooks
-├── services/          # API services
-└── utils/             # Helper functions
+├── components/
+│   ├── assessment/      # Multi-step assessment wizard components
+│   ├── layout/          # Core layout components
+│   │   ├── AuthLayout.js    # Standardized auth screen layout
+│   │   ├── Sidebar.js       # Desktop navigation
+│   │   ├── Header.js        # Mobile header
+│   │   └── BottomNav.js     # Mobile navigation
+│   ├── screens/         # Main application screens
+│   ├── ui/              # Reusable UI components
+│   │   ├── form/        # Standardized form components
+│   │   └── ...          # Widgets, cards, etc.
+│   └── utility/         # Error boundaries, helpers
+├── hooks/               # Custom React hooks
+├── services/            # API layer with mock data
+├── assets/              # Images, logos
+└── utils/               # Helper functions
 ```
 
-### Key Components Overview
-
-#### Layout Components
-- **Sidebar.js**: Desktop navigation sidebar (64px width, dark green background)
-- **Header.js**: Mobile-only top header with app logo and name
-- **BottomNav.js**: Mobile-only bottom tab navigation
-
-#### Screen Components
-- **LoginScreen.js**: User authentication screen
-- **RegisterScreen.js**: New user registration screen
-- **HomeScreen.js**: Main dashboard with key information widgets
-- **AssessmentsScreen.js**: List of locations with status indicators
-- **NewAssessmentScreen.js**: Multi-step form for creating new crop assessments
-- **ReportsScreen.js**: View and management of generated reports
-- **StockFeedScreen.js**: Feed calculator and forecasting tools
-- **MoreScreen.js**: Additional options, user profile, settings, etc.
-
-#### UI Components
-- **WeatherWidget.js**: Displays weather conditions for Oxford, Canterbury
-- **CultivarInfoWidget.js**: Information about beet varieties
-- **SeasonalTimeline.js**: Visual calendar of growing seasons
-- **ReminderWidget.js**: Action items and notifications for users
-- **LocationCard.js**: Displays location with status (Draft/Not Started)
- - **DataTable.js**: Generic table component with optional mobile card layout
-- Form components (FormField, FormButton) for consistent styling
-
-#### Assessment Components
-- **StepProgress.js**: Wizard progress indicator for multi-step forms
-- **CropDetailsStep.js**: Step 1 of assessment creation
-- **FieldSetupStep.js**: Step 2 of assessment creation - field measurements and dry matter estimates
-- **MeasurementsStep.js**: Step 3 of assessment creation - capturing leaf weight, bulb weight, and plant count
-- **ReviewStep.js**: Step 4 of assessment creation
-
-#### Custom Hooks
-- **useDeviceDetection**: Detects device type based on screen width
-- **useForm**: Handles form state, validation, and submission
-- **useLocalStorage**: Persists state in localStorage
-- **useApi**: Handles API calls with loading and error states
-
-## State Management
-
-The application uses React's built-in hooks for state management:
-
-- **App.js**: Manages global state including:
-  - Authentication state (`isAuthenticated`)
-  - Current user information (`user`)
-  - Active screen (`activeScreen`)
-  - Device type detection (`isMobile`)
-  - Authentication screen type (`authScreen`)
-  - Selected location (`selectedLocation`)
-  - Draft assessment (`draftAssessment`)
-
-- Component-level state is managed within individual components
-- Custom hooks provide reusable state logic
-- Props are passed down to child components as needed
-- No global state management library is currently used
-
-## Navigation System
-
-The app uses different navigation patterns for desktop and mobile:
-
-### Desktop Navigation
-- Left sidebar (64px width, dark green background)
-- No top header
-- Main navigation links in the sidebar
-- User profile card below the divider line
-- Settings and logout options below the user card
-- App version and copyright displayed at the bottom of the sidebar
-
-### Mobile Navigation
-- Bottom tab navigation with four main sections (Home, Assessments, Reports, More)
-- Simple header with left-aligned logo and app name
-- User profile accessed through the "More" tab
-- Settings and app info in the "More" tab
-
-### Navigation Implementation
-- The `activeScreen` state in App.js controls which screen is displayed
-- The `handleNavigate` function updates this state when navigation occurs
-- Conditional rendering based on the `isMobile` flag determines which navigation components are shown
-- Screen components receive an `onNavigate` prop to trigger navigation from within them
-
-## Home Screen (May 2025)
-
-The home screen provides a dashboard view with important information for farmers:
-
-### Key Components
-- Standardized header card with welcome message and app description
-- Optimized 2×2 grid layout for desktop view
-- Action Items widget with color-coded notifications
-- WeatherWidget showing conditions for Oxford, Canterbury
-- SeasonalTimeline with pastel colors displaying growing seasons
-- CultivarInfoWidget with reference information about beet varieties
-- Integrated "New Assessment" button in the header card
-
-### Layout Design
-- Mobile view: Single-column stacked layout with full-width cards
-- Desktop view: Precise 12-column grid (8-4 column split) with two rows
-- Responsive design using separate mobile/desktop DOM structures
-- Perfect alignment at grid intersections
-- Consistent card heights using h-full
-- Seasonal notes section only visible on desktop
-
-### Design Features
-- Pastel color scheme for seasonal indicators (green, blue, amber)
-- Card-based design for all content with subtle shadows
-- Consistent typography and spacing throughout
-- Color-coded notifications with actionable buttons
-- Simplified content for mobile views
-
-See [README-HOME-SCREEN-UPDATE-V3.md](./docs/README-HOME-SCREEN-UPDATE-V3.md) for full details.
-
-## Assessment System
-
-The assessment system allows farmers to record and track beet crop measurements:
-
-### Assessment Workflow
-1. Navigate to Assessments screen to see available locations
-2. For a "Draft" location, continue the in-progress assessment
-3. For a "Not Started" location, start a new assessment with that location pre-filled
-4. Fill in crop details, field setup, and measurements
-5. Review and generate a report with yield estimates
-
-### Assessment Components
-- **AssessmentsScreen.js**: Shows locations with their assessment status
-- **NewAssessmentScreen.js**: Multi-step form for creating assessments
-- **LocationCard.js**: Card component for displaying location with status
-- Field measurement input forms with validation
-- Preview graphs for data visualization
-- Sample measurement entry forms
-
-### Progress Indicator
-The assessment wizard uses a custom StepProgress component that:
-- Shows the current step in the multi-step form
-- Displays numbered indicators for each step
-- Includes a progress bar that advances as steps are completed
-- Uses color coding to indicate current, completed, and upcoming steps
-- Maintains precise alignment between dots and the progress track
-- See [README-PROGRESS-BAR.md](./docs/README-PROGRESS-BAR.md) for details
-
-### Field Setup Form
-The Field Setup step provides important tools for measuring crop samples:
-- Organized into Field Measurements and Dry Matter Estimates sections
-- Real-time calculation of sample area based on row spacing and measurement length
-- Input fields for bulb and leaf dry matter estimates
-- Toggle between estimate and actual value types
-- See [README-FIELD-SETUP-FORM.md](./docs/README-FIELD-SETUP-FORM.md) for details
-
-### Sample Measurements Form
-The Measurements step allows farmers to record detailed sample data:
-- Streamlined interface focusing on essential measurements
-- Captures leaf weight, bulb weight, and plant count for each sample
-- Allows adding multiple samples from different field areas
-- Displays a visual yield preview graph showing leaf, bulb, and total weights
-- Starts with a single sample by default for simplicity
-- See [README-MEASUREMENTS-FORM.md](./docs/README-MEASUREMENTS-FORM.md) for details
-
-## Stock Feed Calculator
-
-The Stock Feed Calculator helps farmers plan feeding schedules:
-
-### Features
-- Input fields for stock count, feed amount, and dry matter percentage
-- Automatic calculation of feeding duration
-- Option to save calculations to reports
-- Feed forecast visualization
-
-### Components
-- **StockFeedScreen.js**: Main screen component
-- Form inputs with validation
-- Results display with feeding estimates
-- Save/export functionality
+### Core Principles
+- **Mobile-first design** - Primary use case is farmers in the field
+- **Component-based navigation** - No React Router, uses conditional rendering
+- **Centralized state** - App.js manages all top-level state
+- **Mock-first development** - Complete API layer with realistic data
+- **Error boundaries** - Graceful error handling throughout
+- **Custom hooks** - Reusable logic patterns
 
 ## Authentication System
 
-The app includes a demonstration login and registration flow:
+### Current Implementation (May 2025)
+The app uses a **verification code system** (6-digit codes) instead of magic links:
 
-### Login Features
-- Two-step login process:
-  - First click on "Continue" fills in sample credentials
-  - Second click on "Sign in" completes login
-- Remember me option and forgot password link (visual only)
-- Error handling for incorrect credentials
+```javascript
+// Authentication flow
+1. EmailScreen → User enters email
+2. API checks if email exists → Sends verification code
+3. VerificationCodeScreen → User enters 6-digit code
+4. Verification → Routes to login (existing) or registration (new)
+```
 
-### Registration Features
-- Clean registration form with all necessary fields
-- User type selection (Farmer/Retailer)
-- Subscription and terms agreement options
-- Two-step process similar to login
+### Authentication Components
 
-### Authentication State Management
-- Managed through state in App.js
-- `isAuthenticated` flag controls access to the main application
-- `user` object contains user details (name, email, role, initials)
-- `authScreen` state toggles between login and registration screens
-- Functions for handling login, logout, and registration
+#### EmailScreen
+- Entry point for authentication
+- Persona selection for demos
+- Email validation
+- Routes based on email existence
 
-## Report Generation
+#### VerificationCodeScreen
+```javascript
+// Key features:
+- 6 individual input boxes for digits
+- Auto-advance on input
+- Paste support for full code
+- Demo button fills "123456"
+- Error handling with retry limits
+```
 
-The reporting system provides farmers with actionable data:
+#### App.js Authentication State
+```javascript
+// Core authentication state
+const [user, setUser] = useLocalStorage('beet-guru-user', null);
+const [authScreen, setAuthScreen] = useState('email');
+const [currentEmail, setCurrentEmail] = useState('');
+const [selectedPersona, setSelectedPersona] = useState(null);
+const [isNewUser, setIsNewUser] = useState(false);
 
-### Report Features
-- Yield estimates based on field measurements
-- Feeding duration calculations
-- Stock feed requirements
-- Visual graphs and charts
-- Exportable to email
+// Authentication handlers
+handleEmailSubmit(email)
+handleSendCode()
+handleVerifyCode(email, code)
+handleLogin(userData)
+handleLogout()
+```
 
-### Report Display
-- Desktop: Table view with columns for Date, Report Title, Location, and Actions
-- Mobile: Card view with vertically stacked information for better readability
-- Historical reports included for better data analysis over time
+### Persona System
+The app includes 12 diverse personas for demo purposes:
+```javascript
+// Example persona structure
+{
+  id: '1',
+  name: 'Maria Rodriguez',
+  email: 'maria.rodriguez@example.com',
+  password: 'password123',  // Some have passwords
+  hasPassword: true,        // Some are verification-only
+  role: 'Farm Manager',
+  initials: 'MR',
+  farmName: 'Sunnydale Organics',
+  location: 'California'
+}
+```
 
-## Responsive Design
+## Visual Language Guide
 
-The application is designed to work well on both mobile and desktop:
+### Layout Structure
+- **Page Header Cards**: Every screen starts with a white card containing title and description
+- **Card-Based Containers**: Content in rounded white cards with subtle shadows
+- **Consistent Spacing**: 24px (1.5rem) between major elements
+- **Responsive Grids**: Desktop uses 12-column grid, mobile uses single column
 
-### Mobile Considerations
-- Touch-friendly UI elements with adequate spacing
-- Bottom navigation for easy thumb access
-- Simplified layouts for smaller screens
-- Card-based displays for better readability and touch interaction
-- Vertical scrolling optimized for mobile
+### Typography Scale
+```css
+/* Page Titles */
+font-size: 1.5rem (24px); font-weight: bold; color: #1F2937;
 
-### Desktop Enhancements
-- Sidebar navigation for efficient screen utilization
-- Multi-column layouts for better information density
-- Tabular data displays for efficient scanning
-- Larger graphs and visualizations
+/* Section Headers */
+font-size: 1.25rem (20px); font-weight: bold; color: #1F2937;
 
-## API Service Layer
+/* Body Text */
+font-size: 0.875rem (14px); color: #1F2937;
 
-The app includes a service layer for API calls:
+/* Supporting Text */
+font-size: 0.75rem (12px); color: #9CA3AF;
+```
 
-### API Structure
-- `authAPI`: Authentication methods (login, register)
-- `assessmentsAPI`: Assessment CRUD operations, including draft management
-- `reportsAPI`: Report generation and management
-- `referencesAPI`: Reference data (locations, cultivars, etc.)
+### Color Palette
+```javascript
+// Primary Brand
+primary: '#16A34A'      // Green
+primaryDark: '#166534'  // Dark green for active states
 
-### Features
-- Structured mock data for demonstration
-- Consistent error handling
-- Simulated API delays for realistic behavior
-- Ready for integration with real backend
+// Backgrounds
+background: '#F9FAFB'   // Page background
+white: '#FFFFFF'        // Cards and containers
 
-## Development Environment
+// Text Colors
+textPrimary: '#1F2937'  // Dark gray
+textSecondary: '#4B5563' // Medium gray
+textMuted: '#9CA3AF'    // Light gray
 
-### Requirements
-- Node.js (v16+)
-- npm or yarn
-- React 18.2.0
-- Tailwind CSS 3.3.3
+// Status Colors
+warning: {
+  bg: '#FEF3C7',
+  text: '#92400E',
+  border: '#F59E0B'
+}
+draft: {
+  bg: '#FEF3C7',
+  text: '#92400E'
+}
+```
 
-### Setup Instructions
-1. Clone the repository
-2. Install dependencies with `npm install` or `yarn`
-3. Start development server with `npm start` or `yarn start`
-4. Access the app at localhost:3000
+### Navigation Patterns
 
-### Build Process
-- Create production build with `npm run build` or `yarn build`
-- Static files will be output to the `build` directory
-- Deploy static files to any web server
+#### Desktop (≥768px)
+- Left sidebar: 64px width, dark green (#166534)
+- No top header
+- Navigation order: Home → Assessments → Reports → Locations → Stock Feed
+- User profile below divider
+- Settings and logout at bottom
 
-## Demo Guide
+#### Mobile (<768px)
+- Bottom tab navigation
+- Simple header with logo
+- 4 main tabs: Home, Assessments, Reports, More
+- "More" menu contains: Locations, Stock Feed, Settings, etc.
 
-### Using Login Demo
-1. When the app loads, you'll see the login screen
-2. Click the "Continue" button to fill in fake credentials
-3. Click the "Sign in" button to enter the app
-4. You'll be logged in as "John Doe"
+## Component System
 
-### Using Registration Demo
-1. From the login screen, click "Create new account"
-2. Click "Continue" to fill in sample data (Donald)
-3. Click "Complete Registration" to finish and log in
-4. You'll be logged in with the registered user details
+### Form Components
+The app uses a standardized form system for consistency:
 
-### Using the App
-- Navigate between sections using the sidebar (desktop) or bottom tabs (mobile)
-- In Assessments, view locations and their status (Draft/Not Started)
-- Continue draft assessments or start new ones for specific locations
-- View historical reports in the Reports section
-- Use the Stock Feed Calculator
-- Log out via the sidebar or "More" tab
+#### FormField
+```jsx
+<FormField
+  label="Email address"
+  name="email"
+  type="email"  // text, email, password, number, select, textarea, checkbox
+  placeholder="you@example.com"
+  value={values.email}
+  onChange={handleChange}
+  onBlur={handleBlur}
+  error={errors.email}
+  touched={touched.email}
+  options={selectOptions}  // for select type
+  hint="Helper text"
+  required={true}
+/>
+```
 
-## Development Notes
+#### FormButton
+```jsx
+<FormButton
+  onClick={handleClick}
+  variant="primary"  // primary, secondary, outline, danger, link
+  size="md"          // sm, md, lg
+  isLoading={loading}
+  fullWidth={false}
+  icon={<IconComponent />}
+>
+  Button Text
+</FormButton>
+```
 
-- The current implementation is a front-end mockup only
-- No actual authentication or data persistence
-- Mock data is used throughout the application
-- Focus on user experience and interface design
-- Responsive design that works well on both mobile and desktop
+#### FormButtonNav
+```jsx
+<FormButtonNav
+  onNext={handleNext}
+  onBack={handleBack}
+  onCancel={handleCancel}
+  onSaveAsDraft={handleSaveAsDraft}
+  nextLabel="Continue"  // Dynamic labels
+  showSaveAsDraft={true}
+  showBack={true}
+  isGeneratingReport={false}
+  isMobile={isMobile}
+/>
+```
 
-## Recent Updates History
+### Custom Hooks
 
-### Home Screen Update V3 (May 2025)
-- Completely redesigned layout with optimized 2×2 grid for desktop
-- Implemented separate mobile and desktop layouts for maximum control
-- Added Action Items widget with color-coded notifications
-- Updated seasonal timeline with pastel color scheme
-- Added desktop-only seasonal notes section
-- Standardized header card with integrated action button
-- Enhanced widget components with improved h-full support
-- Improved alignment and spacing between all elements
-- Implemented 12-column grid system for precise layout control
-- See [README-HOME-SCREEN-UPDATE-V3.md](./docs/README-HOME-SCREEN-UPDATE-V3.md) for details
+#### useForm
+```javascript
+const {
+  values,
+  errors,
+  touched,
+  isSubmitting,
+  handleChange,
+  handleBlur,
+  handleSubmit,
+  setFieldValue,
+  setFieldError,
+  resetForm
+} = useForm(initialValues, validationFunction);
+```
 
-### Measurements Form Updates (May 2025)
-- Redesigned the measurements step to capture leaf weight, bulb weight, and plant count
-- Simplified the form by showing only one sample by default
-- Added ability to add multiple samples for better field coverage
-- Implemented a yield preview graph showing leaf, bulb, and total weights
-- Streamlined the interface by removing unnecessary fields and helper text
-- See [README-MEASUREMENTS-FORM.md](./docs/README-MEASUREMENTS-FORM.md) for details
+#### useDeviceDetection
+```javascript
+const isMobile = useDeviceDetection(768); // breakpoint in pixels
+```
 
-### Field Setup Form Updates (May 2025)
-- Reorganized the form into distinct sections for Field Measurements and Dry Matter Estimates
-- Added real-time area calculation for sample measurements
-- Added toggle between Estimate and Actual value types for dry matter content
-- Improved form handling to allow clearing and editing all fields
-- Maintained sensible defaults with user-friendly placeholders
-- See [README-FIELD-SETUP-FORM.md](./docs/README-FIELD-SETUP-FORM.md) for details
+#### useLocalStorage
+```javascript
+const [value, setValue] = useLocalStorage('key', defaultValue);
+```
 
-### Progress Bar Improvements (May 2025)
-- Enhanced the StepProgress component with exact alignment between dots and tracks
-- Fixed issues with the progress bar extending past endpoints
-- Implemented dynamic progress calculation based on current step
-- Added proper z-index layering for visual continuity
-- Ensured responsive behavior across all screen sizes
-- See [README-PROGRESS-BAR.md](./docs/README-PROGRESS-BAR.md) for details
+#### useApi
+```javascript
+const { data, loading, error, execute } = useApi(apiFunction);
+```
 
-### Assessments and Reports Update (May 2025)
-- Split functionality between Assessments (in-progress) and Reports (completed)
-- Redesigned Assessments screen to display locations with status indicators
-- Added support for starting assessments for specific locations
-- Added draft assessment continuation functionality
-- Optimized Reports screen for mobile with card-based layout
-- Added historical reports spanning multiple years
- - Created reusable UI components (LocationCard, DataTable)
-- See [README-ASSESSMENTS-UPDATE.md](./docs/README-ASSESSMENTS-UPDATE.md) for details
+### Layout Components
 
-### Logo Implementation (May 2025)
-- Added official Beet Guru logo in two variants (square and wide)
-- Implemented wide logo on Login and Registration screens
-- Added square logo to Header and Sidebar navigation
-- Maintained consistent styling and branding throughout the app
-- See [README-LOGO-UPDATE.md](./docs/README-LOGO-UPDATE.md) for details
+#### AuthLayout
+Standardized layout for all authentication screens:
+```jsx
+<AuthLayout 
+  title="Sign in to your account"
+  onBack={handleBack}
+  showBackButton={true}
+>
+  {/* Auth form content */}
+</AuthLayout>
+```
 
-### Code Refactoring (May 2025)
-- Implemented custom hooks for reusable functionality
-- Added error boundaries for improved error handling
-- Created a service layer for API calls
-- Developed reusable form components
-- Split large components into smaller, focused ones
-- Added comprehensive documentation
-- See [README-REFACTORING.md](./docs/README-REFACTORING.md) for details
+#### PageContainer
+Consistent page wrapper:
+```jsx
+<PageContainer>
+  <PageHeader 
+    title="Assessments"
+    description="Manage your crop assessments"
+    action={{
+      label: "New Assessment",
+      onClick: handleNewAssessment
+    }}
+  />
+  {/* Page content */}
+</PageContainer>
+```
 
-### Home Screen Update (May 2025)
-- Renamed "Dashboard" to "Home" for more intuitive navigation
-- Added prominent "New Assessment" button
-- Redesigned layout for both mobile and desktop views
-- Removed Recent Assessments widget to simplify the interface
-- Relocated Feed Forecast widget to the dedicated Stock Feed screen
-- Added non-expandable Cultivar Information widget
-- Added Seasonal Timeline and Weather Widgets
-- Added Reminder Widget for notifications
-- See [README-HOME-SCREEN-UPDATE.md](./docs/README-HOME-SCREEN-UPDATE.md) for details
+## State Management
 
-### Navigation Fixes (April 2025)
-- Removed header on desktop view
-- Repositioned user profile card in sidebar
-- Simplified mobile header
-- Placed app version and copyright on a single line
-- Fixed z-index issues with overlapping elements
-- Improved responsive breakpoints behavior
-- See [README-NAVIGATION-FIXES.md](./docs/README-NAVIGATION-FIXES.md) for details
+### App.js Central State
+```javascript
+// Core application state
+const [user, setUser] = useLocalStorage('beet-guru-user', null);
+const [activeScreen, setActiveScreen] = useState('home');
+const [authScreen, setAuthScreen] = useState('email');
+const [selectedLocation, setSelectedLocation] = useState(null);
+const [draftAssessment, setDraftAssessment] = useState(null);
+const [selectedReportId, setSelectedReportId] = useState(null);
 
-## Future Improvements Roadmap
+// Navigation handler
+const handleNavigate = (screen) => {
+  // Reset context-specific state
+  if (screen !== 'new-assessment') {
+    setSelectedLocation(null);
+    setDraftAssessment(null);
+  }
+  setActiveScreen(screen);
+};
+```
 
-1. Backend Integration
-   - RESTful API development with Node.js/Express
-   - MongoDB database for data persistence
-   - Authentication with JWT
+### State Management Rules
+1. **Global state in App.js** - Authentication, navigation, selected items
+2. **Component state locally** - Forms, UI state, temporary data
+3. **Custom hooks for reusable state** - Form handling, API calls
+4. **Props for parent-child communication** - No prop drilling beyond 2 levels
+5. **LocalStorage for persistence** - User session only
 
-2. Enhanced Features
-   - Proper form validation
-   - Error handling for edge cases
-   - Enhanced reporting features
-   - Data export options (PDF, CSV)
-   - Custom date ranges for reports
+## API & Mock Data
 
-3. Advanced Functionality
+### API Service Structure
+```javascript
+// API modules
+authAPI: {
+  checkEmailExists(email)
+  generateVerificationCode(email)
+  verifyCode(email, code)
+  loginWithVerifiedEmail(email)
+  register(userData)
+  getRandomPersona()
+}
+
+assessmentsAPI: {
+  getAll()
+  getById(id)
+  create(data)
+  update(id, data)
+  delete(id)
+  getDraftAssessments()
+}
+
+reportsAPI: {
+  getAll()
+  getById(id)
+  generate(assessmentId, type)
+  send(id, recipients)
+}
+
+referencesAPI: {
+  getLocations(withStatus)
+  getCropTypes()
+  getCultivars(cropTypeId)
+  createLocation(data)
+  updateLocation(id, data)
+  deleteLocation(id)
+}
+```
+
+### Mock Data Structure
+```javascript
+// Locations with status
+{
+  id: '1',
+  name: 'North Paddock',
+  area: 3.5,
+  latitude: -43.5280,
+  longitude: 172.6316,
+  status: 'draft',      // 'draft' or 'not-started'
+  assessmentId: '4'     // Reference to draft
+}
+
+// Assessments with calculations
+{
+  id: '1',
+  locationId: '1',
+  cropTypeId: '1',
+  cultivarId: '1',
+  dryMatter: '21.8%',
+  date: '2025-05-08',
+  status: 'completed',  // 'draft' or 'completed'
+  waterType: 'irrigated',
+  rowSpacing: 0.5,
+  estimatedYield: '22.4 t/ha',
+  totalYield: '78.4 tonnes',
+  feedingCapacity: '186 days',
+  stockCount: 50
+}
+
+// Cultivars reference data
+{
+  id: '1',
+  name: 'Brigadier',
+  cropTypeId: '1',
+  dryMatter: '12-15%',
+  yield: '20-30 t/acre',
+  growingTime: '24-28 weeks',
+  description: 'Low dry matter, high sugar content...'
+}
+```
+
+## Development Guidelines
+
+### Code Style Rules
+
+1. **Component Structure**
+```jsx
+// Standard component template
+import React, { useState, useEffect } from 'react';
+import { IconName } from 'lucide-react';
+import { useForm, useApi } from '../../hooks';
+import { FormField, FormButton } from '../ui/form';
+
+const ComponentName = ({ prop1, prop2, onAction }) => {
+  // State declarations
+  const [localState, setLocalState] = useState();
+  
+  // Custom hooks
+  const { values, handleSubmit } = useForm();
+  
+  // Effects
+  useEffect(() => {
+    // Side effects
+  }, [dependencies]);
+  
+  // Event handlers
+  const handleClick = () => {
+    // Handler logic
+  };
+  
+  // Render
+  return (
+    <div className="component-wrapper">
+      {/* Component content */}
+    </div>
+  );
+};
+
+export default ComponentName;
+```
+
+2. **Naming Conventions**
+- Components: PascalCase (`UserProfile.js`)
+- Hooks: camelCase with 'use' prefix (`useLocalStorage.js`)
+- Event handlers: 'handle' prefix (`handleSubmit`)
+- Boolean props: 'is/has' prefix (`isLoading`, `hasError`)
+
+3. **Tailwind Classes Order**
+```jsx
+// Order: positioning → display → spacing → sizing → styling → state
+className="absolute flex items-center p-4 w-full bg-white rounded-lg hover:shadow-md"
+```
+
+4. **Error Handling**
+```jsx
+// Always wrap major components
+<ErrorBoundary>
+  <RiskyComponent />
+</ErrorBoundary>
+
+// API calls with proper error handling
+try {
+  const data = await apiCall();
+  // Handle success
+} catch (error) {
+  console.error('Context:', error);
+  // Show user-friendly message
+}
+```
+
+### Component Development Rules
+
+1. **Mobile-First Development**
+   - Design for mobile screens first
+   - Use `isMobile` prop for conditional rendering
+   - Test on 375px width minimum
+
+2. **Form Handling**
+   - Always use FormField components
+   - Implement proper validation
+   - Show loading states during submission
+   - Handle errors gracefully
+
+3. **State Management**
+   - Keep state as local as possible
+   - Lift state only when necessary
+   - Use custom hooks for complex state logic
+   - Don't store derived state
+
+4. **Performance**
+   - Use React.memo for expensive components
+   - Implement proper key props in lists
+   - Lazy load heavy components
+   - Optimize images and assets
+
+### Testing Approach
+```javascript
+// Component testing priorities
+1. User interactions (clicks, form submissions)
+2. Error states and edge cases
+3. Responsive behavior
+4. Accessibility features
+```
+
+## Feature Documentation
+
+### Assessment System
+
+#### Multi-Step Wizard
+```javascript
+// Step components
+1. CropDetailsStep - Crop type, cultivar, dates
+2. FieldSetupStep - Measurements and dry matter
+3. MeasurementsStep - Sample weights and counts
+4. ReviewStep - Summary and report generation
+
+// Progress indicator
+<StepProgress 
+  currentStep={currentStep}
+  steps={['Crop Details', 'Field Setup', 'Measurements', 'Review']}
+/>
+```
+
+#### Field Setup Features
+- Real-time area calculation
+- Toggle between Estimate/Actual values
+- Organized sections for measurements and dry matter
+- Input validation with sensible defaults
+
+#### Measurements Features
+- Capture leaf weight, bulb weight, plant count
+- Multiple sample support
+- Visual yield preview graph
+- Simplified single-sample default
+
+### Report System
+
+#### Report Display
+```javascript
+// Desktop: Table view
+<DataTable 
+  columns={['Date', 'Title', 'Location', 'Actions']}
+  data={reports}
+  onRowClick={handleViewReport}
+/>
+
+// Mobile: Card view
+<div className="space-y-4">
+  {reports.map(report => (
+    <ReportCard key={report.id} {...report} />
+  ))}
+</div>
+```
+
+#### Report Features
+- Historical data spanning multiple years
+- Filtering by date, cultivar, season
+- Multiple sorting options
+- Status tracking (draft, sent)
+- Email delivery simulation
+
+### Location Management
+- CRUD operations
+- GPS coordinate support
+- Status indicators (draft/not-started)
+- Assessment linking
+- Map picker integration
+
+### Settings Screen
+- Tab-based navigation (Profile, Farm, Security)
+- Consistent form layouts
+- Mobile-optimized tabs
+- Logout functionality
+
+## Cursor/LLM Development Instructions
+
+When developing with this codebase:
+
+1. **Always check existing patterns** - Look for similar components before creating new ones
+2. **Use the form system** - Never create raw input elements
+3. **Follow the visual language** - Maintain consistent spacing, colors, typography
+4. **Test responsive behavior** - Check both mobile and desktop views
+5. **Handle errors gracefully** - Use try-catch and show user-friendly messages
+6. **Update mock data** - Keep the API service layer realistic
+7. **Document changes** - Add comments for complex logic
+8. **Respect the navigation pattern** - Use handleNavigate, not routing
+
+### Common Tasks
+
+#### Adding a New Screen
+```javascript
+1. Create screen component in components/screens/
+2. Add to App.js conditional rendering
+3. Add navigation handler case
+4. Update navigation menus (Sidebar, BottomNav, MoreScreen)
+5. Add mock data if needed
+```
+
+#### Adding Form Fields
+```javascript
+1. Use FormField component
+2. Add to form validation schema
+3. Handle in submit function
+4. Update mock API if needed
+```
+
+#### Modifying Navigation
+```javascript
+1. Update both Sidebar.js and BottomNav.js
+2. Maintain consistent ordering
+3. Update MoreScreen.js if needed
+4. Test on both mobile and desktop
+```
+
+## Recent Updates (May 2025)
+
+### Authentication System Overhaul
+- Migrated from magic links to 6-digit verification codes
+- Created VerificationCodeScreen with individual digit inputs
+- Updated API to support code generation and verification
+- Maintained persona system for demos
+
+### UI/UX Improvements
+- Created AuthLayout for consistent auth screens
+- Enhanced YieldRangeVisualization accessibility
+- Improved form button navigation patterns
+- Standardized error handling across screens
+
+### Code Quality
+- Added comprehensive test coverage for auth flows
+- Improved TypeScript-like documentation
+- Enhanced mock data realism
+- Standardized component patterns
+
+## Documentation References
+
+Detailed documentation for specific features is available in the `/docs` folder:
+
+- [Assessment System](./docs/README-ASSESSMENTS-UPDATE.md)
+- [Home Screen Design](./docs/README-HOME-SCREEN-UPDATE-V3.md)
+- [Form Components](./docs/README-REFACTORING.md)
+- [Progress Bar Implementation](./docs/README-PROGRESS-BAR.md)
+- [Report Viewer](./docs/README-REPORT-VIEWER.md)
+- [Settings Screen](./docs/README-SETTINGS-SCREEN.md)
+- [User Personas](./docs/README-USER-PERSONAS.md)
+- [UX Consistency Guide](./docs/README-UX-CONSISTENCY.md)
+
+## Future Roadmap
+
+1. **Backend Integration**
+   - REST API with Node.js/Express
+   - PostgreSQL database
+   - JWT authentication
+   - Real verification code emails
+
+2. **Enhanced Features**
    - Offline mode for field use
-   - Data synchronization when connection is restored
-   - Push notifications for important reminders
-   - Geolocation for automatic weather data
    - Camera integration for visual assessment
+   - GPS auto-location
+   - Push notifications
+   - Data export (PDF, CSV)
 
-4. Performance Optimization
-   - Code splitting for faster loading
-   - Service workers for offline functionality
-   - Optimized assets for mobile networks
-   - Memory usage improvements
+3. **Performance**
+   - Code splitting
+   - Service workers
+   - Image optimization
+   - PWA capabilities
 
-5. User Experience Enhancements
-   - Advanced data visualization
-   - Guided onboarding for new users
-   - Customizable dashboard
-   - Accessibility improvements
-   - Dark mode option
+---
 
-This project is designed as a starting point for a fully-featured crop management application, with a focus on usability for farmers in the field.
+This project is actively maintained and designed for real-world farming operations in New Zealand and beyond.
