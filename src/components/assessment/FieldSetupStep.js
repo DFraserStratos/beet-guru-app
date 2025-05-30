@@ -90,6 +90,7 @@ const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile
               step="0.01"
               min="0.1"
               placeholder="0.5"
+              required
             />
             
             <FormField
@@ -102,6 +103,7 @@ const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile
               step="0.1"
               min="0.1"
               placeholder="4"
+              required
             />
           </div>
           
@@ -123,37 +125,9 @@ const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile
           </div>
         </div>
         
-        {/* Dry Matter Estimates Section */}
+        {/* Dry Matter Section */}
         <div>
-          <h3 className="text-lg font-medium text-gray-800 mb-4">Dry Matter Estimates</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <FormField
-              label="Bulb Estimate (DM%)"
-              name="bulbEstimate"
-              type="number"
-              value={localFormData.bulbEstimate}
-              onChange={handleChange}
-              hint="Estimated dry matter percentage for bulbs"
-              step="0.1"
-              min="0"
-              max="100"
-              placeholder="2"
-            />
-            
-            <FormField
-              label="Leaf Estimate (DM%)"
-              name="leafEstimate"
-              type="number"
-              value={localFormData.leafEstimate}
-              onChange={handleChange}
-              hint="Estimated dry matter percentage for leaves"
-              step="0.1"
-              min="0"
-              max="100"
-              placeholder="3"
-            />
-          </div>
+          <h3 className="text-lg font-medium text-gray-800 mb-4">Dry Matter</h3>
           
           {/* Value Type Toggle */}
           <div className="mb-6">
@@ -186,6 +160,36 @@ const FieldSetupStep = ({ formData, onChange, onNext, onBack, onCancel, isMobile
                 </button>
               </div>
             </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <FormField
+              label={`Bulb ${valueType === 'estimate' ? 'Estimate' : 'Actual'} (DM%)`}
+              name="bulbEstimate"
+              type="number"
+              value={localFormData.bulbEstimate}
+              onChange={handleChange}
+              hint={`${valueType === 'estimate' ? 'Estimated' : 'Actual'} dry matter percentage for bulbs`}
+              step="0.1"
+              min="0"
+              max="100"
+              placeholder="2"
+              required
+            />
+            
+            <FormField
+              label={`Leaf ${valueType === 'estimate' ? 'Estimate' : 'Actual'} (DM%)`}
+              name="leafEstimate"
+              type="number"
+              value={localFormData.leafEstimate}
+              onChange={handleChange}
+              hint={`${valueType === 'estimate' ? 'Estimated' : 'Actual'} dry matter percentage for leaves`}
+              step="0.1"
+              min="0"
+              max="100"
+              placeholder="3"
+              required
+            />
           </div>
         </div>
         

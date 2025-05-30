@@ -146,6 +146,7 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel, isMobile }) => 
               onChange={handleChange}
               options={locationOptions}
               loading={locationsApi.loading}
+              required
             />
             <button
               type="button"
@@ -240,6 +241,7 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel, isMobile }) => 
             type="date"
             value={formData.sowingDate || '2024-10-20'}
             onChange={handleChange}
+            required
           />
           
           <FormField
@@ -248,6 +250,7 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel, isMobile }) => 
             type="date"
             value={formData.assessmentDate || today}
             onChange={handleChange}
+            required
           />
         </div>
         
@@ -257,6 +260,7 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel, isMobile }) => 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Water Type
+              <span className="text-red-500 ml-1">*</span>
             </label>
             <div className="border border-gray-200 rounded-lg overflow-hidden">
               <div className="flex">
