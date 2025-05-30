@@ -63,16 +63,11 @@ const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
       <div className="border-t border-green-700">
         {/* User Profile Card - now below the border */}
         <div className="p-4 pb-2">
-          <div className="bg-green-700 rounded-xl p-3">
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center mr-3">
-                <span className="text-green-800 font-bold text-sm">{user?.initials || 'JD'}</span>
-              </div>
-              <div>
-                <h3 className="font-semibold text-sm text-white">{user?.name || 'John Doe'}</h3>
-                <p className="text-green-100 text-xs">{user?.email || 'john.doe@example.com'}</p>
-                <p className="text-green-200 text-xs mt-0.5">{user?.role || 'Farm Manager'}</p>
-              </div>
+          <div className="bg-green-700 rounded-xl p-4">
+            <div>
+              <h3 className="font-semibold text-sm text-white">{user?.name || 'John Doe'}</h3>
+              <p className="text-green-100 text-xs mt-0.5">{user?.email || 'john.doe@example.com'}</p>
+              <p className="text-green-200 text-xs mt-0.5">{user?.role || 'Farm Manager'}</p>
             </div>
           </div>
         </div>
