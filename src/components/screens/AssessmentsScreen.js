@@ -56,7 +56,7 @@ const AssessmentsScreen = ({
       {/* Header Section */}
       <PageHeader
         title="Assessments"
-        subtitle="Manage crop assessments for your locations"
+        subtitle="Continue draft assessments for your locations"
         actions={(
           <FormButton
             variant="primary"
@@ -89,10 +89,11 @@ const AssessmentsScreen = ({
       {/* Locations List */}
       {!loading && !error && locations && (
         <div className="bg-white rounded-xl shadow overflow-hidden">
-          {locations.length === 0 ? (
+          {/* Filter locations to only show drafts */}
+          {locations.filter(location => location.status === 'draft').length === 0 ? (
             <div className="p-8 text-center">
               <Calendar size={48} className="text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-600 mb-2">No assessments found</h3>
+              <h3 className="text-lg font-medium text-gray-600 mb-2">No draft assessments found</h3>
               <p className="text-gray-500 mb-6">
                 Start a new assessment to begin tracking your crop performance
               </p>
@@ -106,7 +107,7 @@ const AssessmentsScreen = ({
             </div>
           ) : (
             <ul className="divide-y divide-gray-200">
-              {locations.map((location) => (
+              {locations.filter(location => location.status === 'draft').map((location) => (
                 <li key={location.id} className="hover:bg-gray-50">
                   <LocationCard 
                     location={location}

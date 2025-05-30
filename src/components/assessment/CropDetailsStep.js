@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FormField, FormButtonNav } from '../ui/form';
+import LocationForm from '../screens/LocationForm';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
 import { logger } from '../../utils/logger';
@@ -14,6 +15,7 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel, isMobile }) => 
   const [cultivarInfo, setCultivarInfo] = useState(null);
   const [showCustomCultivar, setShowCustomCultivar] = useState(selectedCultivar === 'other');
   const [customCultivarName, setCustomCultivarName] = useState(formData.customCultivarName || '');
+  const [isLocationFormOpen, setIsLocationFormOpen] = useState(false);
   
   // Get today's date in YYYY-MM-DD format for default assessment date
   const today = new Date().toISOString().split('T')[0];
@@ -97,6 +99,36 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel, isMobile }) => 
     alert('Assessment saved as draft successfully!');
   };
 
+  // Handle opening the location form modal
+  const handleOpenLocationForm = () => {
+    setIsLocationFormOpen(true);
+  };
+
+  // Handle closing the location form modal
+  const handleCloseLocationForm = () => {
+    setIsLocationFormOpen(false);
+  };
+
+  // Handle creating a new location
+  const handleCreateLocation = async (locationData) => {
+    try {
+      // Create the new location via API
+      const newLocation = await api.references.createLocation(locationData);
+      
+      // Refresh the locations list
+      await locationsApi.execute();
+      
+      // Select the newly created location
+      onChange({ target: { name: 'locationId', value: newLocation.id } });
+      
+      // Close the modal
+      setIsLocationFormOpen(false);
+    } catch (error) {
+      console.error('Error creating location:', error);
+      alert('Error creating paddock. Please try again.');
+    }
+  };
+
   return (
     <div>
       <h2 className="text-xl font-semibold mb-4 sm:mb-6">Crop Details</h2>
@@ -104,16 +136,25 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel, isMobile }) => 
       <div className="space-y-3 sm:space-y-6">
         {/* First row with Location and Stock Type */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6">
-          <FormField
-            label="Paddock"
-            name="locationId"
-            type="select"
-            placeholder="Select a Paddock"
-            value={formData.locationId || ''}
-            onChange={handleChange}
-            options={locationOptions}
-            loading={locationsApi.loading}
-          />
+          <div>
+            <FormField
+              label="Paddock"
+              name="locationId"
+              type="select"
+              placeholder="Select a Paddock"
+              value={formData.locationId || ''}
+              onChange={handleChange}
+              options={locationOptions}
+              loading={locationsApi.loading}
+            />
+            <button
+              type="button"
+              onClick={handleOpenLocationForm}
+              className="text-sm text-green-600 hover:text-green-800 underline mt-1 block"
+            >
+              Add New Paddock
+            </button>
+          </div>
           
           <FormField
             label="Stock Type"
@@ -268,6 +309,19 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel, isMobile }) => 
           isMobile={isMobile}
         />
       </div>
+
+      {/* Location Form Modal */}
+      {isLocationFormOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full max-h-screen overflow-y-auto">
+            <LocationForm
+              location={null}
+              onSubmit={handleCreateLocation}
+              onCancel={handleCloseLocationForm}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

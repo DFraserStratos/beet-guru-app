@@ -72,14 +72,14 @@ const mockData = {
       name: 'Mid Paddock', 
       userId: '1',
       area: 2.2,
-      status: 'not-started'
+      status: 'draft'
     },
     { 
       id: '3', 
       name: 'South Paddock', 
       userId: '1',
       area: 4.1,
-      status: 'not-started'
+      status: 'draft'
     },
     { 
       id: '4', 
@@ -346,18 +346,6 @@ const mockData = {
       recipients: 2,
       cultivar: 'Kyros',
       season: '2022/2023'
-    },
-    {
-      id: '9',
-      assessmentId: '5',
-      title: 'East Block Supplementary Report',
-      type: 'advanced',
-      created: '2024-11-14',
-      status: 'draft',
-      pages: 6,
-      recipients: 0,
-      cultivar: 'Feldherr',
-      season: '2024/2025'
     }
   ],
   // Mock storage for verification codes
