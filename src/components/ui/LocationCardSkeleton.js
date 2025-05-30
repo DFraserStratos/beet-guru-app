@@ -2,7 +2,7 @@ import Skeleton from './Skeleton';
 
 const LocationCardSkeleton = () => (
   <li className="hover:bg-gray-50">
-    <div className="min-h-[96px] p-4">
+    <div className="min-h-[76px] p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-start">
           <Skeleton className="h-10 w-10 rounded-full mr-3 flex-shrink-0" />

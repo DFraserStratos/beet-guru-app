@@ -57,11 +57,6 @@ const LocationCard = ({
             <p className="text-sm text-gray-500">
               {location.area ? `${location.area} hectares` : 'Area not specified'}
             </p>
-            {location.latitude && location.longitude && (
-              <p className="text-xs text-gray-400 mt-1">
-                Lat: {location.latitude.toFixed(4)}, Lng: {location.longitude.toFixed(4)}
-              </p>
-            )}
           </div>
         </div>
         <button 

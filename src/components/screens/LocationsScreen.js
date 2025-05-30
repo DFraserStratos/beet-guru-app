@@ -13,7 +13,7 @@ import ErrorBoundary from '../utility/ErrorBoundary';
  * Locations Screen Component
  * 
  * Displays a list of locations for a farmer, with options to create
- * and edit locations. Each location has a name, area, and map marker.
+ * and edit locations. Each location has a name and area.
  * 
  * @param {Object} props
  * @param {boolean} props.isMobile - Whether the screen is in mobile view
@@ -111,46 +111,19 @@ const LocationsScreen = ({ isMobile, user }) => {
   };
   
   return (
-    <PageContainer>
-      {/* Header Section */}
-      <div className="bg-white rounded-xl shadow p-6">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800 mb-1">
-              Locations
-            </h1>
-            <p className="text-gray-600">
-              Manage your farm fields and paddocks
-            </p>
-          </div>
-          <FormButton 
-            variant="primary" 
-            icon={<Plus size={16} />}
-            onClick={() => {
-              setSelectedLocation(null);
-              setIsFormOpen(true);
-            }}
-          >
-            Add Location
-          </FormButton>
-        </div>
-      </div>
-      
-      {/* Locations List */}
-      <div className="bg-white rounded-xl shadow overflow-hidden">
-        {getLocationsApi.loading ? (
-          <ul className="divide-y divide-gray-200">
-            {[...Array(3)].map((_, index) => (
-              <LocationListItemSkeleton key={index} />
-            ))}
-          </ul>
-        ) : locations.length === 0 ? (
-          <div className="p-8 text-center">
-            <MapPin size={48} className="text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-600 mb-2">No locations found</h3>
-            <p className="text-gray-500 mb-6">
-              Add your first location to get started
-            </p>
+    <>
+      <PageContainer>
+        {/* Header Section */}
+        <div className="bg-white rounded-xl shadow p-6">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800 mb-1">
+                Paddocks
+              </h1>
+              <p className="text-gray-600">
+                Manage your farm fields and paddocks
+              </p>
+            </div>
             <FormButton 
               variant="primary" 
               icon={<Plus size={16} />}
@@ -159,55 +132,79 @@ const LocationsScreen = ({ isMobile, user }) => {
                 setIsFormOpen(true);
               }}
             >
-              Add Location
+              Add Paddock
             </FormButton>
           </div>
-        ) : (
-          <ul className="divide-y divide-gray-200">
-            {locations.map((location) => (
-              <li key={location.id} className="p-4 hover:bg-gray-50">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-start">
-                    <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center mr-3 flex-shrink-0">
-                      <MapPin size={20} className="text-green-600" />
-                    </div>
-                    <div>
-                      <h3 className="text-base font-medium text-gray-800">{location.name}</h3>
-                      <p className="text-sm text-gray-500">
-                        {location.area ? `${location.area} hectares` : 'Area not specified'}
-                      </p>
-                      {location.latitude && location.longitude && (
-                        <p className="text-xs text-gray-400 mt-1">
-                          Lat: {location.latitude.toFixed(4)}, Lng: {location.longitude.toFixed(4)}
+        </div>
+        
+        {/* Locations List */}
+        <div className="bg-white rounded-xl shadow overflow-hidden">
+          {getLocationsApi.loading ? (
+            <ul className="divide-y divide-gray-200">
+              {[...Array(3)].map((_, index) => (
+                <LocationListItemSkeleton key={index} />
+              ))}
+            </ul>
+          ) : locations.length === 0 ? (
+            <div className="p-8 text-center">
+              <MapPin size={48} className="text-gray-300 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-600 mb-2">No paddocks found</h3>
+              <p className="text-gray-500 mb-6">
+                Add your first paddock to get started
+              </p>
+              <FormButton 
+                variant="primary" 
+                icon={<Plus size={16} />}
+                onClick={() => {
+                  setSelectedLocation(null);
+                  setIsFormOpen(true);
+                }}
+              >
+                Add Paddock
+              </FormButton>
+            </div>
+          ) : (
+            <ul className="divide-y divide-gray-200">
+              {locations.map((location) => (
+                <li key={location.id} className="p-4 hover:bg-gray-50">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-start">
+                      <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center mr-3 flex-shrink-0">
+                        <MapPin size={20} className="text-green-600" />
+                      </div>
+                      <div>
+                        <h3 className="text-base font-medium text-gray-800">{location.name}</h3>
+                        <p className="text-sm text-gray-500">
+                          {location.area ? `${location.area} hectares` : 'Area not specified'}
                         </p>
-                      )}
+                      </div>
+                    </div>
+                    <div className="flex space-x-2">
+                      <IconButton
+                        onClick={() => handleEditClick(location)}
+                        icon={<Edit size={16} />}
+                        label="Edit paddock"
+                        className="text-gray-500 hover:text-green-600"
+                      />
+                      <IconButton
+                        onClick={() => handleDeleteClick(location)}
+                        icon={<Trash size={16} />}
+                        label="Delete paddock"
+                        className="text-gray-500 hover:text-red-600"
+                      />
                     </div>
                   </div>
-                  <div className="flex space-x-2">
-                    <IconButton
-                      onClick={() => handleEditClick(location)}
-                      icon={<Edit size={16} />}
-                      label="Edit location"
-                      className="text-gray-500 hover:text-green-600 hover:bg-gray-100"
-                    />
-                    <IconButton
-                      onClick={() => handleDeleteClick(location)}
-                      icon={<Trash size={16} />}
-                      label="Delete location"
-                      className="text-gray-500 hover:text-red-600 hover:bg-gray-100"
-                    />
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-      
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </PageContainer>
+
       {/* Create/Edit Location Form Modal */}
       {isFormOpen && (
         <ErrorBoundary>
-          <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
             <div className="bg-white rounded-xl shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
               <LocationForm
                 location={selectedLocation}
@@ -224,9 +221,9 @@ const LocationsScreen = ({ isMobile, user }) => {
       
       {/* Delete Confirmation Modal */}
       {isConfirmDeleteOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
           <div className="bg-white rounded-xl shadow-lg p-6 max-w-md w-full">
-            <h3 className="text-lg font-medium text-gray-800 mb-2">Delete Location</h3>
+            <h3 className="text-lg font-medium text-gray-800 mb-2">Delete Paddock</h3>
             <p className="text-gray-600 mb-6">
               Are you sure you want to delete <strong>{locationToDelete?.name}</strong>? This action cannot be undone.
             </p>
@@ -248,7 +245,7 @@ const LocationsScreen = ({ isMobile, user }) => {
           </div>
         </div>
       )}
-    </PageContainer>
+    </>
   );
 };
 

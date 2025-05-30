@@ -64,8 +64,6 @@ const mockData = {
       name: 'North Paddock', 
       userId: '1',
       area: 3.5,
-      latitude: -43.5280,
-      longitude: 172.6316,
       status: 'draft', // New status field: 'draft' or 'not-started'
       assessmentId: '4' // Reference to draft assessment
     },
@@ -74,8 +72,6 @@ const mockData = {
       name: 'Mid Paddock', 
       userId: '1',
       area: 2.2,
-      latitude: -43.5310,
-      longitude: 172.6290,
       status: 'not-started'
     },
     { 
@@ -83,8 +79,6 @@ const mockData = {
       name: 'South Paddock', 
       userId: '1',
       area: 4.1,
-      latitude: -43.5270,
-      longitude: 172.6400,
       status: 'not-started'
     },
     { 
@@ -92,8 +86,6 @@ const mockData = {
       name: 'East Block', 
       userId: '1',
       area: 3.8,
-      latitude: -43.5260,
-      longitude: 172.6380,
       status: 'not-started'
     },
     { 
@@ -101,8 +93,6 @@ const mockData = {
       name: 'West Block', 
       userId: '1',
       area: 2.7,
-      latitude: -43.5300,
-      longitude: 172.6250,
       status: 'not-started'
     }
   ],

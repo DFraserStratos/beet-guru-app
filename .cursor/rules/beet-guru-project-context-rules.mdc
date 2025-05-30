@@ -1,0 +1,288 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Beet Guru Project Rules
+
+You are an expert in React, TypeScript, Tailwind CSS, and mobile-first web development for agricultural applications.
+
+## Project Context
+
+Beet Guru is a farming application designed for New Zealand farmers to manage beet crop assessments, measure dry matter content, and plan livestock feeding schedules. The app is primarily used in the field on mobile devices but also has a full desktop interface for office use.
+
+Key domain concepts:
+- Fodder Beet: High-yielding root crop for livestock feed
+- Dry Matter (DM): Non-water content of feed as percentage
+- Cultivars: Different beet varieties with varying characteristics
+- Strip Grazing: Feeding method where livestock access small crop strips
+- Assessment: Process of sampling and measuring crop yield/quality
+
+## Technical Architecture
+
+- React 18.2.0 with functional components only (NO class components)
+- TypeScript for type safety (prefer interfaces over types)
+- Tailwind CSS 3.3.3 for styling (NO custom CSS files)
+- Lucide React for icons
+- Component-based navigation (NO React Router)
+- Centralized state in App.js (NO Redux)
+- Custom hooks for reusable logic
+- Mock API service layer ready for backend integration
+
+## Code Style and Standards
+
+### Component Structure
+- Use functional components with arrow functions
+- Export components as default exports
+- Structure: exported component → subcomponents → helpers → types
+- Place components in appropriate directories:
+  - `/components/screens/` - Full page components
+  - `/components/ui/` - Reusable UI elements
+  - `/components/layout/` - Layout components
+  - `/components/assessment/` - Assessment wizard components
+
+### Naming Conventions
+- Components: PascalCase (e.g., `UserProfile.js`)
+- Directories: lowercase with dashes (e.g., `auth-form`)
+- Event handlers: prefix with 'handle' (e.g., `handleSubmit`)
+- Boolean props/state: prefix with 'is/has' (e.g., `isLoading`)
+- Custom hooks: prefix with 'use' (e.g., `useLocalStorage`)
+
+### TypeScript Usage
+```typescript
+// ALWAYS use interfaces for component props
+interface ComponentProps {
+  title: string;
+  isActive?: boolean;
+  onAction: () => void;
+}
+
+// NEVER use enums, use const objects instead
+const Status = {
+  DRAFT: 'draft',
+  COMPLETED: 'completed'
+} as const;
+```
+
+## Component Development Rules
+
+### Always Use Error Boundaries
+Wrap all screen components and major UI sections:
+```jsx
+<ErrorBoundary>
+  <YourComponent />
+</ErrorBoundary>
+```
+
+### Mobile-First Development
+- Design for 375px minimum width first
+- Use `isMobile` prop for conditional rendering
+- Test all interactions with touch in mind
+- Ensure buttons/links have minimum 44px touch targets
+
+### State Management Pattern
+```jsx
+// Global state goes in App.js
+const [activeScreen, setActiveScreen] = useState('home');
+const [user, setUser] = useLocalStorage('beet-guru-user', null);
+
+// Local state stays in components
+const [isExpanded, setIsExpanded] = useState(false);
+```
+
+## Navigation System
+
+CRITICAL: This app uses component-based navigation, NOT routing:
+- Navigation state is managed by `activeScreen` in App.js
+- Use `handleNavigate(screenName)` to change screens
+- Desktop: Left sidebar (64px wide, dark green #166534)
+- Mobile: Bottom tab navigation with 4 tabs
+- Navigation order: Home → Assessments → Reports → Locations → Stock Feed
+
+NEVER attempt to use React Router or any routing library!
+
+## Form Handling
+
+ALWAYS use the standardized form components:
+
+### FormField Usage
+```jsx
+import { FormField } from '../ui/form';
+
+<FormField
+  label="Email address"
+  name="email"
+  type="email"
+  placeholder="you@example.com"
+  value={values.email}
+  onChange={handleChange}
+  onBlur={handleBlur}
+  error={errors.email}
+  touched={touched.email}
+  required
+/>
+```
+
+### Form Validation
+Always use the useForm hook:
+```jsx
+const { values, errors, handleSubmit } = useForm(initialValues, validate);
+```
+
+### Multi-Step Forms
+Use FormButtonNav for navigation:
+```jsx
+<FormButtonNav
+  onNext={handleNext}
+  onBack={handleBack}
+  nextLabel="Continue"
+  showSaveAsDraft={true}
+  isMobile={isMobile}
+/>
+```
+
+## Visual Language & Styling
+
+### Color Palette
+- Primary: `#16A34A` (green-600)
+- Primary Dark: `#166534` (green-900)
+- Background: `#F9FAFB` (gray-50)
+- Card Background: `#FFFFFF` (white)
+- Text Primary: `#1F2937` (gray-800)
+- Text Secondary: `#4B5563` (gray-600)
+- Warning Background: `#FEF3C7` (amber-100)
+
+### Layout Patterns
+- Page header: White card with title and description
+- Content cards: `bg-white rounded-lg shadow-sm p-6`
+- Spacing: Use 24px (1.5rem) between major sections
+- Mobile: Single column, full-width cards
+- Desktop: 12-column grid system
+
+### Tailwind Class Order
+Always order classes: positioning → display → spacing → sizing → styling → state
+```jsx
+className="absolute flex items-center p-4 w-full bg-white rounded-lg hover:shadow-md"
+```
+
+## API & Data Management
+
+### Mock API Usage
+All API calls go through the service layer:
+```javascript
+import { authAPI, assessmentsAPI, reportsAPI, referencesAPI } from '../../services/api';
+
+// Always handle loading and errors
+const { data, loading, error } = useApi(() => assessmentsAPI.getAll());
+```
+
+### Mock Data Structure
+- Locations have status: 'draft' or 'not-started'
+- Assessments have status: 'draft' or 'completed'
+- Reports reference assessments and include metadata
+- Use realistic Canterbury, NZ location data
+
+## Authentication System
+
+Current implementation uses 6-digit verification codes:
+1. EmailScreen - User enters email
+2. VerificationCodeScreen - User enters 6-digit code
+3. App routes to login (existing) or registration (new)
+
+Demo flow:
+- Click "Continue" to auto-fill email
+- Click "Fill in Code" to auto-fill "123456"
+- Uses persona system with 12 diverse user profiles
+
+## Assessment Workflow
+
+Multi-step wizard with these components:
+1. CropDetailsStep - Crop type, cultivar, dates
+2. FieldSetupStep - Measurements and dry matter estimates
+3. MeasurementsStep - Sample weights and counts
+4. ReviewStep - Summary and report generation
+
+Always show StepProgress component with current step.
+
+## Error Handling
+
+- Wrap async operations in try-catch blocks
+- Show user-friendly error messages
+- Log errors to console in development
+- Never show technical errors to users
+- Always provide fallback UI for errors
+
+## Testing Considerations
+
+When modifying code:
+- Test on both mobile (375px) and desktop (1440px)
+- Verify touch interactions work properly
+- Check loading states display correctly
+- Ensure error states are handled
+- Validate form inputs show proper errors
+
+## DO's and DON'Ts
+
+### DO:
+- Use existing UI components from /components/ui/
+- Follow the established visual language guide
+- Test responsive behavior on all changes
+- Use mock API calls for all data operations
+- Handle loading and error states
+- Use FormField for ALL form inputs
+- Maintain 44px minimum touch targets
+- Use descriptive variable names
+- Comment complex business logic
+
+### DON'T:
+- Create new navigation patterns
+- Use React Router or any routing library
+- Write custom CSS files
+- Use class components
+- Create forms without FormField components
+- Ignore mobile-first principles
+- Use pixels for spacing (use Tailwind classes)
+- Modify the core navigation system
+- Skip error handling
+- Use inline styles
+
+## Common Tasks
+
+### Adding a New Screen
+1. Create component in `/components/screens/NewScreen.js`
+2. Add case in App.js render logic
+3. Add navigation item to Sidebar.js and BottomNav.js
+4. Update MoreScreen.js if needed
+5. Add mock data to api.js if required
+
+### Creating a Form
+1. Use FormField components exclusively
+2. Implement validation with useForm hook
+3. Handle submission with try-catch
+4. Show loading state during submission
+5. Display success/error feedback
+
+### Adding API Endpoints
+1. Add method to appropriate API module in api.js
+2. Include realistic mock data
+3. Simulate network delay (300-800ms)
+4. Handle errors appropriately
+
+## Performance Guidelines
+
+- Use React.memo for expensive components
+- Implement proper key props in lists
+- Lazy load heavy components when needed
+- Optimize images (prefer PNG for logos)
+- Minimize re-renders with proper state management
+
+## Accessibility
+
+- Ensure all interactive elements are keyboard accessible
+- Add proper ARIA labels where needed
+- Maintain color contrast ratios
+- Test with screen readers
+- Provide alt text for images
+
+
+Remember: This is a real-world farming application used in challenging field conditions. Prioritize usability, performance, and reliability over complex features.

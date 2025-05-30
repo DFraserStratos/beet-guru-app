@@ -47,7 +47,7 @@ const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
           />
           <SidebarItem 
             icon={<MapPin size={20} />} 
-            label="Locations" 
+            label="Paddocks" 
             isActive={activeScreen === 'locations'} 
             onClick={() => handleNavigate('locations')}
           />

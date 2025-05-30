@@ -105,10 +105,10 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel, isMobile }) => 
         {/* First row with Location and Stock Type */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6">
           <FormField
-            label="Location"
+            label="Paddock"
             name="locationId"
             type="select"
-            placeholder="Select a Location"
+            placeholder="Select a Paddock"
             value={formData.locationId || ''}
             onChange={handleChange}
             options={locationOptions}
