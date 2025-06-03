@@ -2,10 +2,19 @@ import {
   Home,
   BarChart3,
   FileText,
-  MoreHorizontal
+  MoreHorizontal,
+  Users
 } from 'lucide-react';
 
-const BottomNav = ({ activeScreen, handleNavigate }) => {
+const BottomNav = ({ activeScreen, handleNavigate, user }) => {
+  // Check if user is a retailer
+  const isRetailer = user?.accountType === 'retailer';
+  
+  // Define screens that should highlight the More tab based on user type
+  const moreScreens = isRetailer 
+    ? ['more', 'settings', 'about-us', 'terms'] 
+    : ['more', 'locations', 'settings', 'about-us', 'terms'];
+  
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-10">
       <div className="grid grid-cols-4 h-16">
@@ -21,16 +30,26 @@ const BottomNav = ({ activeScreen, handleNavigate }) => {
           isActive={activeScreen === 'assessments'}
           onClick={() => handleNavigate('assessments')}
         />
-        <NavItem
-          icon={<FileText size={20} />}
-          label="Reports"
-          isActive={activeScreen === 'reports'}
-          onClick={() => handleNavigate('reports')}
-        />
+        {/* Conditional navigation based on user type */}
+        {isRetailer ? (
+          <NavItem
+            icon={<Users size={20} />}
+            label="Customers"
+            isActive={activeScreen === 'customers'}
+            onClick={() => handleNavigate('customers')}
+          />
+        ) : (
+          <NavItem
+            icon={<FileText size={20} />}
+            label="Reports"
+            isActive={activeScreen === 'reports'}
+            onClick={() => handleNavigate('reports')}
+          />
+        )}
         <NavItem
           icon={<MoreHorizontal size={20} />}
           label="More"
-          isActive={['more', 'locations', 'settings'].includes(activeScreen)}
+          isActive={moreScreens.includes(activeScreen)}
           onClick={() => handleNavigate('more')}
         />
       </div>

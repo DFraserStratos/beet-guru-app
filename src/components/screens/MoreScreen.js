@@ -2,6 +2,9 @@ import { MapPin, Settings, LogOut, ChevronRight, HelpCircle, FileText } from 'lu
 import PageContainer from '../layout/PageContainer';
 
 const MoreScreen = ({ onNavigate, onLogout, user }) => {
+  // Check if user is a retailer
+  const isRetailer = user?.accountType === 'retailer';
+  
   return (
     <PageContainer className="space-y-4">
       {/* User Profile Section */}
@@ -16,11 +19,14 @@ const MoreScreen = ({ onNavigate, onLogout, user }) => {
       {/* More Menu Options */}
       <div className="bg-white rounded-xl shadow overflow-hidden">
         <ul className="divide-y divide-gray-100">
-          <MenuItem 
-            icon={<MapPin size={20} className="text-green-600" />}
-            label="Locations"
-            onClick={() => onNavigate('locations')}
-          />
+          {/* Only show Locations for non-retailers */}
+          {!isRetailer && (
+            <MenuItem 
+              icon={<MapPin size={20} className="text-green-600" />}
+              label="Locations"
+              onClick={() => onNavigate('locations')}
+            />
+          )}
           <MenuItem 
             icon={<Settings size={20} className="text-gray-600" />}
             label="Settings"
