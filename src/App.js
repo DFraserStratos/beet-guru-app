@@ -17,8 +17,11 @@ import SettingsScreen from './components/screens/SettingsScreen';
 import ReportViewerScreen from './components/screens/ReportViewerScreen';
 import AboutUsScreen from './components/screens/AboutUsScreen';
 import TermsScreen from './components/screens/TermsScreen';
+import CustomersScreen from './components/screens/CustomersScreen';
+import CustomerDetailScreen from './components/screens/CustomerDetailScreen';
 import ErrorBoundary from './components/utility/ErrorBoundary';
 import { useDeviceDetection, useLocalStorage } from './hooks';
+import { logger } from './utils/logger';
 
 function App() {
   // Use custom hooks for device detection and persisting user session
@@ -41,6 +44,9 @@ function App() {
   // Add state for selected report
   const [selectedReportId, setSelectedReportId] = useState(null);
   
+  // Add state for selected customer
+  const [selectedCustomerId, setSelectedCustomerId] = useState(null);
+  
   const handleNavigate = (screen) => {
     // Reset selected data when navigating away from assessment screens
     if (screen !== 'new-assessment' && screen !== 'draft-assessment') {
@@ -51,6 +57,11 @@ function App() {
     // Reset selected report when navigating away from report viewer
     if (screen !== 'report-viewer') {
       setSelectedReportId(null);
+    }
+    
+    // Reset selected customer when navigating away from customer detail
+    if (screen !== 'customer-detail') {
+      setSelectedCustomerId(null);
     }
     
     setActiveScreen(screen);
@@ -70,6 +81,17 @@ function App() {
   const handleViewReport = (reportId) => {
     setSelectedReportId(reportId);
     setActiveScreen('report-viewer');
+  };
+  
+  const handleViewCustomer = (customerId) => {
+    setSelectedCustomerId(customerId);
+    setActiveScreen('customer-detail');
+  };
+  
+  const handleCreateAssessmentForCustomer = (customer) => {
+    // For now, just log the action - in the future this would navigate to assessment creation
+    logger.info('Creating assessment for customer:', customer.name);
+    // This could navigate to a special assessment screen pre-filled with customer data
   };
   
   const handleLogin = (userData) => {
@@ -245,6 +267,22 @@ function App() {
             {activeScreen === 'settings' && <SettingsScreen isMobile={isMobile} onNavigate={handleNavigate} user={user} />}
             {activeScreen === 'about-us' && <AboutUsScreen onNavigate={handleNavigate} isMobile={isMobile} />}
             {activeScreen === 'terms' && <TermsScreen onNavigate={handleNavigate} isMobile={isMobile} />}
+            {activeScreen === 'customers' && (
+              <CustomersScreen 
+                isMobile={isMobile} 
+                onViewCustomer={handleViewCustomer}
+                user={user}
+              />
+            )}
+            {activeScreen === 'customer-detail' && (
+              <CustomerDetailScreen 
+                customerId={selectedCustomerId}
+                onBack={() => handleNavigate('customers')}
+                onCreateAssessment={handleCreateAssessmentForCustomer}
+                onViewReport={handleViewReport}
+                isMobile={isMobile}
+              />
+            )}
           </ErrorBoundary>
         </div>
         
@@ -254,6 +292,7 @@ function App() {
             <BottomNav 
               activeScreen={activeScreen} 
               handleNavigate={handleNavigate} 
+              user={user}
             />
           </ErrorBoundary>
         )}

@@ -101,6 +101,30 @@ const EmailScreen = ({ onEmailSubmit, onSendCode, onLogin }) => {
     });
   };
   
+  // Fill form with retailer account details (existing user)
+  const fillFormWithKnownRetailer = () => {
+    setIsUnknownAccount(false);
+    setValues({
+      email: 'roland@beetguru.com', // Roland's email
+      password: 'password123'
+    });
+    
+    // Expand form after a short delay
+    setTimeout(() => {
+      expandForm();
+    }, 300);
+  };
+  
+  // Fill form with unknown retailer account (new user registration) 
+  const fillFormWithUnknownRetailer = () => {
+    setIsUnknownAccount(true);
+    setIsExpanded(false); // Don't expand for unknown accounts
+    setValues({
+      email: 'demo.retailer@example.com', // Use different email to trigger registration flow
+      password: ''
+    });
+  };
+  
   // Handle form submission (only used for initial continue button and unknown accounts)
   async function handleFormSubmit(formValues) {
     // For unknown accounts, go directly to verification code flow
@@ -344,21 +368,21 @@ const EmailScreen = ({ onEmailSubmit, onSendCode, onLogin }) => {
                 </div>
                 <button
                   type="button"
-                  onClick={fillFormWithKnownAccount} // Same as farmer for now
-                  className="w-full text-xs text-gray-400 hover:text-gray-500 font-medium py-2 px-3 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors cursor-not-allowed"
-                  disabled
+                  onClick={fillFormWithKnownRetailer}
+                  className="w-full text-xs text-green-600 hover:text-green-500 font-medium py-2 px-3 border border-green-200 rounded-md hover:bg-green-50 transition-colors"
+                  title="Fills in Roland's existing account (roland@beetguru.com)"
                 >
                   Fill in Known Retailer
-                  <div className="text-xs text-gray-400 mt-1">(Coming Soon)</div>
+                  <div className="text-xs text-green-500 mt-1">Roland's Account</div>
                 </button>
                 <button
                   type="button"
-                  onClick={fillFormWithUnknownAccount} // Same as farmer for now
-                  className="w-full text-xs text-gray-400 hover:text-gray-500 font-medium py-2 px-3 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors cursor-not-allowed"
-                  disabled
+                  onClick={fillFormWithUnknownRetailer}
+                  className="w-full text-xs text-green-600 hover:text-green-500 font-medium py-2 px-3 border border-green-200 rounded-md hover:bg-green-50 transition-colors"
+                  title="Creates a new retailer account using Roland's persona"
                 >
                   Fill in Unknown Retailer
-                  <div className="text-xs text-gray-400 mt-1">(Coming Soon)</div>
+                  <div className="text-xs text-green-500 mt-1">New Registration</div>
                 </button>
               </div>
             </div>

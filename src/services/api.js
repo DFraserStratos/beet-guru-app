@@ -6,6 +6,7 @@
 
 import { logger } from '../utils/logger';
 import fredTheFarmer from '../config/user';
+import { rolandTheRetailer } from '../config/user';
 
 // Base API configuration
 const API_BASE_URL = process.env.REACT_APP_API_URL || '';
@@ -53,10 +54,22 @@ const apiRequest = async (endpoint, options = {}) => {
 
 // Mock data store (will be replaced by actual API calls)
 const mockData = {
-  // Single user - Fred the farmer (id: '1')
+  // Users - Fred the farmer (id: '1') and Roland the retailer (id: '2')
   // All locations below are associated with Fred via userId: '1'
-  // This design supports future retailer users who will access multiple farmers' data
-  users: [fredTheFarmer],
+  // This design supports retailer users who will access multiple farmers' data
+  users: [fredTheFarmer, rolandTheRetailer],
+  
+  // Customer relationships - which farmers each retailer can access
+  customerRelationships: [
+    {
+      id: '1',
+      retailerId: '2', // Roland
+      customerId: '1', // Fred
+      customerType: 'farmer',
+      relationshipStart: '2024-01-15',
+      status: 'active'
+    }
+  ],
   
   // All paddocks belong to Fred (userId: '1') for clean data separation
   // When retailer users are added, they will query paddocks by userId to see specific farmers' data
@@ -173,6 +186,46 @@ const mockData = {
       stockCount: 45,
       sampleAreas: [
         { id: 1, sampleLength: '2', weight: '26.1', dryMatter: '18.2', notes: 'Edge of field' },
+        { id: 2, sampleLength: '', weight: '', dryMatter: '', notes: '' }
+      ]
+    },
+    { 
+      // Draft assessment for Mid Paddock
+      id: '10', 
+      locationId: '2', 
+      cropTypeId: '2', 
+      cultivarId: '3', 
+      dryMatter: '19.5%', 
+      date: '2025-05-10', 
+      status: 'draft',
+      waterType: 'dryland',
+      rowSpacing: 0.5,
+      estimatedYield: '',
+      totalYield: '',
+      feedingCapacity: '',
+      stockCount: 50,
+      sampleAreas: [
+        { id: 1, sampleLength: '1.8', weight: '22.3', dryMatter: '19.5', notes: 'Center area' },
+        { id: 2, sampleLength: '', weight: '', dryMatter: '', notes: '' }
+      ]
+    },
+    { 
+      // Draft assessment for South Paddock
+      id: '11', 
+      locationId: '3', 
+      cropTypeId: '3', 
+      cultivarId: '4', 
+      dryMatter: '20.8%', 
+      date: '2025-05-09', 
+      status: 'draft',
+      waterType: 'irrigated',
+      rowSpacing: 0.45,
+      estimatedYield: '',
+      totalYield: '',
+      feedingCapacity: '',
+      stockCount: 60,
+      sampleAreas: [
+        { id: 1, sampleLength: '2.2', weight: '28.7', dryMatter: '20.8', notes: 'Good growth area' },
         { id: 2, sampleLength: '', weight: '', dryMatter: '', notes: '' }
       ]
     },
@@ -760,6 +813,12 @@ export const referencesAPI = {
     return location;
   },
   
+  // Get locations for a specific user (for retailers viewing customer paddocks)
+  getByUserId: async (userId) => {
+    await delay();
+    return mockData.locations.filter(l => l.userId === userId);
+  },
+  
   createLocation: async (locationData) => {
     await delay(800); // Slightly longer delay to simulate server processing
     const newLocation = {
@@ -828,10 +887,168 @@ export const referencesAPI = {
   }
 };
 
-// Export all APIs together
-export default {
-  auth: authAPI,
-  assessments: assessmentsAPI,
-  reports: reportsAPI,
-  references: referencesAPI
+/**
+ * Customers API - for retailers to manage their farmer customers
+ */
+export const customersAPI = {
+  // Get all customers for a specific retailer
+  getByRetailerId: async (retailerId) => {
+    await delay();
+    
+    // Find all customer relationships for this retailer
+    const relationships = mockData.customerRelationships.filter(
+      rel => rel.retailerId === retailerId && rel.status === 'active'
+    );
+    
+    // Get customer details for each relationship
+    const customers = relationships.map(rel => {
+      const customer = mockData.users.find(u => u.id === rel.customerId);
+      if (!customer) return null;
+      
+      // Get customer's locations for paddock count
+      const customerLocations = mockData.locations.filter(l => l.userId === customer.id);
+      
+      // Get customer's last assessment date
+      const customerAssessments = mockData.assessments.filter(a => {
+        const location = mockData.locations.find(l => l.id === a.locationId);
+        return location && location.userId === customer.id && a.status === 'completed';
+      });
+      
+      const lastAssessment = customerAssessments.length > 0
+        ? customerAssessments.sort((a, b) => new Date(b.date) - new Date(a.date))[0].date
+        : null;
+      
+      return {
+        ...customer,
+        paddockCount: customerLocations.length,
+        lastAssessment,
+        relationshipStart: rel.relationshipStart,
+        status: rel.status
+      };
+    }).filter(Boolean);
+    
+    return customers;
+  },
+  
+  // Get a specific customer by ID (for retailers)
+  getById: async (customerId) => {
+    await delay();
+    const customer = mockData.users.find(u => u.id === customerId);
+    if (!customer) {
+      throw new Error('Customer not found');
+    }
+    
+    // Find the relationship to get additional info
+    const relationship = mockData.customerRelationships.find(
+      rel => rel.customerId === customerId
+    );
+    
+    // Get customer's locations for paddock count
+    const customerLocations = mockData.locations.filter(l => l.userId === customer.id);
+    
+    // Get customer's last assessment date
+    const customerAssessments = mockData.assessments.filter(a => {
+      const location = mockData.locations.find(l => l.id === a.locationId);
+      return location && location.userId === customer.id && a.status === 'completed';
+    });
+    
+    const lastAssessment = customerAssessments.length > 0
+      ? customerAssessments.sort((a, b) => new Date(b.date) - new Date(a.date))[0].date
+      : null;
+    
+    return {
+      ...customer,
+      paddockCount: customerLocations.length,
+      lastAssessment,
+      relationshipStart: relationship?.relationshipStart,
+      status: relationship?.status || 'active'
+    };
+  },
+  
+  // Create a new customer relationship
+  createRelationship: async (retailerId, customerData) => {
+    await delay();
+    
+    // Create new customer user
+    const newCustomer = {
+      id: String(mockData.users.length + 1),
+      ...customerData,
+      accountType: 'farmer'
+    };
+    
+    // Create relationship
+    const newRelationship = {
+      id: String(mockData.customerRelationships.length + 1),
+      retailerId,
+      customerId: newCustomer.id,
+      customerType: 'farmer',
+      relationshipStart: new Date().toISOString().split('T')[0],
+      status: 'active'
+    };
+    
+    mockData.users.push(newCustomer);
+    mockData.customerRelationships.push(newRelationship);
+    
+    return {
+      ...newCustomer,
+      relationshipStart: newRelationship.relationshipStart,
+      status: newRelationship.status
+    };
+  }
 };
+
+/**
+ * Enhanced Reports API to support retailer access to customer reports
+ */
+const enhancedReportsAPI = {
+  ...reportsAPI,
+  
+  // Get reports for a specific user (customer) - for retailers
+  getByUserId: async (userId) => {
+    await delay();
+    
+    // Get all assessments for this user's locations
+    const userLocations = mockData.locations.filter(l => l.userId === userId);
+    const userLocationIds = userLocations.map(l => l.id);
+    
+    const userAssessments = mockData.assessments.filter(a => 
+      userLocationIds.includes(a.locationId) && a.status === 'completed'
+    );
+    
+    // Get reports for these assessments
+    const userReports = mockData.reports.filter(r => 
+      userAssessments.some(a => a.id === r.assessmentId)
+    );
+    
+    return userReports.map(report => {
+      const assessment = mockData.assessments.find(a => a.id === report.assessmentId);
+      const location = assessment 
+        ? mockData.locations.find(l => l.id === assessment.locationId)
+        : null;
+      const cropType = assessment
+        ? mockData.cropTypes.find(c => c.id === assessment.cropTypeId)
+        : null;
+      
+      return {
+        ...report,
+        location: location?.name || '',
+        cropType: cropType?.name || ''
+      };
+    });
+  }
+};
+
+// Updated main API export with enhanced functionality
+const api = {
+  auth: authAPI,
+  locations: referencesAPI,
+  assessments: assessmentsAPI,
+  reports: enhancedReportsAPI,
+  customers: customersAPI, // New customers API
+  references: referencesAPI, // Keep references for backward compatibility
+  cropTypes: referencesAPI,
+  cultivars: referencesAPI
+};
+
+// Export all APIs together
+export default api;

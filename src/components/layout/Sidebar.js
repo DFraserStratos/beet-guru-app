@@ -5,11 +5,15 @@ import {
   MapPin,
   Settings,
   LogOut,
-  HelpCircle
+  HelpCircle,
+  Users
 } from 'lucide-react';
 import beetGuruSquareLogo from '../../BeetGuruSq.png';
 
 const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
+  // Check if user is a retailer
+  const isRetailer = user?.accountType === 'retailer';
+  
   return (
     <div className="w-64 bg-green-800 text-white h-full flex flex-col">
       <div className="p-4 flex items-center justify-between border-b border-green-700">
@@ -44,12 +48,22 @@ const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
             isActive={activeScreen === 'reports'} 
             onClick={() => handleNavigate('reports')}
           />
-          <SidebarItem 
-            icon={<MapPin size={20} />} 
-            label="Paddocks" 
-            isActive={activeScreen === 'locations'} 
-            onClick={() => handleNavigate('locations')}
-          />
+          {/* Conditional navigation based on user type */}
+          {isRetailer ? (
+            <SidebarItem 
+              icon={<Users size={20} />} 
+              label="Customers" 
+              isActive={activeScreen === 'customers'} 
+              onClick={() => handleNavigate('customers')}
+            />
+          ) : (
+            <SidebarItem 
+              icon={<MapPin size={20} />} 
+              label="Paddocks" 
+              isActive={activeScreen === 'locations'} 
+              onClick={() => handleNavigate('locations')}
+            />
+          )}
         </ul>
       </div>
       

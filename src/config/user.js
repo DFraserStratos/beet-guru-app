@@ -22,10 +22,29 @@ const fredTheFarmer = {
   location: 'Canterbury, New Zealand'
 };
 
-// TODO: Add retailer personas here when implementing retailer accounts
+// Retailer persona - Roland Reed
+const rolandTheRetailer = {
+  id: '2',
+  name: 'Roland Reed',
+  email: 'roland@beetguru.com',
+  password: 'password123',
+  hasPassword: true,
+  role: 'Retail Consultant',
+  accountType: 'retailer',
+  initials: 'RR',
+  companyName: 'Oxford Agricultural Supplies',
+  address: '47 High Street, Oxford',
+  city: 'Oxford',
+  region: 'Canterbury',
+  country: 'New Zealand',
+  location: 'Oxford, New Zealand',
+  accessibleFarmers: ['1'], // Can view Fred's data
+};
+
+// TODO: Add more retailer personas here when needed
 // Example structure for future retailer users:
 // const retailerPersona = {
-//   id: '2',
+//   id: '3',
 //   name: 'Retailer Name',
 //   email: 'retailer@beetguru.com',
 //   password: 'password123',
@@ -38,4 +57,5 @@ const fredTheFarmer = {
 //   accessibleFarmers: ['1'], // Array of farmer IDs they can view
 // };
 
-export default fredTheFarmer; 
+export default fredTheFarmer;
+export { rolandTheRetailer }; 
