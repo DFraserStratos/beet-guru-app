@@ -6,7 +6,7 @@
 
 import { logger } from '../utils/logger';
 import fredTheFarmer from '../config/user';
-import { rolandTheRetailer } from '../config/user';
+import { rolandTheRetailer, sarahMcKenzie, mikePatel, jessicaThompson, davidWilson, emilyRoberts } from '../config/user';
 
 // Base API configuration
 const API_BASE_URL = process.env.REACT_APP_API_URL || '';
@@ -57,7 +57,7 @@ const mockData = {
   // Users - Fred the farmer (id: '1') and Roland the retailer (id: '2')
   // All locations below are associated with Fred via userId: '1'
   // This design supports retailer users who will access multiple farmers' data
-  users: [fredTheFarmer, rolandTheRetailer],
+  users: [fredTheFarmer, rolandTheRetailer, sarahMcKenzie, mikePatel, jessicaThompson, davidWilson, emilyRoberts],
   
   // Customer relationships - which farmers each retailer can access
   customerRelationships: [
@@ -68,12 +68,53 @@ const mockData = {
       customerType: 'farmer',
       relationshipStart: '2024-01-15',
       status: 'active'
+    },
+    {
+      id: '2',
+      retailerId: '2', // Roland
+      customerId: '3', // Sarah
+      customerType: 'farmer',
+      relationshipStart: '2024-02-20',
+      status: 'active'
+    },
+    {
+      id: '3',
+      retailerId: '2', // Roland
+      customerId: '4', // Mike
+      customerType: 'farmer',
+      relationshipStart: '2024-03-10',
+      status: 'active'
+    },
+    {
+      id: '4',
+      retailerId: '2', // Roland
+      customerId: '5', // Jessica
+      customerType: 'farmer',
+      relationshipStart: '2024-01-30',
+      status: 'active'
+    },
+    {
+      id: '5',
+      retailerId: '2', // Roland
+      customerId: '6', // David
+      customerType: 'farmer',
+      relationshipStart: '2024-04-05',
+      status: 'active'
+    },
+    {
+      id: '6',
+      retailerId: '2', // Roland
+      customerId: '7', // Emily
+      customerType: 'farmer',
+      relationshipStart: '2024-02-14',
+      status: 'active'
     }
   ],
   
   // All paddocks belong to Fred (userId: '1') for clean data separation
   // When retailer users are added, they will query paddocks by userId to see specific farmers' data
   locations: [
+    // Fred's paddocks (userId: '1')
     { 
       id: '1', 
       name: 'North Paddock', 
@@ -108,6 +149,146 @@ const mockData = {
       name: 'West Block', 
       userId: '1', // Fred's ID - ensures proper ownership
       area: 2.7,
+      status: 'not-started'
+    },
+
+    // Sarah's paddocks (userId: '3') - Golden Fields Farm
+    { 
+      id: '6', 
+      name: 'Golden Meadow', 
+      userId: '3',
+      area: 4.2,
+      status: 'draft',
+      assessmentId: '12'
+    },
+    { 
+      id: '7', 
+      name: 'Upper Field', 
+      userId: '3',
+      area: 3.1,
+      status: 'not-started'
+    },
+    { 
+      id: '8', 
+      name: 'Lower Field', 
+      userId: '3',
+      area: 2.8,
+      status: 'draft'
+    },
+    { 
+      id: '9', 
+      name: 'Riverside Block', 
+      userId: '3',
+      area: 5.2,
+      status: 'not-started'
+    },
+
+    // Mike's paddocks (userId: '4') - Green Hills Agriculture
+    { 
+      id: '10', 
+      name: 'Hill Top Paddock', 
+      userId: '4',
+      area: 3.6,
+      status: 'not-started'
+    },
+    { 
+      id: '11', 
+      name: 'Valley Floor', 
+      userId: '4',
+      area: 4.8,
+      status: 'not-started'
+    },
+    { 
+      id: '12', 
+      name: 'North Slope', 
+      userId: '4',
+      area: 2.5,
+      status: 'draft'
+    },
+
+    // Jessica's paddocks (userId: '5') - Sunny Ridge Farm
+    { 
+      id: '13', 
+      name: 'Sunny Slope', 
+      userId: '5',
+      area: 3.9,
+      status: 'draft',
+      assessmentId: '14'
+    },
+    { 
+      id: '14', 
+      name: 'Ridge Top', 
+      userId: '5',
+      area: 2.6,
+      status: 'not-started'
+    },
+    { 
+      id: '15', 
+      name: 'South Face', 
+      userId: '5',
+      area: 4.5,
+      status: 'draft'
+    },
+    { 
+      id: '16', 
+      name: 'Back Paddock', 
+      userId: '5',
+      area: 3.2,
+      status: 'not-started'
+    },
+
+    // David's paddocks (userId: '6') - Valley View Farm
+    { 
+      id: '17', 
+      name: 'Valley Floor East', 
+      userId: '6',
+      area: 5.1,
+      status: 'draft',
+      assessmentId: '15'
+    },
+    { 
+      id: '18', 
+      name: 'Valley Floor West', 
+      userId: '6',
+      area: 4.7,
+      status: 'not-started'
+    },
+    { 
+      id: '19', 
+      name: 'Terraced Field', 
+      userId: '6',
+      area: 2.9,
+      status: 'draft'
+    },
+
+    // Emily's paddocks (userId: '7') - Riverbend Agriculture
+    { 
+      id: '20', 
+      name: 'River Flats', 
+      userId: '7',
+      area: 4.3,
+      status: 'draft',
+      assessmentId: '16'
+    },
+    { 
+      id: '21', 
+      name: 'Bend Block', 
+      userId: '7',
+      area: 3.7,
+      status: 'not-started'
+    },
+    { 
+      id: '22', 
+      name: 'High Ground', 
+      userId: '7',
+      area: 2.4,
+      status: 'draft'
+    },
+    { 
+      id: '23', 
+      name: 'Creek Side', 
+      userId: '7',
+      area: 3.8,
       status: 'not-started'
     }
   ],
@@ -303,6 +484,261 @@ const mockData = {
       totalYield: '65.5 tonnes',
       feedingCapacity: '145 days',
       stockCount: 52
+    },
+
+    // Sarah's assessments (Golden Fields Farm - userId: '3')
+    { 
+      // Draft assessment for Golden Meadow
+      id: '12', 
+      locationId: '6', 
+      cropTypeId: '1', 
+      cultivarId: '1', 
+      dryMatter: '19.2%', 
+      date: '2025-05-11', 
+      status: 'draft',
+      waterType: 'irrigated',
+      rowSpacing: 0.5,
+      estimatedYield: '',
+      totalYield: '',
+      feedingCapacity: '',
+      stockCount: 55,
+      sampleAreas: [
+        { id: 1, sampleLength: '2.1', weight: '25.8', dryMatter: '19.2', notes: 'Good coverage' },
+        { id: 2, sampleLength: '', weight: '', dryMatter: '', notes: '' }
+      ]
+    },
+    { 
+      id: '17', 
+      locationId: '8', 
+      cropTypeId: '2', 
+      cultivarId: '3', 
+      dryMatter: '18.6%', 
+      date: '2024-12-15', 
+      status: 'completed',
+      waterType: 'dryland',
+      rowSpacing: 0.5,
+      estimatedYield: '19.3 t/ha',
+      totalYield: '54.0 tonnes',
+      feedingCapacity: '132 days',
+      stockCount: 48
+    },
+    { 
+      id: '18', 
+      locationId: '7', 
+      cropTypeId: '1', 
+      cultivarId: '2', 
+      dryMatter: '20.8%', 
+      date: '2024-03-20', 
+      status: 'completed',
+      waterType: 'irrigated',
+      rowSpacing: 0.55,
+      estimatedYield: '21.2 t/ha',
+      totalYield: '65.7 tonnes',
+      feedingCapacity: '168 days',
+      stockCount: 52
+    },
+
+    // Mike's assessments (Green Hills Agriculture - userId: '4') - no draft assessments
+    { 
+      id: '19', 
+      locationId: '12', 
+      cropTypeId: '1', 
+      cultivarId: '1', 
+      dryMatter: '17.9%', 
+      date: '2024-11-28', 
+      status: 'completed',
+      waterType: 'dryland',
+      rowSpacing: 0.5,
+      estimatedYield: '18.4 t/ha',
+      totalYield: '46.0 tonnes',
+      feedingCapacity: '126 days',
+      stockCount: 45
+    },
+    { 
+      id: '20', 
+      locationId: '11', 
+      cropTypeId: '2', 
+      cultivarId: '3', 
+      dryMatter: '19.7%', 
+      date: '2023-09-14', 
+      status: 'completed',
+      waterType: 'irrigated',
+      rowSpacing: 0.5,
+      estimatedYield: '20.6 t/ha',
+      totalYield: '98.9 tonnes',
+      feedingCapacity: '198 days',
+      stockCount: 60
+    },
+
+    // Jessica's assessments (Sunny Ridge Farm - userId: '5')
+    { 
+      // Draft assessment for Sunny Slope
+      id: '14', 
+      locationId: '13', 
+      cropTypeId: '1', 
+      cultivarId: '5', 
+      dryMatter: '18.3%', 
+      date: '2025-05-14', 
+      status: 'draft',
+      waterType: 'dryland',
+      rowSpacing: 0.5,
+      estimatedYield: '',
+      totalYield: '',
+      feedingCapacity: '',
+      stockCount: 42,
+      sampleAreas: [
+        { id: 1, sampleLength: '2.3', weight: '24.6', dryMatter: '18.3', notes: 'Sunny exposure' },
+        { id: 2, sampleLength: '', weight: '', dryMatter: '', notes: '' }
+      ]
+    },
+    { 
+      id: '21', 
+      locationId: '15', 
+      cropTypeId: '3', 
+      cultivarId: '4', 
+      dryMatter: '22.1%', 
+      date: '2024-10-05', 
+      status: 'completed',
+      waterType: 'irrigated',
+      rowSpacing: 0.45,
+      estimatedYield: '22.8 t/ha',
+      totalYield: '102.6 tonnes',
+      feedingCapacity: '215 days',
+      stockCount: 58
+    },
+    { 
+      id: '22', 
+      locationId: '14', 
+      cropTypeId: '1', 
+      cultivarId: '1', 
+      dryMatter: '19.4%', 
+      date: '2024-01-18', 
+      status: 'completed',
+      waterType: 'dryland',
+      rowSpacing: 0.5,
+      estimatedYield: '17.8 t/ha',
+      totalYield: '46.3 tonnes',
+      feedingCapacity: '118 days',
+      stockCount: 48
+    },
+
+    // David's assessments (Valley View Farm - userId: '6')
+    { 
+      // Draft assessment for Valley Floor East
+      id: '15', 
+      locationId: '17', 
+      cropTypeId: '2', 
+      cultivarId: '3', 
+      dryMatter: '20.6%', 
+      date: '2025-05-15', 
+      status: 'draft',
+      waterType: 'irrigated',
+      rowSpacing: 0.5,
+      estimatedYield: '',
+      totalYield: '',
+      feedingCapacity: '',
+      stockCount: 75,
+      sampleAreas: [
+        { id: 1, sampleLength: '2.0', weight: '29.2', dryMatter: '20.6', notes: 'Valley floor quality' },
+        { id: 2, sampleLength: '', weight: '', dryMatter: '', notes: '' }
+      ]
+    },
+    { 
+      id: '23', 
+      locationId: '19', 
+      cropTypeId: '1', 
+      cultivarId: '2', 
+      dryMatter: '21.3%', 
+      date: '2024-12-02', 
+      status: 'completed',
+      waterType: 'dryland',
+      rowSpacing: 0.55,
+      estimatedYield: '20.7 t/ha',
+      totalYield: '60.0 tonnes',
+      feedingCapacity: '158 days',
+      stockCount: 55
+    },
+    { 
+      id: '24', 
+      locationId: '18', 
+      cropTypeId: '3', 
+      cultivarId: '4', 
+      dryMatter: '18.8%', 
+      date: '2023-08-22', 
+      status: 'completed',
+      waterType: 'irrigated',
+      rowSpacing: 0.45,
+      estimatedYield: '19.1 t/ha',
+      totalYield: '89.8 tonnes',
+      feedingCapacity: '176 days',
+      stockCount: 62
+    },
+
+    // Emily's assessments (Riverbend Agriculture - userId: '7')
+    { 
+      // Draft assessment for River Flats
+      id: '16', 
+      locationId: '20', 
+      cropTypeId: '1', 
+      cultivarId: '1', 
+      dryMatter: '19.8%', 
+      date: '2025-05-16', 
+      status: 'draft',
+      waterType: 'irrigated',
+      rowSpacing: 0.5,
+      estimatedYield: '',
+      totalYield: '',
+      feedingCapacity: '',
+      stockCount: 68,
+      sampleAreas: [
+        { id: 1, sampleLength: '2.2', weight: '26.9', dryMatter: '19.8', notes: 'River flat soil' },
+        { id: 2, sampleLength: '', weight: '', dryMatter: '', notes: '' }
+      ]
+    },
+    { 
+      id: '25', 
+      locationId: '22', 
+      cropTypeId: '2', 
+      cultivarId: '3', 
+      dryMatter: '20.9%', 
+      date: '2024-11-07', 
+      status: 'completed',
+      waterType: 'dryland',
+      rowSpacing: 0.5,
+      estimatedYield: '21.5 t/ha',
+      totalYield: '51.6 tonnes',
+      feedingCapacity: '142 days',
+      stockCount: 52
+    },
+    { 
+      id: '26', 
+      locationId: '21', 
+      cropTypeId: '3', 
+      cultivarId: '4', 
+      dryMatter: '19.1%', 
+      date: '2024-02-29', 
+      status: 'completed',
+      waterType: 'irrigated',
+      rowSpacing: 0.45,
+      estimatedYield: '18.9 t/ha',
+      totalYield: '69.9 tonnes',
+      feedingCapacity: '154 days',
+      stockCount: 58
+    },
+    { 
+      id: '27', 
+      locationId: '23', 
+      cropTypeId: '1', 
+      cultivarId: '5', 
+      dryMatter: '17.6%', 
+      date: '2023-07-11', 
+      status: 'completed',
+      waterType: 'dryland',
+      rowSpacing: 0.5,
+      estimatedYield: '16.9 t/ha',
+      totalYield: '64.2 tonnes',
+      feedingCapacity: '128 days',
+      stockCount: 46
     }
   ],
   reports: [
@@ -401,6 +837,124 @@ const mockData = {
       recipients: 2,
       cultivar: 'Kyros',
       season: '2022/2023'
+    },
+
+    // Sarah's reports removed - she has completed assessments but no reports generated yet
+
+    // Mike's reports (Green Hills Agriculture)
+    {
+      id: '9',
+      assessmentId: '19',
+      title: 'North Slope Harvest Summary',
+      type: 'basic',
+      created: '2024-11-28',
+      status: 'sent',
+      pages: 3,
+      recipients: 2,
+      cultivar: 'Brigadier',
+      season: '2024/2025'
+    },
+    {
+      id: '10',
+      assessmentId: '20',
+      title: 'Valley Floor Assessment 2023',
+      type: 'advanced',
+      created: '2023-09-14',
+      status: 'sent',
+      pages: 5,
+      recipients: 3,
+      cultivar: 'Kyros',
+      season: '2023/2024'
+    },
+
+    // Jessica's reports (Sunny Ridge Farm)
+    {
+      id: '11',
+      assessmentId: '21',
+      title: 'South Face October Evaluation',
+      type: 'advanced',
+      created: '2024-10-05',
+      status: 'sent',
+      pages: 6,
+      recipients: 4,
+      cultivar: 'Blizzard',
+      season: '2024/2025'
+    },
+    {
+      id: '12',
+      assessmentId: '22',
+      title: 'Ridge Top January Report',
+      type: 'basic',
+      created: '2024-01-18',
+      status: 'sent',
+      pages: 3,
+      recipients: 2,
+      cultivar: 'Brigadier',
+      season: '2023/2024'
+    },
+
+    // David's reports (Valley View Farm)
+    {
+      id: '13',
+      assessmentId: '23',
+      title: 'Terraced Field December Summary',
+      type: 'basic',
+      created: '2024-12-02',
+      status: 'sent',
+      pages: 4,
+      recipients: 2,
+      cultivar: 'Feldherr',
+      season: '2024/2025'
+    },
+    {
+      id: '14',
+      assessmentId: '24',
+      title: 'Valley Floor West 2023 Analysis',
+      type: 'advanced',
+      created: '2023-08-22',
+      status: 'sent',
+      pages: 5,
+      recipients: 3,
+      cultivar: 'Blizzard',
+      season: '2023/2024'
+    },
+
+    // Emily's reports (Riverbend Agriculture)
+    {
+      id: '15',
+      assessmentId: '25',
+      title: 'High Ground November Report',
+      type: 'basic',
+      created: '2024-11-07',
+      status: 'sent',
+      pages: 3,
+      recipients: 2,
+      cultivar: 'Kyros',
+      season: '2024/2025'
+    },
+    {
+      id: '16',
+      assessmentId: '26',
+      title: 'Bend Block February Assessment',
+      type: 'advanced',
+      created: '2024-02-29',
+      status: 'sent',
+      pages: 4,
+      recipients: 2,
+      cultivar: 'Blizzard',
+      season: '2023/2024'
+    },
+    {
+      id: '17',
+      assessmentId: '27',
+      title: 'Creek Side July Summary',
+      type: 'basic',
+      created: '2023-07-11',
+      status: 'sent',
+      pages: 3,
+      recipients: 1,
+      cultivar: 'Blaze',
+      season: '2023/2024'
     }
   ],
   // Mock storage for verification codes
@@ -588,9 +1142,25 @@ export const authAPI = {
  * Assessments API
  */
 export const assessmentsAPI = {
-  getAll: async () => {
+  // Helper function to filter assessments by user
+  _filterAssessmentsByUser: (assessments, userId = null) => {
+    if (!userId) {
+      return assessments; // Return all if no user specified (for retailers)
+    }
+    
+    // Get user's locations
+    const userLocations = mockData.locations.filter(l => l.userId === userId);
+    const userLocationIds = userLocations.map(l => l.id);
+    
+    // Filter assessments to only include those for user's locations
+    return assessments.filter(a => userLocationIds.includes(a.locationId));
+  },
+
+  getAll: async (userId = null) => {
     await delay();
-    return mockData.assessments.map(assessment => {
+    const filteredAssessments = assessmentsAPI._filterAssessmentsByUser(mockData.assessments, userId);
+    
+    return filteredAssessments.map(assessment => {
       const location = mockData.locations.find(l => l.id === assessment.locationId);
       const cropType = mockData.cropTypes.find(c => c.id === assessment.cropTypeId);
       return {
@@ -601,34 +1171,40 @@ export const assessmentsAPI = {
     });
   },
   
-  getCompletedAssessments: async () => {
+  getCompletedAssessments: async (userId = null) => {
     await delay();
-    return mockData.assessments
-      .filter(a => a.status === 'completed')
-      .map(assessment => {
-        const location = mockData.locations.find(l => l.id === assessment.locationId);
-        const cropType = mockData.cropTypes.find(c => c.id === assessment.cropTypeId);
-        return {
-          ...assessment,
-          location: location?.name,
-          cropType: cropType?.name
-        };
-      });
+    const filteredAssessments = assessmentsAPI._filterAssessmentsByUser(
+      mockData.assessments.filter(a => a.status === 'completed'),
+      userId
+    );
+    
+    return filteredAssessments.map(assessment => {
+      const location = mockData.locations.find(l => l.id === assessment.locationId);
+      const cropType = mockData.cropTypes.find(c => c.id === assessment.cropTypeId);
+      return {
+        ...assessment,
+        location: location?.name,
+        cropType: cropType?.name
+      };
+    });
   },
   
-  getDraftAssessments: async () => {
+  getDraftAssessments: async (userId = null) => {
     await delay();
-    return mockData.assessments
-      .filter(a => a.status === 'draft')
-      .map(assessment => {
-        const location = mockData.locations.find(l => l.id === assessment.locationId);
-        const cropType = mockData.cropTypes.find(c => c.id === assessment.cropTypeId);
-        return {
-          ...assessment,
-          location: location?.name,
-          cropType: cropType?.name
-        };
-      });
+    const filteredAssessments = assessmentsAPI._filterAssessmentsByUser(
+      mockData.assessments.filter(a => a.status === 'draft'),
+      userId
+    );
+    
+    return filteredAssessments.map(assessment => {
+      const location = mockData.locations.find(l => l.id === assessment.locationId);
+      const cropType = mockData.cropTypes.find(c => c.id === assessment.cropTypeId);
+      return {
+        ...assessment,
+        location: location?.name,
+        cropType: cropType?.name
+      };
+    });
   },
   
   getById: async (id) => {
@@ -694,15 +1270,34 @@ export const assessmentsAPI = {
  * Reports API
  */
 export const reportsAPI = {
-  getAll: async () => {
+  // Helper function to filter reports by user
+  _filterReportsByUser: (reports, userId = null) => {
+    if (!userId) {
+      return reports; // Return all if no user specified (for retailers)
+    }
+    
+    // Get user's locations
+    const userLocations = mockData.locations.filter(l => l.userId === userId);
+    const userLocationIds = userLocations.map(l => l.id);
+    
+    // Get user's assessments (assessments for user's locations)
+    const userAssessments = mockData.assessments.filter(a => 
+      userLocationIds.includes(a.locationId)
+    );
+    const userAssessmentIds = userAssessments.map(a => a.id);
+    
+    // Filter reports to only include those for user's assessments
+    return reports.filter(r => userAssessmentIds.includes(r.assessmentId));
+  },
+
+  getAll: async (userId = null) => {
     await delay();
-    return mockData.reports.map(report => {
+    const filteredReports = reportsAPI._filterReportsByUser(mockData.reports, userId);
+    
+    return filteredReports.map(report => {
       const assessment = mockData.assessments.find(a => a.id === report.assessmentId);
       const location = assessment 
         ? mockData.locations.find(l => l.id === assessment.locationId)
-        : null;
-      const cropType = assessment
-        ? mockData.cropTypes.find(c => c.id === assessment.cropTypeId)
         : null;
       
       return {
@@ -779,12 +1374,17 @@ export const reportsAPI = {
  * References API (locations, crop types, cultivars, etc.)
  */
 export const referencesAPI = {
-  getLocations: async (withStatus = false) => {
+  getLocations: async (withStatus = false, userId = null) => {
     await delay();
+    
+    // Filter locations by user if userId is provided
+    let locations = userId 
+      ? mockData.locations.filter(l => l.userId === userId)
+      : mockData.locations;
     
     if (withStatus) {
       // Return locations with their status and draft assessment if exists
-      return Promise.all(mockData.locations.map(async location => {
+      return Promise.all(locations.map(async location => {
         // If the location has a draft assessment, include it
         if (location.status === 'draft' && location.assessmentId) {
           try {
@@ -801,7 +1401,7 @@ export const referencesAPI = {
       }));
     }
     
-    return mockData.locations;
+    return locations;
   },
   
   getLocationById: async (id) => {

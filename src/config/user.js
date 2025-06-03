@@ -22,6 +22,72 @@ const fredTheFarmer = {
   location: 'Canterbury, New Zealand'
 };
 
+// Additional farmer personas for Roland to manage
+const sarahMcKenzie = {
+  id: '3',
+  name: 'Sarah McKenzie',
+  email: 'sarah@goldenfieldsfarm.co.nz',
+  password: 'password123',
+  hasPassword: true,
+  role: 'Farm Owner',
+  accountType: 'farmer',
+  initials: 'SM',
+  farmName: 'Golden Fields Farm',
+  location: 'Waikato, New Zealand'
+};
+
+const mikePatel = {
+  id: '4',
+  name: 'Mike Patel',
+  email: 'mike@greenhillsagriculture.co.nz',
+  password: 'password123',
+  hasPassword: true,
+  role: 'Farm Manager',
+  accountType: 'farmer',
+  initials: 'MP',
+  farmName: 'Green Hills Agriculture',
+  location: 'Auckland, New Zealand'
+};
+
+const jessicaThompson = {
+  id: '5',
+  name: 'Jessica Thompson',
+  email: 'jessica@sunnyridgefarm.co.nz',
+  password: 'password123',
+  hasPassword: true,
+  role: 'Farm Owner',
+  accountType: 'farmer',
+  initials: 'JT',
+  farmName: 'Sunny Ridge Farm',
+  location: 'Otago, New Zealand'
+};
+
+const davidWilson = {
+  id: '6',
+  name: 'David Wilson',
+  email: 'david@valleyviewfarm.co.nz',
+  password: 'password123',
+  hasPassword: true,
+  role: 'Farm Manager',
+  accountType: 'farmer',
+  initials: 'DW',
+  farmName: 'Valley View Farm',
+  location: 'Canterbury, New Zealand'
+};
+
+const emilyRoberts = {
+  id: '7',
+  name: 'Emily Roberts',
+  email: 'emily@riverbendagriculture.co.nz',
+  password: 'password123',
+  hasPassword: true,
+  role: 'Farm Owner',
+  accountType: 'farmer',
+  initials: 'ER',
+  farmName: 'Riverbend Agriculture',
+  location: 'Waikato, New Zealand'
+};
+
 // Retailer persona - Roland Reed
 const rolandTheRetailer = {
   id: '2',
@@ -38,7 +104,7 @@ const rolandTheRetailer = {
   region: 'Canterbury',
   country: 'New Zealand',
   location: 'Oxford, New Zealand',
-  accessibleFarmers: ['1'], // Can view Fred's data
+  accessibleFarmers: ['1', '3', '4', '5', '6', '7'], // Can view all farmer data
 };
 
 // TODO: Add more retailer personas here when needed
@@ -58,4 +124,4 @@ const rolandTheRetailer = {
 // };
 
 export default fredTheFarmer;
-export { rolandTheRetailer }; 
+export { rolandTheRetailer, sarahMcKenzie, mikePatel, jessicaThompson, davidWilson, emilyRoberts }; 
