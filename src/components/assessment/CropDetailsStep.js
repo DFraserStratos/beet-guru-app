@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FormField, FormButtonNav } from '../ui/form';
-import LocationForm from '../screens/LocationForm';
+import PaddockForm from '../screens/PaddockForm';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
 import { logger } from '../../utils/logger';
@@ -15,7 +15,7 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel, isMobile, user 
   const [cultivarInfo, setCultivarInfo] = useState(null);
   const [showCustomCultivar, setShowCustomCultivar] = useState(selectedCultivar === 'other');
   const [customCultivarName, setCustomCultivarName] = useState(formData.customCultivarName || '');
-  const [isLocationFormOpen, setIsLocationFormOpen] = useState(false);
+  const [isPaddockFormOpen, setIsPaddockFormOpen] = useState(false);
   
   // Get today's date in YYYY-MM-DD format for default assessment date
   const today = new Date().toISOString().split('T')[0];
@@ -102,39 +102,29 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel, isMobile, user 
   };
 
   // Handle opening the location form modal
-  const handleOpenLocationForm = () => {
-    setIsLocationFormOpen(true);
+  const handleOpenPaddockForm = () => {
+    setIsPaddockFormOpen(true);
   };
 
   // Handle closing the location form modal
-  const handleCloseLocationForm = () => {
-    setIsLocationFormOpen(false);
+  const handleClosePaddockForm = () => {
+    setIsPaddockFormOpen(false);
   };
 
   // Handle creating a new location
-  const handleCreateLocation = async (locationData) => {
+  const handleCreatePaddock = async (paddockData) => {
     try {
-      // Add user ID to location data for farmers
-      const locationWithUser = {
-        ...locationData,
-        userId: user?.id || '1' // Default to Fred's ID if no user
-      };
-      
-      // Create the new location via API
-      const newLocation = await api.references.createLocation(locationWithUser);
-      
-      // Refresh the locations list with user filtering
-      const userId = user?.accountType === 'farmer' ? user.id : null;
-      await locationsApi.execute(false, userId);
-      
-      // Select the newly created location
-      onChange({ target: { name: 'locationId', value: newLocation.id } });
-      
-      // Close the modal
-      setIsLocationFormOpen(false);
+      const result = await api.references.createLocation(paddockData);
+      if (result) {
+        // Update the locations list
+        const userId = user?.accountType === 'farmer' ? user.id : null;
+        await locationsApi.execute(false, userId);
+        // Pre-select the new location
+        onChange({ target: { name: 'locationId', value: result.id } });
+        setIsPaddockFormOpen(false);
+      }
     } catch (error) {
-      console.error('Error creating location:', error);
-      alert('Error creating paddock. Please try again.');
+      console.error('Error creating paddock:', error);
     }
   };
 
@@ -159,7 +149,7 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel, isMobile, user 
             />
             <button
               type="button"
-              onClick={handleOpenLocationForm}
+              onClick={handleOpenPaddockForm}
               className="text-sm text-green-600 hover:text-green-800 underline mt-1 block"
             >
               Add New Paddock
@@ -287,13 +277,13 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel, isMobile, user 
       </div>
 
       {/* Location Form Modal */}
-      {isLocationFormOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full max-h-screen overflow-y-auto">
-            <LocationForm
-              location={null}
-              onSubmit={handleCreateLocation}
-              onCancel={handleCloseLocationForm}
+      {isPaddockFormOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
+          <div className="bg-white rounded-xl shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <PaddockForm
+              paddock={null}
+              onSubmit={handleCreatePaddock}
+              onCancel={handleClosePaddockForm}
             />
           </div>
         </div>

@@ -1,6 +1,6 @@
 import Skeleton from './Skeleton';
 
-const LocationListItemSkeleton = () => (
+const PaddockListItemSkeleton = () => (
   <li className="min-h-[76px] p-4">
     <div className="flex items-center justify-between">
       <div className="flex items-start">
@@ -18,4 +18,4 @@ const LocationListItemSkeleton = () => (
   </li>
 );
 
-export default LocationListItemSkeleton;
+export default PaddockListItemSkeleton; 

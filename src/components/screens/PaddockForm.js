@@ -5,26 +5,26 @@ import { IconButton } from '../ui/buttons';
 import { useForm } from '../../hooks';
 
 /**
- * Location Form Component
+ * Paddock Form Component
  * 
- * Form for creating and editing farm locations, includes fields
- * for location name and area.
+ * Form for creating and editing farm paddocks, includes fields
+ * for paddock name and area.
  * 
  * @param {Object} props
- * @param {Object} props.location - Location data for editing (null for new location)
+ * @param {Object} props.paddock - Paddock data for editing (null for new paddock)
  * @param {Function} props.onSubmit - Submit handler
  * @param {Function} props.onCancel - Cancel handler
  * @returns {JSX.Element}
  */
-const LocationForm = ({ location, onSubmit, onCancel }) => {
-  const isEditMode = Boolean(location);
+const PaddockForm = ({ paddock, onSubmit, onCancel }) => {
+  const isEditMode = Boolean(paddock);
   
   // Form validation function
   const validateForm = (values) => {
     const errors = {};
     
     if (!values.name) {
-      errors.name = 'Location name is required';
+      errors.name = 'Paddock name is required';
     }
     
     if (values.area && (isNaN(values.area) || values.area <= 0)) {
@@ -34,11 +34,11 @@ const LocationForm = ({ location, onSubmit, onCancel }) => {
     return errors;
   };
   
-  // Initialize form with location data or defaults
+  // Initialize form with paddock data or defaults
   const initialValues = {
-    name: location?.name || '',
-    area: location?.area || '',
-    id: location?.id || null,
+    name: paddock?.name || '',
+    area: paddock?.area || '',
+    id: paddock?.id || null,
   };
   
   // Set up form handling with custom hook
@@ -125,4 +125,4 @@ const LocationForm = ({ location, onSubmit, onCancel }) => {
   );
 };
 
-export default LocationForm;
+export default PaddockForm; 

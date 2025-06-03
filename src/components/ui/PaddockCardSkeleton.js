@@ -1,6 +1,6 @@
 import Skeleton from './Skeleton';
 
-const LocationCardSkeleton = () => (
+const PaddockCardSkeleton = () => (
   <li className="hover:bg-gray-50">
     <div className="min-h-[76px] p-4">
       <div className="flex items-center justify-between">
@@ -17,4 +17,4 @@ const LocationCardSkeleton = () => (
   </li>
 );
 
-export default LocationCardSkeleton;
+export default PaddockCardSkeleton; 

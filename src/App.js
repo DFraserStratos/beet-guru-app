@@ -12,7 +12,7 @@ import RegisterScreen from './components/screens/RegisterScreen';
 import EmailScreen from './components/screens/EmailScreen';
 import VerificationCodeScreen from './components/screens/VerificationCodeScreen';
 import StockFeedScreen from './components/screens/StockFeedScreen';
-import LocationsScreen from './components/screens/LocationsScreen';
+import PaddocksScreen from './components/screens/PaddocksScreen';
 import SettingsScreen from './components/screens/SettingsScreen';
 import ReportViewerScreen from './components/screens/ReportViewerScreen';
 import AboutUsScreen from './components/screens/AboutUsScreen';
@@ -67,13 +67,13 @@ function App() {
     setActiveScreen(screen);
   };
   
-  const handleStartAssessment = (location) => {
-    setSelectedLocation(location);
+  const handleStartAssessment = (paddock) => {
+    setSelectedLocation(paddock);
     setActiveScreen('new-assessment');
   };
   
-  const handleContinueDraft = (location, assessment) => {
-    setSelectedLocation(location);
+  const handleContinueDraft = (paddock, assessment) => {
+    setSelectedLocation(paddock);
     setDraftAssessment(assessment);
     setActiveScreen('new-assessment');
   };
@@ -265,7 +265,7 @@ function App() {
             )}
             {activeScreen === 'stockfeed' && <StockFeedScreen isMobile={isMobile} />}
             {activeScreen === 'more' && <MoreScreen onNavigate={handleNavigate} isMobile={isMobile} onLogout={handleLogout} user={user} />}
-            {activeScreen === 'locations' && <LocationsScreen isMobile={isMobile} user={user} />}
+            {activeScreen === 'locations' && <PaddocksScreen isMobile={isMobile} user={user} />}
             {activeScreen === 'settings' && <SettingsScreen isMobile={isMobile} onNavigate={handleNavigate} user={user} />}
             {activeScreen === 'about-us' && <AboutUsScreen onNavigate={handleNavigate} isMobile={isMobile} />}
             {activeScreen === 'terms' && <TermsScreen onNavigate={handleNavigate} isMobile={isMobile} />}

@@ -2,12 +2,12 @@ import React from 'react';
 import { MapPin, Calendar, ChevronRight } from 'lucide-react';
 
 /**
- * Location card component with status indicator
+ * Paddock card component with status indicator
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const LocationCard = ({ 
-  location, 
+const PaddockCard = ({ 
+  paddock, 
   status = "not-started", // "draft", "not-started"
   onContinue = () => {}, 
   onStart = () => {},
@@ -22,7 +22,7 @@ const LocationCard = ({
           bgColor: 'bg-yellow-100',
           textColor: 'text-yellow-800',
           actionLabel: 'Continue Assessment',
-          actionClick: () => onContinue(location),
+          actionClick: () => onContinue(paddock),
           icon: <Calendar size={16} className="mr-2" />
         };
       case 'not-started':
@@ -32,7 +32,7 @@ const LocationCard = ({
           bgColor: 'bg-gray-100',
           textColor: 'text-gray-800',
           actionLabel: 'Start Assessment',
-          actionClick: () => onStart(location),
+          actionClick: () => onStart(paddock),
           icon: <Calendar size={16} className="mr-2" />
         };
     }
@@ -49,13 +49,13 @@ const LocationCard = ({
           </div>
           <div>
             <div className="flex items-center">
-              <h3 className="text-base font-medium text-gray-800">{location.name}</h3>
+              <h3 className="text-base font-medium text-gray-800">{paddock.name}</h3>
               <span className={`ml-2 px-2 py-0.5 text-xs font-semibold rounded-full ${statusInfo.bgColor} ${statusInfo.textColor}`}>
                 {statusInfo.label}
               </span>
             </div>
             <p className="text-sm text-gray-500">
-              {location.area ? `${location.area} hectares` : 'Area not specified'}
+              {paddock.area ? `${paddock.area} hectares` : 'Area not specified'}
             </p>
           </div>
         </div>
@@ -71,4 +71,4 @@ const LocationCard = ({
   );
 };
 
-export default LocationCard;
+export default PaddockCard; 
