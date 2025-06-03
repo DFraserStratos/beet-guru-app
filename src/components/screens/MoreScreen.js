@@ -1,4 +1,4 @@
-import { MapPin, Settings, LogOut, ChevronRight, Calculator, HelpCircle, FileText } from 'lucide-react';
+import { MapPin, Settings, LogOut, ChevronRight, HelpCircle, FileText } from 'lucide-react';
 import PageContainer from '../layout/PageContainer';
 
 const MoreScreen = ({ onNavigate, onLogout, user }) => {
@@ -20,11 +20,6 @@ const MoreScreen = ({ onNavigate, onLogout, user }) => {
             icon={<MapPin size={20} className="text-green-600" />}
             label="Locations"
             onClick={() => onNavigate('locations')}
-          />
-          <MenuItem 
-            icon={<Calculator size={20} className="text-green-600" />}
-            label="Stock Feed Calculator"
-            onClick={() => onNavigate('stockfeed')}
           />
           <MenuItem 
             icon={<Settings size={20} className="text-gray-600" />}

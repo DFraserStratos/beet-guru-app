@@ -1,3 +1,23 @@
+/**
+ * Stock Feed Calculator Screen
+ * 
+ * DRAFT FEATURE - This is an experimental feature that was developed as a concept exploration.
+ * While it's not currently accessible through the main navigation, it contains valuable 
+ * functionality and should be preserved for future development and potential reactivation.
+ * 
+ * The calculator provides functionality for estimating feed duration based on:
+ * - Stock count
+ * - Feed amount (tonnes)
+ * - Dry matter percentage
+ * 
+ * TODO: Future enhancements could include:
+ * - Integration with assessment data for more accurate calculations
+ * - Multiple stock types and their specific feed requirements
+ * - Seasonal feeding adjustments
+ * - Integration with paddock management
+ * - Historical feed usage tracking
+ */
+
 import { useState } from 'react';
 import { Calculator, Save, AlertTriangle } from 'lucide-react';
 import FeedForecastWidget from '../ui/FeedForecastWidget';

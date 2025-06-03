@@ -5,7 +5,6 @@ import {
   MapPin,
   Settings,
   LogOut,
-  Calculator,
   HelpCircle
 } from 'lucide-react';
 import beetGuruSquareLogo from '../../BeetGuruSq.png';
@@ -50,12 +49,6 @@ const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
             label="Paddocks" 
             isActive={activeScreen === 'locations'} 
             onClick={() => handleNavigate('locations')}
-          />
-          <SidebarItem 
-            icon={<Calculator size={20} />} 
-            label="Stock Feed" 
-            isActive={activeScreen === 'stockfeed'} 
-            onClick={() => handleNavigate('stockfeed')}
           />
         </ul>
       </div>
