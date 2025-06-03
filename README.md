@@ -22,7 +22,7 @@ npm run build
 
 ### Using the App Demo
 1. **Email Entry**: Enter any email or click "Continue" for demo
-2. **Verification Code**: Click "Fill in Code" to auto-fill `123456`
+2. **Verification Code**: Click "Fill in Code" to auto-fill `1234`
 3. **Login/Register**: Choose existing user login or new registration
 4. **Explore**: Navigate using sidebar (desktop) or bottom tabs (mobile)
 
@@ -82,13 +82,13 @@ src/
 ## Authentication System
 
 ### Current Implementation (May 2025)
-The app uses a **verification code system** (6-digit codes) instead of magic links:
+The app uses a **verification code system** (4-digit codes) instead of magic links:
 
 ```javascript
 // Authentication flow
 1. EmailScreen → User enters email
 2. API checks if email exists → Sends verification code
-3. VerificationCodeScreen → User enters 6-digit code
+3. VerificationCodeScreen → User enters 4-digit code
 4. Verification → Routes to login (existing) or registration (new)
 ```
 
@@ -103,10 +103,10 @@ The app uses a **verification code system** (6-digit codes) instead of magic lin
 #### VerificationCodeScreen
 ```javascript
 // Key features:
-- 6 individual input boxes for digits
+- 4 individual input boxes for digits
 - Auto-advance on input
 - Paste support for full code
-- Demo button fills "123456"
+- Demo button fills "1234"
 - Error handling with retry limits
 ```
 
@@ -652,7 +652,7 @@ When developing with this codebase:
 ## Recent Updates (May 2025)
 
 ### Authentication System Overhaul
-- Migrated from magic links to 6-digit verification codes
+- Migrated from magic links to 4-digit verification codes
 - Created VerificationCodeScreen with individual digit inputs
 - Updated API to support code generation and verification
 - Maintained persona system for demos

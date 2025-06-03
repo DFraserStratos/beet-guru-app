@@ -7,7 +7,7 @@ import fredTheFarmer from '../../config/user';
 
 /**
  * Verification Code Screen Component
- * Handles 6-digit verification code entry for email authentication
+ * Handles 4-digit verification code entry for email authentication
  * 
  * @param {Object} props - Component props
  * @param {string} props.email - Email address where code was sent
@@ -20,7 +20,7 @@ const VerificationCodeScreen = ({
   onBack, 
   onVerify
 }) => {
-  const [code, setCode] = useState(['', '', '', '', '', '']);
+  const [code, setCode] = useState(['', '', '', '']);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [canResend, setCanResend] = useState(false);
@@ -56,7 +56,7 @@ const VerificationCodeScreen = ({
     setError('');
     
     // Auto-focus next input
-    if (value && index < 5) {
+    if (value && index < 3) {
       inputRefs.current[index + 1]?.focus();
     }
   };
@@ -75,21 +75,21 @@ const VerificationCodeScreen = ({
   
   const handlePaste = (e) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData('text').slice(0, 6);
+    const pastedData = e.clipboardData.getData('text').slice(0, 4);
     
-    if (/^\d{6}$/.test(pastedData)) {
+    if (/^\d{4}$/.test(pastedData)) {
       const newCode = pastedData.split('');
       setCode(newCode);
       setError('');
-      inputRefs.current[5]?.focus();
+      inputRefs.current[3]?.focus();
     }
   };
   
   const handleVerifyCode = async () => {
     const codeString = code.join('');
     
-    if (codeString.length !== 6) {
-      setError('Please enter all 6 digits');
+    if (codeString.length !== 4) {
+      setError('Please enter all 4 digits');
       return;
     }
     
@@ -97,9 +97,9 @@ const VerificationCodeScreen = ({
     setError('');
     
     try {
-      // Demo mode - accept code 123456 for any email and always use Fred's data
+      // Demo mode - accept code 1234 for any email and always use Fred's data
       if (email === fredTheFarmer.email || email === 'demo@example.com' || email.includes('@example.com')) {
-        if (codeString === '123456') {
+        if (codeString === '1234') {
           // Simulate verification success - always use Fred's data for demo
           setTimeout(() => {
             onVerify(email, fredTheFarmer);
@@ -127,7 +127,7 @@ const VerificationCodeScreen = ({
       }
       
       // Clear code on error
-      setCode(['', '', '', '', '', '']);
+      setCode(['', '', '', '']);
       inputRefs.current[0]?.focus();
     } finally {
       setIsLoading(false);
@@ -144,7 +144,7 @@ const VerificationCodeScreen = ({
       await authAPI.generateVerificationCode(email);
       
       // Reset state
-      setCode(['', '', '', '', '', '']);
+      setCode(['', '', '', '']);
       setCanResend(false);
       setResendCountdown(60);
       setAttempts(0);
@@ -167,9 +167,6 @@ const VerificationCodeScreen = ({
     handleVerifyCode();
   };
   
-  // Check if this is a demo email
-  const isDemoMode = email === 'demo@example.com' || email.includes('@example.com');
-  
   return (
     <AuthLayout 
       title="Enter verification code" 
@@ -179,7 +176,7 @@ const VerificationCodeScreen = ({
       <div className="space-y-6">
         <div className="text-center">
           <p className="text-sm text-gray-600">
-            We've sent a 6-digit code to
+            We've sent a 4-digit code to
           </p>
           <p className="text-sm font-medium text-gray-900 mt-1">
             {email}
@@ -255,25 +252,46 @@ const VerificationCodeScreen = ({
         </form>
         
         {/* Demo Helper - single button */}
-        {isDemoMode && !code.every(digit => digit) && (
+        {!code.every(digit => digit) && (
           <div className="text-center">
             <button
               type="button"
               onClick={() => {
-                const demoCode = '123456';
+                const demoCode = '1234';
                 const digits = demoCode.split('');
                 setCode(digits);
                 setError('');
-                inputRefs.current[5]?.focus();
+                inputRefs.current[3]?.focus();
                 
-                // Auto-submit after a short delay for visual feedback
-                setTimeout(() => {
-                  handleVerifyCode();
-                }, 300);
+                // Direct verification for demo mode to avoid state update delays
+                setIsLoading(true);
+                if (email === fredTheFarmer.email || email === 'demo@example.com' || email.includes('@example.com')) {
+                  // Simulate verification success - always use Fred's data for demo
+                  setTimeout(() => {
+                    setIsLoading(false);
+                    onVerify(email, fredTheFarmer);
+                  }, 1000);
+                } else {
+                  // For other emails, still try the normal verification
+                  setTimeout(async () => {
+                    try {
+                      const result = await authAPI.verifyCode(email, demoCode);
+                      if (result.success) {
+                        onVerify(email, result.user);
+                      } else {
+                        throw new Error(result.message || 'Invalid code');
+                      }
+                    } catch (err) {
+                      setError(err.message || 'Invalid code. Please try again.');
+                    } finally {
+                      setIsLoading(false);
+                    }
+                  }, 300);
+                }
               }}
               className="text-sm text-green-600 hover:text-green-500 font-medium"
             >
-              Fill in Code (uses Fred's persona)
+              Fill in Code
             </button>
           </div>
         )}
