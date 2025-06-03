@@ -4,7 +4,8 @@
  * when backend integration is implemented
  */
 
-import personas from './personas';
+import { logger } from '../utils/logger';
+import fredTheFarmer from '../config/user';
 
 // Base API configuration
 const API_BASE_URL = process.env.REACT_APP_API_URL || '';
@@ -52,11 +53,8 @@ const apiRequest = async (endpoint, options = {}) => {
 
 // Mock data store (will be replaced by actual API calls)
 const mockData = {
-  // Replace users with personas for authentication
-  users: personas,
-  
-  // Store the last selected persona to avoid selecting the same one twice in a row
-  lastSelectedPersonaId: null,
+  // Single user - Fred the farmer
+  users: [fredTheFarmer],
   
   locations: [
     { 
@@ -352,11 +350,7 @@ const mockData = {
   verificationCodes: []
 };
 
-/**
- * Simulate API delay
- * @param {number} ms - Milliseconds to delay
- * @returns {Promise}
- */
+// Helper function to simulate network delay
 const delay = (ms = 300) => new Promise(resolve => setTimeout(resolve, ms));
 
 /**
@@ -371,34 +365,22 @@ const generateCode = () => {
  * Auth API
  */
 export const authAPI = {
-  // New method to get a random persona
-  getRandomPersona: async () => {
+  // Get Fred the farmer user details
+  getUser: async () => {
     await delay();
-    
-    // Get a random persona that's different from the last selected one
-    const availablePersonas = mockData.lastSelectedPersonaId 
-      ? mockData.users.filter(p => p.id !== mockData.lastSelectedPersonaId)
-      : mockData.users;
-    
-    const randomIndex = Math.floor(Math.random() * availablePersonas.length);
-    const selectedPersona = availablePersonas[randomIndex];
-    
-    // Store the selected persona ID to avoid selecting it again next time
-    mockData.lastSelectedPersonaId = selectedPersona.id;
-    
-    return selectedPersona;
+    return fredTheFarmer;
   },
   
   login: async (email, password) => {
     await delay();
     const user = mockData.users.find(u => u.email === email);
-    if (!user || password !== 'password') {
+    if (!user || password !== user.password) {
       throw new Error('Invalid credentials');
     }
     return user;
   },
   
-  // New method to support password authentication
+  // Password authentication
   loginWithPassword: async (email, password) => {
     await delay();
     const user = mockData.users.find(u => u.email === email);
@@ -441,7 +423,7 @@ export const authAPI = {
     return { success: true };
   },
   
-  // Modified to work with personas
+  // Check if email exists (will always return true for Fred's email)
   checkEmailExists: async (email) => {
     await delay();
     const user = mockData.users.find(u => u.email === email);

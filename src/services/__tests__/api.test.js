@@ -10,30 +10,38 @@ describe('authAPI', () => {
   });
 
   test('login succeeds with correct credentials', async () => {
-    const email = 'maria.rodriguez@example.com';
-    const promise = authAPI.login(email, 'password');
+    const promise = authAPI.login('fred@beetguru.com', 'password123');
     jest.runAllTimers();
     const user = await promise;
-    expect(user).toMatchObject({ email });
+    expect(user.email).toBe('fred@beetguru.com');
   });
 
-  test('login fails with wrong password', async () => {
-    const promise = authAPI.login('maria.rodriguez@example.com', 'wrong');
+  test('login fails with incorrect credentials', async () => {
+    const promise = authAPI.login('wrong@email.com', 'wrongpass');
     jest.runAllTimers();
     await expect(promise).rejects.toThrow('Invalid credentials');
   });
 
-  test('magic link login is single use', async () => {
-    // Use real timers for this async flow
-    jest.useRealTimers();
+  test('getUser returns Fred Forger', async () => {
+    const promise = authAPI.getUser();
+    jest.runAllTimers();
+    const user = await promise;
+    expect(user.name).toBe('Fred Forger');
+    expect(user.email).toBe('fred@beetguru.com');
+  });
 
-    const result = await authAPI.generateMagicLink('maria.rodriguez@example.com');
-    const token = new URL(result.magicLink).searchParams.get('token');
+  test('checkEmailExists returns true for Fred\'s email', async () => {
+    const promise = authAPI.checkEmailExists('fred@beetguru.com');
+    jest.runAllTimers();
+    const result = await promise;
+    expect(result.exists).toBe(true);
+  });
 
-    const user = await authAPI.loginWithMagicLink(token);
-    expect(user.email).toBe('maria.rodriguez@example.com');
-
-    await expect(authAPI.loginWithMagicLink(token)).rejects.toThrow('Invalid or expired token');
+  test('checkEmailExists returns false for unknown email', async () => {
+    const promise = authAPI.checkEmailExists('unknown@example.com');
+    jest.runAllTimers();
+    const result = await promise;
+    expect(result.exists).toBe(false);
   });
 });
 

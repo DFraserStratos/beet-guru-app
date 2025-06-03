@@ -6,13 +6,14 @@ import api from '../../services/api';
 import ErrorBoundary from '../utility/ErrorBoundary';
 import beetGuruWideLogo from '../../BeetGuruWide.png';
 import PageContainer from '../layout/PageContainer';
+import fredTheFarmer from '../../config/user';
 
 /**
  * Login screen component
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const LoginScreen = ({ onLogin, onRegister, selectedPersona }) => {
+const LoginScreen = ({ onLogin, onRegister }) => {
   const [formFilled, setFormFilled] = useState(false);
   
   // Form validation
@@ -46,23 +47,13 @@ const LoginScreen = ({ onLogin, onRegister, selectedPersona }) => {
     handleLogin
   );
   
-  // Fill form with sample data from selected persona if available
+  // Fill form with Fred's data
   const fillFormWithSampleData = () => {
-    if (selectedPersona) {
-      // Use the selected persona's email
-      setValues({
-        email: selectedPersona.email,
-        password: 'password',
-        rememberMe: false
-      });
-    } else {
-      // Fallback to default values
-      setValues({
-        email: 'john.doe@example.com',
-        password: 'password',
-        rememberMe: false
-      });
-    }
+    setValues({
+      email: fredTheFarmer.email,
+      password: fredTheFarmer.password,
+      rememberMe: false
+    });
     setFormFilled(true);
   };
   
@@ -74,20 +65,8 @@ const LoginScreen = ({ onLogin, onRegister, selectedPersona }) => {
       return;
     }
     
-    // Second click: Actually log in
-    if (selectedPersona) {
-      // Use the selected persona data
-      onLogin(selectedPersona);
-    } else {
-      // Fallback to default user data
-      onLogin({ 
-        id: '1',
-        email: formValues.email, 
-        name: 'John Doe', 
-        role: 'Farm Manager',
-        initials: 'JD'
-      });
-    }
+    // Second click: Actually log in with Fred's data
+    onLogin(fredTheFarmer);
   }
   
   // Handle continue button click
@@ -169,12 +148,6 @@ const LoginScreen = ({ onLogin, onRegister, selectedPersona }) => {
               >
                 {formFilled ? 'Sign in' : 'Continue'}
               </FormButton>
-              
-              {selectedPersona && !formFilled && (
-                <p className="text-xs text-gray-500 mt-1 text-center">
-                  Click to sign in as {selectedPersona.name}
-                </p>
-              )}
             </form>
             
             <div className="mt-6">

@@ -3,6 +3,7 @@ import { AlertCircle, RefreshCw } from 'lucide-react';
 import AuthLayout from '../layout/AuthLayout';
 import { FormButton } from '../ui/form';
 import { authAPI } from '../../services/api';
+import fredTheFarmer from '../../config/user';
 
 /**
  * Verification Code Screen Component
@@ -12,14 +13,12 @@ import { authAPI } from '../../services/api';
  * @param {string} props.email - Email address where code was sent
  * @param {Function} props.onBack - Handler for back navigation
  * @param {Function} props.onVerify - Handler for successful verification
- * @param {Object} props.selectedPersona - Selected demo persona
  * @returns {JSX.Element} Rendered component
  */
 const VerificationCodeScreen = ({ 
   email, 
   onBack, 
-  onVerify,
-  selectedPersona 
+  onVerify
 }) => {
   const [code, setCode] = useState(['', '', '', '', '', '']);
   const [error, setError] = useState('');
@@ -27,89 +26,68 @@ const VerificationCodeScreen = ({
   const [canResend, setCanResend] = useState(false);
   const [resendCountdown, setResendCountdown] = useState(60);
   const [attempts, setAttempts] = useState(0);
+  
   const inputRefs = useRef([]);
   
-  // Start countdown timer
+  // Start countdown when component mounts
   useEffect(() => {
-    const timer = setInterval(() => {
-      setResendCountdown((prev) => {
-        if (prev <= 1) {
-          setCanResend(true);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    
-    return () => clearInterval(timer);
-  }, []);
+    if (resendCountdown > 0) {
+      const timer = setTimeout(() => {
+        setResendCountdown(prev => prev - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else {
+      setCanResend(true);
+    }
+  }, [resendCountdown]);
   
-  // Auto-focus first input on mount
+  // Focus first input when component mounts
   useEffect(() => {
     inputRefs.current[0]?.focus();
   }, []);
   
-  const handleChange = (index, value) => {
-    // Only allow digits
-    if (value && !/^\d$/.test(value)) return;
+  const handleCodeChange = (index, value) => {
+    // Only allow single digits
+    if (value.length > 1) return;
     
     const newCode = [...code];
     newCode[index] = value;
     setCode(newCode);
-    setError(''); // Clear error on input
+    setError('');
     
-    // Auto-advance to next input
+    // Auto-focus next input
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
-    }
-    
-    // Auto-submit when all digits entered
-    if (value && index === 5 && newCode.every(digit => digit)) {
-      handleVerifyCode(newCode.join(''));
     }
   };
   
   const handleKeyDown = (index, e) => {
-    // Handle backspace
+    // Handle backspace - move to previous field if current is empty
     if (e.key === 'Backspace' && !code[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
     
     // Handle paste
-    if (e.key === 'v' && (e.ctrlKey || e.metaKey)) {
-      e.preventDefault();
-      handlePaste(e);
+    if (e.key === 'Enter') {
+      handleVerifyCode();
     }
   };
   
-  const handlePaste = async (e) => {
-    const pastedData = e.clipboardData?.getData('text') || await navigator.clipboard.readText();
-    const digits = pastedData.replace(/\D/g, '').slice(0, 6);
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData('text').slice(0, 6);
     
-    if (digits.length === 6) {
-      const newCode = digits.split('');
+    if (/^\d{6}$/.test(pastedData)) {
+      const newCode = pastedData.split('');
       setCode(newCode);
+      setError('');
       inputRefs.current[5]?.focus();
-      handleVerifyCode(digits);
     }
   };
   
-  const fillDemoCode = () => {
-    const demoCode = '123456';
-    const digits = demoCode.split('');
-    setCode(digits);
-    setError('');
+  const handleVerifyCode = async () => {
+    const codeString = code.join('');
     
-    // Focus last input to show it's filled
-    inputRefs.current[5]?.focus();
-    
-    // Auto-submit after a short delay for visual feedback
-    setTimeout(() => {
-      handleVerifyCode(demoCode);
-    }, 300);
-  };
-  
-  const handleVerifyCode = async (codeString) => {
     if (codeString.length !== 6) {
       setError('Please enter all 6 digits');
       return;
@@ -119,12 +97,12 @@ const VerificationCodeScreen = ({
     setError('');
     
     try {
-      // Demo mode - accept code 123456
-      if (selectedPersona || email === 'demo@example.com' || email.includes('@example.com')) {
+      // Demo mode - accept code 123456 for any email and always use Fred's data
+      if (email === fredTheFarmer.email || email === 'demo@example.com' || email.includes('@example.com')) {
         if (codeString === '123456') {
-          // Simulate verification success
+          // Simulate verification success - always use Fred's data for demo
           setTimeout(() => {
-            onVerify(email, selectedPersona);
+            onVerify(email, fredTheFarmer);
           }, 1000);
           return;
         }
@@ -186,11 +164,11 @@ const VerificationCodeScreen = ({
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleVerifyCode(code.join(''));
+    handleVerifyCode();
   };
   
   // Check if this is a demo email
-  const isDemoMode = selectedPersona || email === 'demo@example.com' || email.includes('@example.com');
+  const isDemoMode = email === 'demo@example.com' || email.includes('@example.com');
   
   return (
     <AuthLayout 
@@ -220,7 +198,7 @@ const VerificationCodeScreen = ({
                 pattern="\d{1}"
                 maxLength={1}
                 value={digit}
-                onChange={(e) => handleChange(index, e.target.value)}
+                onChange={(e) => handleCodeChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 onPaste={handlePaste}
                 className={`
@@ -281,10 +259,21 @@ const VerificationCodeScreen = ({
           <div className="text-center">
             <button
               type="button"
-              onClick={fillDemoCode}
+              onClick={() => {
+                const demoCode = '123456';
+                const digits = demoCode.split('');
+                setCode(digits);
+                setError('');
+                inputRefs.current[5]?.focus();
+                
+                // Auto-submit after a short delay for visual feedback
+                setTimeout(() => {
+                  handleVerifyCode();
+                }, 300);
+              }}
               className="text-sm text-green-600 hover:text-green-500 font-medium"
             >
-              Fill in Code
+              Fill in Code (uses Fred's persona)
             </button>
           </div>
         )}

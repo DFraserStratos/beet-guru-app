@@ -5,6 +5,7 @@ import { useForm } from '../../hooks';
 import AuthLayout from '../layout/AuthLayout';
 import api from '../../services/api';
 import { logger } from '../../utils/logger';
+import fredTheFarmer from '../../config/user';
 
 /**
  * Enhanced Email Screen with progressive disclosure for password authentication
@@ -12,31 +13,11 @@ import { logger } from '../../utils/logger';
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const EmailScreen = ({ onEmailSubmit, onSendCode, onSelectPersona, onLogin }) => {
+const EmailScreen = ({ onEmailSubmit, onSendCode, onLogin }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isUnknownAccount, setIsUnknownAccount] = useState(false);
-  const [selectedPersona, setSelectedPersona] = useState(null);
   const passwordFieldRef = useRef(null);
-  
-  // Select a random persona when the component mounts
-  useEffect(() => {
-    const getRandomPersona = async () => {
-      try {
-        const persona = await api.auth.getRandomPersona();
-        setSelectedPersona(persona);
-        logger.info(
-          'Selected persona:',
-          persona.name,
-          persona.hasPassword ? '(has password)' : '(verification code only)'
-        );
-      } catch (error) {
-        console.error('Error getting random persona:', error);
-      }
-    };
-    
-    getRandomPersona();
-  }, []);
   
   // Form validation
   const validateForm = (values) => {
@@ -96,28 +77,26 @@ const EmailScreen = ({ onEmailSubmit, onSendCode, onSelectPersona, onLogin }) =>
     }, 300);
   };
   
-  // Fill form with known account (existing user)
+  // Fill form with Fred's account details (existing user)
   const fillFormWithKnownAccount = () => {
     setIsUnknownAccount(false);
-    if (selectedPersona) {
-      setValues({
-        email: selectedPersona.email,
-        password: selectedPersona.hasPassword ? selectedPersona.password : ''
-      });
-      
-      // Expand form after a short delay
-      setTimeout(() => {
-        expandForm();
-      }, 300);
-    }
+    setValues({
+      email: fredTheFarmer.email,
+      password: fredTheFarmer.password
+    });
+    
+    // Expand form after a short delay
+    setTimeout(() => {
+      expandForm();
+    }, 300);
   };
   
-  // Fill form with unknown account (new user)
+  // Fill form with new farmer account (new user registration)
   const fillFormWithUnknownAccount = () => {
     setIsUnknownAccount(true);
     setIsExpanded(false); // Don't expand for unknown accounts
     setValues({
-      email: 'newuser@example.com',
+      email: 'demo.farmer@example.com', // Use different email to trigger registration flow
       password: ''
     });
   };
@@ -155,19 +134,12 @@ const EmailScreen = ({ onEmailSubmit, onSendCode, onSelectPersona, onLogin }) =>
       // Try password login
       try {
         const user = await api.auth.loginWithPassword(values.email, values.password);
-        
-        // Pass persona data if email matches
-        if (selectedPersona && selectedPersona.email === values.email) {
-          onSelectPersona(selectedPersona);
-        }
-        
         // Direct login
         onLogin(user);
       } catch (error) {
-        // For demo: if it's a persona email with password, use the persona data
-        if (selectedPersona && selectedPersona.email === values.email && selectedPersona.hasPassword) {
-          onSelectPersona(selectedPersona);
-          onLogin(selectedPersona);
+        // For demo: if it's Fred's email with password, use Fred's data
+        if (values.email === fredTheFarmer.email && values.password === fredTheFarmer.password) {
+          onLogin(fredTheFarmer);
         } else {
           console.error('Password login failed:', error);
           // In a real app, show error message
@@ -184,10 +156,6 @@ const EmailScreen = ({ onEmailSubmit, onSendCode, onSelectPersona, onLogin }) =>
   // Handle verification code flow
   const handleVerificationCodeFlow = async (formValues) => {
     onEmailSubmit(formValues.email);
-    
-    if (selectedPersona && selectedPersona.email === formValues.email) {
-      onSelectPersona(selectedPersona);
-    }
     
     try {
       // Generate and send verification code
@@ -277,9 +245,6 @@ const EmailScreen = ({ onEmailSubmit, onSendCode, onSelectPersona, onLogin }) =>
               icon={<Lock size={18} className="text-gray-400" />}
               autoComplete="current-password"
               disabled={isProcessing}
-              hint={selectedPersona && !selectedPersona.hasPassword && values.email === selectedPersona.email 
-                ? "This demo user doesn't have a password. Use verification code instead." 
-                : null}
             />
           </div>
         )}
@@ -317,7 +282,7 @@ const EmailScreen = ({ onEmailSubmit, onSendCode, onSelectPersona, onLogin }) =>
                 variant="primary"
                 fullWidth
                 isLoading={isProcessing}
-                disabled={isProcessing || (selectedPersona && !selectedPersona.hasPassword && values.email === selectedPersona.email)}
+                disabled={isProcessing}
                 onClick={handleSignInClick}
               >
                 Sign in
@@ -338,26 +303,68 @@ const EmailScreen = ({ onEmailSubmit, onSendCode, onSelectPersona, onLogin }) =>
           )}
         </div>
         
-        {/* Demo Helpers */}
+        {/* Demo Account Options */}
         {!values.email && (
-          <div className="space-y-2">
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={fillFormWithKnownAccount}
-                className="text-sm text-green-600 hover:text-green-500 font-medium"
-              >
-                Fill with known account
-              </button>
+          <div className="space-y-4">
+            <div className="text-center text-sm text-gray-600 font-medium">
+              Demo Account Options
             </div>
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={fillFormWithUnknownAccount}
-                className="text-sm text-green-600 hover:text-green-500 font-medium"
-              >
-                Fill with unknown account
-              </button>
+            
+            {/* 2x2 Grid Layout */}
+            <div className="grid grid-cols-2 gap-3">
+              {/* Left Column - Farmer Options */}
+              <div className="space-y-2">
+                <div className="text-xs text-gray-500 font-medium text-center mb-2">
+                  Farmer Accounts
+                </div>
+                <button
+                  type="button"
+                  onClick={fillFormWithKnownAccount}
+                  className="w-full text-xs text-green-600 hover:text-green-500 font-medium py-2 px-3 border border-green-200 rounded-md hover:bg-green-50 transition-colors"
+                  title="Fills in Fred's existing account (fred@beetguru.com)"
+                >
+                  Fill in Known Farmer
+                  <div className="text-xs text-green-500 mt-1">Fred's Account</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={fillFormWithUnknownAccount}
+                  className="w-full text-xs text-green-600 hover:text-green-500 font-medium py-2 px-3 border border-green-200 rounded-md hover:bg-green-50 transition-colors"
+                  title="Creates a new farmer account using Fred's persona"
+                >
+                  Fill in Unknown Farmer
+                  <div className="text-xs text-green-500 mt-1">New Registration</div>
+                </button>
+              </div>
+              
+              {/* Right Column - Retailer Options */}
+              <div className="space-y-2">
+                <div className="text-xs text-gray-500 font-medium text-center mb-2">
+                  Retailer Accounts
+                </div>
+                <button
+                  type="button"
+                  onClick={fillFormWithKnownAccount} // Same as farmer for now
+                  className="w-full text-xs text-gray-400 hover:text-gray-500 font-medium py-2 px-3 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors cursor-not-allowed"
+                  disabled
+                >
+                  Fill in Known Retailer
+                  <div className="text-xs text-gray-400 mt-1">(Coming Soon)</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={fillFormWithUnknownAccount} // Same as farmer for now
+                  className="w-full text-xs text-gray-400 hover:text-gray-500 font-medium py-2 px-3 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors cursor-not-allowed"
+                  disabled
+                >
+                  Fill in Unknown Retailer
+                  <div className="text-xs text-gray-400 mt-1">(Coming Soon)</div>
+                </button>
+              </div>
+            </div>
+            
+            <div className="text-xs text-gray-500 text-center">
+              Choose a demo account type to quickly fill in credentials
             </div>
           </div>
         )}

@@ -2,8 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { User, Mail, Lock, ArrowLeft, Check, Building2, MapPin } from 'lucide-react';
 import AuthLayout from '../layout/AuthLayout';
 import { FormField, FormButton } from '../ui/form';
+import fredTheFarmer from '../../config/user';
 
-const RegisterScreen = ({ onBack, onComplete, prefillEmail = '', selectedPersona = null }) => {
+const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
   const [step, setStep] = useState(1); // 1 = account details, 2 = farm details
   const [formData, setFormData] = useState({
     // Step 1 - Account Details
@@ -22,31 +23,16 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '', selectedPersona
     country: 'New Zealand' // Default to NZ
   });
   
-  // Pre-fill form data on mount if we have a selected persona or email
+  // Pre-fill form data on mount - only set email if provided
   useEffect(() => {
-    if (selectedPersona) {
-      // Pre-fill with persona data
-      const userType = selectedPersona.role.toLowerCase().includes('farm') ? 'farmer' : 'retailer';
-      
-      setFormData(prev => ({
-        ...prev,
-        name: selectedPersona.name,
-        email: selectedPersona.email,
-        password: selectedPersona.hasPassword ? selectedPersona.password : 'password123',
-        confirmPassword: selectedPersona.hasPassword ? selectedPersona.password : 'password123',
-        userType: userType,
-        agreeToTerms: true,
-        farmName: selectedPersona.farmName || '',
-        city: selectedPersona.location || ''
-      }));
-    } else if (prefillEmail) {
-      // Just pre-fill the email if that's all we have
+    // Only pre-fill the email if provided from the email screen
+    if (prefillEmail) {
       setFormData(prev => ({
         ...prev,
         email: prefillEmail
       }));
     }
-  }, [prefillEmail, selectedPersona]);
+  }, [prefillEmail]);
   
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -60,88 +46,82 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '', selectedPersona
     setFormData(prev => ({ ...prev, userType: type }));
   };
   
-  const handleContinue = (e) => {
-    e.preventDefault();
-    if (isStep1Valid()) {
-      setStep(2);
-    }
-  };
-  
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Complete registration with all data
-    onComplete({ 
-      email: formData.email,
-      name: formData.name,
-      role: formData.userType === 'farmer' ? 'Farm Manager' : 'Retail Consultant',
-      initials: formData.name ? formData.name.split(' ').map(n => n && n[0]).join('') : 'XX',
-      farmName: formData.farmName,
-      farmAddress: formData.farmAddress,
-      city: formData.city,
-      postalCode: formData.postalCode,
-      region: formData.region,
-      country: formData.country,
-      // Include additional fields from the selected persona if available
-      ...(selectedPersona ? {
-        location: selectedPersona.location,
-        gender: selectedPersona.gender
-      } : {})
-    });
+    if (step === 1) {
+      // Move to step 2
+      setStep(2);
+    } else {
+      // Complete registration
+      const userData = {
+        id: String(Date.now()), // Simple ID generation
+        name: formData.name,
+        email: formData.email, // Use the email they entered (could be different from Fred's)
+        password: formData.password,
+        hasPassword: true,
+        role: 'Farm Manager', // Always farm manager like Fred
+        initials: formData.name.split(' ').map(n => n[0]).join('').toUpperCase(),
+        farmName: formData.farmName,
+        farmAddress: formData.farmAddress,
+        city: formData.city,
+        postalCode: formData.postalCode,
+        region: formData.region,
+        country: formData.country,
+        location: `${formData.city}, ${formData.country}`
+      };
+      
+      onComplete(userData);
+    }
   };
   
-  const isStep1Valid = () => {
-    return formData.name && 
-           formData.email && 
-           formData.password && 
-           formData.confirmPassword && 
-           formData.userType && 
-           formData.agreeToTerms &&
-           formData.password === formData.confirmPassword;
+  const handleBack = () => {
+    if (step === 2) {
+      setStep(1);
+    } else {
+      onBack();
+    }
   };
   
-  const isStep2Valid = () => {
-    return formData.farmName && 
-           formData.farmAddress && 
-           formData.city && 
-           formData.region && 
-           formData.country;
+  // Validate current step
+  const isStepValid = () => {
+    if (step === 1) {
+      return formData.name && 
+             formData.email && 
+             formData.password && 
+             formData.confirmPassword && 
+             formData.password === formData.confirmPassword &&
+             formData.userType && 
+             formData.agreeToTerms;
+    } else {
+      return formData.farmName && 
+             formData.farmAddress && 
+             formData.city && 
+             formData.postalCode && 
+             formData.region;
+    }
   };
   
   // Fill form with demo data
   const fillDemoData = () => {
     if (step === 1) {
-      // Fill step 1 data
-      if (selectedPersona) {
-        const userType = selectedPersona.role.toLowerCase().includes('farm') ? 'farmer' : 'retailer';
-        setFormData(prev => ({
-          ...prev,
-          name: selectedPersona.name,
-          email: selectedPersona.email,
-          password: selectedPersona.hasPassword ? selectedPersona.password : 'password123',
-          confirmPassword: selectedPersona.hasPassword ? selectedPersona.password : 'password123',
-          userType: userType,
-          agreeToTerms: true
-        }));
-      } else {
-        // Fallback demo data if no persona
-        setFormData(prev => ({
-          ...prev,
-          name: 'New User',
-          email: prefillEmail || 'newuser@example.com',
-          password: 'password123',
-          confirmPassword: 'password123',
-          userType: 'farmer',
-          agreeToTerms: true
-        }));
-      }
-    } else {
-      // Fill step 2 data
+      // Fill step 1 data with Fred's details
       setFormData(prev => ({
         ...prev,
-        farmName: selectedPersona?.farmName || 'Oxford Valley Farm',
+        name: fredTheFarmer.name,
+        email: prefillEmail || fredTheFarmer.email,
+        password: fredTheFarmer.password,
+        confirmPassword: fredTheFarmer.password,
+        userType: 'farmer',
+        agreeToTerms: true
+      }));
+    } else {
+      // Fill step 2 data with Fred's farm details
+      setFormData(prev => ({
+        ...prev,
+        farmName: fredTheFarmer.farmName,
         farmAddress: '123 Canterbury Plains Rd',
-        city: selectedPersona?.location || 'Oxford',
+        city: fredTheFarmer.location,
         postalCode: '7495',
         region: 'Canterbury',
         country: 'New Zealand'
@@ -166,21 +146,13 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '', selectedPersona
     }
   };
   
-  const handleBackClick = () => {
-    if (step === 2) {
-      setStep(1);
-    } else {
-      onBack();
-    }
-  };
-  
   return (
     <AuthLayout 
       title={step === 1 ? "Create Account" : "Farm Details"}
-      onBack={handleBackClick}
+      onBack={handleBack}
       showBackButton={true}
     >
-      <form className="space-y-6" onSubmit={step === 1 ? handleContinue : handleSubmit} noValidate>
+      <form className="space-y-6" onSubmit={handleSubmit} noValidate>
         {step === 1 ? (
           // Step 1: Account Details
           <>
@@ -272,7 +244,7 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '', selectedPersona
                 type="submit"
                 variant="primary"
                 fullWidth
-                disabled={!isStep1Valid()}
+                disabled={!isStepValid()}
               >
                 Continue
               </FormButton>
@@ -355,7 +327,7 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '', selectedPersona
                 type="submit"
                 variant="primary"
                 fullWidth
-                disabled={!isStep2Valid()}
+                disabled={!isStepValid()}
               >
                 Complete Registration
               </FormButton>

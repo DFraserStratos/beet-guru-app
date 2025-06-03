@@ -9,20 +9,28 @@ describe('MagicLinkVerifyScreen', () => {
 
   test('existing user is logged in after verification', async () => {
     const onLogin = jest.fn();
-    const persona = { name: 'Demo User', email: 'demo@example.com' };
 
     render(
       <MagicLinkVerifyScreen
-        email="demo@example.com"
+        email="fred@beetguru.com"
         onBack={() => {}}
         onLogin={onLogin}
         onRegister={() => {}}
-        selectedPersona={persona}
         isNewUser={false}
       />,
     );
 
-    await waitFor(() => expect(onLogin).toHaveBeenCalledWith(persona), { timeout: 4000 });
+    await waitFor(() => expect(onLogin).toHaveBeenCalledWith({
+      id: '1',
+      name: 'Fred Forger',
+      email: 'fred@beetguru.com',
+      password: 'password123',
+      hasPassword: true,
+      role: 'Farm Manager',
+      initials: 'FF',
+      farmName: 'Fred\'s Farm',
+      location: 'Canterbury, New Zealand'
+    }), { timeout: 4000 });
   });
 
   test('new user is redirected to registration', async () => {
@@ -33,7 +41,6 @@ describe('MagicLinkVerifyScreen', () => {
         onBack={() => {}}
         onLogin={() => {}}
         onRegister={onRegister}
-        selectedPersona={null}
         isNewUser
       />,
     );

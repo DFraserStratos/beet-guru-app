@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { CheckCircle, Loader2 } from 'lucide-react';
 import AuthLayout from '../layout/AuthLayout';
+import fredTheFarmer from '../../config/user';
 
 /**
  * Screen shown when clicking a magic link - simulates automatic verification
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const MagicLinkVerifyScreen = ({ email, onBack, onLogin, onRegister, selectedPersona, isNewUser }) => {
+const MagicLinkVerifyScreen = ({ email, onBack, onLogin, onRegister }) => {
   const [verificationState, setVerificationState] = useState('verifying'); // 'verifying', 'verified', 'redirecting'
   const [redirectMessage, setRedirectMessage] = useState('');
   
@@ -29,33 +30,26 @@ const MagicLinkVerifyScreen = ({ email, onBack, onLogin, onRegister, selectedPer
 
       // Step 3: Show redirecting message and redirect (0.5 seconds)
       setVerificationState('redirecting');
-      if (isNewUser) {
-        setRedirectMessage('Redirecting to complete registration...');
+      
+      // Check if this is Fred's email or a new user
+      const isExistingUser = email === fredTheFarmer.email;
+      
+      if (isExistingUser) {
+        setRedirectMessage(`Logging you in as ${fredTheFarmer.name}...`);
       } else {
-        setRedirectMessage(`Logging you in as ${selectedPersona?.name || email}...`);
+        setRedirectMessage('Redirecting to complete registration...');
       }
 
       await new Promise(resolve => setTimeout(resolve, 500));
       if (!isMounted) return;
 
       // Step 4: Actually redirect
-      if (isNewUser) {
-        // Redirect to registration
-        onRegister(email || 'newuser@example.com');
+      if (isExistingUser) {
+        // Auto-login for Fred's email
+        onLogin(fredTheFarmer);
       } else {
-        // Auto-login
-        if (selectedPersona) {
-          onLogin(selectedPersona);
-        } else {
-          // Fallback to default user data
-          onLogin({
-            id: '1',
-            email: email || 'john.doe@example.com',
-            name: 'John Doe',
-            role: 'Farm Manager',
-            initials: 'JD'
-          });
-        }
+        // Redirect to registration for any other email
+        onRegister(email || 'newuser@example.com');
       }
     };
 
@@ -64,7 +58,7 @@ const MagicLinkVerifyScreen = ({ email, onBack, onLogin, onRegister, selectedPer
     return () => {
       isMounted = false;
     };
-  }, [email, isNewUser, onLogin, onRegister, selectedPersona]);
+  }, [email, onLogin, onRegister]);
   
   return (
     <AuthLayout 
@@ -107,7 +101,7 @@ const MagicLinkVerifyScreen = ({ email, onBack, onLogin, onRegister, selectedPer
         {verificationState === 'redirecting' && (
           <>
             <h2 className="text-xl font-semibold text-gray-900 mb-2">
-              {isNewUser ? 'Almost There!' : 'Welcome Back!'}
+              Welcome Back!
             </h2>
             <p className="text-sm text-gray-500">
               {redirectMessage}

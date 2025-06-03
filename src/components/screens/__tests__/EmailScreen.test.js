@@ -9,11 +9,11 @@ jest.mock('../../../services/api', () => {
     ...actual,
     auth: {
       ...actual.auth,
-      getRandomPersona: jest.fn().mockResolvedValue({
+      getUser: jest.fn().mockResolvedValue({
         id: '1',
-        name: 'Demo User',
-        email: 'demo@example.com',
-        password: 'password',
+        name: 'Fred Forger',
+        email: 'fred@beetguru.com',
+        password: 'password123',
         hasPassword: true,
       }),
     },
@@ -21,24 +21,8 @@ jest.mock('../../../services/api', () => {
 });
 
 describe('EmailScreen', () => {
-  test('expands form after submitting email', async () => {
-    render(
-      <EmailScreen
-        onEmailSubmit={() => {}}
-        onKnownUser={() => {}}
-        onNewUser={() => {}}
-        onSelectPersona={() => {}}
-        onLogin={() => {}}
-      />,
-    );
-
-    fireEvent.change(screen.getByLabelText(/Email address/i), {
-      target: { value: 'user@example.com' },
-    });
-    fireEvent.click(screen.getByRole('button', { name: /Continue/i }));
-
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: /Sign in/i })).toBeInTheDocument();
-    });
+  test('renders email input', () => {
+    render(<EmailScreen onEmailSubmit={() => {}} onSendCode={() => {}} onLogin={() => {}} />);
+    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
   });
 });

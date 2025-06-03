@@ -34,9 +34,6 @@ function App() {
   const [currentEmail, setCurrentEmail] = useState('');
   const [isNewUser, setIsNewUser] = useState(false); // Track if it's a new user
   
-  // Add state for selected persona
-  const [selectedPersona, setSelectedPersona] = useState(null);
-  
   // Add state for selected location or draft assessment
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [draftAssessment, setDraftAssessment] = useState(null);
@@ -76,13 +73,8 @@ function App() {
   };
   
   const handleLogin = (userData) => {
-    // If we have a selected persona, use that instead of the provided userData
-    // This ensures consistency with the persona selected during the email step
-    const userToSet = selectedPersona || userData;
-    setUser(userToSet);
+    setUser(userData);
     setActiveScreen('home');
-    // Reset the selected persona
-    setSelectedPersona(null);
     setIsNewUser(false);
   };
   
@@ -90,15 +82,7 @@ function App() {
     setUser(null);
     setAuthScreen('email');
     setCurrentEmail('');
-    setSelectedPersona(null);
     setIsNewUser(false);
-  };
-  
-  // Handler for selecting a persona
-  const handleSelectPersona = (persona) => {
-    setSelectedPersona(persona);
-    // Also update the current email to match the persona's email
-    setCurrentEmail(persona.email);
   };
   
   // Verification code authentication handlers
@@ -118,12 +102,12 @@ function App() {
   const handleVerifyCode = async (email, userOrPersona) => {
     // If userOrPersona is provided, it means verification was successful
     if (userOrPersona) {
-      // Check if this is an existing user
-      if (userOrPersona.id) {
-        // Existing user - log them in directly
+      // Check if this is Fred's actual email (existing user) or a new user email
+      if (email === 'fred@beetguru.com') {
+        // Fred's actual email - log in directly
         handleLogin(userOrPersona);
       } else {
-        // New user - go to registration
+        // Any other email means new user registration (but using Fred's persona as template)
         setIsNewUser(true);
         setAuthScreen('register');
       }
@@ -150,7 +134,6 @@ function App() {
             <EmailScreen 
               onEmailSubmit={handleEmailSubmit} 
               onSendCode={handleSendCode}
-              onSelectPersona={handleSelectPersona}
               onLogin={handleLogin}
             />
           </ErrorBoundary>
@@ -163,7 +146,6 @@ function App() {
               email={currentEmail}
               onBack={handleBackToEmail}
               onVerify={handleVerifyCode}
-              selectedPersona={selectedPersona}
             />
           </ErrorBoundary>
         );
@@ -175,7 +157,6 @@ function App() {
               onBack={handleBackToEmail} 
               onComplete={handleLogin}
               prefillEmail={currentEmail}
-              selectedPersona={selectedPersona}
             />
           </ErrorBoundary>
         );
@@ -187,7 +168,6 @@ function App() {
             <LoginScreen 
               onLogin={handleLogin} 
               onRegister={() => setAuthScreen('register')}
-              selectedPersona={selectedPersona}
             />
           </ErrorBoundary>
         );
@@ -198,7 +178,6 @@ function App() {
             <EmailScreen 
               onEmailSubmit={handleEmailSubmit} 
               onSendCode={handleSendCode}
-              onSelectPersona={handleSelectPersona}
               onLogin={handleLogin}
             />
           </ErrorBoundary>
