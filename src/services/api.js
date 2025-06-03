@@ -53,14 +53,18 @@ const apiRequest = async (endpoint, options = {}) => {
 
 // Mock data store (will be replaced by actual API calls)
 const mockData = {
-  // Single user - Fred the farmer
+  // Single user - Fred the farmer (id: '1')
+  // All locations below are associated with Fred via userId: '1'
+  // This design supports future retailer users who will access multiple farmers' data
   users: [fredTheFarmer],
   
+  // All paddocks belong to Fred (userId: '1') for clean data separation
+  // When retailer users are added, they will query paddocks by userId to see specific farmers' data
   locations: [
     { 
       id: '1', 
       name: 'North Paddock', 
-      userId: '1',
+      userId: '1', // Fred's ID - ensures proper ownership
       area: 3.5,
       status: 'draft', // New status field: 'draft' or 'not-started'
       assessmentId: '4' // Reference to draft assessment
@@ -68,28 +72,28 @@ const mockData = {
     { 
       id: '2', 
       name: 'Mid Paddock', 
-      userId: '1',
+      userId: '1', // Fred's ID - ensures proper ownership
       area: 2.2,
       status: 'draft'
     },
     { 
       id: '3', 
       name: 'South Paddock', 
-      userId: '1',
+      userId: '1', // Fred's ID - ensures proper ownership
       area: 4.1,
       status: 'draft'
     },
     { 
       id: '4', 
       name: 'East Block', 
-      userId: '1',
+      userId: '1', // Fred's ID - ensures proper ownership
       area: 3.8,
       status: 'not-started'
     },
     { 
       id: '5', 
       name: 'West Block', 
-      userId: '1',
+      userId: '1', // Fred's ID - ensures proper ownership
       area: 2.7,
       status: 'not-started'
     }
