@@ -41,10 +41,10 @@ const LocationsScreen = ({ isMobile, user }) => {
   
   // Function to fetch locations from the API
   const fetchLocations = async () => {
-    const result = await getLocationsApi.execute();
+    // For farmers, filter by user ID; for retailers, show all
+    const userId = user?.accountType === 'farmer' ? user.id : null;
+    const result = await getLocationsApi.execute(false, userId);
     if (result) {
-      // For demo purposes, show all locations regardless of user ID
-      // In a real app, we would filter by: result.filter(location => location.userId === user?.id)
       setLocations(result);
     }
   };

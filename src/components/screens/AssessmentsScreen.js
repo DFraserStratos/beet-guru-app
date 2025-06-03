@@ -18,19 +18,23 @@ const AssessmentsScreen = ({
   onNavigate, 
   isMobile,
   onStartAssessment = () => {},
-  onContinueDraft = () => {}
+  onContinueDraft = () => {},
+  user
 }) => {
   // Use the API hook to fetch locations with their status
+  // For farmers, filter by user ID; for retailers, show all
   const { 
     data: locations, 
     loading, 
     error, 
     execute: fetchLocations 
-  } = useApi(api.references.getLocations, [true]);
+  } = useApi(api.references.getLocations, [true, user?.accountType === 'farmer' ? user.id : null]);
 
   useEffect(() => {
-    fetchLocations(true);
-  }, [fetchLocations]);
+    // Pass user filtering parameter based on account type
+    const userId = user?.accountType === 'farmer' ? user.id : null;
+    fetchLocations(true, userId);
+  }, [fetchLocations, user]);
 
   // Handle starting a new assessment for a location
   const handleStartAssessment = (location) => {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, Filter, X, FileText, Calendar, Leaf, ArrowDownUp, Download } from 'lucide-react';
 import { logger } from '../../utils/logger';
 import DataTable from '../ui/DataTable';
@@ -15,7 +15,7 @@ import PageContainer from '../layout/PageContainer';
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const ReportsScreen = ({ isMobile, onViewReport = () => {} }) => {
+const ReportsScreen = ({ isMobile, onViewReport = () => {}, user }) => {
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
     dateRange: 'all',
@@ -25,6 +25,7 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {} }) => {
   });
   
   // Use the API hook to fetch reports
+  // For farmers, filter by user ID; for retailers, show all
   const { 
     data: reports, 
     loading, 
@@ -41,9 +42,11 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {} }) => {
   } = useApi(api.assessments.getCompletedAssessments);
 
   useEffect(() => {
-    fetchReports();
-    fetchCompletedAssessments();
-  }, [fetchReports, fetchCompletedAssessments]);
+    // Pass user filtering parameter based on account type
+    const userId = user?.accountType === 'farmer' ? user.id : null;
+    fetchReports(userId);
+    fetchCompletedAssessments(userId);
+  }, [fetchReports, fetchCompletedAssessments, user]);
   
   const handleToggleFilters = () => {
     setShowFilters(!showFilters);
@@ -193,6 +196,52 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {} }) => {
   // Get unique cultivars and seasons for filter options
   const cultivars = ['All Cultivars', 'Brigadier', 'Kyros', 'Feldherr', 'Blizzard', 'Blaze'];
   const seasons = ['All Seasons', '2024/2025', '2023/2024', '2022/2023'];
+
+  // Loading state
+  if (loading || loadingAssessments) {
+    return (
+      <PageContainer>
+        <PageHeader
+          title="Reports"
+          subtitle="View and share your assessment reports"
+          actions={(
+            <FormButton
+              variant="primary"
+              icon={<Download size={16} />}
+              onClick={handleExport}
+            >
+              {isMobile ? 'Export' : 'Export Reports'}
+            </FormButton>
+          )}
+        />
+        <ReportsTableSkeleton rows={3} />
+      </PageContainer>
+    );
+  }
+  
+  // Error state
+  if (error || assessmentsError) {
+    return (
+      <PageContainer>
+        <PageHeader
+          title="Reports"
+          subtitle="View and share your assessment reports"
+          actions={(
+            <FormButton
+              variant="primary"
+              icon={<Download size={16} />}
+              onClick={handleExport}
+            >
+              {isMobile ? 'Export' : 'Export Reports'}
+            </FormButton>
+          )}
+        />
+        <div className="bg-white rounded-xl shadow p-6 text-center">
+          <p className="text-red-500">Error loading reports: {error?.message || assessmentsError?.message}</p>
+        </div>
+      </PageContainer>
+    );
+  }
 
   return (
     <PageContainer>
@@ -350,29 +399,15 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {} }) => {
         </div>
       )}
       
-      {/* Loading State */}
-      {(loading || loadingAssessments) && (
-        <ReportsTableSkeleton rows={3} />
-      )}
-      
-      {/* Error State */}
-      {(error || assessmentsError) && (
-        <div className="bg-white rounded-xl shadow p-6 text-center">
-          <p className="text-red-500">Error loading reports: {error?.message || assessmentsError?.message}</p>
-        </div>
-      )}
-      
       {/* Reports List */}
-      {!loading && !error && reports && (
-        <DataTable
-          data={reportsWithActions}
-          columns={columns}
-          onRowClick={handleRowClick}
-          emptyMessage={emptyStateContent}
-          mobileCardLayout={isMobile}
-          renderMobileCard={renderReportCard}
-        />
-      )}
+      <DataTable
+        data={reportsWithActions}
+        columns={columns}
+        onRowClick={handleRowClick}
+        emptyMessage={emptyStateContent}
+        mobileCardLayout={isMobile}
+        renderMobileCard={renderReportCard}
+      />
     </PageContainer>
   );
 };

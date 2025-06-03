@@ -10,7 +10,7 @@ import { logger } from '../../utils/logger';
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const CropDetailsStep = ({ formData, onChange, onNext, onCancel, isMobile }) => {
+const CropDetailsStep = ({ formData, onChange, onNext, onCancel, isMobile, user }) => {
   const [selectedCultivar, setSelectedCultivar] = useState(formData.cultivarId || '');
   const [cultivarInfo, setCultivarInfo] = useState(null);
   const [showCustomCultivar, setShowCustomCultivar] = useState(selectedCultivar === 'other');
@@ -27,12 +27,14 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel, isMobile }) => 
   // Fetch reference data on mount
   useEffect(() => {
     const loadData = async () => {
-      await locationsApi.execute();
+      // For farmers, filter by user ID; for retailers, show all
+      const userId = user?.accountType === 'farmer' ? user.id : null;
+      await locationsApi.execute(false, userId);
       await cultivarsApi.execute();
     };
     
     loadData();
-  }, []);
+  }, [user]);
   
   // Load cultivar details when selected
   useEffect(() => {
@@ -112,11 +114,18 @@ const CropDetailsStep = ({ formData, onChange, onNext, onCancel, isMobile }) => 
   // Handle creating a new location
   const handleCreateLocation = async (locationData) => {
     try {
-      // Create the new location via API
-      const newLocation = await api.references.createLocation(locationData);
+      // Add user ID to location data for farmers
+      const locationWithUser = {
+        ...locationData,
+        userId: user?.id || '1' // Default to Fred's ID if no user
+      };
       
-      // Refresh the locations list
-      await locationsApi.execute();
+      // Create the new location via API
+      const newLocation = await api.references.createLocation(locationWithUser);
+      
+      // Refresh the locations list with user filtering
+      const userId = user?.accountType === 'farmer' ? user.id : null;
+      await locationsApi.execute(false, userId);
       
       // Select the newly created location
       onChange({ target: { name: 'locationId', value: newLocation.id } });

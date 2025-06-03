@@ -19,7 +19,8 @@ const NewAssessmentScreen = ({
   onNavigate = () => {},
   onViewReport = () => {},
   prefillLocation = null,
-  draftAssessment = null 
+  draftAssessment = null,
+  user = null
 }) => {
   // Get today's date in YYYY-MM-DD format
   const today = new Date().toISOString().split('T')[0];
@@ -141,6 +142,7 @@ const NewAssessmentScreen = ({
                 onCancel={handleCancel}
                 prefillLocation={prefillLocation}
                 isMobile={isMobile}
+                user={user}
               />
             )}
             

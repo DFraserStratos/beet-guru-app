@@ -242,9 +242,10 @@ function App() {
                 isMobile={isMobile}
                 onStartAssessment={handleStartAssessment}
                 onContinueDraft={handleContinueDraft}
+                user={user}
               />
             )}
-            {activeScreen === 'reports' && <ReportsScreen isMobile={isMobile} onViewReport={handleViewReport} />}
+            {activeScreen === 'reports' && <ReportsScreen isMobile={isMobile} onViewReport={handleViewReport} user={user} />}
             {activeScreen === 'new-assessment' && (
               <NewAssessmentScreen 
                 isMobile={isMobile} 
@@ -252,6 +253,7 @@ function App() {
                 onViewReport={handleViewReport}
                 prefillLocation={selectedLocation}
                 draftAssessment={draftAssessment}
+                user={user}
               />
             )}
             {activeScreen === 'report-viewer' && (

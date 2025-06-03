@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { ChevronDown } from 'lucide-react';
 
 /**
@@ -6,7 +6,7 @@ import { ChevronDown } from 'lucide-react';
  * @param {Object} props - Component props
  * @returns {JSX.Element} Rendered component
  */
-const FormField = ({
+const FormField = forwardRef(({
   label,
   name,
   type = 'text',
@@ -23,7 +23,7 @@ const FormField = ({
   disabled = false,
   className = '',
   ...rest
-}) => {
+}, ref) => {
   // Base classes for form controls
   const baseClasses = "block w-full rounded-md shadow-sm focus:border-green-500 focus:ring-green-500 text-sm py-2 px-3 border";
   const validClasses = `${baseClasses} border-gray-300`;
@@ -45,6 +45,7 @@ const FormField = ({
     disabled,
     required,
     className: `${fieldClasses} ${className}`,
+    ref,
     ...rest
   };
 
@@ -113,6 +114,8 @@ const FormField = ({
       )}
     </div>
   );
-};
+});
+
+FormField.displayName = 'FormField';
 
 export default FormField;
