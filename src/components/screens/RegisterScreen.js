@@ -60,16 +60,22 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
         email: formData.email, // Use the email they entered (could be different from Fred's)
         password: formData.password,
         hasPassword: true,
-        role: 'Farm Manager', // Always farm manager like Fred
+        role: formData.userType === 'farmer' ? 'Farm Manager' : 'Retail Consultant',
+        accountType: formData.userType,
         initials: formData.name.split(' ').map(n => n[0]).join('').toUpperCase(),
-        farmName: formData.farmName,
-        farmAddress: formData.farmAddress,
         city: formData.city,
-        postalCode: formData.postalCode,
-        region: formData.region,
-        country: formData.country,
-        location: `${formData.city}, ${formData.country}`
+        location: formData.city + ', New Zealand' // Default to NZ
       };
+      
+      // Add additional fields based on user type
+      if (formData.userType === 'retailer') {
+        userData.farmName = formData.farmName;
+        userData.farmAddress = formData.farmAddress;
+        userData.postalCode = formData.postalCode;
+        userData.region = formData.region;
+        userData.country = formData.country;
+        userData.location = `${formData.city}, ${formData.country}`;
+      }
       
       onComplete(userData);
     }
@@ -94,6 +100,11 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
              formData.userType && 
              formData.agreeToTerms;
     } else {
+      // For farmers, only city is required
+      if (formData.userType === 'farmer') {
+        return formData.city;
+      }
+      // For retailers, all address fields are required (future use)
       return formData.farmName && 
              formData.farmAddress && 
              formData.city && 
@@ -116,16 +127,25 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
         agreeToTerms: true
       }));
     } else {
-      // Fill step 2 data with Fred's farm details
-      setFormData(prev => ({
-        ...prev,
-        farmName: fredTheFarmer.farmName,
-        farmAddress: '123 Canterbury Plains Rd',
-        city: fredTheFarmer.location,
-        postalCode: '7495',
-        region: 'Canterbury',
-        country: 'New Zealand'
-      }));
+      // Fill step 2 data based on user type
+      if (formData.userType === 'farmer') {
+        // For farmers, only fill city
+        setFormData(prev => ({
+          ...prev,
+          city: 'Canterbury'
+        }));
+      } else {
+        // For retailers, fill all farm details
+        setFormData(prev => ({
+          ...prev,
+          farmName: fredTheFarmer.farmName,
+          farmAddress: '123 Canterbury Plains Rd',
+          city: 'Canterbury',
+          postalCode: '7495',
+          region: 'Canterbury',
+          country: 'New Zealand'
+        }));
+      }
     }
   };
   
@@ -138,6 +158,11 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
              !formData.userType && 
              !formData.agreeToTerms;
     } else {
+      // For farmers, only check city
+      if (formData.userType === 'farmer') {
+        return !formData.city;
+      }
+      // For retailers, check all fields
       return !formData.farmName && 
              !formData.farmAddress && 
              !formData.city && 
@@ -148,7 +173,7 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
   
   return (
     <AuthLayout 
-      title={step === 1 ? "Create Account" : "Farm Details"}
+      title={step === 1 ? "Create Account" : formData.userType === 'farmer' ? "Location Details" : "Farm Details"}
       onBack={handleBack}
       showBackButton={true}
     >
@@ -251,76 +276,99 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
             </div>
           </>
         ) : (
-          // Step 2: Farm Details
+          // Step 2: Location/Farm Details
           <>
-            <p className="text-sm text-gray-500 mb-6">
-              Farm details will be used on reports and for weather information
-            </p>
-            
-            <FormField
-              label="Farm Name"
-              name="farmName"
-              type="text"
-              value={formData.farmName}
-              onChange={handleChange}
-              placeholder="Enter your farm name"
-              icon={<Building2 size={18} className="text-gray-400" />}
-              required
-            />
-            
-            <FormField
-              label="Farm Address"
-              name="farmAddress"
-              type="text"
-              value={formData.farmAddress}
-              onChange={handleChange}
-              placeholder="123 Main Road"
-              icon={<MapPin size={18} className="text-gray-400" />}
-              required
-            />
-            
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                label="City/Town"
-                name="city"
-                type="text"
-                value={formData.city}
-                onChange={handleChange}
-                placeholder="Oxford"
-                required
-              />
-              
-              <FormField
-                label="Postal Code"
-                name="postalCode"
-                type="text"
-                value={formData.postalCode}
-                onChange={handleChange}
-                placeholder="7495"
-              />
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                label="Region"
-                name="region"
-                type="text"
-                value={formData.region}
-                onChange={handleChange}
-                placeholder="Canterbury"
-                required
-              />
-              
-              <FormField
-                label="Country"
-                name="country"
-                type="text"
-                value={formData.country}
-                onChange={handleChange}
-                placeholder="New Zealand"
-                required
-              />
-            </div>
+            {formData.userType === 'farmer' ? (
+              // Simplified form for farmers - only city/town
+              <>
+                <p className="text-sm text-gray-500 mb-6">
+                  We only need to know your general location for weather information and reports
+                </p>
+                
+                <FormField
+                  label="City/Town"
+                  name="city"
+                  type="text"
+                  value={formData.city}
+                  onChange={handleChange}
+                  placeholder="Oxford"
+                  icon={<MapPin size={18} className="text-gray-400" />}
+                  required
+                />
+              </>
+            ) : (
+              // Full address form for retailers (future use)
+              <>
+                <p className="text-sm text-gray-500 mb-6">
+                  Farm details will be used on reports and for weather information
+                </p>
+                
+                <FormField
+                  label="Farm Name"
+                  name="farmName"
+                  type="text"
+                  value={formData.farmName}
+                  onChange={handleChange}
+                  placeholder="Enter your farm name"
+                  icon={<Building2 size={18} className="text-gray-400" />}
+                  required
+                />
+                
+                <FormField
+                  label="Farm Address"
+                  name="farmAddress"
+                  type="text"
+                  value={formData.farmAddress}
+                  onChange={handleChange}
+                  placeholder="123 Main Road"
+                  icon={<MapPin size={18} className="text-gray-400" />}
+                  required
+                />
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    label="City/Town"
+                    name="city"
+                    type="text"
+                    value={formData.city}
+                    onChange={handleChange}
+                    placeholder="Oxford"
+                    required
+                  />
+                  
+                  <FormField
+                    label="Postal Code"
+                    name="postalCode"
+                    type="text"
+                    value={formData.postalCode}
+                    onChange={handleChange}
+                    placeholder="7495"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    label="Region"
+                    name="region"
+                    type="text"
+                    value={formData.region}
+                    onChange={handleChange}
+                    placeholder="Canterbury"
+                    required
+                  />
+                  
+                  <FormField
+                    label="Country"
+                    name="country"
+                    type="text"
+                    value={formData.country}
+                    onChange={handleChange}
+                    placeholder="New Zealand"
+                    required
+                  />
+                </div>
+              </>
+            )}
             
             <div>
               <FormButton
@@ -343,7 +391,7 @@ const RegisterScreen = ({ onBack, onComplete, prefillEmail = '' }) => {
               onClick={fillDemoData}
               className="text-sm text-green-600 hover:text-green-500 font-medium"
             >
-              Fill {step === 1 ? 'account details' : 'farm details'}
+              Fill {step === 1 ? 'account details' : formData.userType === 'farmer' ? 'location details' : 'farm details'}
             </button>
           </div>
         )}

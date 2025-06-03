@@ -56,6 +56,9 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
   // Determine if we should show the sidebar (desktop) or use mobile view
   const shouldShowSidebar = !isMobile;
   
+  // Check if user is a farmer (hide farm details for farmers, show for retailers)
+  const isFarmer = user?.accountType === 'farmer';
+  
   return (
     <PageContainer>
       <div className="bg-white rounded-xl shadow p-6">
@@ -80,11 +83,11 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
           </FormButton>
         </div>
         <p className="text-gray-600">
-          Manage your profile, farm information, and security settings
+          Manage your profile{!isFarmer ? ', farm information,' : ''} and security settings
         </p>
       </div>
       
-      <div className="flex flex-col md:flex-row gap-6">
+      <div className="flex flex-col md:flex-row gap-6 mt-6">
         {/* Settings Navigation */}
         {shouldShowSidebar && (
           <div className="md:w-1/4">
@@ -96,12 +99,14 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
                   isActive={activeSection === 'profile'}
                   onClick={() => setActiveSection('profile')}
                 />
-                <SettingsNavItem
-                  label="Farm Details"
-                  icon={<Building size={18} />}
-                  isActive={activeSection === 'farm'}
-                  onClick={() => setActiveSection('farm')}
-                />
+                {!isFarmer && (
+                  <SettingsNavItem
+                    label="Farm Details"
+                    icon={<Building size={18} />}
+                    isActive={activeSection === 'farm'}
+                    onClick={() => setActiveSection('farm')}
+                  />
+                )}
                 <SettingsNavItem
                   label="Security"
                   icon={<Lock size={18} />}
@@ -114,7 +119,7 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
         )}
         
         {/* Settings Content */}
-        <div className={`${shouldShowSidebar ? 'md:w-3/4' : 'w-full'}`}>
+        <div className="flex-1">
           <div className="bg-white rounded-xl shadow p-6">
             {/* Mobile Tab Navigation */}
             {isMobile && (
@@ -129,16 +134,18 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
                 >
                   Profile
                 </button>
-                <button
-                  className={`flex-1 py-2 px-3 text-center text-sm font-medium ${
-                    activeSection === 'farm' 
-                      ? 'bg-green-50 text-green-600' 
-                      : 'bg-white text-gray-700 hover:bg-gray-50'
-                  }`}
-                  onClick={() => setActiveSection('farm')}
-                >
-                  Farm
-                </button>
+                {!isFarmer && (
+                  <button
+                    className={`flex-1 py-2 px-3 text-center text-sm font-medium ${
+                      activeSection === 'farm' 
+                        ? 'bg-green-50 text-green-600' 
+                        : 'bg-white text-gray-700 hover:bg-gray-50'
+                    }`}
+                    onClick={() => setActiveSection('farm')}
+                  >
+                    Farm
+                  </button>
+                )}
                 <button
                   className={`flex-1 py-2 px-3 text-center text-sm font-medium ${
                     activeSection === 'security' 
@@ -163,8 +170,8 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
               />
             )}
             
-            {/* Farm Details Section */}
-            {activeSection === 'farm' && (
+            {/* Farm Details Section - Only show for non-farmers */}
+            {activeSection === 'farm' && !isFarmer && (
               <FarmSettings
                 values={values}
                 errors={errors}
@@ -185,7 +192,11 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      const prevSection = activeSection === 'security' ? 'farm' : 'profile';
+                      // Determine previous section based on current section and user type
+                      let prevSection = 'profile';
+                      if (activeSection === 'security') {
+                        prevSection = isFarmer ? 'profile' : 'farm';
+                      }
                       setActiveSection(prevSection);
                     }}
                   >
@@ -200,7 +211,11 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      const nextSection = activeSection === 'profile' ? 'farm' : 'security';
+                      // Determine next section based on current section and user type
+                      let nextSection = 'security';
+                      if (activeSection === 'profile') {
+                        nextSection = isFarmer ? 'security' : 'farm';
+                      }
                       setActiveSection(nextSection);
                     }}
                   >

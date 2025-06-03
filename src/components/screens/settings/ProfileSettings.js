@@ -50,6 +50,18 @@ const ProfileSettings = ({ values, errors, touched, handleChange, handleBlur }) 
         touched={touched.phone}
         placeholder="Your phone number"
       />
+      <FormField
+        label="City/Town"
+        name="city"
+        type="text"
+        value={values.city}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        error={errors.city}
+        touched={touched.city}
+        placeholder="Your city or town"
+        required
+      />
     </div>
     <div className="border-t border-gray-200 pt-4">
       <p className="text-sm text-gray-500 mb-4">
