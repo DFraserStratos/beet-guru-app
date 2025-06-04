@@ -5,7 +5,7 @@ import DataTable from '../ui/DataTable';
 import ReportsTableSkeleton from '../ui/ReportsTableSkeleton';
 import DropdownMenu from '../ui/DropdownMenu';
 import api from '../../services/api';
-import { useApi } from '../../hooks';
+import { useApi, usePagination } from '../../hooks';
 import { FormButton } from '../ui/form';
 import PageHeader from '../ui/PageHeader';
 import PageContainer from '../layout/PageContainer';
@@ -42,6 +42,12 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {}, user }) => {
     error: assessmentsError,
     execute: fetchCompletedAssessments
   } = useApi(api.assessments.getCompletedAssessments);
+
+  // Prepare reports data for pagination
+  const reportsData = reports || [];
+  
+  // Set up pagination with 10 items per page
+  const pagination = usePagination(reportsData, 10);
 
   useEffect(() => {
     // Pass user filtering parameter based on account type
@@ -102,6 +108,11 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {}, user }) => {
     // TODO: Implement send functionality
   };
 
+  const handleDownloadReport = (report) => {
+    logger.info('Download report', report.id);
+    // TODO: Implement download functionality
+  };
+
   // Common report actions
   const getReportActions = (report) => [
     { 
@@ -121,6 +132,12 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {}, user }) => {
       onClick: () => handleSendReport(report),
       icon: <Send size={14} />,
       className: 'text-green-600 hover:text-green-800'
+    },
+    { 
+      label: 'Download Report',
+      onClick: () => handleDownloadReport(report),
+      icon: <Download size={14} />,
+      className: 'text-purple-600 hover:text-purple-800'
     }
   ];
 
@@ -129,83 +146,63 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {}, user }) => {
     { 
       key: 'created', 
       label: 'Date',
-      render: (item) => new Date(item.created).toLocaleDateString('en-NZ', { 
-        year: 'numeric', 
-        month: 'short', 
-        day: 'numeric' 
-      })
+      hideOnMobile: false,
+      render: (item) => {
+        const date = new Date(item.created);
+        // On mobile, show shorter date format
+        return isMobile 
+          ? date.toLocaleDateString('en-NZ', { month: 'short', day: 'numeric' })
+          : date.toLocaleDateString('en-NZ', { 
+              year: 'numeric', 
+              month: 'short', 
+              day: 'numeric' 
+            });
+      }
     },
     { 
       key: 'title', 
-      label: 'Report Title' 
+      label: isMobile ? 'Report' : 'Report Title',
+      hideOnMobile: false,
+      render: (item) => (
+        <div className={`${isMobile ? 'text-sm max-w-[120px]' : ''} font-medium truncate`}>
+          {item.title}
+        </div>
+      )
     },
     { 
       key: 'location', 
-      label: 'Location' 
+      label: 'Location',
+      hideOnMobile: true // Hide on mobile to save space
     },
     { 
       key: 'cultivar', 
-      label: 'Cultivar/Crop Type' 
+      label: 'Cultivar/Crop Type',
+      hideOnMobile: true // Hide on mobile to save space
     },
     { 
       key: 'season', 
-      label: 'Season' 
+      label: 'Season',
+      hideOnMobile: true // Hide on mobile to save space
     },
     {
       key: 'actions',
       label: '',
+      hideOnMobile: false,
       render: (item) => (
-        <div className="flex items-center justify-end">
+        <div className={`flex items-center ${isMobile ? 'justify-center' : 'justify-end'}`}>
           <DropdownMenu 
             items={getReportActions(item)}
-            className="inline-flex justify-end"
+            className="inline-flex"
           />
         </div>
       )
     }
-  ];
+  ].filter(column => !isMobile || !column.hideOnMobile); // Filter out hidden columns on mobile
 
   // Handle row clicks for viewing reports
   const handleRowClick = (report) => {
     onViewReport(report.id);
   };
-
-  // Remove the reportsWithActions mapping since actions are now in columns
-  const reportsData = reports || [];
-  
-  // Format date for display
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-NZ', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
-
-  const renderReportCard = (report) => (
-    <>
-      <h3 className="font-medium text-base text-gray-900 line-clamp-1 mb-1">
-        {report.title}
-      </h3>
-      <div className="text-sm text-gray-600 space-y-1 mb-3">
-        <p>Date: {formatDate(report.created)}</p>
-        <p>Location: {report.location}</p>
-        <p>Cultivar: {report.cultivar || 'Not specified'}</p>
-        <p>Season: {report.season || 'Not specified'}</p>
-      </div>
-      <div className="flex justify-between mt-2">
-        {getReportActions(report).map((action, index) => (
-          <button
-            key={index}
-            className={`text-sm font-medium ${action.className}`}
-            onClick={action.onClick}
-          >
-            {action.label}
-          </button>
-        ))}
-      </div>
-    </>
-  );
 
   // Empty state content
   const emptyStateContent = (
@@ -442,14 +439,17 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {}, user }) => {
       )}
       
       {/* Reports List */}
-      <DataTable
-        data={reportsData}
-        columns={columns}
-        onRowClick={handleRowClick}
-        emptyMessage={emptyStateContent}
-        mobileCardLayout={isMobile}
-        renderMobileCard={renderReportCard}
-      />
+      <div className={`${isMobile ? 'overflow-x-auto -mx-4 px-4' : ''}`}>
+        <DataTable
+          data={reportsData}
+          columns={columns}
+          onRowClick={handleRowClick}
+          emptyMessage={emptyStateContent}
+          mobileCardLayout={false} // Always use table layout
+          pagination={pagination}
+          isMobile={isMobile}
+        />
+      </div>
     </PageContainer>
   );
 };

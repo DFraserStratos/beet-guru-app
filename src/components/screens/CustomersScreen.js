@@ -4,7 +4,7 @@ import { logger } from '../../utils/logger';
 import DataTable from '../ui/DataTable';
 import DropdownMenu from '../ui/DropdownMenu';
 import api from '../../services/api';
-import { useApi } from '../../hooks';
+import { useApi, usePagination } from '../../hooks';
 import { FormButton } from '../ui/form';
 import PageHeader from '../ui/PageHeader';
 import PageContainer from '../layout/PageContainer';
@@ -30,6 +30,12 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
     error, 
     execute: fetchCustomers 
   } = useApi(api.customers.getByRetailerId);
+
+  // Prepare customers data for pagination
+  const customersData = customers || [];
+  
+  // Set up pagination with 10 customers per page
+  const pagination = usePagination(customersData, 10);
 
   useEffect(() => {
     if (user?.id) {
@@ -169,9 +175,6 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
   const handleViewCustomer = (customerId) => {
     onViewCustomer(customerId);
   };
-
-  // Remove the old actions mapping since actions are now in columns
-  const customersData = customers || [];
 
   // Format date for display
   const formatDate = (dateString) => {
@@ -381,15 +384,17 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
       )}
       
       {/* Customers List */}
-      {!loading && !error && (
+      {!isMobile || (isMobile && !showFilters) ? (
         <DataTable
           data={customersData}
           columns={visibleColumns}
           onRowClick={handleRowClick}
           emptyMessage={emptyStateContent}
           mobileCardLayout={isMobile}
+          pagination={pagination}
+          isMobile={isMobile}
         />
-      )}
+      ) : null}
     </PageContainer>
   );
 };

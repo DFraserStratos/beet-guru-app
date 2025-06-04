@@ -44,18 +44,26 @@ const MoreScreen = ({ onNavigate, onLogout, user }) => {
               />
             </>
           )}
+          {/* Show Reports option for retailers */}
+          {isRetailer && (
+            <MenuItem 
+              icon={<FileText size={20} className="text-blue-600" />}
+              label="Reports"
+              onClick={() => onNavigate('reports')}
+            />
+          )}
           <MenuItem 
             icon={<Settings size={20} className="text-gray-600" />}
             label="Settings"
             onClick={() => onNavigate('settings')}
           />
           <MenuItem 
-            icon={<HelpCircle size={20} className="text-blue-600" />}
+            icon={<HelpCircle size={20} className="text-gray-600" />}
             label="About Us"
             onClick={() => onNavigate('about-us')}
           />
           <MenuItem 
-            icon={<FileText size={20} className="text-blue-600" />}
+            icon={<FileText size={20} className="text-gray-600" />}
             label="Terms & Conditions"
             onClick={() => onNavigate('terms')}
           />

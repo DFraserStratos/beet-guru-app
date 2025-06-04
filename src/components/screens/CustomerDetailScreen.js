@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { ArrowLeft, User, MapPin, FileText, Plus, BarChart3, Edit, Trash2, Download } from 'lucide-react';
 import DataTable from '../ui/DataTable';
 import api from '../../services/api';
-import { useApi } from '../../hooks';
+import { useApi, usePagination } from '../../hooks';
 import { FormButton } from '../ui/form';
 import PageContainer from '../layout/PageContainer';
 import DropdownMenu from '../ui/DropdownMenu';
@@ -53,6 +53,9 @@ const CustomerDetailScreen = ({
     error: draftsError, 
     execute: fetchDrafts 
   } = useApi(api.assessments.getDraftAssessments);
+
+  // Set up pagination for reports (10 items per page)
+  const reportsPagination = usePagination(reports || [], 10);
 
   useEffect(() => {
     if (customerId) {
@@ -386,6 +389,8 @@ const CustomerDetailScreen = ({
                 data={reports || []}
                 columns={visibleReportColumns}
                 onRowClick={(report) => handleViewReport(report.id)}
+                pagination={reportsPagination}
+                isMobile={isMobile}
                 emptyMessage={
                   <div className="p-8 text-center">
                     <FileText size={48} className="text-gray-300 mx-auto mb-4" />

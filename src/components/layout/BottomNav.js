@@ -4,8 +4,7 @@ import {
   FileText,
   MoreHorizontal,
   Users,
-  Leaf,
-  Shield
+  Leaf
 } from 'lucide-react';
 
 const BottomNav = ({ activeScreen, handleNavigate, user }) => {
@@ -16,7 +15,7 @@ const BottomNav = ({ activeScreen, handleNavigate, user }) => {
   
   // Define screens that should highlight the More tab based on user type
   const moreScreens = isRetailer 
-    ? ['more', 'settings', 'about-us', 'terms', 'cultivar-management', 'user-management'] 
+    ? ['more', 'settings', 'about-us', 'terms', 'cultivar-management', 'user-management', 'reports']
     : ['more', 'locations', 'settings', 'about-us', 'terms', 'cultivar-management', 'user-management'];
   
   return (
