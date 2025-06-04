@@ -352,79 +352,82 @@ const EmailScreen = ({ onEmailSubmit, onSendCode, onLogin }) => {
             </div>
             
             {/* 3x2 Grid Layout */}
-            <div className="grid grid-cols-3 gap-3">
-              {/* Left Column - Farmer Options */}
-              <div className="space-y-2">
-                <div className="text-xs text-gray-500 font-medium text-center mb-2">
+            <div className="space-y-3">
+              {/* Column Headers */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="text-xs text-gray-500 font-medium text-center">
                   Farmer Accounts
                 </div>
+                <div className="text-xs text-gray-500 font-medium text-center">
+                  Retailer Accounts
+                </div>
+                <div className="text-xs text-gray-500 font-medium text-center">
+                  Admin Accounts
+                </div>
+              </div>
+              
+              {/* Button Grid - 3x2 layout */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {/* Row 1 - Known Accounts */}
                 <button
                   type="button"
                   onClick={fillFormWithKnownAccount}
-                  className="w-full text-xs text-green-600 hover:text-green-500 font-medium py-2 px-3 border border-green-200 rounded-md hover:bg-green-50 transition-colors"
+                  className="w-full text-xs text-green-600 hover:text-green-500 font-medium py-3 px-3 border border-green-200 rounded-md hover:bg-green-50 transition-colors min-h-[4rem] flex flex-col items-center justify-center"
                   title="Fills in Fred's existing account (fred@beetguru.com)"
                 >
-                  Fill in Known Farmer
-                  <div className="text-xs text-green-500 mt-1">Fred's Account</div>
+                  <span>Fill in Known Farmer</span>
+                  <span className="text-xs text-green-500 mt-1">Fred's Account</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={fillFormWithUnknownAccount}
-                  className="w-full text-xs text-green-600 hover:text-green-500 font-medium py-2 px-3 border border-green-200 rounded-md hover:bg-green-50 transition-colors"
-                  title="Creates a new farmer account using Fred's persona"
-                >
-                  Fill in Unknown Farmer
-                  <div className="text-xs text-green-500 mt-1">New Registration</div>
-                </button>
-              </div>
-              
-              {/* Middle Column - Retailer Options */}
-              <div className="space-y-2">
-                <div className="text-xs text-gray-500 font-medium text-center mb-2">
-                  Retailer Accounts
-                </div>
+                
                 <button
                   type="button"
                   onClick={fillFormWithKnownRetailer}
-                  className="w-full text-xs text-green-600 hover:text-green-500 font-medium py-2 px-3 border border-green-200 rounded-md hover:bg-green-50 transition-colors"
+                  className="w-full text-xs text-green-600 hover:text-green-500 font-medium py-3 px-3 border border-green-200 rounded-md hover:bg-green-50 transition-colors min-h-[4rem] flex flex-col items-center justify-center"
                   title="Fills in Roland's existing account (roland@beetguru.com)"
                 >
-                  Fill in Known Retailer
-                  <div className="text-xs text-green-500 mt-1">Roland's Account</div>
+                  <span>Fill in Known Retailer</span>
+                  <span className="text-xs text-green-500 mt-1">Roland's Account</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={fillFormWithUnknownRetailer}
-                  className="w-full text-xs text-green-600 hover:text-green-500 font-medium py-2 px-3 border border-green-200 rounded-md hover:bg-green-50 transition-colors"
-                  title="Creates a new retailer account using Roland's persona"
-                >
-                  Fill in Unknown Retailer
-                  <div className="text-xs text-green-500 mt-1">New Registration</div>
-                </button>
-              </div>
-
-              {/* Right Column - Admin Options */}
-              <div className="space-y-2">
-                <div className="text-xs text-gray-500 font-medium text-center mb-2">
-                  Admin Accounts
-                </div>
+                
                 <button
                   type="button"
                   onClick={fillFormWithKnownAdmin}
-                  className="w-full text-xs text-green-600 hover:text-green-500 font-medium py-2 px-3 border border-green-200 rounded-md hover:bg-green-50 transition-colors"
+                  className="w-full text-xs text-green-600 hover:text-green-500 font-medium py-3 px-3 border border-green-200 rounded-md hover:bg-green-50 transition-colors min-h-[4rem] flex flex-col items-center justify-center"
                   title="Fills in Amy's existing account (amy@beetguru.com)"
                 >
-                  Fill in Known Admin
-                  <div className="text-xs text-green-500 mt-1">Amy's Account</div>
+                  <span>Fill in Known Admin</span>
+                  <span className="text-xs text-green-500 mt-1">Amy's Account</span>
                 </button>
+                
+                {/* Row 2 - New Registration */}
+                <button
+                  type="button"
+                  onClick={fillFormWithUnknownAccount}
+                  className="w-full text-xs text-green-600 hover:text-green-500 font-medium py-3 px-3 border border-green-200 rounded-md hover:bg-green-50 transition-colors min-h-[4rem] flex flex-col items-center justify-center"
+                  title="Creates a new farmer account using Fred's persona"
+                >
+                  <span>Fill in Unknown Farmer</span>
+                  <span className="text-xs text-green-500 mt-1">New Registration</span>
+                </button>
+                
+                <button
+                  type="button"
+                  onClick={fillFormWithUnknownRetailer}
+                  className="w-full text-xs text-green-600 hover:text-green-500 font-medium py-3 px-3 border border-green-200 rounded-md hover:bg-green-50 transition-colors min-h-[4rem] flex flex-col items-center justify-center"
+                  title="Creates a new retailer account using Roland's persona"
+                >
+                  <span>Fill in Unknown Retailer</span>
+                  <span className="text-xs text-green-500 mt-1">New Registration</span>
+                </button>
+                
                 <button
                   type="button"
                   disabled
-                  className="w-full text-xs text-gray-400 font-medium py-2 px-3 border border-gray-200 rounded-md cursor-not-allowed"
+                  className="w-full text-xs text-gray-400 font-medium py-3 px-3 border border-gray-200 rounded-md cursor-not-allowed min-h-[4rem] flex flex-col items-center justify-center"
                   title="Admin registration not available"
                 >
-                  Admin Registration
-                  <div className="text-xs text-gray-400 mt-1">Not Available</div>
+                  <span>Admin Registration</span>
+                  <span className="text-xs text-gray-400 mt-1">Not Available</span>
                 </button>
               </div>
             </div>
