@@ -16,7 +16,6 @@ describe('MagicLinkVerifyScreen', () => {
         onBack={() => {}}
         onLogin={onLogin}
         onRegister={() => {}}
-        isNewUser={false}
       />,
     );
 
@@ -39,7 +38,6 @@ describe('MagicLinkVerifyScreen', () => {
         onBack={() => {}}
         onLogin={() => {}}
         onRegister={onRegister}
-        isNewUser
       />,
     );
 
