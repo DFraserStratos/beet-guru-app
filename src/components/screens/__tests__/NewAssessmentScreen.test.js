@@ -11,12 +11,19 @@ jest.mock('../../../services/api', () => ({
 }));
 
 describe('NewAssessmentScreen', () => {
+  beforeEach(() => {
+    // JSDOM doesn't implement scrollTo
+    window.scrollTo = jest.fn();
+  });
+
   test('navigates between steps', async () => {
     render(<NewAssessmentScreen />);
     expect(screen.getAllByText(/Crop Details/i)[0]).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /Continue/i }));
     await waitFor(() => {
-      expect(screen.getByLabelText('Row Spacing (m)')).toBeInTheDocument();
+      expect(
+        screen.getByRole('heading', { name: 'Field Setup' })
+      ).toBeInTheDocument();
     });
   });
 });
