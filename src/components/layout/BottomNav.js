@@ -3,12 +3,16 @@ import {
   BarChart3,
   FileText,
   MoreHorizontal,
-  Users
+  Users,
+  Leaf,
+  Shield
 } from 'lucide-react';
 
 const BottomNav = ({ activeScreen, handleNavigate, user }) => {
   // Check if user is a retailer
   const isRetailer = user?.accountType === 'retailer';
+  // Check if user is an admin
+  const isAdmin = user?.isAdmin === true;
   
   // Define screens that should highlight the More tab based on user type
   const moreScreens = isRetailer 
@@ -24,28 +28,51 @@ const BottomNav = ({ activeScreen, handleNavigate, user }) => {
           isActive={activeScreen === 'home'}
           onClick={() => handleNavigate('home')}
         />
-        <NavItem
-          icon={<BarChart3 size={20} />}
-          label="Assessments"
-          isActive={activeScreen === 'assessments'}
-          onClick={() => handleNavigate('assessments')}
-        />
-        {/* Conditional navigation based on user type */}
-        {isRetailer ? (
-          <NavItem
-            icon={<Users size={20} />}
-            label="Customers"
-            isActive={activeScreen === 'customers'}
-            onClick={() => handleNavigate('customers')}
-          />
+        
+        {/* Admin-specific navigation */}
+        {isAdmin ? (
+          <>
+            <NavItem
+              icon={<Leaf size={20} />}
+              label="Cultivars"
+              isActive={activeScreen === 'cultivar-management'}
+              onClick={() => handleNavigate('cultivar-management')}
+            />
+            <NavItem
+              icon={<Users size={20} />}
+              label="Users"
+              isActive={activeScreen === 'user-management'}
+              onClick={() => handleNavigate('user-management')}
+            />
+          </>
         ) : (
-          <NavItem
-            icon={<FileText size={20} />}
-            label="Reports"
-            isActive={activeScreen === 'reports'}
-            onClick={() => handleNavigate('reports')}
-          />
+          <>
+            {/* Hide Assessments for admin users */}
+            <NavItem
+              icon={<BarChart3 size={20} />}
+              label="Assessments"
+              isActive={activeScreen === 'assessments'}
+              onClick={() => handleNavigate('assessments')}
+            />
+            {/* Conditional navigation based on user type */}
+            {isRetailer ? (
+              <NavItem
+                icon={<Users size={20} />}
+                label="Customers"
+                isActive={activeScreen === 'customers'}
+                onClick={() => handleNavigate('customers')}
+              />
+            ) : (
+              <NavItem
+                icon={<FileText size={20} />}
+                label="Reports"
+                isActive={activeScreen === 'reports'}
+                onClick={() => handleNavigate('reports')}
+              />
+            )}
+          </>
         )}
+        
         <NavItem
           icon={<MoreHorizontal size={20} />}
           label="More"

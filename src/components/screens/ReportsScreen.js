@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Filter, X, FileText, Calendar, Leaf, ArrowDownUp, Download } from 'lucide-react';
+import { ChevronDown, Filter, X, FileText, Calendar, Leaf, ArrowDownUp, Download, Edit, Send, Eye } from 'lucide-react';
 import { logger } from '../../utils/logger';
 import DataTable from '../ui/DataTable';
 import ReportsTableSkeleton from '../ui/ReportsTableSkeleton';
+import DropdownMenu from '../ui/DropdownMenu';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
 import { FormButton } from '../ui/form';
@@ -84,6 +85,43 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {}, user }) => {
     // This would trigger the export functionality in a real app
   };
 
+  // Handle report view action
+  const handleViewReport = (reportId) => {
+    onViewReport(reportId);
+  };
+
+  const handleEditReport = (reportId) => {
+    logger.info('Edit report', reportId);
+    // TODO: Implement edit functionality
+  };
+
+  const handleSendReport = (report) => {
+    logger.info('Send report', report.id);
+    // TODO: Implement send functionality
+  };
+
+  // Common report actions
+  const getReportActions = (report) => [
+    { 
+      label: 'View Report', 
+      onClick: () => handleViewReport(report.id), 
+      icon: <Eye size={14} />,
+      className: 'text-blue-600 hover:text-blue-800' 
+    },
+    { 
+      label: 'Edit Report',
+      onClick: () => handleEditReport(report.id),
+      icon: <Edit size={14} />,
+      className: 'text-gray-600 hover:text-gray-800' 
+    },
+    { 
+      label: report.status === 'sent' ? 'Resend Report' : 'Send Report',
+      onClick: () => handleSendReport(report),
+      icon: <Send size={14} />,
+      className: 'text-green-600 hover:text-green-800'
+    }
+  ];
+
   // Define table columns for the reports - with new cultivar and season columns
   const columns = [
     { 
@@ -110,6 +148,18 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {}, user }) => {
     { 
       key: 'season', 
       label: 'Season' 
+    },
+    {
+      key: 'actions',
+      label: '',
+      render: (item) => (
+        <div className="flex items-center justify-end">
+          <DropdownMenu 
+            items={getReportActions(item)}
+            className="inline-flex justify-end"
+          />
+        </div>
+      )
     }
   ];
 
@@ -118,35 +168,8 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {}, user }) => {
     onViewReport(report.id);
   };
 
-  // Handle report view action
-  const handleViewReport = (reportId) => {
-    onViewReport(reportId);
-  };
-
-  // Common report actions
-  const getReportActions = (report) => [
-    { 
-      label: 'View', 
-      onClick: () => handleViewReport(report.id), 
-      className: 'text-blue-600 hover:text-blue-800' 
-    },
-    { 
-      label: 'Edit',
-      onClick: () => logger.info('Edit report', report.id),
-      className: 'text-gray-600 hover:text-gray-800' 
-    },
-    { 
-      label: report.status === 'sent' ? 'Resend' : 'Send',
-      onClick: () => logger.info('Send report', report.id),
-      className: 'text-green-600 hover:text-green-800'
-    }
-  ];
-
-  // Add actions to each report
-  const reportsWithActions = reports ? reports.map(report => ({
-    ...report,
-    actions: getReportActions(report)
-  })) : [];
+  // Remove the reportsWithActions mapping since actions are now in columns
+  const reportsData = reports || [];
   
   // Format date for display
   const formatDate = (dateString) => {
@@ -169,7 +192,7 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {}, user }) => {
         <p>Season: {report.season || 'Not specified'}</p>
       </div>
       <div className="flex justify-between mt-2">
-        {report.actions.map((action, index) => (
+        {getReportActions(report).map((action, index) => (
           <button
             key={index}
             className={`text-sm font-medium ${action.className}`}
@@ -401,7 +424,7 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {}, user }) => {
       
       {/* Reports List */}
       <DataTable
-        data={reportsWithActions}
+        data={reportsData}
         columns={columns}
         onRowClick={handleRowClick}
         emptyMessage={emptyStateContent}

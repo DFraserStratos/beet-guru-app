@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { ChevronDown, Filter, X, Users, Calendar, MapPin, ArrowDownUp, Plus, User, Search } from 'lucide-react';
+import { ChevronDown, Filter, X, Users, Calendar, MapPin, ArrowDownUp, Plus, User, Search, Eye } from 'lucide-react';
 import { logger } from '../../utils/logger';
 import DataTable from '../ui/DataTable';
+import DropdownMenu from '../ui/DropdownMenu';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
 import { FormButton } from '../ui/form';
@@ -70,6 +71,22 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
     // This would open a modal or navigate to add customer screen
   };
 
+  // Common customer actions
+  const getCustomerActions = (customer) => [
+    { 
+      label: 'View Details', 
+      onClick: () => onViewCustomer(customer.id), 
+      icon: <Eye size={14} />,
+      className: 'text-blue-600 hover:text-blue-800' 
+    },
+    {
+      label: 'New Assessment',
+      onClick: () => logger.info('Create assessment for customer', customer.id),
+      icon: <Calendar size={14} />,
+      className: 'text-green-600 hover:text-green-800' 
+    }
+  ];
+
   // Define table columns for customers
   const columns = [
     { 
@@ -124,6 +141,18 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
         </span>
       )
     },
+    {
+      key: 'actions',
+      label: '',
+      render: (item) => (
+        <div className="flex items-center justify-end">
+          <DropdownMenu 
+            items={getCustomerActions(item)}
+            className="inline-flex justify-end"
+          />
+        </div>
+      )
+    }
   ];
 
   // Filter columns based on mobile view
@@ -141,34 +170,9 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
     onViewCustomer(customerId);
   };
 
-  // Common customer actions
-  const getCustomerActions = (customer) => {
-    const actions = [
-      { 
-        label: 'View Details', 
-        onClick: () => handleViewCustomer(customer.id), 
-        className: 'text-blue-600 hover:text-blue-800' 
-      }
-    ];
+  // Remove the old actions mapping since actions are now in columns
+  const customersData = customers || [];
 
-    // Only show "New Assessment" on desktop
-    if (!isMobile) {
-      actions.push({
-        label: 'New Assessment',
-        onClick: () => logger.info('Create assessment for customer', customer.id),
-        className: 'text-green-600 hover:text-green-800' 
-      });
-    }
-
-    return actions;
-  };
-
-  // Add actions to each customer
-  const customersWithActions = customers ? customers.map(customer => ({
-    ...customer,
-    actions: getCustomerActions(customer)
-  })) : [];
-  
   // Format date for display
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-NZ', {
@@ -379,10 +383,11 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
       {/* Customers List */}
       {!loading && !error && (
         <DataTable
-          data={customersWithActions}
+          data={customersData}
           columns={visibleColumns}
           onRowClick={handleRowClick}
           emptyMessage={emptyStateContent}
+          mobileCardLayout={isMobile}
         />
       )}
     </PageContainer>

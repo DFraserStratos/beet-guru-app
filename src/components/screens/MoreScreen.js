@@ -21,8 +21,8 @@ const MoreScreen = ({ onNavigate, onLogout, user }) => {
       {/* More Menu Options */}
       <div className="bg-white rounded-xl shadow overflow-hidden">
         <ul className="divide-y divide-gray-100">
-          {/* Only show Locations for non-retailers */}
-          {!isRetailer && (
+          {/* Only show Locations for non-retailers and non-admin users */}
+          {!isRetailer && !isAdmin && (
             <MenuItem 
               icon={<MapPin size={20} className="text-green-600" />}
               label="Locations"

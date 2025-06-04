@@ -5,6 +5,7 @@ import api from '../../services/api';
 import { useApi } from '../../hooks';
 import { FormButton } from '../ui/form';
 import PageContainer from '../layout/PageContainer';
+import DropdownMenu from '../ui/DropdownMenu';
 
 /**
  * Screen showing detailed view of a customer for retailers
@@ -109,6 +110,30 @@ const CustomerDetailScreen = ({
     // This could open a modal or navigate to edit customer screen
   };
 
+  const getPaddockActions = (paddock) => [
+    {
+      label: 'Edit Paddock',
+      onClick: () => handleEditPaddock(paddock),
+      icon: <Edit size={14} />,
+      className: 'text-green-600 hover:text-green-800'
+    },
+    {
+      label: 'Delete Paddock',
+      onClick: () => handleDeletePaddock(paddock),
+      icon: <Trash2 size={14} />,
+      className: 'text-red-600 hover:text-red-800'
+    }
+  ];
+
+  const getReportActions = (report) => [
+    {
+      label: 'View Report',
+      onClick: () => handleViewReport(report.id),
+      icon: <FileText size={14} />,
+      className: 'text-blue-600 hover:text-blue-800'
+    }
+  ];
+
   // Define columns for locations table
   const locationColumns = [
     { 
@@ -125,27 +150,11 @@ const CustomerDetailScreen = ({
       key: 'actions',
       label: '',
       render: (item) => (
-        <div className="flex items-center justify-end space-x-2">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleEditPaddock(item);
-            }}
-            className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
-            title="Edit paddock"
-          >
-            <Edit size={16} />
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDeletePaddock(item);
-            }}
-            className="p-1 text-gray-400 hover:text-red-600 transition-colors"
-            title="Delete paddock"
-          >
-            <Trash2 size={16} />
-          </button>
+        <div className="flex items-center justify-end">
+          <DropdownMenu 
+            items={getPaddockActions(item)}
+            className="inline-flex justify-end"
+          />
         </div>
       )
     }
@@ -180,6 +189,18 @@ const CustomerDetailScreen = ({
           {item.location}
         </div>
       )
+    },
+    {
+      key: 'actions',
+      label: '',
+      render: (item) => (
+        <div className="flex items-center justify-end">
+          <DropdownMenu 
+            items={getReportActions(item)}
+            className="inline-flex justify-end"
+          />
+        </div>
+      )
     }
   ];
 
@@ -189,16 +210,7 @@ const CustomerDetailScreen = ({
     : reportColumns;
 
   // Add actions to reports
-  const reportsWithActions = reports ? reports.map(report => ({
-    ...report,
-    actions: [
-      { 
-        label: 'View', 
-        onClick: () => handleViewReport(report.id), 
-        className: 'text-blue-600 hover:text-blue-800' 
-      }
-    ]
-  })) : [];
+  const reportsWithActions = reports || [];
 
   // Filter draft assessments for this customer's locations
   const customerDraftAssessments = draftAssessments && locations 

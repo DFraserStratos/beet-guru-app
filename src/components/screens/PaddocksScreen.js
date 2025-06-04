@@ -7,6 +7,7 @@ import { IconButton } from '../ui/buttons';
 import PageContainer from '../layout/PageContainer';
 import PaddockListItemSkeleton from '../ui/PaddockListItemSkeleton';
 import PaddockForm from './PaddockForm';
+import DropdownMenu from '../ui/DropdownMenu';
 import ErrorBoundary from '../utility/ErrorBoundary';
 
 /**
@@ -110,6 +111,21 @@ const PaddocksScreen = ({ isMobile, user }) => {
     }
   };
   
+  const getPaddockActions = (paddock) => [
+    {
+      label: 'Edit Paddock',
+      onClick: () => handleEditClick(paddock),
+      icon: <Edit size={14} />,
+      className: 'text-green-600 hover:text-green-800'
+    },
+    {
+      label: 'Delete Paddock',
+      onClick: () => handleDeleteClick(paddock),
+      icon: <Trash size={14} />,
+      className: 'text-red-600 hover:text-red-800'
+    }
+  ];
+  
   return (
     <>
       <PageContainer>
@@ -180,17 +196,9 @@ const PaddocksScreen = ({ isMobile, user }) => {
                       </div>
                     </div>
                     <div className="flex space-x-2">
-                      <IconButton
-                        onClick={() => handleEditClick(paddock)}
-                        icon={<Edit size={16} />}
-                        label="Edit paddock"
-                        className="text-gray-500 hover:text-green-600"
-                      />
-                      <IconButton
-                        onClick={() => handleDeleteClick(paddock)}
-                        icon={<Trash size={16} />}
-                        label="Delete paddock"
-                        className="text-gray-500 hover:text-red-600"
+                      <DropdownMenu 
+                        items={getPaddockActions(paddock)}
+                        className="inline-flex justify-end"
                       />
                     </div>
                   </div>

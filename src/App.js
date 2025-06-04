@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Sidebar from './components/layout/Sidebar';
 import Header from './components/layout/Header';
 import BottomNav from './components/layout/BottomNav';
@@ -49,6 +49,17 @@ function App() {
   // Add state for selected customer
   const [selectedCustomerId, setSelectedCustomerId] = useState(null);
   
+  // Redirect admin users if they try to access restricted screens
+  useEffect(() => {
+    if (user?.isAdmin) {
+      const restrictedScreens = ['assessments', 'new-assessment', 'locations'];
+      if (restrictedScreens.includes(activeScreen)) {
+        handleNavigate('home');
+      }
+    }
+  }, [activeScreen, user?.isAdmin]);
+
+  // Handle navigation
   const handleNavigate = (screen) => {
     // Reset selected data when navigating away from assessment screens
     if (screen !== 'new-assessment' && screen !== 'draft-assessment') {
@@ -238,7 +249,7 @@ function App() {
         <div id="main-content" className="flex-1 overflow-y-auto p-4 pb-16 md:pb-4">
           <ErrorBoundary>
             {activeScreen === 'home' && <HomeScreen onNavigate={handleNavigate} isMobile={isMobile} user={user} />}
-            {activeScreen === 'assessments' && (
+            {activeScreen === 'assessments' && !user?.isAdmin && (
               <AssessmentsScreen 
                 onNavigate={handleNavigate} 
                 isMobile={isMobile}
@@ -248,7 +259,7 @@ function App() {
               />
             )}
             {activeScreen === 'reports' && <ReportsScreen isMobile={isMobile} onViewReport={handleViewReport} user={user} />}
-            {activeScreen === 'new-assessment' && (
+            {activeScreen === 'new-assessment' && !user?.isAdmin && (
               <NewAssessmentScreen 
                 isMobile={isMobile} 
                 onNavigate={handleNavigate}
@@ -267,7 +278,7 @@ function App() {
             )}
             {activeScreen === 'stockfeed' && <StockFeedScreen isMobile={isMobile} />}
             {activeScreen === 'more' && <MoreScreen onNavigate={handleNavigate} isMobile={isMobile} onLogout={handleLogout} user={user} />}
-            {activeScreen === 'locations' && <PaddocksScreen isMobile={isMobile} user={user} />}
+            {activeScreen === 'locations' && !user?.isAdmin && <PaddocksScreen isMobile={isMobile} user={user} />}
             {activeScreen === 'settings' && <SettingsScreen isMobile={isMobile} onNavigate={handleNavigate} user={user} />}
             {activeScreen === 'about-us' && <AboutUsScreen onNavigate={handleNavigate} isMobile={isMobile} />}
             {activeScreen === 'terms' && <TermsScreen onNavigate={handleNavigate} isMobile={isMobile} />}

@@ -3,7 +3,7 @@ import { AlertCircle, CheckCircle2, Clock, Info, X, Settings, Edit } from 'lucid
 import { logger } from '../../utils/logger';
 import Card from './Card';
 
-const ActionItemsWidget = ({ onNavigate }) => {
+const ActionItemsWidget = ({ onNavigate, user }) => {
   // Mock action items data with new types
   const initialActionItems = [
     {
@@ -14,7 +14,8 @@ const ActionItemsWidget = ({ onNavigate }) => {
       urgent: true,
       icon: AlertCircle,
       dismissable: false,
-      onActionClick: () => onNavigate('new-assessment')
+      onActionClick: () => onNavigate('new-assessment'),
+      adminVisible: false // Hide for admin users
     },
     {
       id: 2,
@@ -24,7 +25,8 @@ const ActionItemsWidget = ({ onNavigate }) => {
       urgent: false,
       icon: Clock,
       dismissable: true,
-      onActionClick: () => onNavigate('assessments')
+      onActionClick: () => onNavigate('assessments'),
+      adminVisible: false // Hide for admin users
     },
     {
       id: 3,
@@ -34,7 +36,8 @@ const ActionItemsWidget = ({ onNavigate }) => {
       urgent: false,
       icon: Info,
       dismissable: true,
-      onActionClick: () => logger.info('Open harvesting guide')
+      onActionClick: () => logger.info('Open harvesting guide'),
+      adminVisible: true // Show for admin users
     },
     {
       id: 4,
@@ -44,7 +47,8 @@ const ActionItemsWidget = ({ onNavigate }) => {
       urgent: false,
       icon: Settings,
       dismissable: true,
-      onActionClick: () => onNavigate('paddock-setup')
+      onActionClick: () => onNavigate('paddock-setup'),
+      adminVisible: false // Hide for admin users
     },
     {
       id: 5,
@@ -54,11 +58,17 @@ const ActionItemsWidget = ({ onNavigate }) => {
       urgent: false,
       icon: Edit,
       dismissable: true,
-      onActionClick: () => onNavigate('update-measurements')
+      onActionClick: () => onNavigate('update-measurements'),
+      adminVisible: false // Hide for admin users
     }
   ];
   
-  const [actionItems, setActionItems] = useState(initialActionItems);
+  // Filter action items based on user role
+  const filteredActionItems = user?.isAdmin 
+    ? initialActionItems.filter(item => item.adminVisible)
+    : initialActionItems;
+  
+  const [actionItems, setActionItems] = useState(filteredActionItems);
   
   const handleDismiss = (itemId) => {
     setActionItems(prev => prev.filter(item => item.id !== itemId));

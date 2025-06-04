@@ -4,7 +4,7 @@ import React from 'react';
  * Generic table component with optional mobile card layout
  * @param {Object} props - Component props
  * @param {Array} props.data - Array of row objects
- * @param {Array} props.columns - Column definitions { key, label, render? }
+ * @param {Array} props.columns - Column definitions { key, label, render?, hideOnMobile? }
  * @param {Function} props.onRowClick - Row click handler
  * @param {JSX.Element|string} props.emptyMessage - Message or element when no data
  * @param {boolean} props.mobileCardLayout - Render mobile card layout instead of table
@@ -32,6 +32,9 @@ const DataTable = ({
   }
 
   if (mobileCardLayout) {
+    // Filter columns to show only non-mobile-hidden ones
+    const visibleColumns = columns.filter(column => !column.hideOnMobile);
+    
     return (
       <div className="bg-white rounded-xl shadow overflow-hidden">
         <ul className="divide-y divide-gray-200">
@@ -50,28 +53,12 @@ const DataTable = ({
                       {item.title || `Item ${index + 1}`}
                     </h3>
                     <div className="text-sm text-gray-600 space-y-1 mb-3">
-                      {columns.map((column) => (
+                      {visibleColumns.map((column) => (
                         <p key={column.key}>
                           {column.label}: {column.render ? column.render(item) : item[column.key]}
                         </p>
                       ))}
                     </div>
-                    {item.actions?.length > 0 && (
-                      <div className="flex justify-between mt-2">
-                        {item.actions.map((action, idx) => (
-                          <button
-                            key={idx}
-                            className={`text-sm font-medium ${action.className || 'text-blue-600 hover:text-blue-800'}`}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              action.onClick(item);
-                            }}
-                          >
-                            {action.label}
-                          </button>
-                        ))}
-                      </div>
-                    )}
                   </>
                 )}
               </div>
@@ -81,8 +68,6 @@ const DataTable = ({
       </div>
     );
   }
-
-  const hasActions = data.some((d) => d.actions?.length);
 
   return (
     <div className="bg-white rounded-xl shadow overflow-hidden">
@@ -97,11 +82,6 @@ const DataTable = ({
                 {column.label}
               </th>
             ))}
-            {hasActions && (
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            )}
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
@@ -116,22 +96,6 @@ const DataTable = ({
                   {column.render ? column.render(item) : item[column.key]}
                 </td>
               ))}
-              {hasActions && (
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex gap-2">
-                  {item.actions?.map((action, actionIndex) => (
-                    <button
-                      key={actionIndex}
-                      className={`text-sm ${action.className || 'text-blue-600 hover:text-blue-800'}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        action.onClick(item);
-                      }}
-                    >
-                      {action.label}
-                    </button>
-                  ))}
-                </td>
-              )}
             </tr>
           ))}
         </tbody>

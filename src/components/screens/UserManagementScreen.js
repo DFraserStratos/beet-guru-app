@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Users, Shield, User, Building, Leaf, CheckCircle, XCircle } from 'lucide-react';
+import { ArrowLeft, Users, Shield, User, Building, Leaf, CheckCircle, XCircle, Edit, Trash2, UserCheck, UserX } from 'lucide-react';
 import { FormButton } from '../ui/form';
 import PageContainer from '../layout/PageContainer';
 import PageHeader from '../ui/PageHeader';
+import DropdownMenu from '../ui/DropdownMenu';
 import { useApi } from '../../hooks';
 import api from '../../services/api';
 
@@ -59,6 +60,40 @@ const UserManagementScreen = ({ onNavigate, isMobile = false }) => {
       alert('Failed to update user status. Please try again.');
     }
   };
+
+  const handleEditUser = (user) => {
+    console.log('Edit user:', user.name);
+    // TODO: Implement edit user functionality
+  };
+
+  const handleDeleteUser = (user) => {
+    if (window.confirm(`Are you sure you want to delete ${user.name}?`)) {
+      const updatedUsers = users.filter(u => u.id !== user.id);
+      setUsers(updatedUsers);
+      console.log('Deleted user:', user.name);
+    }
+  };
+
+  const getUserActions = (user) => [
+    {
+      label: 'Edit User',
+      onClick: () => handleEditUser(user),
+      icon: <Edit size={14} />,
+      className: 'text-blue-600 hover:text-blue-800'
+    },
+    {
+      label: user.isActive ? 'Deactivate' : 'Activate',
+      onClick: () => handleToggleStatus(user),
+      icon: user.isActive ? <UserX size={14} /> : <UserCheck size={14} />,
+      className: user.isActive ? 'text-orange-600 hover:text-orange-800' : 'text-green-600 hover:text-green-800'
+    },
+    {
+      label: 'Delete User',
+      onClick: () => handleDeleteUser(user),
+      icon: <Trash2 size={14} />,
+      className: 'text-red-600 hover:text-red-800'
+    }
+  ];
 
   const getAccountTypeColor = (accountType) => {
     switch (accountType) {
@@ -195,13 +230,10 @@ const UserManagementScreen = ({ onNavigate, isMobile = false }) => {
                         )}
                       </td>
                       <td className="px-6 py-2 whitespace-nowrap text-right text-sm font-medium">
-                        <FormButton
-                          onClick={() => handleToggleStatus(user)}
-                          variant={user.isActive ? "outline" : "primary"}
-                          size="sm"
-                        >
-                          {user.isActive ? 'Deactivate' : 'Activate'}
-                        </FormButton>
+                        <DropdownMenu 
+                          items={getUserActions(user)}
+                          className="inline-flex justify-end"
+                        />
                       </td>
                     </tr>
                   ))}

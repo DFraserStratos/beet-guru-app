@@ -34,7 +34,7 @@ const HomeScreen = ({ onNavigate, isMobile = false, user = { name: 'John Doe' } 
       <PageHeader
         title={`Welcome, ${user.name}`}
         subtitle={headerSubtitle}
-        actions={(
+        actions={!user?.isAdmin && (
           <FormButton variant="primary" icon={<PlusCircle size={16} />} onClick={handleNewAssessment}>
             {isMobile ? 'New' : 'New Assessment'}
           </FormButton>
@@ -42,7 +42,7 @@ const HomeScreen = ({ onNavigate, isMobile = false, user = { name: 'John Doe' } 
       />
 
       {/* Action Items Widget - Full Width */}
-      <ActionItemsWidget onNavigate={onNavigate} />
+      <ActionItemsWidget onNavigate={onNavigate} user={user} />
     </PageContainer>
   );
 };

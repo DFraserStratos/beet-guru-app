@@ -3,6 +3,7 @@ import { ArrowLeft, Plus, Edit2, Trash2, Leaf, Save, X } from 'lucide-react';
 import { FormButton, FormField } from '../ui/form';
 import PageContainer from '../layout/PageContainer';
 import PageHeader from '../ui/PageHeader';
+import DropdownMenu from '../ui/DropdownMenu';
 import { useApi } from '../../hooks';
 import api from '../../services/api';
 
@@ -129,6 +130,21 @@ const CultivarManagementScreen = ({ onNavigate, isMobile = false }) => {
     setEditingCultivar(null);
   };
 
+  const getCultivarActions = (cultivar) => [
+    {
+      label: 'Edit Cultivar',
+      onClick: () => handleEdit(cultivar),
+      icon: <Edit2 size={14} />,
+      className: 'text-green-600 hover:text-green-800'
+    },
+    {
+      label: 'Delete Cultivar',
+      onClick: () => handleDelete(cultivar),
+      icon: <Trash2 size={14} />,
+      className: 'text-red-600 hover:text-red-800'
+    }
+  ];
+
   return (
     <PageContainer>
       {/* Header with back button - only shown on mobile */}
@@ -252,20 +268,10 @@ const CultivarManagementScreen = ({ onNavigate, isMobile = false }) => {
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button
-                          onClick={() => handleEdit(cultivar)}
-                          className="text-green-600 hover:text-green-900 mr-3"
-                          title="Edit cultivar"
-                        >
-                          <Edit2 size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(cultivar)}
-                          className="text-red-600 hover:text-red-900"
-                          title="Delete cultivar"
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                        <DropdownMenu 
+                          items={getCultivarActions(cultivar)}
+                          className="inline-flex justify-end"
+                        />
                       </td>
                     </tr>
                   ))}

@@ -40,12 +40,15 @@ const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
             isActive={activeScreen === 'home'} 
             onClick={() => handleNavigate('home')}
           />
-          <SidebarItem 
-            icon={<BarChart3 size={20} />} 
-            label="Assessments" 
-            isActive={activeScreen === 'assessments'} 
-            onClick={() => handleNavigate('assessments')}
-          />
+          {/* Hide Assessments for admin users */}
+          {!isAdmin && (
+            <SidebarItem 
+              icon={<BarChart3 size={20} />} 
+              label="Assessments" 
+              isActive={activeScreen === 'assessments'} 
+              onClick={() => handleNavigate('assessments')}
+            />
+          )}
           <SidebarItem 
             icon={<FileText size={20} />} 
             label="Reports" 
@@ -60,7 +63,8 @@ const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
               isActive={activeScreen === 'customers'} 
               onClick={() => handleNavigate('customers')}
             />
-          ) : (
+          ) : !isAdmin && (
+            /* Hide Paddocks for admin users */
             <SidebarItem 
               icon={<MapPin size={20} />} 
               label="Paddocks" 
