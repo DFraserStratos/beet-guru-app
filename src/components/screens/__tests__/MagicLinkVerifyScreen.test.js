@@ -2,7 +2,7 @@ import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import MagicLinkVerifyScreen from '../MagicLinkVerifyScreen';
-import { act } from 'react-dom/test-utils';
+import fredTheFarmer from '../../../config/user';
 
 describe('MagicLinkVerifyScreen', () => {
   // Use real timers for async flow
@@ -20,17 +20,10 @@ describe('MagicLinkVerifyScreen', () => {
       />,
     );
 
-    await waitFor(() => expect(onLogin).toHaveBeenCalledWith({
-      id: '1',
-      name: 'Fred Forger',
-      email: 'fred@beetguru.com',
-      password: 'password123',
-      hasPassword: true,
-      role: 'Farm Manager',
-      initials: 'FF',
-      farmName: 'Fred\'s Farm',
-      location: 'Canterbury, New Zealand'
-    }), { timeout: 4000 });
+    await waitFor(
+      () => expect(onLogin).toHaveBeenCalledWith(fredTheFarmer),
+      { timeout: 4000 }
+    );
   });
 
   test('new user is redirected to registration', async () => {
