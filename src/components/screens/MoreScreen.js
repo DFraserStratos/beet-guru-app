@@ -1,9 +1,11 @@
-import { MapPin, Settings, LogOut, ChevronRight, HelpCircle, FileText } from 'lucide-react';
+import { MapPin, Settings, LogOut, ChevronRight, HelpCircle, FileText, Leaf, Users } from 'lucide-react';
 import PageContainer from '../layout/PageContainer';
 
 const MoreScreen = ({ onNavigate, onLogout, user }) => {
   // Check if user is a retailer
   const isRetailer = user?.accountType === 'retailer';
+  // Check if user is an admin
+  const isAdmin = user?.isAdmin === true;
   
   return (
     <PageContainer className="space-y-4">
@@ -26,6 +28,21 @@ const MoreScreen = ({ onNavigate, onLogout, user }) => {
               label="Locations"
               onClick={() => onNavigate('locations')}
             />
+          )}
+          {/* Show Admin options for admin users */}
+          {isAdmin && (
+            <>
+              <MenuItem 
+                icon={<Leaf size={20} className="text-green-600" />}
+                label="Cultivar Management"
+                onClick={() => onNavigate('cultivar-management')}
+              />
+              <MenuItem 
+                icon={<Users size={20} className="text-blue-600" />}
+                label="User Management"
+                onClick={() => onNavigate('user-management')}
+              />
+            </>
           )}
           <MenuItem 
             icon={<Settings size={20} className="text-gray-600" />}

@@ -6,13 +6,16 @@ import {
   Settings,
   LogOut,
   HelpCircle,
-  Users
+  Users,
+  Leaf
 } from 'lucide-react';
 import beetGuruSquareLogo from '../../BeetGuruSq.png';
 
 const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
   // Check if user is a retailer
   const isRetailer = user?.accountType === 'retailer';
+  // Check if user is an admin
+  const isAdmin = user?.isAdmin === true;
   
   return (
     <div className="w-64 bg-green-800 text-white h-full flex flex-col">
@@ -28,7 +31,8 @@ const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
         </div>
       </div>
       
-      <div className="flex-1 overflow-y-auto py-4">
+      {/* Main Navigation */}
+      <div className="flex-1 py-4">
         <ul className="space-y-2 px-3">
           <SidebarItem 
             icon={<Home size={20} />} 
@@ -64,10 +68,31 @@ const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
               onClick={() => handleNavigate('locations')}
             />
           )}
+          {/* Admin navigation items */}
+          {isAdmin && (
+            <>
+              <SidebarItem 
+                icon={<Leaf size={20} />} 
+                label="Cultivar Management" 
+                isActive={activeScreen === 'cultivar-management'} 
+                onClick={() => handleNavigate('cultivar-management')}
+              />
+              <SidebarItem 
+                icon={<Users size={20} />} 
+                label="User Management" 
+                isActive={activeScreen === 'user-management'} 
+                onClick={() => handleNavigate('user-management')}
+              />
+            </>
+          )}
         </ul>
       </div>
       
-      <div className="border-t border-green-700">
+      {/* Divider line */}
+      <div className="border-t border-green-700 mx-4"></div>
+      
+      {/* Bottom Section */}
+      <div className="mt-auto">
         {/* User Profile Card - now below the border */}
         <div className="p-4 pb-2">
           <div className="bg-green-700 rounded-xl p-4">

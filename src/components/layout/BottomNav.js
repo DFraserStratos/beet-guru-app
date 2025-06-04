@@ -12,8 +12,8 @@ const BottomNav = ({ activeScreen, handleNavigate, user }) => {
   
   // Define screens that should highlight the More tab based on user type
   const moreScreens = isRetailer 
-    ? ['more', 'settings', 'about-us', 'terms'] 
-    : ['more', 'locations', 'settings', 'about-us', 'terms'];
+    ? ['more', 'settings', 'about-us', 'terms', 'cultivar-management', 'user-management'] 
+    : ['more', 'locations', 'settings', 'about-us', 'terms', 'cultivar-management', 'user-management'];
   
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-10">

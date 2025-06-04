@@ -19,6 +19,8 @@ import AboutUsScreen from './components/screens/AboutUsScreen';
 import TermsScreen from './components/screens/TermsScreen';
 import CustomersScreen from './components/screens/CustomersScreen';
 import CustomerDetailScreen from './components/screens/CustomerDetailScreen';
+import CultivarManagementScreen from './components/screens/CultivarManagementScreen';
+import UserManagementScreen from './components/screens/UserManagementScreen';
 import ErrorBoundary from './components/utility/ErrorBoundary';
 import { useDeviceDetection, useLocalStorage } from './hooks';
 import { logger } from './utils/logger';
@@ -285,6 +287,8 @@ function App() {
                 isMobile={isMobile}
               />
             )}
+            {activeScreen === 'cultivar-management' && <CultivarManagementScreen onNavigate={handleNavigate} isMobile={isMobile} />}
+            {activeScreen === 'user-management' && <UserManagementScreen onNavigate={handleNavigate} isMobile={isMobile} />}
           </ErrorBoundary>
         </div>
         

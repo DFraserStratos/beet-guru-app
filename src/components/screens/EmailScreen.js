@@ -6,6 +6,7 @@ import AuthLayout from '../layout/AuthLayout';
 import api from '../../services/api';
 import { logger } from '../../utils/logger';
 import fredTheFarmer from '../../config/user';
+import { amyTheAdmin } from '../../config/user';
 
 /**
  * Enhanced Email Screen with progressive disclosure for password authentication
@@ -125,6 +126,20 @@ const EmailScreen = ({ onEmailSubmit, onSendCode, onLogin }) => {
     });
   };
   
+  // Fill form with Amy's admin account (existing user)
+  const fillFormWithKnownAdmin = () => {
+    setIsUnknownAccount(false);
+    setValues({
+      email: amyTheAdmin.email, // Amy's email
+      password: amyTheAdmin.password
+    });
+    
+    // Expand form after a short delay
+    setTimeout(() => {
+      expandForm();
+    }, 300);
+  };
+  
   // Handle form submission (only used for initial continue button and unknown accounts)
   async function handleFormSubmit(formValues) {
     // For unknown accounts, go directly to verification code flow
@@ -164,6 +179,8 @@ const EmailScreen = ({ onEmailSubmit, onSendCode, onLogin }) => {
         // For demo: if it's Fred's email with password, use Fred's data
         if (values.email === fredTheFarmer.email && values.password === fredTheFarmer.password) {
           onLogin(fredTheFarmer);
+        } else if (values.email === amyTheAdmin.email && values.password === amyTheAdmin.password) {
+          onLogin(amyTheAdmin);
         } else {
           console.error('Password login failed:', error);
           // In a real app, show error message
@@ -334,8 +351,8 @@ const EmailScreen = ({ onEmailSubmit, onSendCode, onLogin }) => {
               Demo Account Options
             </div>
             
-            {/* 2x2 Grid Layout */}
-            <div className="grid grid-cols-2 gap-3">
+            {/* 3x2 Grid Layout */}
+            <div className="grid grid-cols-3 gap-3">
               {/* Left Column - Farmer Options */}
               <div className="space-y-2">
                 <div className="text-xs text-gray-500 font-medium text-center mb-2">
@@ -361,7 +378,7 @@ const EmailScreen = ({ onEmailSubmit, onSendCode, onLogin }) => {
                 </button>
               </div>
               
-              {/* Right Column - Retailer Options */}
+              {/* Middle Column - Retailer Options */}
               <div className="space-y-2">
                 <div className="text-xs text-gray-500 font-medium text-center mb-2">
                   Retailer Accounts
@@ -383,6 +400,31 @@ const EmailScreen = ({ onEmailSubmit, onSendCode, onLogin }) => {
                 >
                   Fill in Unknown Retailer
                   <div className="text-xs text-green-500 mt-1">New Registration</div>
+                </button>
+              </div>
+
+              {/* Right Column - Admin Options */}
+              <div className="space-y-2">
+                <div className="text-xs text-gray-500 font-medium text-center mb-2">
+                  Admin Accounts
+                </div>
+                <button
+                  type="button"
+                  onClick={fillFormWithKnownAdmin}
+                  className="w-full text-xs text-green-600 hover:text-green-500 font-medium py-2 px-3 border border-green-200 rounded-md hover:bg-green-50 transition-colors"
+                  title="Fills in Amy's existing account (amy@beetguru.com)"
+                >
+                  Fill in Known Admin
+                  <div className="text-xs text-green-500 mt-1">Amy's Account</div>
+                </button>
+                <button
+                  type="button"
+                  disabled
+                  className="w-full text-xs text-gray-400 font-medium py-2 px-3 border border-gray-200 rounded-md cursor-not-allowed"
+                  title="Admin registration not available"
+                >
+                  Admin Registration
+                  <div className="text-xs text-gray-400 mt-1">Not Available</div>
                 </button>
               </div>
             </div>

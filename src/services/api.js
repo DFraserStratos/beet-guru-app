@@ -6,7 +6,7 @@
 
 import { logger } from '../utils/logger';
 import fredTheFarmer from '../config/user';
-import { rolandTheRetailer, sarahMcKenzie, mikePatel, jessicaThompson, davidWilson, emilyRoberts } from '../config/user';
+import { rolandTheRetailer, amyTheAdmin, sarahMcKenzie, mikePatel, jessicaThompson, davidWilson, emilyRoberts } from '../config/user';
 
 // Base API configuration
 const API_BASE_URL = process.env.REACT_APP_API_URL || '';
@@ -57,7 +57,7 @@ const mockData = {
   // Users - Fred the farmer (id: '1') and Roland the retailer (id: '2')
   // All locations below are associated with Fred via userId: '1'
   // This design supports retailer users who will access multiple farmers' data
-  users: [fredTheFarmer, rolandTheRetailer, sarahMcKenzie, mikePatel, jessicaThompson, davidWilson, emilyRoberts],
+  users: [fredTheFarmer, rolandTheRetailer, amyTheAdmin, sarahMcKenzie, mikePatel, jessicaThompson, davidWilson, emilyRoberts],
   
   // Customer relationships - which farmers each retailer can access
   customerRelationships: [
@@ -298,11 +298,11 @@ const mockData = {
     { id: '3', name: 'Mangels' }
   ],
   cultivars: [
-    { id: '1', name: 'Brigadier', cropTypeId: '1', dryMatter: '12-15%', yield: '20-30 t/acre', growingTime: '24-28 weeks', description: 'Low dry matter content, high sugar content. Suitable for all stock types. World\'s number one for strip grazing.' },
-    { id: '2', name: 'Feldherr', cropTypeId: '1', dryMatter: '19-21%', yield: '16-20 t/ha', growingTime: '190-210 days' },
-    { id: '3', name: 'Kyros', cropTypeId: '1', dryMatter: '17-19%', yield: '17-22 t/ha', growingTime: '185-205 days' },
-    { id: '4', name: 'Blizzard', cropTypeId: '1', dryMatter: '13-15%', yield: '15-19 t/ha', growingTime: '170-190 days' },
-    { id: '5', name: 'Blaze', cropTypeId: '1', dryMatter: '16-18%', yield: '18-24 t/ha', growingTime: '180-200 days' }
+    { id: '1', name: 'Brigadier', cropTypeId: '1', dryMatter: '12-15%', yield: '20-30 t/acre', growingTime: '24-28 weeks', description: 'Low dry matter content, high sugar content. Suitable for all stock types. World\'s number one for strip grazing.', isPggCultivar: true },
+    { id: '2', name: 'Feldherr', cropTypeId: '1', dryMatter: '19-21%', yield: '16-20 t/ha', growingTime: '190-210 days', isPggCultivar: true },
+    { id: '3', name: 'Kyros', cropTypeId: '1', dryMatter: '17-19%', yield: '17-22 t/ha', growingTime: '185-205 days', isPggCultivar: false },
+    { id: '4', name: 'Blizzard', cropTypeId: '1', dryMatter: '13-15%', yield: '15-19 t/ha', growingTime: '170-190 days', isPggCultivar: true },
+    { id: '5', name: 'Blaze', cropTypeId: '1', dryMatter: '16-18%', yield: '18-24 t/ha', growingTime: '180-200 days', isPggCultivar: false }
   ],
   assessments: [
     { 

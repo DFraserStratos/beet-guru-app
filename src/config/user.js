@@ -107,6 +107,22 @@ const rolandTheRetailer = {
   accessibleFarmers: ['1', '3', '4', '5', '6', '7'], // Can view all farmer data
 };
 
+// Admin persona - Amy Anderson
+const amyTheAdmin = {
+  id: '8',
+  name: 'Amy Anderson',
+  email: 'amy@beetguru.com',
+  password: 'password123',
+  hasPassword: true,
+  role: 'Agricom Admin',
+  accountType: 'admin',
+  isAdmin: true, // Admin privileges
+  initials: 'AA',
+  companyName: 'Beet Guru Agricom',
+  location: 'Auckland, New Zealand',
+  accessibleFarmers: ['1', '2', '3', '4', '5', '6', '7'], // Can view all user data
+};
+
 // TODO: Add more retailer personas here when needed
 // Example structure for future retailer users:
 // const retailerPersona = {
@@ -124,4 +140,4 @@ const rolandTheRetailer = {
 // };
 
 export default fredTheFarmer;
-export { rolandTheRetailer, sarahMcKenzie, mikePatel, jessicaThompson, davidWilson, emilyRoberts }; 
+export { rolandTheRetailer, amyTheAdmin, sarahMcKenzie, mikePatel, jessicaThompson, davidWilson, emilyRoberts }; 
