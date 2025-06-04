@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Filter, X, FileText, Calendar, Leaf, ArrowDownUp, Download, Edit, Send, Eye } from 'lucide-react';
+import { ChevronDown, Filter, X, FileText, Calendar, Leaf, ArrowDownUp, Download, Edit, Send, Eye, Search } from 'lucide-react';
 import { logger } from '../../utils/logger';
 import DataTable from '../ui/DataTable';
 import ReportsTableSkeleton from '../ui/ReportsTableSkeleton';
@@ -19,6 +19,7 @@ import PageContainer from '../layout/PageContainer';
 const ReportsScreen = ({ isMobile, onViewReport = () => {}, user }) => {
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
+    search: '',
     dateRange: 'all',
     cultivar: 'all',
     season: 'all',
@@ -72,6 +73,7 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {}, user }) => {
 
   const handleResetFilters = () => {
     setFilters({
+      search: '',
       dateRange: 'all',
       cultivar: 'all',
       season: 'all',
@@ -313,6 +315,23 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {}, user }) => {
           )}
           
           <div className="flex flex-wrap gap-4">
+            {/* Search Filter - Only for retailers and admins */}
+            {user?.accountType !== 'farmer' && (
+              <div className={`${isMobile ? 'w-full' : 'flex-1 min-w-[200px]'}`}>
+                <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                  <Search size={14} className="mr-1" /> Search
+                </label>
+                <input
+                  type="text"
+                  name="search"
+                  value={filters.search}
+                  onChange={handleFilterChange}
+                  placeholder="Search reports..."
+                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm py-2 px-3 border"
+                />
+              </div>
+            )}
+            
             {/* Date Range Filter */}
             <div className={`${isMobile ? 'w-full' : 'flex-1 min-w-[160px]'}`}>
               <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
