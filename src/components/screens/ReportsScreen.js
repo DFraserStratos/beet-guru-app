@@ -117,7 +117,7 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {}, user }) => {
       className: 'text-gray-600 hover:text-gray-800' 
     },
     { 
-      label: report.status === 'sent' ? 'Resend Report' : 'Send Report',
+      label: 'Send Report',
       onClick: () => handleSendReport(report),
       icon: <Send size={14} />,
       className: 'text-green-600 hover:text-green-800'

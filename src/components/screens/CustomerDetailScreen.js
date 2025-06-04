@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowLeft, User, MapPin, FileText, Plus, BarChart3, Edit, Trash2, Download } from 'lucide-react';
 import DataTable from '../ui/DataTable';
 import api from '../../services/api';
@@ -19,6 +19,9 @@ const CustomerDetailScreen = ({
   onViewReport = () => {},
   isMobile 
 }) => {
+  // Tab state
+  const [activeTab, setActiveTab] = useState('reports');
+
   // Fetch customer data
   const { 
     data: customer, 
@@ -134,6 +137,62 @@ const CustomerDetailScreen = ({
     }
   ];
 
+  // Define columns for reports table - matching ReportsScreen for retailers
+  const reportColumns = [
+    { 
+      key: 'created', 
+      label: 'Date',
+      render: (item) => new Date(item.created).toLocaleDateString('en-NZ', { 
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      })
+    },
+    { 
+      key: 'title', 
+      label: 'Report Title',
+      render: (item) => (
+        <div className="max-w-48 truncate" title={item.title}>
+          {item.title}
+        </div>
+      )
+    },
+    { 
+      key: 'location', 
+      label: 'Location',
+      hideOnMobile: true,
+      render: (item) => (
+        <div className="max-w-32 truncate" title={item.location}>
+          {item.location}
+        </div>
+      )
+    },
+    { 
+      key: 'cultivar', 
+      label: 'Cultivar/Crop Type',
+      hideOnMobile: true,
+      render: (item) => item.cultivar || 'Not specified'
+    },
+    { 
+      key: 'season', 
+      label: 'Season',
+      hideOnMobile: true,
+      render: (item) => item.season || 'Not specified'
+    },
+    {
+      key: 'actions',
+      label: '',
+      render: (item) => (
+        <div className="flex items-center justify-end">
+          <DropdownMenu 
+            items={getReportActions(item)}
+            className="inline-flex justify-end"
+          />
+        </div>
+      )
+    }
+  ];
+
   // Define columns for locations table
   const locationColumns = [
     { 
@@ -160,58 +219,6 @@ const CustomerDetailScreen = ({
     }
   ];
 
-  // Define columns for reports table
-  const reportColumns = [
-    { 
-      key: 'created', 
-      label: 'Date',
-      render: (item) => new Date(item.created).toLocaleDateString('en-NZ', { 
-        day: '2-digit',
-        month: 'short',
-        year: '2-digit'
-      })
-    },
-    { 
-      key: 'title', 
-      label: 'Title',
-      render: (item) => (
-        <div className="max-w-48 truncate" title={item.title}>
-          {item.title}
-        </div>
-      )
-    },
-    { 
-      key: 'location', 
-      label: 'Location',
-      hideOnMobile: true,
-      render: (item) => (
-        <div className="max-w-32 truncate" title={item.location}>
-          {item.location}
-        </div>
-      )
-    },
-    {
-      key: 'actions',
-      label: '',
-      render: (item) => (
-        <div className="flex items-center justify-end">
-          <DropdownMenu 
-            items={getReportActions(item)}
-            className="inline-flex justify-end"
-          />
-        </div>
-      )
-    }
-  ];
-
-  // Filter columns based on mobile view for reports
-  const visibleReportColumns = isMobile 
-    ? reportColumns.filter(column => !column.hideOnMobile)
-    : reportColumns;
-
-  // Add actions to reports
-  const reportsWithActions = reports || [];
-
   // Filter draft assessments for this customer's locations
   const customerDraftAssessments = draftAssessments && locations 
     ? draftAssessments.filter(assessment => {
@@ -220,15 +227,15 @@ const CustomerDetailScreen = ({
       })
     : [];
 
-  // Define columns for draft assessments table
+  // Define columns for draft assessments table - matching AssessmentsScreen style for retailers
   const draftColumns = [
     { 
       key: 'date', 
       label: 'Started',
       render: (item) => new Date(item.date).toLocaleDateString('en-NZ', { 
-        day: '2-digit',
+        year: 'numeric',
         month: 'short',
-        year: '2-digit'
+        day: 'numeric'
       })
     },
     { 
@@ -237,8 +244,9 @@ const CustomerDetailScreen = ({
     },
     { 
       key: 'cropType', 
-      label: 'Crop',
-      hideOnMobile: true
+      label: 'Crop Type',
+      hideOnMobile: true,
+      render: (item) => item.cropType || 'Not specified'
     },
     {
       key: 'actions',
@@ -251,7 +259,11 @@ const CustomerDetailScreen = ({
     }
   ];
 
-  // Filter columns based on mobile view for drafts
+  // Filter columns based on mobile view for each table
+  const visibleReportColumns = isMobile 
+    ? reportColumns.filter(column => !column.hideOnMobile)
+    : reportColumns;
+    
   const visibleDraftColumns = isMobile 
     ? draftColumns.filter(column => !column.hideOnMobile)
     : draftColumns;
@@ -318,6 +330,162 @@ const CustomerDetailScreen = ({
       month: 'long',
       day: 'numeric'
     });
+  };
+
+  // Tab configuration
+  const tabs = [
+    {
+      id: 'reports',
+      label: 'Reports',
+      icon: <FileText size={16} />,
+      count: reports?.length || 0
+    },
+    {
+      id: 'paddocks',
+      label: 'Paddocks',
+      icon: <MapPin size={16} />,
+      count: locations?.length || 0
+    },
+    {
+      id: 'drafts',
+      label: 'Draft Assessments',
+      icon: <BarChart3 size={16} />,
+      count: customerDraftAssessments?.length || 0
+    }
+  ];
+
+  // Render tab content
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'reports':
+        return (
+          <div className="space-y-4">
+            <div className="flex items-center justify-end">
+              <button
+                onClick={handleExportReports}
+                className="text-xs px-2 py-1 rounded border border-green-300 text-green-600 bg-green-50 hover:bg-green-100"
+              >
+                Export Reports
+              </button>
+            </div>
+            
+            {loadingReports ? (
+              <div className="bg-white rounded-xl shadow p-6">
+                <div className="animate-pulse space-y-4">
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className="h-16 bg-gray-200 rounded"></div>
+                  ))}
+                </div>
+              </div>
+            ) : reportsError ? (
+              <div className="bg-white rounded-xl shadow p-6 text-center">
+                <p className="text-red-500">Error loading reports: {reportsError?.message}</p>
+              </div>
+            ) : (
+              <DataTable
+                data={reports || []}
+                columns={visibleReportColumns}
+                onRowClick={(report) => handleViewReport(report.id)}
+                emptyMessage={
+                  <div className="p-8 text-center">
+                    <FileText size={48} className="text-gray-300 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-600 mb-2">No reports found</h3>
+                    <p className="text-gray-500 mb-4">This customer hasn't generated any reports yet.</p>
+                    <FormButton
+                      variant="primary"
+                      icon={<Plus size={16} />}
+                      onClick={handleCreateAssessment}
+                    >
+                      Create First Assessment
+                    </FormButton>
+                  </div>
+                }
+              />
+            )}
+          </div>
+        );
+
+      case 'paddocks':
+        return (
+          <div className="space-y-4">
+            <div className="flex items-center justify-end">
+              <button
+                onClick={handleAddPaddock}
+                className="text-xs px-2 py-1 rounded border border-green-300 text-green-600 bg-green-50 hover:bg-green-100"
+              >
+                Add Paddock
+              </button>
+            </div>
+            
+            {loadingLocations ? (
+              <div className="bg-white rounded-xl shadow p-6">
+                <div className="animate-pulse space-y-4">
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className="h-16 bg-gray-200 rounded"></div>
+                  ))}
+                </div>
+              </div>
+            ) : locationsError ? (
+              <div className="bg-white rounded-xl shadow p-6 text-center">
+                <p className="text-red-500">Error loading paddocks: {locationsError?.message}</p>
+              </div>
+            ) : (
+              <DataTable
+                data={locations || []}
+                columns={locationColumns}
+                emptyMessage={
+                  <div className="p-8 text-center">
+                    <MapPin size={48} className="text-gray-300 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-600 mb-2">No paddocks found</h3>
+                    <p className="text-gray-500">This customer hasn't added any paddocks yet.</p>
+                  </div>
+                }
+              />
+            )}
+          </div>
+        );
+
+      case 'drafts':
+        return (
+          <div className="space-y-4">
+            {loadingDrafts ? (
+              <div className="bg-white rounded-xl shadow p-6">
+                <div className="animate-pulse space-y-4">
+                  {[...Array(2)].map((_, i) => (
+                    <div key={i} className="h-12 bg-gray-200 rounded"></div>
+                  ))}
+                </div>
+              </div>
+            ) : draftsError ? (
+              <div className="bg-white rounded-xl shadow p-6 text-center">
+                <p className="text-red-500">Error loading draft assessments: {draftsError?.message}</p>
+              </div>
+            ) : (
+              <DataTable
+                data={customerDraftAssessments || []}
+                columns={visibleDraftColumns}
+                emptyMessage={
+                  <div className="p-8 text-center">
+                    <BarChart3 size={48} className="text-gray-300 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-600 mb-2">No draft assessments</h3>
+                    <p className="text-gray-500 mb-4">No assessments are currently in progress.</p>
+                    <FormButton
+                      variant="primary"
+                      icon={<Plus size={16} />}
+                      onClick={handleCreateAssessment}
+                    >
+                      Start New Assessment
+                    </FormButton>
+                  </div>
+                }
+              />
+            )}
+          </div>
+        );
+
+      default:
+        return null;
+    }
   };
 
   return (
@@ -451,136 +619,40 @@ const CustomerDetailScreen = ({
         </div>
       </div>
 
-      {/* Split View Layout - Left: Draft Assessments + Paddocks, Right: Reports */}
-      <div className={`grid ${isMobile ? 'grid-cols-1 gap-6' : 'grid-cols-2 gap-8'}`}>
-        {/* Left Column - Draft Assessments + Paddocks */}
-        <div className="space-y-6">
-          {/* Draft Assessments Section */}
-          {customerDraftAssessments && customerDraftAssessments.length > 0 && (
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-gray-900">
-                  Draft Assessments ({customerDraftAssessments.length})
-                </h2>
-              </div>
-              
-              {loadingDrafts ? (
-                <div className="bg-white rounded-xl shadow p-6">
-                  <div className="animate-pulse space-y-4">
-                    {[...Array(2)].map((_, i) => (
-                      <div key={i} className="h-12 bg-gray-200 rounded"></div>
-                    ))}
-                  </div>
-                </div>
-              ) : draftsError ? (
-                <div className="bg-white rounded-xl shadow p-6 text-center">
-                  <p className="text-red-500">Error loading draft assessments: {draftsError?.message}</p>
-                </div>
-              ) : (
-                <DataTable
-                  data={customerDraftAssessments}
-                  columns={visibleDraftColumns}
-                  emptyMessage={
-                    <div className="p-8 text-center">
-                      <FileText size={48} className="text-gray-300 mx-auto mb-4" />
-                      <h3 className="text-lg font-medium text-gray-600 mb-2">No draft assessments</h3>
-                      <p className="text-gray-500">No assessments are currently in progress.</p>
-                    </div>
-                  }
-                />
-              )}
-            </div>
-          )}
-
-          {/* Paddocks Section */}
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-gray-900">
-                Paddocks ({locations?.length || 0})
-              </h2>
+      {/* Tabbed Content Section */}
+      <div className="bg-white rounded-xl shadow overflow-hidden">
+        {/* Tab Navigation */}
+        <div className="border-b border-gray-200">
+          <nav className={`flex ${isMobile ? 'overflow-x-auto' : ''}`}>
+            {tabs.map((tab) => (
               <button
-                onClick={handleAddPaddock}
-                className="text-xs px-2 py-1 rounded border border-green-300 text-green-600 bg-green-50 hover:bg-green-100"
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`
+                  flex items-center px-4 py-3 text-sm font-medium border-b-2 transition-colors duration-200
+                  ${isMobile ? 'whitespace-nowrap min-w-0 flex-shrink-0' : 'flex-1'}
+                  ${
+                    activeTab === tab.id
+                      ? 'text-green-600 border-green-600 bg-green-50'
+                      : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300'
+                  }
+                `}
               >
-                Add Paddock
+                <span className="mr-2">{tab.icon}</span>
+                <span className={isMobile ? 'hidden sm:inline' : ''}>{tab.label}</span>
+                <span className={`ml-2 inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                  activeTab === tab.id ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
+                }`}>
+                  {tab.count}
+                </span>
               </button>
-            </div>
-            
-            {loadingLocations ? (
-              <div className="bg-white rounded-xl shadow p-6">
-                <div className="animate-pulse space-y-4">
-                  {[...Array(3)].map((_, i) => (
-                    <div key={i} className="h-16 bg-gray-200 rounded"></div>
-                  ))}
-                </div>
-              </div>
-            ) : locationsError ? (
-              <div className="bg-white rounded-xl shadow p-6 text-center">
-                <p className="text-red-500">Error loading paddocks: {locationsError?.message}</p>
-              </div>
-            ) : (
-              <DataTable
-                data={locations || []}
-                columns={locationColumns}
-                emptyMessage={
-                  <div className="p-8 text-center">
-                    <MapPin size={48} className="text-gray-300 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-600 mb-2">No paddocks found</h3>
-                    <p className="text-gray-500">This customer hasn't added any paddocks yet.</p>
-                  </div>
-                }
-              />
-            )}
-          </div>
+            ))}
+          </nav>
         </div>
 
-        {/* Right Column - Reports */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-gray-900">
-              Reports ({reports?.length || 0})
-            </h2>
-            <button
-              onClick={handleExportReports}
-              className="text-xs px-2 py-1 rounded border border-green-300 text-green-600 bg-green-50 hover:bg-green-100"
-            >
-              Export Reports
-            </button>
-          </div>
-          
-          {loadingReports ? (
-            <div className="bg-white rounded-xl shadow p-6">
-              <div className="animate-pulse space-y-4">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="h-16 bg-gray-200 rounded"></div>
-                ))}
-              </div>
-            </div>
-          ) : reportsError ? (
-            <div className="bg-white rounded-xl shadow p-6 text-center">
-              <p className="text-red-500">Error loading reports: {reportsError?.message}</p>
-            </div>
-          ) : (
-            <DataTable
-              data={reportsWithActions}
-              columns={visibleReportColumns}
-              onRowClick={(report) => handleViewReport(report.id)}
-              emptyMessage={
-                <div className="p-8 text-center">
-                  <FileText size={48} className="text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-600 mb-2">No reports found</h3>
-                  <p className="text-gray-500 mb-4">This customer hasn't generated any reports yet.</p>
-                  <FormButton
-                    variant="primary"
-                    icon={<Plus size={16} />}
-                    onClick={handleCreateAssessment}
-                  >
-                    Create First Assessment
-                  </FormButton>
-                </div>
-              }
-            />
-          )}
+        {/* Tab Content */}
+        <div className="p-6">
+          {renderTabContent()}
         </div>
       </div>
     </PageContainer>

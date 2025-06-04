@@ -262,11 +262,6 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
                   </FormButton>
                 </div>
               </div>
-              <div className="border-t border-gray-200 pt-4 mt-6">
-                <p className="text-sm text-gray-500">
-                  Keeping your account secure helps protect your {isFarmer ? 'farm' : 'business'} data
-                </p>
-              </div>
             </div>
 
           </form>

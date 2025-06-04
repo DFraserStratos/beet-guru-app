@@ -76,9 +76,9 @@ const ReportViewerScreen = ({
     }
   }, [report, assessment]);
 
-  // Handle the share report action
-  const handleShareReport = () => {
-    alert('Share functionality would send this report via email');
+  // Handle the send report action
+  const handleSendReport = () => {
+    alert('Send functionality would send this report via email');
   };
 
   // Format date for display
@@ -167,9 +167,9 @@ const ReportViewerScreen = ({
         <FormButton
           variant="outline"
           icon={<Share size={16} />}
-          onClick={handleShareReport}
+          onClick={handleSendReport}
         >
-          Share Report
+          Send Report
         </FormButton>
       </div>
 
