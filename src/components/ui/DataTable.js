@@ -61,7 +61,7 @@ const DataTable = ({
                   ) : (
                     <>
                       <h3 className="font-medium text-base text-gray-900 line-clamp-1 mb-1">
-                        {item.title || `Item ${index + 1}`}
+                        {item.name || item.title || `Item ${index + 1}`}
                       </h3>
                       <div className="text-sm text-gray-600 space-y-1 mb-3">
                         {visibleColumns.map((column) => (

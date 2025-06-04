@@ -185,6 +185,40 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
     });
   };
 
+  // Custom mobile card renderer for customers
+  const renderMobileCard = (customer) => (
+    <div className="flex items-center justify-between py-3 min-h-[60px]">
+      <div className="flex-1 pr-3">
+        <div className="flex items-center justify-between mb-1">
+          <h3 className="font-medium text-base text-gray-900 truncate pr-2">
+            {customer.name}
+          </h3>
+          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${
+            customer.status === 'active' 
+              ? 'bg-green-100 text-green-800' 
+              : 'bg-gray-100 text-gray-800'
+          }`}>
+            {customer.status === 'active' ? 'Active' : 'Inactive'}
+          </span>
+        </div>
+        
+        <div className="flex items-center justify-between text-sm text-gray-600">
+          <div className="flex items-center space-x-4 truncate">
+            <span className="flex items-center truncate">
+              <MapPin size={12} className="mr-1 flex-shrink-0" />
+              <span className="truncate">{customer.location}</span>
+            </span>
+            <span className="whitespace-nowrap">{customer.paddockCount || 0} paddocks</span>
+          </div>
+          <DropdownMenu 
+            items={getCustomerActions(customer)}
+            className="inline-flex justify-end ml-2"
+          />
+        </div>
+      </div>
+    </div>
+  );
+
   // Empty state content
   const emptyStateContent = (
     <div className="p-8 text-center">
@@ -391,6 +425,7 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
           onRowClick={handleRowClick}
           emptyMessage={emptyStateContent}
           mobileCardLayout={isMobile}
+          renderMobileCard={renderMobileCard}
           pagination={pagination}
           isMobile={isMobile}
         />

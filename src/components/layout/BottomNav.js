@@ -14,23 +14,24 @@ const BottomNav = ({ activeScreen, handleNavigate, user }) => {
   const isAdmin = user?.isAdmin === true;
   
   // Define screens that should highlight the More tab based on user type
-  const moreScreens = isRetailer 
-    ? ['more', 'settings', 'about-us', 'terms', 'cultivar-management', 'user-management', 'reports']
-    : ['more', 'locations', 'settings', 'about-us', 'terms', 'cultivar-management', 'user-management'];
+  const moreScreens = isAdmin
+    ? ['more', 'settings', 'about-us', 'terms']
+    : isRetailer 
+      ? ['more', 'settings', 'about-us', 'terms', 'cultivar-management', 'user-management', 'reports']
+      : ['more', 'locations', 'settings', 'about-us', 'terms', 'cultivar-management', 'user-management'];
   
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-10">
       <div className="grid grid-cols-4 h-16">
-        <NavItem
-          icon={<Home size={20} />}
-          label="Home"
-          isActive={activeScreen === 'home'}
-          onClick={() => handleNavigate('home')}
-        />
-        
         {/* Admin-specific navigation */}
         {isAdmin ? (
           <>
+            <NavItem
+              icon={<Users size={20} />}
+              label="Users"
+              isActive={activeScreen === 'user-management'}
+              onClick={() => handleNavigate('user-management')}
+            />
             <NavItem
               icon={<Leaf size={20} />}
               label="Cultivars"
@@ -38,15 +39,21 @@ const BottomNav = ({ activeScreen, handleNavigate, user }) => {
               onClick={() => handleNavigate('cultivar-management')}
             />
             <NavItem
-              icon={<Users size={20} />}
-              label="Users"
-              isActive={activeScreen === 'user-management'}
-              onClick={() => handleNavigate('user-management')}
+              icon={<FileText size={20} />}
+              label="Reports"
+              isActive={activeScreen === 'reports'}
+              onClick={() => handleNavigate('reports')}
             />
           </>
         ) : (
           <>
-            {/* Hide Assessments for admin users */}
+            <NavItem
+              icon={<Home size={20} />}
+              label="Home"
+              isActive={activeScreen === 'home'}
+              onClick={() => handleNavigate('home')}
+            />
+            
             <NavItem
               icon={<BarChart3 size={20} />}
               label="Assessments"

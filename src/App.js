@@ -54,7 +54,7 @@ function App() {
     if (user?.isAdmin) {
       const restrictedScreens = ['assessments', 'new-assessment', 'locations'];
       if (restrictedScreens.includes(activeScreen)) {
-        handleNavigate('home');
+        handleNavigate('user-management');
       }
     }
   }, [activeScreen, user?.isAdmin]);
@@ -109,7 +109,12 @@ function App() {
   
   const handleLogin = (userData) => {
     setUser(userData);
-    setActiveScreen('home');
+    // Set default screen based on user type
+    if (userData?.isAdmin) {
+      setActiveScreen('user-management');
+    } else {
+      setActiveScreen('home');
+    }
     setIsNewUser(false);
   };
   
@@ -248,7 +253,7 @@ function App() {
         
         <div id="main-content" className="flex-1 overflow-y-auto p-4 pb-16 md:pb-4">
           <ErrorBoundary>
-            {activeScreen === 'home' && <HomeScreen onNavigate={handleNavigate} isMobile={isMobile} user={user} />}
+            {activeScreen === 'home' && !user?.isAdmin && <HomeScreen onNavigate={handleNavigate} isMobile={isMobile} user={user} />}
             {activeScreen === 'assessments' && !user?.isAdmin && (
               <AssessmentsScreen 
                 onNavigate={handleNavigate} 

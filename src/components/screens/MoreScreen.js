@@ -1,4 +1,4 @@
-import { MapPin, Settings, LogOut, ChevronRight, HelpCircle, FileText, Leaf, Users } from 'lucide-react';
+import { MapPin, Settings, LogOut, ChevronRight, HelpCircle, FileText } from 'lucide-react';
 import PageContainer from '../layout/PageContainer';
 
 const MoreScreen = ({ onNavigate, onLogout, user }) => {
@@ -19,7 +19,7 @@ const MoreScreen = ({ onNavigate, onLogout, user }) => {
       </div>
       
       {/* More Menu Options */}
-      <div className="bg-white rounded-xl shadow overflow-hidden">
+      <div className="bg-white rounded-xl shadow">
         <ul className="divide-y divide-gray-100">
           {/* Only show Locations for non-retailers and non-admin users */}
           {!isRetailer && !isAdmin && (
@@ -28,21 +28,6 @@ const MoreScreen = ({ onNavigate, onLogout, user }) => {
               label="Locations"
               onClick={() => onNavigate('locations')}
             />
-          )}
-          {/* Show Admin options for admin users */}
-          {isAdmin && (
-            <>
-              <MenuItem 
-                icon={<Leaf size={20} className="text-green-600" />}
-                label="Cultivar Management"
-                onClick={() => onNavigate('cultivar-management')}
-              />
-              <MenuItem 
-                icon={<Users size={20} className="text-blue-600" />}
-                label="User Management"
-                onClick={() => onNavigate('user-management')}
-              />
-            </>
           )}
           {/* Show Reports option for retailers */}
           {isRetailer && (

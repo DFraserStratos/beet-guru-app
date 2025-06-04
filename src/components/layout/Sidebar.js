@@ -34,47 +34,15 @@ const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
       {/* Main Navigation */}
       <div className="flex-1 py-4">
         <ul className="space-y-2 px-3">
-          <SidebarItem 
-            icon={<Home size={20} />} 
-            label="Home" 
-            isActive={activeScreen === 'home'} 
-            onClick={() => handleNavigate('home')}
-          />
-          {/* Hide Assessments for admin users */}
-          {!isAdmin && (
-            <SidebarItem 
-              icon={<BarChart3 size={20} />} 
-              label="Assessments" 
-              isActive={activeScreen === 'assessments'} 
-              onClick={() => handleNavigate('assessments')}
-            />
-          )}
-          <SidebarItem 
-            icon={<FileText size={20} />} 
-            label="Reports" 
-            isActive={activeScreen === 'reports'} 
-            onClick={() => handleNavigate('reports')}
-          />
-          {/* Conditional navigation based on user type */}
-          {isRetailer ? (
-            <SidebarItem 
-              icon={<Users size={20} />} 
-              label="Customers" 
-              isActive={activeScreen === 'customers'} 
-              onClick={() => handleNavigate('customers')}
-            />
-          ) : !isAdmin && (
-            /* Hide Paddocks for admin users */
-            <SidebarItem 
-              icon={<MapPin size={20} />} 
-              label="Paddocks" 
-              isActive={activeScreen === 'locations'} 
-              onClick={() => handleNavigate('locations')}
-            />
-          )}
-          {/* Admin navigation items */}
-          {isAdmin && (
+          {/* Admin navigation items - show first for admin users */}
+          {isAdmin ? (
             <>
+              <SidebarItem 
+                icon={<Users size={20} />} 
+                label="User Management" 
+                isActive={activeScreen === 'user-management'} 
+                onClick={() => handleNavigate('user-management')}
+              />
               <SidebarItem 
                 icon={<Leaf size={20} />} 
                 label="Cultivar Management" 
@@ -82,11 +50,50 @@ const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
                 onClick={() => handleNavigate('cultivar-management')}
               />
               <SidebarItem 
-                icon={<Users size={20} />} 
-                label="User Management" 
-                isActive={activeScreen === 'user-management'} 
-                onClick={() => handleNavigate('user-management')}
+                icon={<FileText size={20} />} 
+                label="Reports" 
+                isActive={activeScreen === 'reports'} 
+                onClick={() => handleNavigate('reports')}
               />
+            </>
+          ) : (
+            <>
+              <SidebarItem 
+                icon={<Home size={20} />} 
+                label="Home" 
+                isActive={activeScreen === 'home'} 
+                onClick={() => handleNavigate('home')}
+              />
+              {/* Hide Assessments for admin users */}
+              <SidebarItem 
+                icon={<BarChart3 size={20} />} 
+                label="Assessments" 
+                isActive={activeScreen === 'assessments'} 
+                onClick={() => handleNavigate('assessments')}
+              />
+              <SidebarItem 
+                icon={<FileText size={20} />} 
+                label="Reports" 
+                isActive={activeScreen === 'reports'} 
+                onClick={() => handleNavigate('reports')}
+              />
+              {/* Conditional navigation based on user type */}
+              {isRetailer ? (
+                <SidebarItem 
+                  icon={<Users size={20} />} 
+                  label="Customers" 
+                  isActive={activeScreen === 'customers'} 
+                  onClick={() => handleNavigate('customers')}
+                />
+              ) : (
+                /* Hide Paddocks for admin users */
+                <SidebarItem 
+                  icon={<MapPin size={20} />} 
+                  label="Paddocks" 
+                  isActive={activeScreen === 'locations'} 
+                  onClick={() => handleNavigate('locations')}
+                />
+              )}
             </>
           )}
         </ul>
