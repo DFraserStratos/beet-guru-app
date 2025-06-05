@@ -27,6 +27,10 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
     postalCode: '7495',
     region: 'Canterbury',
     country: 'New Zealand',
+    
+    // Retailer specific fields
+    brand: '',
+    branch: '',
   };
   
   // Set up form management
@@ -173,70 +177,26 @@ const SettingsScreen = ({ isMobile, onNavigate, user }) => {
                 {isRetailer && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
-                      label="Store Name"
-                      name="farmName"
+                      label="Brand"
+                      name="brand"
                       type="text"
-                      value={values.farmName}
+                      value={values.brand}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      error={errors.farmName}
-                      touched={touched.farmName}
-                      placeholder="Your store name"
+                      error={errors.brand}
+                      touched={touched.brand}
+                      placeholder="Your brand name"
                     />
                     <FormField
-                      label="Store Address"
-                      name="farmAddress"
+                      label="Branch"
+                      name="branch"
                       type="text"
-                      value={values.farmAddress}
+                      value={values.branch}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      error={errors.farmAddress}
-                      touched={touched.farmAddress}
-                      placeholder="Street address"
-                    />
-                    <FormField
-                      label="City/Town"
-                      name="city"
-                      type="text"
-                      value={values.city}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      error={errors.city}
-                      touched={touched.city}
-                      placeholder="City or town"
-                    />
-                    <FormField
-                      label="Postal Code"
-                      name="postalCode"
-                      type="text"
-                      value={values.postalCode}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      error={errors.postalCode}
-                      touched={touched.postalCode}
-                      placeholder="Postal code"
-                    />
-                    <FormField
-                      label="Region"
-                      name="region"
-                      type="text"
-                      value={values.region}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      error={errors.region}
-                      touched={touched.region}
-                      placeholder="Region/State/Province"
-                    />
-                    <FormField
-                      label="Country"
-                      name="country"
-                      type="text"
-                      value={values.country}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      error={errors.country}
-                      touched={touched.country}
-                      placeholder="Country"
+                      error={errors.branch}
+                      touched={touched.branch}
+                      placeholder="Your branch name"
                     />
                   </div>
                 )}
