@@ -7,6 +7,7 @@ import {
   LogOut,
   HelpCircle,
   Users,
+  UserCheck,
   Leaf
 } from 'lucide-react';
 import beetGuruSquareLogo from '../../BeetGuruSq.png';
@@ -37,6 +38,12 @@ const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
           {/* Admin navigation items - show first for admin users */}
           {isAdmin ? (
             <>
+              <SidebarItem 
+                icon={<UserCheck size={20} />} 
+                label="Customers" 
+                isActive={activeScreen === 'customers'} 
+                onClick={() => handleNavigate('customers')}
+              />
               <SidebarItem 
                 icon={<Users size={20} />} 
                 label="User Management" 

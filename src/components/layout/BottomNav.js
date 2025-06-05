@@ -4,6 +4,7 @@ import {
   FileText,
   MoreHorizontal,
   Users,
+  UserCheck,
   Leaf
 } from 'lucide-react';
 
@@ -15,7 +16,7 @@ const BottomNav = ({ activeScreen, handleNavigate, user }) => {
   
   // Define screens that should highlight the More tab based on user type
   const moreScreens = isAdmin
-    ? ['more', 'settings', 'about-us', 'terms']
+    ? ['more', 'settings', 'about-us', 'terms', 'reports']
     : isRetailer 
       ? ['more', 'settings', 'about-us', 'terms', 'cultivar-management', 'user-management', 'reports']
       : ['more', 'locations', 'settings', 'about-us', 'terms', 'cultivar-management', 'user-management'];
@@ -27,6 +28,12 @@ const BottomNav = ({ activeScreen, handleNavigate, user }) => {
         {isAdmin ? (
           <>
             <NavItem
+              icon={<UserCheck size={20} />}
+              label="Customers"
+              isActive={activeScreen === 'customers'}
+              onClick={() => handleNavigate('customers')}
+            />
+            <NavItem
               icon={<Users size={20} />}
               label="Users"
               isActive={activeScreen === 'user-management'}
@@ -37,12 +44,6 @@ const BottomNav = ({ activeScreen, handleNavigate, user }) => {
               label="Cultivars"
               isActive={activeScreen === 'cultivar-management'}
               onClick={() => handleNavigate('cultivar-management')}
-            />
-            <NavItem
-              icon={<FileText size={20} />}
-              label="Reports"
-              isActive={activeScreen === 'reports'}
-              onClick={() => handleNavigate('reports')}
             />
           </>
         ) : (

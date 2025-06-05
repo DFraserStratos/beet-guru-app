@@ -21,6 +21,14 @@ const MoreScreen = ({ onNavigate, onLogout, user }) => {
       {/* More Menu Options */}
       <div className="bg-white rounded-xl shadow">
         <ul className="divide-y divide-gray-100">
+          {/* Show Reports option for admin users */}
+          {isAdmin && (
+            <MenuItem 
+              icon={<FileText size={20} className="text-blue-600" />}
+              label="Reports"
+              onClick={() => onNavigate('reports')}
+            />
+          )}
           {/* Only show Locations for non-retailers and non-admin users */}
           {!isRetailer && !isAdmin && (
             <MenuItem 
