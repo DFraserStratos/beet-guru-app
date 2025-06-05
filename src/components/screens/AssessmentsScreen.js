@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { PlusCircle, Calendar } from 'lucide-react';
 import PaddockCard from '../ui/PaddockCard';
 import PaddockCardSkeleton from '../ui/PaddockCardSkeleton';
+import CustomerSelector from '../ui/CustomerSelector';
 import api from '../../services/api';
 import { useApi } from '../../hooks';
+import { useCustomer } from '../../contexts/CustomerContext';
 import { FormButton } from '../ui/form';
 import PageHeader from '../ui/PageHeader';
 import PageContainer from '../layout/PageContainer';
@@ -21,20 +23,44 @@ const AssessmentsScreen = ({
   onContinueDraft = () => {},
   user
 }) => {
+  const { selectedCustomer, requireCustomerSelection } = useCustomer();
+  
+  // For retailers, require customer selection; for farmers, don't
+  useEffect(() => {
+    if (user?.accountType === 'retailer') {
+      requireCustomerSelection(true);
+    } else {
+      requireCustomerSelection(false);
+    }
+  }, [user?.accountType, requireCustomerSelection]);
+
+  // Determine which user ID to use for filtering
+  const getUserIdForFiltering = () => {
+    if (user?.accountType === 'farmer') {
+      return user.id;
+    } else if (user?.accountType === 'retailer') {
+      return selectedCustomer?.id || null;
+    }
+    return null;
+  };
+
   // Use the API hook to fetch locations with their status
-  // For farmers, filter by user ID; for retailers, show all
   const { 
     data: paddocks, 
     loading, 
     error, 
     execute: fetchPaddocks 
-  } = useApi(api.references.getLocations, [true, user?.accountType === 'farmer' ? user.id : null]);
+  } = useApi(api.references.getLocations);
 
   useEffect(() => {
-    // Pass user filtering parameter based on account type
-    const userId = user?.accountType === 'farmer' ? user.id : null;
-    fetchPaddocks(true, userId);
-  }, [fetchPaddocks, user]);
+    const userId = getUserIdForFiltering();
+    // Only fetch data if:
+    // 1. User is a farmer (always has userId)
+    // 2. User is a retailer AND has selected a customer
+    if (user?.accountType === 'farmer' || (user?.accountType === 'retailer' && userId)) {
+      fetchPaddocks(true, userId);
+    }
+  }, [fetchPaddocks, user, selectedCustomer]);
 
   // Handle starting a new assessment for a location
   const handleStartAssessment = (location) => {
@@ -55,76 +81,106 @@ const AssessmentsScreen = ({
     onNavigate('new-assessment');
   };
 
+  // Check if we should show data (for retailers, need customer selection)
+  const shouldShowData = user?.accountType === 'farmer' || (user?.accountType === 'retailer' && selectedCustomer);
+
   return (
     <PageContainer>
       {/* Header Section */}
       <PageHeader
         title="Assessments"
-        subtitle="Continue draft assessments for your locations"
+        subtitle={
+          user?.accountType === 'retailer' && selectedCustomer 
+            ? `Continue draft assessments for ${selectedCustomer.name}`
+            : "Continue draft assessments for your locations"
+        }
         actions={(
           <FormButton
             variant="primary"
             icon={<PlusCircle size={16} />}
             onClick={handleNewAssessment}
+            disabled={user?.accountType === 'retailer' && !selectedCustomer}
           >
             {isMobile ? 'New' : 'New Assessment'}
           </FormButton>
         )}
       />
       
-      {/* Loading State */}
-      {loading && (
-        <div className="bg-white rounded-xl shadow overflow-hidden">
-          <ul className="divide-y divide-gray-200">
-            {[...Array(3)].map((_, index) => (
-              <PaddockCardSkeleton key={index} />
-            ))}
-          </ul>
-        </div>
-      )}
+      {/* Customer Selector - only shown for retailers */}
+      <CustomerSelector user={user} isMobile={isMobile} />
       
-      {/* Error State */}
-      {error && (
-        <div className="bg-white rounded-xl shadow p-6 text-center">
-          <p className="text-red-500">Error loading paddocks: {error.message}</p>
-        </div>
-      )}
-      
-      {/* Locations List */}
-      {!loading && !error && paddocks && (
-        <div className="bg-white rounded-xl shadow overflow-hidden">
-          {/* Filter locations to only show drafts */}
-          {paddocks.filter(paddock => paddock.status === 'draft').length === 0 ? (
-            <div className="p-8 text-center">
-              <Calendar size={48} className="text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-600 mb-2">No draft assessments found</h3>
-              <p className="text-gray-500 mb-6">
-                Start a new assessment to begin tracking your crop performance
-              </p>
-              <FormButton 
-                variant="primary" 
-                icon={<PlusCircle size={16} />}
-                onClick={handleNewAssessment}
-              >
-                New Assessment
-              </FormButton>
+      {/* Only show content if customer is selected (for retailers) or user is farmer */}
+      {shouldShowData ? (
+        <>
+          {/* Loading State */}
+          {loading && (
+            <div className="bg-white rounded-xl shadow overflow-hidden">
+              <ul className="divide-y divide-gray-200">
+                {[...Array(3)].map((_, index) => (
+                  <PaddockCardSkeleton key={index} />
+                ))}
+              </ul>
             </div>
-          ) : (
-            <ul className="divide-y divide-gray-200">
-              {paddocks.filter(paddock => paddock.status === 'draft').map((paddock) => (
-                <li key={paddock.id} className="hover:bg-gray-50">
-                  <PaddockCard 
-                    paddock={paddock}
-                    status={paddock.status}
-                    onStart={handleStartAssessment}
-                    onContinue={handleContinueDraft}
-                    className="border-none shadow-none"
-                  />
-                </li>
-              ))}
-            </ul>
           )}
-        </div>
+          
+          {/* Error State */}
+          {error && (
+            <div className="bg-white rounded-xl shadow p-6 text-center">
+              <p className="text-red-500">Error loading paddocks: {error.message}</p>
+            </div>
+          )}
+          
+          {/* Locations List */}
+          {!loading && !error && paddocks && (
+            <div className="bg-white rounded-xl shadow overflow-hidden">
+              {/* Filter locations to only show drafts */}
+              {paddocks.filter(paddock => paddock.status === 'draft').length === 0 ? (
+                <div className="p-8 text-center">
+                  <Calendar size={48} className="text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-600 mb-2">No draft assessments found</h3>
+                  <p className="text-gray-500 mb-6">
+                    {user?.accountType === 'retailer' && selectedCustomer 
+                      ? `Start a new assessment for ${selectedCustomer.name} to begin tracking crop performance`
+                      : "Start a new assessment to begin tracking your crop performance"
+                    }
+                  </p>
+                  <FormButton 
+                    variant="primary" 
+                    icon={<PlusCircle size={16} />}
+                    onClick={handleNewAssessment}
+                  >
+                    New Assessment
+                  </FormButton>
+                </div>
+              ) : (
+                <ul className="divide-y divide-gray-200">
+                  {paddocks.filter(paddock => paddock.status === 'draft').map((paddock) => (
+                    <li key={paddock.id} className="hover:bg-gray-50">
+                      <PaddockCard 
+                        paddock={paddock}
+                        status={paddock.status}
+                        onStart={handleStartAssessment}
+                        onContinue={handleContinueDraft}
+                        className="border-none shadow-none"
+                      />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+        </>
+      ) : (
+        // Show placeholder when no customer is selected (retailers only)
+        user?.accountType === 'retailer' && !selectedCustomer && (
+          <div className="bg-white rounded-xl shadow p-8 text-center">
+            <Calendar size={48} className="text-gray-300 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-600 mb-2">Select a customer</h3>
+            <p className="text-gray-500">
+              Choose a customer from the dropdown above to view their draft assessments
+            </p>
+          </div>
+        )
       )}
     </PageContainer>
   );
