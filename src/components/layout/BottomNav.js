@@ -54,12 +54,6 @@ const BottomNav = ({ activeScreen, handleNavigate, user }) => {
               onClick={() => handleNavigate('home')}
             />
             
-            <NavItem
-              icon={<BarChart3 size={20} />}
-              label="Assessments"
-              isActive={activeScreen === 'assessments'}
-              onClick={() => handleNavigate('assessments')}
-            />
             {/* Conditional navigation based on user type */}
             {isRetailer ? (
               <NavItem
@@ -76,6 +70,13 @@ const BottomNav = ({ activeScreen, handleNavigate, user }) => {
                 onClick={() => handleNavigate('reports')}
               />
             )}
+
+            <NavItem
+              icon={<BarChart3 size={20} />}
+              label="Assessments"
+              isActive={activeScreen === 'assessments'}
+              onClick={() => handleNavigate('assessments')}
+            />
           </>
         )}
         
