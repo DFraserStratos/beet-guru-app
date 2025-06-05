@@ -5,7 +5,7 @@ import api from '../../services/api';
 import { useCustomer } from '../../contexts/CustomerContext';
 
 /**
- * Customer selector component for retailer views
+ * Customer selector component for retailer and admin views
  * @param {Object} props - Component props
  * @param {Object} props.user - Current user object
  * @param {boolean} props.isMobile - Mobile view flag
@@ -14,7 +14,7 @@ import { useCustomer } from '../../contexts/CustomerContext';
 const CustomerSelector = ({ user, isMobile }) => {
   const { selectedCustomer, selectCustomer, isCustomerRequired } = useCustomer();
   
-  // Fetch customers for this retailer
+  // Fetch customers for this retailer/admin
   const { 
     data: customers, 
     loading, 
@@ -23,13 +23,13 @@ const CustomerSelector = ({ user, isMobile }) => {
   } = useApi(api.customers.getByRetailerId);
 
   useEffect(() => {
-    if (user?.id && user?.accountType === 'retailer') {
+    if (user?.id && (user?.accountType === 'retailer' || user?.isAdmin)) {
       fetchCustomers(user.id);
     }
   }, [fetchCustomers, user]);
 
   // Don't render for farmers
-  if (!user || user.accountType !== 'retailer') {
+  if (!user || (user.accountType !== 'retailer' && !user.isAdmin)) {
     return null;
   }
 

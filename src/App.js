@@ -53,7 +53,7 @@ function App() {
   // Redirect admin users if they try to access restricted screens
   useEffect(() => {
     if (user?.isAdmin) {
-      const restrictedScreens = ['assessments', 'new-assessment', 'locations'];
+      const restrictedScreens = ['new-assessment', 'locations'];
       if (restrictedScreens.includes(activeScreen)) {
         handleNavigate('user-management');
       }
@@ -256,7 +256,7 @@ function App() {
           <div id="main-content" className="flex-1 overflow-y-auto p-4 pb-16 md:pb-4">
             <ErrorBoundary>
               {activeScreen === 'home' && !user?.isAdmin && <HomeScreen onNavigate={handleNavigate} isMobile={isMobile} user={user} />}
-              {activeScreen === 'assessments' && !user?.isAdmin && (
+              {activeScreen === 'assessments' && (
                 <AssessmentsScreen 
                   onNavigate={handleNavigate} 
                   isMobile={isMobile}

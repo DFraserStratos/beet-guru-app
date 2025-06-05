@@ -57,6 +57,12 @@ const Sidebar = ({ activeScreen, handleNavigate, onLogout, user }) => {
                 onClick={() => handleNavigate('cultivar-management')}
               />
               <SidebarItem 
+                icon={<BarChart3 size={20} />} 
+                label="Assessments" 
+                isActive={activeScreen === 'assessments'} 
+                onClick={() => handleNavigate('assessments')}
+              />
+              <SidebarItem 
                 icon={<FileText size={20} />} 
                 label="Reports" 
                 isActive={activeScreen === 'reports'} 

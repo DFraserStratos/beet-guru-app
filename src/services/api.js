@@ -108,6 +108,55 @@ const mockData = {
       customerType: 'farmer',
       relationshipStart: '2024-02-14',
       status: 'active'
+    },
+    // Add the same customer relationships for Amy (admin user)
+    {
+      id: '7',
+      retailerId: '8', // Amy (admin)
+      customerId: '1', // Fred
+      customerType: 'farmer',
+      relationshipStart: '2024-01-15',
+      status: 'active'
+    },
+    {
+      id: '8',
+      retailerId: '8', // Amy (admin)
+      customerId: '3', // Sarah
+      customerType: 'farmer',
+      relationshipStart: '2024-02-20',
+      status: 'active'
+    },
+    {
+      id: '9',
+      retailerId: '8', // Amy (admin)
+      customerId: '4', // Mike
+      customerType: 'farmer',
+      relationshipStart: '2024-03-10',
+      status: 'active'
+    },
+    {
+      id: '10',
+      retailerId: '8', // Amy (admin)
+      customerId: '5', // Jessica
+      customerType: 'farmer',
+      relationshipStart: '2024-01-30',
+      status: 'active'
+    },
+    {
+      id: '11',
+      retailerId: '8', // Amy (admin)
+      customerId: '6', // David
+      customerType: 'farmer',
+      relationshipStart: '2024-04-05',
+      status: 'active'
+    },
+    {
+      id: '12',
+      retailerId: '8', // Amy (admin)
+      customerId: '7', // Emily
+      customerType: 'farmer',
+      relationshipStart: '2024-02-14',
+      status: 'active'
     }
   ],
   

@@ -1,4 +1,4 @@
-import { MapPin, Settings, LogOut, ChevronRight, HelpCircle, FileText } from 'lucide-react';
+import { MapPin, Settings, LogOut, ChevronRight, HelpCircle, FileText, BarChart3 } from 'lucide-react';
 import PageContainer from '../layout/PageContainer';
 
 const MoreScreen = ({ onNavigate, onLogout, user }) => {
@@ -21,6 +21,14 @@ const MoreScreen = ({ onNavigate, onLogout, user }) => {
       {/* More Menu Options */}
       <div className="bg-white rounded-xl shadow">
         <ul className="divide-y divide-gray-100">
+          {/* Show Assessments option for admin users */}
+          {isAdmin && (
+            <MenuItem 
+              icon={<BarChart3 size={20} className="text-green-600" />}
+              label="Assessments"
+              onClick={() => onNavigate('assessments')}
+            />
+          )}
           {/* Show Reports option for admin users */}
           {isAdmin && (
             <MenuItem 

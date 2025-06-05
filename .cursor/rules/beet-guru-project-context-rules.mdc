@@ -184,14 +184,14 @@ const { data, loading, error } = useApi(() => assessmentsAPI.getAll());
 
 ## Authentication System
 
-Current implementation uses 6-digit verification codes:
+Current implementation uses 4-digit verification codes:
 1. EmailScreen - User enters email
-2. VerificationCodeScreen - User enters 6-digit code
+2. VerificationCodeScreen - User enters 4-digit code
 3. App routes to login (existing) or registration (new)
 
 Demo flow:
 - Click "Continue" to auto-fill email
-- Click "Fill in Code" to auto-fill "123456"
+- Click "Fill in Code" to auto-fill "1234"
 - Uses persona system with 12 diverse user profiles
 
 ## Assessment Workflow

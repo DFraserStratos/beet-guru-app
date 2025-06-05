@@ -25,20 +25,20 @@ const AssessmentsScreen = ({
 }) => {
   const { selectedCustomer, requireCustomerSelection } = useCustomer();
   
-  // For retailers, require customer selection; for farmers, don't
+  // For retailers and admins, require customer selection; for farmers, don't
   useEffect(() => {
-    if (user?.accountType === 'retailer') {
+    if (user?.accountType === 'retailer' || user?.isAdmin) {
       requireCustomerSelection(true);
     } else {
       requireCustomerSelection(false);
     }
-  }, [user?.accountType, requireCustomerSelection]);
+  }, [user?.accountType, user?.isAdmin, requireCustomerSelection]);
 
   // Determine which user ID to use for filtering
   const getUserIdForFiltering = () => {
     if (user?.accountType === 'farmer') {
       return user.id;
-    } else if (user?.accountType === 'retailer') {
+    } else if (user?.accountType === 'retailer' || user?.isAdmin) {
       return selectedCustomer?.id || null;
     }
     return null;
@@ -56,8 +56,8 @@ const AssessmentsScreen = ({
     const userId = getUserIdForFiltering();
     // Only fetch data if:
     // 1. User is a farmer (always has userId)
-    // 2. User is a retailer AND has selected a customer
-    if (user?.accountType === 'farmer' || (user?.accountType === 'retailer' && userId)) {
+    // 2. User is a retailer/admin AND has selected a customer
+    if (user?.accountType === 'farmer' || ((user?.accountType === 'retailer' || user?.isAdmin) && userId)) {
       fetchPaddocks(true, userId);
     }
   }, [fetchPaddocks, user, selectedCustomer]);
@@ -81,8 +81,8 @@ const AssessmentsScreen = ({
     onNavigate('new-assessment');
   };
 
-  // Check if we should show data (for retailers, need customer selection)
-  const shouldShowData = user?.accountType === 'farmer' || (user?.accountType === 'retailer' && selectedCustomer);
+  // Check if we should show data (for retailers/admins, need customer selection)
+  const shouldShowData = user?.accountType === 'farmer' || ((user?.accountType === 'retailer' || user?.isAdmin) && selectedCustomer);
 
   return (
     <PageContainer>
@@ -90,7 +90,7 @@ const AssessmentsScreen = ({
       <PageHeader
         title="Assessments"
         subtitle={
-          user?.accountType === 'retailer' && selectedCustomer 
+          (user?.accountType === 'retailer' || user?.isAdmin) && selectedCustomer 
             ? `Continue draft assessments for ${selectedCustomer.name}`
             : "Continue draft assessments for your locations"
         }
@@ -99,14 +99,14 @@ const AssessmentsScreen = ({
             variant="primary"
             icon={<PlusCircle size={16} />}
             onClick={handleNewAssessment}
-            disabled={user?.accountType === 'retailer' && !selectedCustomer}
+            disabled={(user?.accountType === 'retailer' || user?.isAdmin) && !selectedCustomer}
           >
             {isMobile ? 'New' : 'New Assessment'}
           </FormButton>
         )}
       />
       
-      {/* Customer Selector - only shown for retailers */}
+      {/* Customer Selector - shown for retailers and admins */}
       <CustomerSelector user={user} isMobile={isMobile} />
       
       {/* Only show content if customer is selected (for retailers) or user is farmer */}
@@ -139,7 +139,7 @@ const AssessmentsScreen = ({
                   <Calendar size={48} className="text-gray-300 mx-auto mb-4" />
                   <h3 className="text-lg font-medium text-gray-600 mb-2">No draft assessments found</h3>
                   <p className="text-gray-500 mb-6">
-                    {user?.accountType === 'retailer' && selectedCustomer 
+                    {(user?.accountType === 'retailer' || user?.isAdmin) && selectedCustomer 
                       ? `Start a new assessment for ${selectedCustomer.name} to begin tracking crop performance`
                       : "Start a new assessment to begin tracking your crop performance"
                     }
@@ -171,8 +171,8 @@ const AssessmentsScreen = ({
           )}
         </>
       ) : (
-        // Show placeholder when no customer is selected (retailers only)
-        user?.accountType === 'retailer' && !selectedCustomer && (
+        // Show placeholder when no customer is selected (retailers and admins only)
+        (user?.accountType === 'retailer' || user?.isAdmin) && !selectedCustomer && (
           <div className="bg-white rounded-xl shadow p-8 text-center">
             <Calendar size={48} className="text-gray-300 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-600 mb-2">Select a customer</h3>
