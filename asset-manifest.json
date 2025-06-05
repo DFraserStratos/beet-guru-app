@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/beet-guru-app/static/css/main.4d74458f.css",
-    "main.js": "/beet-guru-app/static/js/main.13207573.js",
+    "main.css": "/beet-guru-app/static/css/main.1792ee38.css",
+    "main.js": "/beet-guru-app/static/js/main.f3e36a0d.js",
     "static/js/453.9d07ce19.chunk.js": "/beet-guru-app/static/js/453.9d07ce19.chunk.js",
     "static/media/BeetGuruSq.png": "/beet-guru-app/static/media/BeetGuruSq.c0d7ec374891b241586d.png",
     "index.html": "/beet-guru-app/index.html",
-    "main.4d74458f.css.map": "/beet-guru-app/static/css/main.4d74458f.css.map",
-    "main.13207573.js.map": "/beet-guru-app/static/js/main.13207573.js.map",
+    "main.1792ee38.css.map": "/beet-guru-app/static/css/main.1792ee38.css.map",
+    "main.f3e36a0d.js.map": "/beet-guru-app/static/js/main.f3e36a0d.js.map",
     "453.9d07ce19.chunk.js.map": "/beet-guru-app/static/js/453.9d07ce19.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.4d74458f.css",
-    "static/js/main.13207573.js"
+    "static/css/main.1792ee38.css",
+    "static/js/main.f3e36a0d.js"
   ]
 }
