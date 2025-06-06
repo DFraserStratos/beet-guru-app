@@ -3,6 +3,7 @@ import { ArrowLeft, User, MapPin, Plus, Edit, Trash2 } from 'lucide-react';
 import api from '../../services/api';
 import { referencesAPI } from '../../services/api';
 import { useApi } from '../../hooks';
+import { useCustomer } from '../../contexts/CustomerContext';
 import { FormButton } from '../ui/form';
 import PageContainer from '../layout/PageContainer';
 import DropdownMenu from '../ui/DropdownMenu';
@@ -21,6 +22,9 @@ const CustomerDetailScreen = ({
   onCreateAssessment = () => {},
   isMobile 
 }) => {
+  // Customer context for clearing selection
+  const { clearCustomer } = useCustomer();
+  
   // Paddock management state
   const [paddocks, setPaddocks] = useState([]);
   const [selectedPaddock, setSelectedPaddock] = useState(null);
@@ -75,6 +79,12 @@ const CustomerDetailScreen = ({
   const handleToggleStatus = (status) => {
     console.log('Toggling status:', status);
     // This could trigger a backend call to update the customer status
+  };
+
+  // Handle selecting a new customer (clear current selection and go back)
+  const handleSelectNewCustomer = () => {
+    clearCustomer();
+    onBack();
   };
 
   // Handle creating a new paddock
@@ -181,10 +191,10 @@ const CustomerDetailScreen = ({
           <FormButton
             variant="outline"
             icon={<ArrowLeft size={16} />}
-            onClick={onBack}
+            onClick={handleSelectNewCustomer}
             className="mt-4"
           >
-            Back to Customers
+            Change Customer
           </FormButton>
         </div>
       </PageContainer>
@@ -199,10 +209,10 @@ const CustomerDetailScreen = ({
           <FormButton
             variant="outline"
             icon={<ArrowLeft size={16} />}
-            onClick={onBack}
+            onClick={handleSelectNewCustomer}
             className="mt-4"
           >
-            Back to Customers
+            Change Customer
           </FormButton>
         </div>
       </PageContainer>
@@ -226,10 +236,10 @@ const CustomerDetailScreen = ({
             <FormButton
               variant="outline"
               icon={<ArrowLeft size={16} />}
-              onClick={onBack}
+              onClick={handleSelectNewCustomer}
               className="mr-4"
             >
-              {isMobile ? '' : 'Back'}
+              {isMobile ? 'Change' : 'Change Customer'}
             </FormButton>
             <div className="flex items-center">
               <div>

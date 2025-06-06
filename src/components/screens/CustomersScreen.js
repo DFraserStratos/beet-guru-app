@@ -3,6 +3,8 @@ import { ChevronDown, Filter, X, Users, Calendar, MapPin, ArrowDownUp, Plus, Use
 import { logger } from '../../utils/logger';
 import DataTable from '../ui/DataTable';
 import DropdownMenu from '../ui/DropdownMenu';
+import CustomerSelector from '../ui/CustomerSelector';
+import { useCustomer } from '../../contexts/CustomerContext';
 import api from '../../services/api';
 import { useApi, usePagination } from '../../hooks';
 import { FormButton } from '../ui/form';
@@ -23,6 +25,9 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
     sortBy: 'name'
   });
   
+  // Use customer context to handle customer selection
+  const { selectedCustomer } = useCustomer();
+  
   // Use the API hook to fetch customers for this retailer
   const { 
     data: customers, 
@@ -42,6 +47,13 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
       fetchCustomers(user.id);
     }
   }, [fetchCustomers, user?.id]);
+
+  // Navigate to customer detail page when a customer is selected in the context
+  useEffect(() => {
+    if (selectedCustomer?.id) {
+      onViewCustomer(selectedCustomer.id);
+    }
+  }, [selectedCustomer, onViewCustomer]);
   
   const handleToggleFilters = () => {
     setShowFilters(!showFilters);
@@ -97,46 +109,21 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
   const columns = [
     { 
       key: 'name', 
-      label: 'Customer Name',
+      label: 'Farmer Name',
       render: (item) => (
         <div className="font-medium text-gray-900">{item.name}</div>
       )
     },
     { 
-      key: 'email', 
-      label: 'Email',
-      hideOnMobile: true,
+      key: 'farmName', 
+      label: 'Farm Name',
       render: (item) => (
-        <div className="text-gray-600">{item.email}</div>
+        <div className="text-gray-600">{item.farmName || 'Not specified'}</div>
       )
-    },
-    { 
-      key: 'location', 
-      label: 'Location',
-      hideOnMobile: true
-    },
-    { 
-      key: 'paddockCount', 
-      label: 'Paddocks',
-      hideOnMobile: true,
-      render: (item) => `${item.paddockCount || 0} paddocks`
-    },
-    { 
-      key: 'lastAssessment', 
-      label: 'Last Assessment',
-      hideOnMobile: true,
-      render: (item) => item.lastAssessment 
-        ? new Date(item.lastAssessment).toLocaleDateString('en-NZ', { 
-            year: 'numeric', 
-            month: 'short', 
-            day: 'numeric' 
-          })
-        : 'No assessments'
     },
     { 
       key: 'status', 
       label: 'Status',
-      hideOnMobile: true,
       render: (item) => (
         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
           item.status === 'active' 
@@ -145,6 +132,13 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
         }`}>
           {item.status === 'active' ? 'Active' : 'Inactive'}
         </span>
+      )
+    },
+    { 
+      key: 'location', 
+      label: 'Region',
+      render: (item) => (
+        <div className="text-gray-600">{item.location || 'Not specified'}</div>
       )
     },
     {
@@ -161,10 +155,8 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
     }
   ];
 
-  // Filter columns based on mobile view
-  const visibleColumns = isMobile 
-    ? columns.filter(column => !column.hideOnMobile)
-    : columns;
+  // All columns are now visible on both desktop and mobile
+  const visibleColumns = columns;
 
   // Handle row clicks for viewing customer details
   const handleRowClick = (customer) => {
@@ -187,35 +179,19 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
 
   // Custom mobile card renderer for customers
   const renderMobileCard = (customer) => (
-    <div className="flex items-center justify-between py-3 min-h-[60px]">
+    <div className="flex items-center justify-between">
       <div className="flex-1 pr-3">
-        <div className="flex items-center justify-between mb-1">
-          <h3 className="font-medium text-base text-gray-900 truncate pr-2">
-            {customer.name}
-          </h3>
-          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${
-            customer.status === 'active' 
-              ? 'bg-green-100 text-green-800' 
-              : 'bg-gray-100 text-gray-800'
-          }`}>
-            {customer.status === 'active' ? 'Active' : 'Inactive'}
-          </span>
-        </div>
-        
-        <div className="flex items-center justify-between text-sm text-gray-600">
-          <div className="flex items-center space-x-4 truncate">
-            <span className="flex items-center truncate">
-              <MapPin size={12} className="mr-1 flex-shrink-0" />
-              <span className="truncate">{customer.location}</span>
-            </span>
-            <span className="whitespace-nowrap">{customer.paddockCount || 0} paddocks</span>
-          </div>
-          <DropdownMenu 
-            items={getCustomerActions(customer)}
-            className="inline-flex justify-end ml-2"
-          />
-        </div>
+        <h3 className="font-medium text-base text-gray-900 truncate mb-1">
+          {customer.name}
+        </h3>
+        <p className="text-sm text-gray-600 truncate">
+          {customer.farmName || 'Farm name not specified'}
+        </p>
       </div>
+      <DropdownMenu 
+        items={getCustomerActions(customer)}
+        className="inline-flex justify-end"
+      />
     </div>
   );
 
@@ -285,6 +261,9 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
         )}
       />
       
+      {/* Customer Selector */}
+      <CustomerSelector user={user} isMobile={isMobile} />
+      
       {/* Mobile Filter Toggle */}
       {isMobile && (
         <button 
@@ -315,22 +294,6 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
           )}
           
           <div className="flex flex-wrap gap-4">
-            {/* Search Filter */}
-            <div className={`${isMobile ? 'w-full' : 'flex-1 min-w-[200px]'}`}>
-              <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-                <Search size={14} className="mr-1" /> Search Customers
-              </label>
- 
-              <input
-                type="text"
-                name="search"
-                value={filters.search}
-                onChange={handleFilterChange}
-                placeholder="Search by name or email..."
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm py-2 px-3 border"
-              />
-            </div>
-            
             {/* Status Filter */}
             <div className={`${isMobile ? 'w-full' : 'flex-1 min-w-[160px]'}`}>
               <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
@@ -419,16 +382,111 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
       
       {/* Customers List */}
       {!isMobile || (isMobile && !showFilters) ? (
-        <DataTable
-          data={customersData}
-          columns={visibleColumns}
-          onRowClick={handleRowClick}
-          emptyMessage={emptyStateContent}
-          mobileCardLayout={isMobile}
-          renderMobileCard={renderMobileCard}
-          pagination={pagination}
-          isMobile={isMobile}
-        />
+        <div className="space-y-6">
+          <div className="bg-white rounded-xl shadow overflow-hidden">
+            {customersData.length === 0 ? (
+              emptyStateContent
+            ) : isMobile ? (
+              // Mobile card layout with compact padding
+              <ul className="divide-y divide-gray-200">
+                {pagination.currentData.map((customer, index) => (
+                  <li
+                    key={customer.id || index}
+                    className="hover:bg-gray-50 cursor-pointer"
+                    onClick={() => handleRowClick(customer)}
+                  >
+                    <div className="p-4">
+                      {renderMobileCard(customer)}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              // Desktop table layout with compact padding
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    {visibleColumns.map((column) => (
+                      <th
+                        key={column.key}
+                        className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        {column.label}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {pagination.currentData.map((customer, index) => (
+                    <tr
+                      key={customer.id || index}
+                      className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-100 cursor-pointer`}
+                      onClick={() => handleRowClick(customer)}
+                    >
+                      {visibleColumns.map((column) => (
+                        <td 
+                          key={`${customer.id}-${column.key}`} 
+                          className="px-4 py-2 text-sm text-gray-900"
+                        >
+                          {column.render ? column.render(customer) : customer[column.key]}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+          
+          {/* Pagination */}
+          {pagination && (
+            <div className="flex items-center justify-between">
+              <div className="flex-1 flex justify-between sm:hidden">
+                <button
+                  onClick={pagination.goToPrevPage}
+                  disabled={!pagination.hasPrevPage}
+                  className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={pagination.goToNextPage}
+                  disabled={!pagination.hasNextPage}
+                  className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Next
+                </button>
+              </div>
+              <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-sm text-gray-700">
+                    Showing <span className="font-medium">{pagination.startIndex}</span> to{' '}
+                    <span className="font-medium">{pagination.endIndex}</span> of{' '}
+                    <span className="font-medium">{pagination.totalItems}</span> results
+                  </p>
+                </div>
+                <div>
+                  <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                    <button
+                      onClick={pagination.goToPrevPage}
+                      disabled={!pagination.hasPrevPage}
+                      className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Previous
+                    </button>
+                    <button
+                      onClick={pagination.goToNextPage}
+                      disabled={!pagination.hasNextPage}
+                      className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Next
+                    </button>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       ) : null}
     </PageContainer>
   );
