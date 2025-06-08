@@ -161,85 +161,102 @@ const UserManagementScreen = ({ onNavigate, isMobile = false }) => {
               <p className="text-sm text-gray-500">No users are currently registered in the system.</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      User
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Account Type
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Role
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Privileges
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+            <>
+              {/* Mobile Row Layout */}
+              {isMobile ? (
+                <div className="divide-y divide-gray-200">
                   {users.map((user) => (
-                    <tr key={user.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-2 whitespace-nowrap">
-                        <div>
-                          <div className="text-sm font-medium text-gray-900">{user.name}</div>
-                          <div className="text-sm text-gray-500">{user.email}</div>
+                    <div key={user.id} className="px-4 py-3 hover:bg-gray-50 flex items-center justify-between">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center space-x-2">
+                          <h3 className="text-sm font-medium text-gray-900 truncate">{user.name}</h3>
+                          <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium ${getAccountTypeColor(user.accountType)}`}>
+                            {getAccountTypeIcon(user.accountType)}
+                            <span className="ml-1 capitalize">{user.accountType}</span>
+                          </span>
+                          {!user.isActive && (
+                            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
+                              Inactive
+                            </span>
+                          )}
                         </div>
-                      </td>
-                      <td className="px-6 py-2 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getAccountTypeColor(user.accountType)}`}>
-                          {getAccountTypeIcon(user.accountType)}
-                          <span className="ml-1 capitalize">{user.accountType}</span>
-                        </span>
-                      </td>
-                      <td className="px-6 py-2 whitespace-nowrap text-sm text-gray-900">
-                        {user.role}
-                      </td>
-                      <td className="px-6 py-2 whitespace-nowrap">
-                        {user.isAdmin ? (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-                            <Shield size={12} className="mr-1" />
-                            Admin
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                            <User size={12} className="mr-1" />
-                            Standard
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-6 py-2 whitespace-nowrap">
-                        {user.isActive ? (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            <CheckCircle size={12} className="mr-1" />
-                            Active
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                            <XCircle size={12} className="mr-1" />
-                            Inactive
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-6 py-2 whitespace-nowrap text-right text-sm font-medium">
+                      </div>
+                      <div className="ml-3 flex-shrink-0">
                         <DropdownMenu 
                           items={getUserActions(user)}
-                          className="inline-flex justify-end"
+                          className="inline-flex"
                         />
-                      </td>
-                    </tr>
+                      </div>
+                    </div>
                   ))}
-                </tbody>
-              </table>
-            </div>
+                </div>
+              ) : (
+                /* Desktop Table Layout */
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          User
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Account Type
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Role
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Status
+                        </th>
+                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {users.map((user) => (
+                        <tr key={user.id} className="hover:bg-gray-50">
+                          <td className="px-6 py-2 whitespace-nowrap">
+                            <div>
+                              <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                              <div className="text-sm text-gray-500">{user.email}</div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-2 whitespace-nowrap">
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getAccountTypeColor(user.accountType)}`}>
+                              {getAccountTypeIcon(user.accountType)}
+                              <span className="ml-1 capitalize">{user.accountType}</span>
+                            </span>
+                          </td>
+                          <td className="px-6 py-2 whitespace-nowrap text-sm text-gray-900">
+                            {user.role}
+                          </td>
+                          <td className="px-6 py-2 whitespace-nowrap">
+                            {user.isActive ? (
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                <CheckCircle size={12} className="mr-1" />
+                                Active
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                <XCircle size={12} className="mr-1" />
+                                Inactive
+                              </span>
+                            )}
+                          </td>
+                          <td className="px-6 py-2 whitespace-nowrap text-right text-sm font-medium">
+                            <DropdownMenu 
+                              items={getUserActions(user)}
+                              className="inline-flex justify-end"
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </>
           )}
         </div>
       )}
