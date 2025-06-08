@@ -103,17 +103,13 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
   // Define table columns for customers
   const columns = [
     { 
-      key: 'name', 
-      label: 'Farmer Name',
+      key: 'farmer', 
+      label: 'Farmer & Farm',
       render: (item) => (
-        <div className="font-medium text-gray-900">{item.name}</div>
-      )
-    },
-    { 
-      key: 'farmName', 
-      label: 'Farm Name',
-      render: (item) => (
-        <div className="text-gray-600">{item.farmName || 'Not specified'}</div>
+        <div>
+          <div className="font-medium text-gray-900">{item.name}</div>
+          <div className="text-sm text-gray-500">{item.farmName || 'Farm name not specified'}</div>
+        </div>
       )
     },
     { 
@@ -179,12 +175,14 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
   const renderMobileCard = (customer) => (
     <div className="flex items-center justify-between">
       <div className="flex-1 pr-3">
-        <h3 className="font-medium text-base text-gray-900 truncate mb-1">
+        <div className="font-medium text-base text-gray-900 truncate">
           {customer.name}
-        </h3>
-        <p className="text-sm text-gray-600 truncate">
-          {customer.farmName || 'Farm name not specified'}
-        </p>
+          {customer.farmName && (
+            <span className="text-sm text-gray-500 font-normal ml-2">
+              • {customer.farmName}
+            </span>
+          )}
+        </div>
       </div>
       <DropdownMenu 
         items={getCustomerActions(customer)}
@@ -259,6 +257,26 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
         )}
       />
       
+      {/* Mobile Search Box - Always Visible */}
+      {isMobile && (
+        <div className="bg-white rounded-lg shadow p-4 mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
+            <Search size={14} className="mr-1" /> Search
+          </label>
+          <div className="relative">
+            <input
+              type="text"
+              name="search"
+              value={filters.search}
+              onChange={handleFilterChange}
+              placeholder="Search by name or farm..."
+              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm py-2 pl-10 pr-3 border"
+            />
+            <Search size={16} className="absolute left-3 top-2.5 text-gray-400 pointer-events-none" />
+          </div>
+        </div>
+      )}
+
       {/* Mobile Filter Toggle */}
       {isMobile && (
         <button 
@@ -289,6 +307,26 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
           )}
           
           <div className="flex flex-wrap gap-4">
+            {/* Search Filter - Desktop Only */}
+            {!isMobile && (
+              <div className="flex-1 min-w-[200px]">
+                <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+                  <Search size={14} className="mr-1" /> Search
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="search"
+                    value={filters.search}
+                    onChange={handleFilterChange}
+                    placeholder="Search by name or farm..."
+                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm py-2 pl-10 pr-3 border"
+                  />
+                  <Search size={16} className="absolute left-3 top-2.5 text-gray-400 pointer-events-none" />
+                </div>
+              </div>
+            )}
+            
             {/* Status Filter */}
             <div className={`${isMobile ? 'w-full' : 'flex-1 min-w-[160px]'}`}>
               <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
