@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useLocalStorage } from '../hooks';
 
 /**
  * Context for managing selected customer in retailer views
@@ -21,11 +22,22 @@ export const useCustomer = () => {
  * Provider component for customer context
  * @param {Object} props - Component props
  * @param {React.ReactNode} props.children - Child components
+ * @param {Object} props.user - Current user object (to clear selection on user change)
  * @returns {JSX.Element} Provider component
  */
-export const CustomerProvider = ({ children }) => {
-  const [selectedCustomer, setSelectedCustomer] = useState(null);
+export const CustomerProvider = ({ children, user }) => {
+  // Use localStorage to persist selected customer across sessions
+  const [selectedCustomer, setSelectedCustomer] = useLocalStorage('beet-guru-selected-customer', null);
   const [isCustomerRequired, setIsCustomerRequired] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState(user?.id);
+
+  // Clear customer selection when user changes (logout/login)
+  useEffect(() => {
+    if (user?.id !== currentUserId) {
+      setSelectedCustomer(null);
+      setCurrentUserId(user?.id);
+    }
+  }, [user?.id, currentUserId, setSelectedCustomer]);
 
   const selectCustomer = (customer) => {
     setSelectedCustomer(customer);

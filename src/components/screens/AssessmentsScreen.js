@@ -106,8 +106,8 @@ const AssessmentsScreen = ({
         )}
       />
       
-      {/* Customer Selector - shown for retailers and admins */}
-      <CustomerSelector user={user} isMobile={isMobile} />
+      {/* Customer Selector - shown for retailers and admins (hidden on mobile as it's in header) */}
+      {!isMobile && <CustomerSelector user={user} isMobile={isMobile} />}
       
       {/* Only show content if customer is selected (for retailers) or user is farmer */}
       {shouldShowData ? (

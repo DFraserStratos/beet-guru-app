@@ -3,7 +3,6 @@ import { ChevronDown, Filter, X, Users, Calendar, MapPin, ArrowDownUp, Plus, Use
 import { logger } from '../../utils/logger';
 import DataTable from '../ui/DataTable';
 import DropdownMenu from '../ui/DropdownMenu';
-import CustomerSelector from '../ui/CustomerSelector';
 import { useCustomer } from '../../contexts/CustomerContext';
 import api from '../../services/api';
 import { useApi, usePagination } from '../../hooks';
@@ -26,7 +25,7 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
   });
   
   // Use customer context to handle customer selection
-  const { selectedCustomer } = useCustomer();
+  const { selectCustomer } = useCustomer();
   
   // Use the API hook to fetch customers for this retailer
   const { 
@@ -48,12 +47,8 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
     }
   }, [fetchCustomers, user?.id]);
 
-  // Navigate to customer detail page when a customer is selected in the context
-  useEffect(() => {
-    if (selectedCustomer?.id) {
-      onViewCustomer(selectedCustomer.id);
-    }
-  }, [selectedCustomer, onViewCustomer]);
+  // Note: Removed automatic navigation useEffect to prevent conflicts
+  // Navigation is now handled manually in handleViewCustomer
   
   const handleToggleFilters = () => {
     setShowFilters(!showFilters);
@@ -93,7 +88,7 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
   const getCustomerActions = (customer) => [
     { 
       label: 'View Details', 
-      onClick: () => onViewCustomer(customer.id), 
+      onClick: () => handleViewCustomer(customer), 
       icon: <Eye size={14} />,
       className: 'text-blue-600 hover:text-blue-800' 
     },
@@ -160,12 +155,15 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
 
   // Handle row clicks for viewing customer details
   const handleRowClick = (customer) => {
-    onViewCustomer(customer.id);
+    handleViewCustomer(customer);
   };
 
-  // Handle customer view action
-  const handleViewCustomer = (customerId) => {
-    onViewCustomer(customerId);
+  // Handle customer view action - now also selects customer in context
+  const handleViewCustomer = (customer) => {
+    // Select the customer in the context
+    selectCustomer(customer);
+    // Navigate to customer detail page
+    onViewCustomer(customer.id);
   };
 
   // Format date for display
@@ -260,9 +258,6 @@ const CustomersScreen = ({ isMobile, onViewCustomer = () => {}, user }) => {
           </FormButton>
         )}
       />
-      
-      {/* Customer Selector */}
-      <CustomerSelector user={user} isMobile={isMobile} />
       
       {/* Mobile Filter Toggle */}
       {isMobile && (

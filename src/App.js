@@ -22,14 +22,16 @@ import CustomerDetailScreen from './components/screens/CustomerDetailScreen';
 import CultivarManagementScreen from './components/screens/CultivarManagementScreen';
 import UserManagementScreen from './components/screens/UserManagementScreen';
 import ErrorBoundary from './components/utility/ErrorBoundary';
-import { CustomerProvider } from './contexts/CustomerContext';
+import { CustomerProvider, useCustomer } from './contexts/CustomerContext';
+import CustomerSelector from './components/ui/CustomerSelector';
 import { useDeviceDetection, useLocalStorage } from './hooks';
 import { logger } from './utils/logger';
 
-function App() {
-  // Use custom hooks for device detection and persisting user session
+// Inner component that can use CustomerContext
+function AppContent({ user, setUser }) {
+  // Use custom hooks for device detection
   const isMobile = useDeviceDetection(768);
-  const [user, setUser] = useLocalStorage('beet-guru-user', null);
+  const { selectedCustomer } = useCustomer();
   
   // App state
   const [activeScreen, setActiveScreen] = useState('home');
@@ -62,6 +64,14 @@ function App() {
 
   // Handle navigation
   const handleNavigate = (screen) => {
+    // If navigating to customers screen and there's a selected customer in context,
+    // go directly to that customer's detail page
+    if (screen === 'customers' && selectedCustomer) {
+      setSelectedCustomerId(selectedCustomer.id);
+      setActiveScreen('customer-detail');
+      return;
+    }
+    
     // Reset selected data when navigating away from assessment screens
     if (screen !== 'new-assessment' && screen !== 'draft-assessment') {
       setSelectedLocation(null);
@@ -228,100 +238,126 @@ function App() {
 
   // Main app when authenticated
   return (
-    <CustomerProvider>
-      <div className="flex h-screen bg-gray-50">
-        {/* Desktop Sidebar - always visible on desktop */}
-        <div className={`${isMobile ? 'hidden' : 'block'} h-screen`}>
+    <div className="flex h-screen bg-gray-50">
+      {/* Desktop Sidebar - always visible on desktop */}
+      <div className={`${isMobile ? 'hidden' : 'block'} h-screen`}>
+        <ErrorBoundary>
+          <Sidebar 
+            activeScreen={activeScreen} 
+            handleNavigate={handleNavigate}
+            onLogout={handleLogout}
+            user={user}
+          />
+        </ErrorBoundary>
+      </div>
+      
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Only show header on mobile */}
+        {isMobile && (
           <ErrorBoundary>
-            <Sidebar 
-              activeScreen={activeScreen} 
-              handleNavigate={handleNavigate}
-              onLogout={handleLogout}
-              user={user}
+            <Header 
+              activeScreen={activeScreen}
+              customerSelector={
+                // Only show CustomerSelector on screens where customer selection is relevant
+                // Hide on customer detail page since it's redundant
+                // Hide on customers screen since it duplicates the customer table functionality
+                // Hide for farmers since they don't need customer selection
+                ['assessments', 'reports'].includes(activeScreen) &&
+                activeScreen !== 'customer-detail' && 
+                user?.accountType !== 'farmer' && 
+                (user?.accountType === 'retailer' || user?.isAdmin) ? (
+                  <CustomerSelector 
+                    user={user} 
+                    isMobile={isMobile} 
+                    headerVariant={true}
+                  />
+                ) : null
+              }
             />
+          </ErrorBoundary>
+        )}
+        
+        <div id="main-content" className="flex-1 overflow-y-auto p-4 pb-16 md:pb-4">
+          <ErrorBoundary>
+            {activeScreen === 'home' && !user?.isAdmin && <HomeScreen onNavigate={handleNavigate} isMobile={isMobile} user={user} />}
+            {activeScreen === 'assessments' && (
+              <AssessmentsScreen 
+                onNavigate={handleNavigate} 
+                isMobile={isMobile}
+                onStartAssessment={handleStartAssessment}
+                onContinueDraft={handleContinueDraft}
+                user={user}
+              />
+            )}
+            {activeScreen === 'reports' && <ReportsScreen isMobile={isMobile} onViewReport={handleViewReport} user={user} />}
+            {activeScreen === 'new-assessment' && !user?.isAdmin && (
+              <NewAssessmentScreen 
+                isMobile={isMobile} 
+                onNavigate={handleNavigate}
+                onViewReport={handleViewReport}
+                prefillLocation={selectedLocation}
+                draftAssessment={draftAssessment}
+                user={user}
+              />
+            )}
+            {activeScreen === 'report-viewer' && (
+              <ReportViewerScreen
+                reportId={selectedReportId}
+                isMobile={isMobile}
+                onBack={() => handleNavigate('reports')}
+              />
+            )}
+            {activeScreen === 'stockfeed' && <StockFeedScreen isMobile={isMobile} />}
+            {activeScreen === 'more' && <MoreScreen onNavigate={handleNavigate} isMobile={isMobile} onLogout={handleLogout} user={user} />}
+            {activeScreen === 'locations' && !user?.isAdmin && <PaddocksScreen isMobile={isMobile} user={user} />}
+            {activeScreen === 'settings' && <SettingsScreen isMobile={isMobile} onNavigate={handleNavigate} user={user} />}
+            {activeScreen === 'about-us' && <AboutUsScreen onNavigate={handleNavigate} isMobile={isMobile} />}
+            {activeScreen === 'terms' && <TermsScreen onNavigate={handleNavigate} isMobile={isMobile} />}
+            {activeScreen === 'customers' && (
+              <CustomersScreen 
+                isMobile={isMobile} 
+                onViewCustomer={handleViewCustomer}
+                user={user}
+              />
+            )}
+            {activeScreen === 'customer-detail' && (
+              <CustomerDetailScreen 
+                customerId={selectedCustomerId}
+                onBack={() => handleNavigate('customers')}
+                onCreateAssessment={handleCreateAssessmentForCustomer}
+                onViewReport={handleViewReport}
+                isMobile={isMobile}
+              />
+            )}
+            {activeScreen === 'cultivar-management' && <CultivarManagementScreen onNavigate={handleNavigate} isMobile={isMobile} />}
+            {activeScreen === 'user-management' && <UserManagementScreen onNavigate={handleNavigate} isMobile={isMobile} />}
           </ErrorBoundary>
         </div>
         
-        {/* Main Content Area */}
-        <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Only show header on mobile */}
-          {isMobile && (
-            <ErrorBoundary>
-              <Header 
-                activeScreen={activeScreen}
-              />
-            </ErrorBoundary>
-          )}
-          
-          <div id="main-content" className="flex-1 overflow-y-auto p-4 pb-16 md:pb-4">
-            <ErrorBoundary>
-              {activeScreen === 'home' && !user?.isAdmin && <HomeScreen onNavigate={handleNavigate} isMobile={isMobile} user={user} />}
-              {activeScreen === 'assessments' && (
-                <AssessmentsScreen 
-                  onNavigate={handleNavigate} 
-                  isMobile={isMobile}
-                  onStartAssessment={handleStartAssessment}
-                  onContinueDraft={handleContinueDraft}
-                  user={user}
-                />
-              )}
-              {activeScreen === 'reports' && <ReportsScreen isMobile={isMobile} onViewReport={handleViewReport} user={user} />}
-              {activeScreen === 'new-assessment' && !user?.isAdmin && (
-                <NewAssessmentScreen 
-                  isMobile={isMobile} 
-                  onNavigate={handleNavigate}
-                  onViewReport={handleViewReport}
-                  prefillLocation={selectedLocation}
-                  draftAssessment={draftAssessment}
-                  user={user}
-                />
-              )}
-              {activeScreen === 'report-viewer' && (
-                <ReportViewerScreen
-                  reportId={selectedReportId}
-                  isMobile={isMobile}
-                  onBack={() => handleNavigate('reports')}
-                />
-              )}
-              {activeScreen === 'stockfeed' && <StockFeedScreen isMobile={isMobile} />}
-              {activeScreen === 'more' && <MoreScreen onNavigate={handleNavigate} isMobile={isMobile} onLogout={handleLogout} user={user} />}
-              {activeScreen === 'locations' && !user?.isAdmin && <PaddocksScreen isMobile={isMobile} user={user} />}
-              {activeScreen === 'settings' && <SettingsScreen isMobile={isMobile} onNavigate={handleNavigate} user={user} />}
-              {activeScreen === 'about-us' && <AboutUsScreen onNavigate={handleNavigate} isMobile={isMobile} />}
-              {activeScreen === 'terms' && <TermsScreen onNavigate={handleNavigate} isMobile={isMobile} />}
-              {activeScreen === 'customers' && (
-                <CustomersScreen 
-                  isMobile={isMobile} 
-                  onViewCustomer={handleViewCustomer}
-                  user={user}
-                />
-              )}
-              {activeScreen === 'customer-detail' && (
-                <CustomerDetailScreen 
-                  customerId={selectedCustomerId}
-                  onBack={() => handleNavigate('customers')}
-                  onCreateAssessment={handleCreateAssessmentForCustomer}
-                  onViewReport={handleViewReport}
-                  isMobile={isMobile}
-                />
-              )}
-              {activeScreen === 'cultivar-management' && <CultivarManagementScreen onNavigate={handleNavigate} isMobile={isMobile} />}
-              {activeScreen === 'user-management' && <UserManagementScreen onNavigate={handleNavigate} isMobile={isMobile} />}
-            </ErrorBoundary>
-          </div>
-          
-          {/* Mobile Bottom Navigation */}
-          {isMobile && (
-            <ErrorBoundary>
-              <BottomNav 
-                activeScreen={activeScreen} 
-                handleNavigate={handleNavigate} 
-                user={user}
-              />
-            </ErrorBoundary>
-          )}
-        </div>
+        {/* Mobile Bottom Navigation */}
+        {isMobile && (
+          <ErrorBoundary>
+            <BottomNav 
+              activeScreen={activeScreen} 
+              handleNavigate={handleNavigate} 
+              user={user}
+            />
+          </ErrorBoundary>
+        )}
       </div>
+    </div>
+  );
+}
+
+function App() {
+  // Use custom hooks for device detection and persisting user session
+  const [user, setUser] = useLocalStorage('beet-guru-user', null);
+  
+  // Main app when authenticated
+  return (
+    <CustomerProvider user={user}>
+      <AppContent user={user} setUser={setUser} />
     </CustomerProvider>
   );
 }

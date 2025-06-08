@@ -272,7 +272,7 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {}, user }) => {
             </FormButton>
           )}
         />
-        <CustomerSelector user={user} isMobile={isMobile} />
+        {!isMobile && <CustomerSelector user={user} isMobile={isMobile} />}
         <ReportsTableSkeleton rows={3} />
       </PageContainer>
     );
@@ -300,7 +300,7 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {}, user }) => {
             </FormButton>
           )}
         />
-        <CustomerSelector user={user} isMobile={isMobile} />
+        {!isMobile && <CustomerSelector user={user} isMobile={isMobile} />}
         <div className="bg-white rounded-xl shadow p-6 text-center">
           <p className="text-red-500">Error loading reports: {error?.message || assessmentsError?.message}</p>
         </div>
@@ -330,8 +330,8 @@ const ReportsScreen = ({ isMobile, onViewReport = () => {}, user }) => {
         )}
       />
       
-      {/* Customer Selector - shown for retailers and admins */}
-      <CustomerSelector user={user} isMobile={isMobile} />
+      {/* Customer Selector - shown for retailers and admins (hidden on mobile as it's in header) */}
+      {!isMobile && <CustomerSelector user={user} isMobile={isMobile} />}
       
       {/* Only show content if customer is selected (for retailers/admins) or user is farmer */}
       {shouldShowData ? (
